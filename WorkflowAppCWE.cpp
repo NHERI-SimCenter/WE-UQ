@@ -65,7 +65,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "CustomizedItemModel.h"
 
 // SimCenter Widgets
-#include <InputWidgetEarthquakeEvent.h>
+#include <WindEventSelection.h>
 #include <RunLocalWidget.h>
 #include <RemoteService.h>
 #include <GeneralInformationWidget.h>
@@ -103,9 +103,11 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     //
 
     theRVs = new RandomVariableInputWidget();
+
     theGI = new GeneralInformationWidget();
     theSIM = new SIM_Selection(theRVs);
-    theEvent = new InputWidgetEarthquakeEvent(theRVs);
+
+    theEvent = new WindEventSelection(theRVs);
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
     theUQ_Method = new InputWidgetSampling();
     theResults = new DakotaResults();
@@ -180,7 +182,7 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     // some of above widgets are inside some tabbed widgets
     //
 
-    theBIM = new InputWidgetBIM(theGI, theSIM);
+    //    theBIM = new InputWidgetBIM(theGI, theSIM);
     theUQ = new InputWidgetUQ(theUQ_Method,theRVs);
 
     //
@@ -206,19 +208,21 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
 
     //defining bunch of items for inclusion in model
 
+    QStandardItem *giItem = new QStandardItem("GI");
     QStandardItem *bimItem = new QStandardItem("BIM");
     QStandardItem *evtItem = new QStandardItem("EVT");
     QStandardItem *uqItem   = new QStandardItem("UQ");
     QStandardItem *femItem = new QStandardItem("FEM");
-    QStandardItem *contentsItem = new QStandardItem("CMP");
+   // QStandardItem *contentsItem = new QStandardItem("CMP");
     QStandardItem *resultsItem = new QStandardItem("RES");
 
     //building up the hierarchy of the model
+    rootNode->appendRow(giItem);
     rootNode->appendRow(bimItem);
     rootNode->appendRow(evtItem);
     rootNode->appendRow(femItem);
     rootNode->appendRow(uqItem);
-    rootNode->appendRow(contentsItem);
+    // rootNode->appendRow(contentsItem);
     rootNode->appendRow(resultsItem);
 
     infoItemIdx = rootNode->index();
@@ -264,7 +268,8 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     //
 
     theStackedWidget = new QStackedWidget();
-    theStackedWidget->addWidget(theBIM);
+    theStackedWidget->addWidget(theGI);
+    theStackedWidget->addWidget(theSIM);
     theStackedWidget->addWidget(theEvent);
     theStackedWidget->addWidget(theAnalysis);
     theStackedWidget->addWidget(theUQ);
@@ -340,18 +345,20 @@ WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, co
     const QModelIndex index = treeView->selectionModel()->currentIndex();
     QString selectedText = index.data(Qt::DisplayRole).toString();
 
-    if (selectedText == "BIM")
+    if (selectedText == "GI")
         theStackedWidget->setCurrentIndex(0);
-    else if (selectedText == "EVT")
+    if (selectedText == "BIM")
         theStackedWidget->setCurrentIndex(1);
-    else if (selectedText == "FEM")
+    else if (selectedText == "EVT")
         theStackedWidget->setCurrentIndex(2);
-    else if (selectedText == "UQ")
+    else if (selectedText == "FEM")
         theStackedWidget->setCurrentIndex(3);
-    else if (selectedText == "CMP")
+    else if (selectedText == "UQ")
         theStackedWidget->setCurrentIndex(4);
-    else if (selectedText == "RES")
+    else if (selectedText == "CMP")
         theStackedWidget->setCurrentIndex(5);
+    else if (selectedText == "RES")
+        theStackedWidget->setCurrentIndex(6);
 }
 
 

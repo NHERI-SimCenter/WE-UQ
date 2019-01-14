@@ -58,12 +58,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPushButton>
 #include <sectiontitle.h>
 //#include <InputWidgetEDP.h>
+#include <DEDM_HRP.h>
 
-#include <InputWidgetExistingEvent.h>
-#include <ExistingSimCenterEvents.h>
-#include <UniformMotionInput.h>
-#include <ExistingPEER_Events.h>
-#include "SHAMotionWidget.h"
+
 #include <UserDefinedApplication.h>
 
 WindEventSelection::WindEventSelection(RandomVariableInputWidget *theRandomVariableIW, QWidget *parent)
@@ -80,10 +77,10 @@ WindEventSelection::WindEventSelection(RandomVariableInputWidget *theRandomVaria
     label->setText(QString("Loading Type"));
     eventSelection = new QComboBox();
     //    eventSelection->addItem(tr("Existing"));
-    eventSelection->addItem(tr("Multiple Existing"));
-    eventSelection->addItem(tr("Multiple PEER"));
-    eventSelection->addItem(tr("Hazard Based Event"));
-    eventSelection->addItem(tr("User Application"));
+    eventSelection->addItem(tr("DEDM_HRP"));
+    //eventSelection->addItem(tr("Multiple PEER"));
+    //eventSelection->addItem(tr("Hazard Based Event"));
+    //eventSelection->addItem(tr("User Application"));
     eventSelection->setItemData(1, "A Seismic event using Seismic Hazard Analysis and Record Selection/Scaling", Qt::ToolTipRole);
 
     theSelectionLayout->addWidget(label);
@@ -102,22 +99,22 @@ WindEventSelection::WindEventSelection(RandomVariableInputWidget *theRandomVaria
 
     //theExistingEventsWidget = new InputWidgetExistingEvent(theRandomVariableInputWidget);
     //theStackedWidget->addWidget(theExistingEventsWidget);
-    theExistingEvents = new ExistingSimCenterEvents(theRandomVariableInputWidget);
-    theStackedWidget->addWidget(theExistingEvents);
+    theDEDM_HRP_Widget = new DEDM_HRP(theRandomVariableInputWidget);
+    theStackedWidget->addWidget(theDEDM_HRP_Widget);
 
-    theExistingPeerEvents = new ExistingPEER_Events(theRandomVariableInputWidget);
-    theStackedWidget->addWidget(theExistingPeerEvents);
+   // theExistingPeerEvents = new ExistingPEER_Events(theRandomVariableInputWidget);
+   // theStackedWidget->addWidget(theExistingPeerEvents);
 
     //Adding SHA based ground motion widget
-    theSHA_MotionWidget = new SHAMotionWidget(theRandomVariableInputWidget);
-    theStackedWidget->addWidget(theSHA_MotionWidget);
+   // theSHA_MotionWidget = new SHAMotionWidget(theRandomVariableInputWidget);
+   // theStackedWidget->addWidget(theSHA_MotionWidget);
 
-    theUserDefinedApplication = new UserDefinedApplication(theRandomVariableInputWidget);
-    theStackedWidget->addWidget(theUserDefinedApplication);
+    // theUserDefinedApplication = new UserDefinedApplication(theRandomVariableInputWidget);
+    // theStackedWidget->addWidget(theUserDefinedApplication);
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
-    theCurrentEvent=theExistingEvents;
+    theCurrentEvent=theDEDM_HRP_Widget;
 
     connect(eventSelection,SIGNAL(currentIndexChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 }
@@ -194,11 +191,11 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     // note type output in json and name in pull down are not the same and hence the ||
     //
 
-    if (arg1 == "Multiple Existing") {
+    if (arg1 == "DEDM_HRP") {
         theStackedWidget->setCurrentIndex(0);
-        theCurrentEvent = theExistingEvents;
+        theCurrentEvent = theDEDM_HRP_Widget;
     }
-
+    /*
     else if(arg1 == "Multiple PEER") {
         theStackedWidget->setCurrentIndex(1);
         theCurrentEvent = theExistingPeerEvents;
@@ -213,7 +210,7 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theStackedWidget->setCurrentIndex(3);
         theCurrentEvent = theUserDefinedApplication;
     }
-
+    */
     else {
         qDebug() << "ERROR .. WindEventSelection selection .. type unknown: " << arg1;
     }

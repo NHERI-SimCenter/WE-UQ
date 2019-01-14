@@ -33,12 +33,16 @@ INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
     WorkflowAppCWE.cpp \
-    RunWidget.cpp
+    RunWidget.cpp \
+    WindEventSelection.cpp \
+    DEDM_HRP.cpp
 
 
 HEADERS  += \
     WorkflowAppCWE.h \
-    RunWidget.h
+    RunWidget.h \
+    WindEventSelection.h \
+    DEDM_HRP.h
 
 
 RESOURCES += \
@@ -48,6 +52,13 @@ RESOURCES += \
 
 #RESOURCES += \
 #    schema.qrc
+
+DISTFILES += \
+    wImage2.gif \
+    wImage3.gif \
+    wImage4.gif \
+    wImage1.png \
+    wImage_DEDM_HRP_Logo
 
 
 

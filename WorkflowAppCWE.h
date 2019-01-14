@@ -56,7 +56,7 @@ class EarthquakeLoadingInput;
 class InputWidgetOpenSeesAnalysis;
 class UQOptions;
 class GeneralInformationWidget;
-class InputWidgetEarthquakeEvent;
+class WindEventSelection;
 class QStackedWidget;
 
 class RunLocalWidget;
@@ -116,7 +116,7 @@ private:
 
     SIM_Selection *theSIM;
     InputWidgetSampling *theUQ_Method;
-    InputWidgetEarthquakeEvent *theEvent;
+    WindEventSelection *theEvent;
     InputWidgetOpenSeesAnalysis *theAnalysis;
     DakotaResults *theResults;
 
