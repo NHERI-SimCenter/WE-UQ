@@ -48,7 +48,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "MainWindow.h"
 #include <WorkflowAppWidget.h>
 
-class RandomVariableInputWidget;
+class RandomVariablesContainer;
 //class InputWidgetSheetSIM;
 class SIM_Selection;
 class InputWidgetSampling;
@@ -112,7 +112,7 @@ private:
     QStandardItem *rootNode;
 
     GeneralInformationWidget *theGI;
-    RandomVariableInputWidget *theRVs;
+    RandomVariablesContainer *theRVs;
 
     SIM_Selection *theSIM;
     InputWidgetSampling *theUQ_Method;

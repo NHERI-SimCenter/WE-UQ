@@ -47,13 +47,13 @@ class QComboBox;
 class QStackedWidget;
 class UserDefinedApplication;
 
-class RandomVariableInputWidget;
+class RandomVariablesContainer;
 
 class WindEventSelection : public  SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariableInputWidget *, QWidget *parent = 0);
+    explicit WindEventSelection(RandomVariablesContainer *, QWidget *parent = 0);
     ~WindEventSelection();
 
     bool outputToJSON(QJsonObject &rvObject);
@@ -74,7 +74,7 @@ private:
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
 
-   RandomVariableInputWidget *theRandomVariableInputWidget;
+   RandomVariablesContainer *theRandomVariablesContainer;
 };
 
 #endif // WIND_EVENT_SELECTION_H

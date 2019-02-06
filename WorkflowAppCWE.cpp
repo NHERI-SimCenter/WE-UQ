@@ -70,7 +70,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RemoteService.h>
 #include <GeneralInformationWidget.h>
 #include <SIM_Selection.h>
-#include <RandomVariableInputWidget.h>
+#include <RandomVariablesContainer.h>
 #include <InputWidgetSampling.h>
 #include <InputWidgetOpenSeesAnalysis.h>
 #include <LocalApplication.h>
@@ -102,9 +102,10 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     // create the various widgets
     //
 
-    theRVs = new RandomVariableInputWidget();
+    theRVs = new RandomVariablesContainer();
 
-    theGI = new GeneralInformationWidget();
+    theGI = GeneralInformationWidget::getInstance();
+    //theGI = GeneralInformationWidget::getInstance();
     theSIM = new SIM_Selection(theRVs);
 
     theEvent = new WindEventSelection(theRVs);

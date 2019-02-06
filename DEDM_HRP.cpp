@@ -51,14 +51,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QMovie>
 #include <QPixMap>
 #include <QIcon>
-#include <RandomVariableInputWidget.h>
+#include <RandomVariablesContainer.h>
 #include <QRadioButton>
 #include <QButtonGroup>
 
 //#include <InputWidgetParameters.h>
 
-DEDM_HRP::DEDM_HRP(RandomVariableInputWidget *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariableInputWidget(theRandomVariableIW)
+DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     femSpecific = 0;
 

@@ -47,7 +47,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QComboBox>
 
 class InputWidgetParameters;
-class RandomVariableInputWidget;
+class RandomVariablesContainer;
 class QButtonGroup;
 class QComboBox;
 
@@ -55,7 +55,7 @@ class DEDM_HRP : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit DEDM_HRP(RandomVariableInputWidget *theRandomVariableIW, QWidget *parent = 0);
+    explicit DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~DEDM_HRP();
 
     bool outputToJSON(QJsonObject &rvObject);
@@ -80,7 +80,7 @@ private:
     QButtonGroup *theHeightGroup;
     QButtonGroup *theExposureGroup;
 
-    RandomVariableInputWidget *theRandomVariableInputWidget;
+    RandomVariablesContainer *theRandomVariablesContainer;
     QStringList varNamesAndValues;
 };
 
