@@ -1,8 +1,2 @@
 <RCC>
-    <qresource prefix="/images">
-        <file>Rinaldi.json</file>
-    </qresource>
-    <qresource prefix="/images">
-        <file>ElCentro.json</file>
-    </qresource>
 </RCC>
