@@ -37,8 +37,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: fmckenna
 
 #include "WorkflowAppCWE.h"
-
-// Qt Widgets
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -52,37 +50,44 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QItemSelectionModel>
 #include <QModelIndex>
 #include <QStackedWidget>
+#include <WindEventSelection.h>
+#include <RunLocalWidget.h>
 #include <QProcess>
 #include <QCoreApplication>
-#include <QDir>
-#include <QFile>
 #include <RemoteService.h>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QHostInfo>
 #include <QUuid>
-#include "CustomizedItemModel.h"
 
-// SimCenter Widgets
-#include <WindEventSelection.h>
-#include <RunLocalWidget.h>
-#include <RemoteService.h>
-#include <GeneralInformationWidget.h>
+#include "GeneralInformationWidget.h"
 #include <SIM_Selection.h>
 #include <RandomVariablesContainer.h>
 #include <InputWidgetSampling.h>
 #include <InputWidgetOpenSeesAnalysis.h>
+#include <QDir>
+#include <QFile>
+#include <DakotaResultsSampling.h>
 #include <LocalApplication.h>
 #include <RemoteApplication.h>
 #include <RemoteJobManager.h>
 #include <RunWidget.h>
 #include <InputWidgetBIM.h>
 #include <InputWidgetUQ.h>
-#include <DakotaResults.h>
+
+#include <EDP_WindSelection.h>
 
 #include "CustomizedItemModel.h"
-#include <DakotaResults.h>
+
+#include <QSettings>
+#include <QUuid>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QHostInfo>
+
+#include <GoogleAnalytics.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppCWE *theApp = 0;
@@ -95,33 +100,44 @@ int getNumParallelTasks() {
 WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     : WorkflowAppWidget(theService, parent)
 {
-
+    // set static pointer for global procedure
     theApp = this;
 
+    //
+    // user settings
+    //
+
+    /* remove user uuid saving .. goes against what google permits
+    QSettings settings("SimCenter", "uqFEM");
+    QVariant savedValue = settings.value("uuid");
+    QUuid uuid;
+    if (savedValue.isNull()) {
+        uuid = QUuid::createUuid();
+        settings.setValue("uuid",uuid);
+    } else
+        uuid =savedValue.toUuid();
+     */
     //
     // create the various widgets
     //
 
     theRVs = new RandomVariablesContainer();
-
     theGI = GeneralInformationWidget::getInstance();
-    //theGI = GeneralInformationWidget::getInstance();
     theSIM = new SIM_Selection(theRVs);
-
     theEvent = new WindEventSelection(theRVs);
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
     theUQ_Method = new InputWidgetSampling();
-    theResults = new DakotaResults();
+    theEDP = new EDP_WindSelection(theRVs);
 
-    localApp = new LocalApplication("CWE.py");
-    remoteApp = new RemoteApplication("CWE.py", theService);
+    theResults = new DakotaResultsSampling();
+    localApp = new LocalApplication("CWE-UQ.py");
+    remoteApp = new RemoteApplication("CWE-UQ.py", theService);
     theJobManager = new RemoteJobManager(theService);
 
-    // theRunLocalWidget = new RunLocalWidget(theUQ_Method);
-    SimCenterWidget *theWidgets[1];
-    //    theWidgets[0] = theAnalysis;
-    //    theWidgets[1] = theUQ_Method;
-    int numWidgets = 2;
+   // theRunLocalWidget = new RunLocalWidget(theUQ_Method);
+    SimCenterWidget *theWidgets[1];// =0;
+    //theWidgets[0] = theAnalysis;
+    //theWidgets[1] = theUQ_Method;
     theRunWidget = new RunWidget(localApp, remoteApp, theWidgets, 0);
 
     //
@@ -158,34 +174,28 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     connect(remoteApp,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
     connect(remoteApp,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
 
-
     connect(localApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
     connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
-
-    connect(localApp,
-            SIGNAL(processResults(QString, QString, QString)),
-            this,
-            SLOT(processResults(QString, QString, QString)));
+    connect(localApp,SIGNAL(processResults(QString, QString, QString)), this, SLOT(processResults(QString, QString, QString)));
 
     connect(remoteApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
 
-    connect(theJobManager,
-            SIGNAL(processResults(QString , QString, QString)),
-            this,
-            SLOT(processResults(QString, QString, QString)));
+    connect(theJobManager,SIGNAL(processResults(QString , QString, QString)), this, SLOT(processResults(QString, QString, QString)));
     connect(theJobManager,SIGNAL(loadFile(QString)), this, SLOT(loadFile(QString)));
 
     connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
-
+       
     //connect(theRunLocalWidget, SIGNAL(runButtonPressed(QString, QString)), this, SLOT(runLocal(QString, QString)));
+
 
     //
     // some of above widgets are inside some tabbed widgets
     //
 
-    //    theBIM = new InputWidgetBIM(theGI, theSIM);
+   // theBIM = new InputWidgetBIM(theGI, theSIM);
     theUQ = new InputWidgetUQ(theUQ_Method,theRVs);
 
+    //
     //
     //  NOTE: for displaying the widgets we will use a QTree View to label the widgets for selection
     //  and we will use a QStacked widget for displaying the widget. Which of widgets displayed in StackedView depends on
@@ -204,17 +214,20 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     //
 
     treeView = new QTreeView();
-    standardModel = new CustomizedItemModel;// QStandardItemModel ;
+    standardModel = new CustomizedItemModel; //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
 
     //defining bunch of items for inclusion in model
+    //QStandardItem *giItem    = new QStandardItem("GEN");
+    //
 
     QStandardItem *giItem = new QStandardItem("GI");
-    QStandardItem *bimItem = new QStandardItem("BIM");
+    QStandardItem *bimItem = new QStandardItem("SIM");
     QStandardItem *evtItem = new QStandardItem("EVT");
     QStandardItem *uqItem   = new QStandardItem("UQ");
     QStandardItem *femItem = new QStandardItem("FEM");
-   // QStandardItem *contentsItem = new QStandardItem("CMP");
+    QStandardItem *edpItem = new QStandardItem("EDP");
+    //QStandardItem *uqItem = new QStandardItem("UQM");
     QStandardItem *resultsItem = new QStandardItem("RES");
 
     //building up the hierarchy of the model
@@ -223,7 +236,8 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     rootNode->appendRow(evtItem);
     rootNode->appendRow(femItem);
     rootNode->appendRow(uqItem);
-    // rootNode->appendRow(contentsItem);
+    rootNode->appendRow(edpItem);
+    //rootNode->appendRow(uqItem);
     rootNode->appendRow(resultsItem);
 
     infoItemIdx = rootNode->index();
@@ -232,7 +246,12 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     treeView->setModel(standardModel);
     treeView->expandAll();
     treeView->setHeaderHidden(true);
+    treeView->setMinimumWidth(100);
     treeView->setMaximumWidth(100);
+    treeView->setMinimumWidth(100);
+
+    treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);//Disable Edit for the TreeView
+
 
     //
     // customize the apperance of the menu on the left
@@ -241,14 +260,13 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
     treeView->setObjectName("treeViewOnTheLeft");
     treeView->setIndentation(0);
-    QFile file(":/styles/stylesheet.qss");
+    QFile file(":/styles/menuBar.qss");
     if(file.open(QFile::ReadOnly)) {
-        this->setStyleSheet(file.readAll());
+        treeView->setStyleSheet(file.readAll());
         file.close();
     }
     else
         qDebug() << "Open Style File Failed!";
-
 
 
     //
@@ -274,6 +292,8 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     theStackedWidget->addWidget(theEvent);
     theStackedWidget->addWidget(theAnalysis);
     theStackedWidget->addWidget(theUQ);
+    theStackedWidget->addWidget(theEDP);
+    // theStackedWidget->addWidget(theUQ_Method);
     theStackedWidget->addWidget(theResults);
 
     // add stacked widget to layout
@@ -281,6 +301,7 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
 
     // set current selection to GI
     treeView->setCurrentIndex( infoItemIdx );
+    infoItemIdx = resultsItem->index();
 
     // access a web page which will increment the usage count for this tool
     manager = new QNetworkAccessManager(this);
@@ -308,29 +329,20 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
 
     // setup parameters of request
     QString requestParams;
-    QUuid uuid = QUuid::createUuid();
+    QUuid uuid = WorkflowAppCWE::getUserId();
     QString hostname = QHostInfo::localHostName() + "." + QHostInfo::localDomainName();
     requestParams += "v=1"; // version of protocol
-    requestParams += "&tid=UA-126256136-1"; // Google Analytics account
+    requestParams += "&tid=UA-121615795-1"; // Google Analytics account
     requestParams += "&cid=" + uuid.toString(); // unique user identifier
     requestParams += "&t=event";  // hit type = event others pageview, exception
-    requestParams += "&an=CWE";   // app name
-    requestParams += "&av=1.0.1"; // app version
-    requestParams += "&ec=EEUQ";   // event category
+    requestParams += "&an=CWEUQ";   // app name
+    requestParams += "&av=0.1.0"; // app version
+    requestParams += "&ec=CWEUQ";   // event category
     requestParams += "&ea=start"; // event action
+    requestParams += "&aip=1"; // Anonymize IP
 
     // send request via post method
-   // wait till release manager->post(request, requestParams.toStdString().c_str());
-    //UA-126256136-1
-
-    QFile fileS(":/styles/stylesheet.qss");
-    if(fileS.open(QFile::ReadOnly)) {
-        treeView->setStyleSheet(fileS.readAll());
-        fileS.close();
-    }
-    else
-        qDebug() << "Open Style File Failed!";
-
+    manager->post(request, requestParams.toStdString().c_str());
 }
 
 WorkflowAppCWE::~WorkflowAppCWE()
@@ -338,6 +350,23 @@ WorkflowAppCWE::~WorkflowAppCWE()
 
 }
 
+void WorkflowAppCWE::replyFinished(QNetworkReply *pReply)
+{
+    return;
+}
+
+//TODO: This code may need to be refactored and shared in SimCenterCommon
+QUuid WorkflowAppCWE::getUserId()
+{
+    QSettings commonSettings("SimCenter", "Common"); //These names will need to be constants to be shared
+    QVariant userIdSetting = commonSettings.value("userId");
+    if (!userIdSetting.isValid())
+    {
+        commonSettings.setValue("userId", QUuid::createUuid());
+        userIdSetting = commonSettings.value("userId");
+    }
+    return userIdSetting.toUuid();
+}
 
 void
 WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/) {
@@ -348,7 +377,7 @@ WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, co
 
     if (selectedText == "GI")
         theStackedWidget->setCurrentIndex(0);
-    if (selectedText == "BIM")
+    if (selectedText == "SIM")
         theStackedWidget->setCurrentIndex(1);
     else if (selectedText == "EVT")
         theStackedWidget->setCurrentIndex(2);
@@ -356,8 +385,10 @@ WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, co
         theStackedWidget->setCurrentIndex(3);
     else if (selectedText == "UQ")
         theStackedWidget->setCurrentIndex(4);
-    else if (selectedText == "CMP")
+    else if (selectedText == "EDP")
         theStackedWidget->setCurrentIndex(5);
+    // else if (selectedText == "UQM")
+    //   theStackedWidget->setCurrentIndex(5);
     else if (selectedText == "RES")
         theStackedWidget->setCurrentIndex(6);
 }
@@ -388,11 +419,13 @@ WorkflowAppCWE::outputToJSON(QJsonObject &jsonObjectTop) {
     //jsonObjectTop["RandomVariables"] = jsonObjectRVs;
     theRVs->outputToJSON(jsonObjectTop);
 
+    QJsonObject jsonObjectEDP;
+    theEDP->outputToJSON(jsonObjectEDP);
+    jsonObjectTop["EDP"] = jsonObjectEDP;
+
     QJsonObject appsEDP;
-    appsEDP["Application"] = "StandardEarthquakeEDP";
-    QJsonObject dataObj;
-    appsEDP["ApplicationData"] = dataObj;
-    apps["EDP"] = appsEDP;
+    theEDP->outputAppDataToJSON(appsEDP);
+    apps["EDP"]=appsEDP;
 
     QJsonObject jsonObjectUQ;
     theUQ_Method->outputToJSON(jsonObjectUQ);
@@ -416,20 +449,26 @@ WorkflowAppCWE::outputToJSON(QJsonObject &jsonObjectTop) {
     theEvent->outputAppDataToJSON(apps);
 
 
+
+
     theRunWidget->outputToJSON(jsonObjectTop);
 
     jsonObjectTop["Applications"]=apps;
+
+    //theRunLocalWidget->outputToJSON(jsonObjectTop);
+
 
     return true;
 }
 
 
  void
- WorkflowAppCWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile) {
-   theResults->processResults(dakotaOut, dakotaTab, inputFile);
-   theRunWidget->hide();
-   treeView->setCurrentIndex(infoItemIdx);
-   theStackedWidget->setCurrentIndex(4);
+ WorkflowAppCWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
+
+      theResults->processResults(dakotaOut, dakotaTab, inputFile);
+      theRunWidget->hide();
+      treeView->setCurrentIndex(infoItemIdx);
+      theStackedWidget->setCurrentIndex(6);
  }
 
 void
@@ -456,34 +495,6 @@ WorkflowAppCWE::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("StructuralInformation")) {
         QJsonObject jsonObjStructuralInformation = jsonObject["StructuralInformation"].toObject();
         theSIM->inputFromJSON(jsonObjStructuralInformation);
-    } else
-        return false;
-
-    /*
-    ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
-    */
-
-    theEvent->inputFromJSON(jsonObject);
-    theRVs->inputFromJSON(jsonObject);
-    theRunWidget->inputFromJSON(jsonObject);
-
-    /*
-    if (jsonObject.contains("Events")) {
-        QJsonObject jsonObjEventInformation = jsonObject["Event"].toObject();
-        theEvent->inputFromJSON(jsonObjEventInformation);
-    } else
-        return false;
-
-    if (jsonObject.contains("RandomVariables")) {
-        QJsonObject jsonObjRVsInformation = jsonObject["RandomVariables"].toObject();
-        theRVS->inputFromJSON(jsonObRVSInformation);
-    } else
-        return false;
-    */
-
-    if (jsonObject.contains("UQ_Method")) {
-        QJsonObject jsonObjUQInformation = jsonObject["UQ"].toObject();
-        theEvent->inputFromJSON(jsonObjUQInformation);
     } else
         return false;
 
@@ -517,8 +528,37 @@ WorkflowAppCWE::inputFromJSON(QJsonObject &jsonObject)
         } else
             return false;
 
+        if (theApplicationObject.contains("EDP")) {
+            QJsonObject theObject = theApplicationObject["EDP"].toObject();
+            theEDP->inputAppDataFromJSON(theObject);
+        } else
+            return false;
+
     } else
         return false;
+
+    /*
+    ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
+    */
+
+    theEvent->inputFromJSON(jsonObject);
+    theRVs->inputFromJSON(jsonObject);
+    theRunWidget->inputFromJSON(jsonObject);
+
+
+    if (jsonObject.contains("EDP")) {
+        QJsonObject edpObj = jsonObject["EDP"].toObject();
+         qDebug() << "HELLO" << edpObj;
+        theEDP->inputFromJSON(edpObj);
+    } else
+        return false;
+
+    if (jsonObject.contains("UQ_Method")) {
+        QJsonObject jsonObjUQInformation = jsonObject["UQ"].toObject();
+        theEvent->inputFromJSON(jsonObjUQInformation);
+    } else
+        return false;
+
 
     return true;
 }
@@ -526,7 +566,10 @@ WorkflowAppCWE::inputFromJSON(QJsonObject &jsonObject)
 
 void
 WorkflowAppCWE::onRunButtonClicked() {
+    theRunWidget->hide();
+    theRunWidget->setMinimumWidth(this->width()*0.5);
     theRunWidget->showLocalApplication();
+    GoogleAnalytics::ReportLocalRun();
 }
 
 void
@@ -538,11 +581,14 @@ WorkflowAppCWE::onRemoteRunButtonClicked(){
     if (loggedIn == true) {
 
         theRunWidget->hide();
+        theRunWidget->setMinimumWidth(this->width()*0.5);
         theRunWidget->showRemoteApplication();
 
     } else {
         errorMessage("ERROR - You Need to Login");
     }
+
+    GoogleAnalytics::ReportDesignSafeRun();
 }
 
 void
@@ -578,6 +624,15 @@ WorkflowAppCWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     // and copy all files needed to this directory by invoking copyFiles() on app widgets
     //
 
+    // designsafe will need a unique name
+    /* *********************************************
+    will let ParallelApplication rename dir
+    QUuid uniqueName = QUuid::createUuid();
+    QString strUnique = uniqueName.toString();
+    strUnique = strUnique.mid(1,36);
+    QString tmpDirName = QString("tmp.SimCenter") + strUnique;
+    *********************************************** */
+
     QString tmpDirName = QString("tmp.SimCenter");
     qDebug() << "TMP_DIR: " << tmpDirName;
     QDir workDir(workingDir);
@@ -593,12 +648,12 @@ WorkflowAppCWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     QString templateDirectory  = destinationDirectory.absoluteFilePath(subDir);
     destinationDirectory.mkpath(templateDirectory);
 
-    qDebug() << "templateDir: " << templateDirectory;
-
+    // copyPath(path, tmpDirectory, false);
     theSIM->copyFiles(templateDirectory);
     theEvent->copyFiles(templateDirectory);
     theAnalysis->copyFiles(templateDirectory);
     theUQ_Method->copyFiles(templateDirectory);
+    theEDP->copyFiles(templateDirectory);
 
     //
     // in new templatedir dir save the UI data into dakota.json file (same result as using saveAs)
@@ -660,9 +715,7 @@ WorkflowAppCWE::loadFile(const QString fileName){
 
     this->clear();
     this->inputFromJSON(jsonObj);
-
 }
-
 
 int
 WorkflowAppCWE::getMaxNumParallelTasks() {

@@ -62,7 +62,7 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
 
-signals:
+ signals:
 
 public slots:
    void eventSelectionChanged(const QString &arg1);
@@ -73,6 +73,9 @@ private:
    SimCenterAppWidget *theCurrentEvent;
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
+   SimCenterAppWidget *theStochasticModel;
+   SimCenterAppWidget *theCFDModel;
+   SimCenterAppWidget *theExistingEvents;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };

@@ -58,7 +58,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPushButton>
 #include <sectiontitle.h>
 //#include <InputWidgetEDP.h>
+
+#include <ExistingSimCenterEvents.h>
 #include <DEDM_HRP.h>
+#include <StochasticWindModel/include/StochasticWindInput.h>
 
 
 #include <UserDefinedApplication.h>
@@ -76,12 +79,13 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     QLabel *label = new QLabel();
     label->setText(QString("Loading Type"));
     eventSelection = new QComboBox();
-    //    eventSelection->addItem(tr("Existing"));
+
     eventSelection->addItem(tr("DEDM_HRP"));
-    //eventSelection->addItem(tr("Multiple PEER"));
-    //eventSelection->addItem(tr("Hazard Based Event"));
-    //eventSelection->addItem(tr("User Application"));
-    eventSelection->setItemData(1, "A Seismic event using Seismic Hazard Analysis and Record Selection/Scaling", Qt::ToolTipRole);
+    eventSelection->addItem(tr("Stochastic Wind Input"));
+    eventSelection->addItem(tr("Existing"));
+    eventSelection->addItem(tr("CFD"));
+
+    eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
 
     theSelectionLayout->addWidget(label);
     theSelectionLayout->addWidget(eventSelection);
@@ -97,17 +101,14 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     // create the individual load widgets & add to stacked widget
     //
 
-    //theExistingEventsWidget = new InputWidgetExistingEvent(theRandomVariablesContainer);
-    //theStackedWidget->addWidget(theExistingEventsWidget);
     theDEDM_HRP_Widget = new DEDM_HRP(theRandomVariablesContainer);
     theStackedWidget->addWidget(theDEDM_HRP_Widget);
 
-   // theExistingPeerEvents = new ExistingPEER_Events(theRandomVariablesContainer);
-   // theStackedWidget->addWidget(theExistingPeerEvents);
+    theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theStochasticModel);
 
-    //Adding SHA based ground motion widget
-   // theSHA_MotionWidget = new SHAMotionWidget(theRandomVariablesContainer);
-   // theStackedWidget->addWidget(theSHA_MotionWidget);
+    theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theExistingEvents);
 
     // theUserDefinedApplication = new UserDefinedApplication(theRandomVariablesContainer);
     // theStackedWidget->addWidget(theUserDefinedApplication);
@@ -161,14 +162,23 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 
 
     int index = 0;
-    if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
+    eventSelection->addItem(tr("DEDM_HRP"));
+    eventSelection->addItem(tr("Stochastic Wind Input"));
+    eventSelection->addItem(tr("Existing"));
+    eventSelection->addItem(tr("CFD"));
+
+    if (type == QString("DEDM_HRP")) {
         index = 0;
-    } else if ((type == QString("Existing PEER Events")) || (type == QString("ExistingPEER_Events"))) {
+    } else if (type == QString("Stochastic Wind Input")) {
         index = 1;
-    } else if (type == QString("Hazard Besed Event")) {
-        index = 2;
+    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
+      index = 2;
+      /*
+    } else if ((type == QString("CFD") {
+        index = 3;
     } else if ((type == QString("User Application")) || (type == QString("UserDefinedApplication"))) {
         index = 3;
+      */
     } else {
         return false;
     }
@@ -195,12 +205,18 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theStackedWidget->setCurrentIndex(0);
         theCurrentEvent = theDEDM_HRP_Widget;
     }
-    /*
-    else if(arg1 == "Multiple PEER") {
+
+    else if(arg1 == "Stochastic Wind Input") {
         theStackedWidget->setCurrentIndex(1);
-        theCurrentEvent = theExistingPeerEvents;
+        theCurrentEvent = theStochasticModel;
     }
 
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(2);
+        theCurrentEvent = theExistingEvents;
+    }
+
+    /*
     else if(arg1 == "Hazard Based Event") {
         theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = theSHA_MotionWidget;
