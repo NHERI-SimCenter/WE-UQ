@@ -87,17 +87,33 @@ class KwonKareem2006 : public StochasticModelWidget {
 
   /**
    * Instantiate stochastic motion input widget from input JSON object
-   * @param[in] rvObject JSON object containing input information
+   * @param[in] jsonObject JSON object containing input information
    * @return Returns true if successful, false otherwise
    */
-  bool inputFromJSON(QJsonObject& rvObject) override;
+  bool inputFromJSON(QJsonObject& jsonObject) override;
 
   /**
    * Write all current class data to JSON required to reconstruct class
-   * @param[in, out] rvObject JSON object to write output to
+   * @param[in, out] jsonObject JSON object to write output to
    * @return Returns true if successful, false otherwise
    */
-  bool outputToJSON(QJsonObject& rvObject) override;
+  bool outputToJSON(QJsonObject& jsonObject) override;
+
+  bool inputAppDataFromJSON(QJsonObject& jsonObject) override;
+
+  /**
+   * Write application name to object and add a black ApplicationData
+   * @param[in, out] jsonObject JSON object to write output to
+   * @return Returns true if successful, false otherwise
+   */
+
+  bool outputAppDataToJSON(QJsonObject& jsonObject) override;
+
+  /**
+   * Read application specific data
+   * @param[in, out] jsonObject JSON object to write output to
+   * @return Returns true if successful, false otherwise
+   */
 
  public slots:
   /**

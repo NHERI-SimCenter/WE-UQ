@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
   QCoreApplication::setApplicationName("CWE-UQ");
   QCoreApplication::setOrganizationName("SimCenter");
   QCoreApplication::setApplicationVersion("0.1.0");
-  GoogleAnalytics::SetTrackingId("UA-121615795-1");
+  // turn off  GoogleAnalytics::SetTrackingId("UA-121615795-1");
   GoogleAnalytics::StartSession();
   GoogleAnalytics::ReportStart();
 
@@ -88,8 +88,9 @@ int main(int argc, char *argv[])
 
   QString tenant("designsafe");
   QString storage("agave://designsafe.storage.default/");
+  QString dirName("CWE-UQ");
 
-  AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage);
+  AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage, &dirName);
 
 
   //
@@ -104,25 +105,14 @@ int main(int argc, char *argv[])
           <p> \
           The CWE Application (CWE App) is an open-source software \
           (https://github.com/NHERI-SimCenterCWE) that provides researchers a tool to \
-          assess the performance of a building in an earthquake scenario. The application \
+          assess the performance of a building to wind loading. The application \
           focuses on quantifying building performance through decision variables. Given \
-          that the properties of the buildings and the earthquake events are not known \
+          that the properties of the buildings and the wind events are not known \
           exactly, and that the simulation software and the user make simplifying \
           assumptions in the numerical modeling of the structure, the estimate response of\
            the structure already exhibits significant variability. Such response can be \
-           estimated using our EE-UQ Application (https://simcenter.designsafe-ci.org/\
-              research-tools/ee-uq-application/). The CWE App builds on the EE-UQ App and \
-           uses its response estimates to assess the damage to building components and the\
-            consequences of such damage.\
-          <p> \
-          The user can characterize the simulation model, and the damage and loss model of\
-           the structure, and the seismic hazard model in the CWE App. All models are \
-           interconnected by an uncertainty quantification framework that allows the user \
-           to define a flexible stochastic model for the problem. Given the stochastic \
-           model, the application first performs nonlinear response history simulations to\
-            get the Engineering Demand Parameters (EDPs) that describe structural response\
-            . Then those EDPs are used to assess the Damage Measures (DM) and Decision \
-            Variables (DV) that characterize structural performance. \
+           estimated using our CWE-UQ Application (https://simcenter.designsafe-ci.org/\
+              research-tools/cwe-uq-application/).\
           <p> \
           Depending on the type of structural system, the fidelity of the numerical model \
           and the number of EDP samples required, the response history simulations can be \
@@ -135,23 +125,23 @@ int main(int argc, char *argv[])
           <p> \
           The computations are performed in a workflow application. That is, the numerical\
            simulations are actually performed by a sequence of different applications. The\
-            CWE backend software runs these various applications for the user, taking the \
+            CWE-UQ backend software runs these various applications for the user, taking the \
             outputs from some programs and providing them as inputs to others. The design \
-            of the CWE App is such that researchers are able to modify the backend \
+            of the CWE-UQ App is such that researchers are able to modify the backend \
             application to utilize their own application in the workflow computations. \
             This will ensure researchers are not limited to using the default applications\
              we provide and will be enthused to provide their own applications for others \
              to use. \
           <p>\
-          This is Version 1.0 of the tool and as such is limited in scope. Researchers are\
+          This is Version 0.1.0 of the tool and as such is limited in scope. Researchers are\
            encouraged to comment on what additional features and applications they would \
-           like to see in the CWE App. If you want a feature, chances are many of your \
+           like to see in the CWE-UQ App. If you want a feature, chances are many of your \
            colleagues would also benefit from it.\
           <p>";
 
      w.setAbout(textAboutCWE);
 
-  QString version("1.0.0");
+  QString version("0.1.0");
   w.setVersion(version);
 
   //

@@ -104,20 +104,6 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     theApp = this;
 
     //
-    // user settings
-    //
-
-    /* remove user uuid saving .. goes against what google permits
-    QSettings settings("SimCenter", "uqFEM");
-    QVariant savedValue = settings.value("uuid");
-    QUuid uuid;
-    if (savedValue.isNull()) {
-        uuid = QUuid::createUuid();
-        settings.setValue("uuid",uuid);
-    } else
-        uuid =savedValue.toUuid();
-     */
-    //
     // create the various widgets
     //
 
@@ -130,14 +116,11 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     theEDP = new EDP_WindSelection(theRVs);
 
     theResults = new DakotaResultsSampling();
-    localApp = new LocalApplication("CWE-UQ.py");
-    remoteApp = new RemoteApplication("CWE-UQ.py", theService);
+    localApp = new LocalApplication("femUQ.py");
+    remoteApp = new RemoteApplication("femUQ.py", theService);
     theJobManager = new RemoteJobManager(theService);
 
-   // theRunLocalWidget = new RunLocalWidget(theUQ_Method);
     SimCenterWidget *theWidgets[1];// =0;
-    //theWidgets[0] = theAnalysis;
-    //theWidgets[1] = theUQ_Method;
     theRunWidget = new RunWidget(localApp, remoteApp, theWidgets, 0);
 
     //
@@ -192,7 +175,6 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     // some of above widgets are inside some tabbed widgets
     //
 
-   // theBIM = new InputWidgetBIM(theGI, theSIM);
     theUQ = new InputWidgetUQ(theUQ_Method,theRVs);
 
     //
@@ -217,17 +199,12 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     standardModel = new CustomizedItemModel; //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
 
-    //defining bunch of items for inclusion in model
-    //QStandardItem *giItem    = new QStandardItem("GEN");
-    //
-
     QStandardItem *giItem = new QStandardItem("GI");
     QStandardItem *bimItem = new QStandardItem("SIM");
     QStandardItem *evtItem = new QStandardItem("EVT");
     QStandardItem *uqItem   = new QStandardItem("UQ");
     QStandardItem *femItem = new QStandardItem("FEM");
     QStandardItem *edpItem = new QStandardItem("EDP");
-    //QStandardItem *uqItem = new QStandardItem("UQM");
     QStandardItem *resultsItem = new QStandardItem("RES");
 
     //building up the hierarchy of the model
@@ -237,7 +214,6 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     rootNode->appendRow(femItem);
     rootNode->appendRow(uqItem);
     rootNode->appendRow(edpItem);
-    //rootNode->appendRow(uqItem);
     rootNode->appendRow(resultsItem);
 
     infoItemIdx = rootNode->index();
@@ -302,47 +278,6 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     // set current selection to GI
     treeView->setCurrentIndex( infoItemIdx );
     infoItemIdx = resultsItem->index();
-
-    // access a web page which will increment the usage count for this tool
-    manager = new QNetworkAccessManager(this);
-
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinished(QNetworkReply*)));
-
-    manager->get(QNetworkRequest(QUrl("http://opensees.berkeley.edu/OpenSees/developer/eeuq/use.php")));
-
-    // access a web page which will increment the usage count for this tool
-    manager = new QNetworkAccessManager(this);
-
-    connect(manager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinished(QNetworkReply*)));
-
-    manager->get(QNetworkRequest(QUrl("http://opensees.berkeley.edu/OpenSees/developer/bfm/use.php")));
-    //  manager->get(QNetworkRequest(QUrl("https://simcenter.designsafe-ci.org/multiple-degrees-freedom-analytics/")));
-
-
-    QNetworkRequest request;
-    QUrl host("http://www.google-analytics.com/collect");
-    request.setUrl(host);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-                      "application/x-www-form-urlencoded");
-
-    // setup parameters of request
-    QString requestParams;
-    QUuid uuid = WorkflowAppCWE::getUserId();
-    QString hostname = QHostInfo::localHostName() + "." + QHostInfo::localDomainName();
-    requestParams += "v=1"; // version of protocol
-    requestParams += "&tid=UA-121615795-1"; // Google Analytics account
-    requestParams += "&cid=" + uuid.toString(); // unique user identifier
-    requestParams += "&t=event";  // hit type = event others pageview, exception
-    requestParams += "&an=CWEUQ";   // app name
-    requestParams += "&av=0.1.0"; // app version
-    requestParams += "&ec=CWEUQ";   // event category
-    requestParams += "&ea=start"; // event action
-    requestParams += "&aip=1"; // Anonymize IP
-
-    // send request via post method
-    manager->post(request, requestParams.toStdString().c_str());
 }
 
 WorkflowAppCWE::~WorkflowAppCWE()

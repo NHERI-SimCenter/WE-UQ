@@ -88,76 +88,81 @@ StochasticWindInput::StochasticWindInput(
 }
 
 
-StochasticWindInput::~StochasticWindInput()
-{}
+StochasticWindInput::~StochasticWindInput() {
+
+}
 
 bool StochasticWindInput::outputToJSON(QJsonObject& jsonObject) {
-  bool result = true;
-  jsonObject["EventClassification"] = "Wind";
-  jsonObject["type"] = "StochasticWindInput";
-  jsonObject["modelName"] = modelSelection->currentText();
-
-  QJsonObject model_data;
-  stochasticModel->outputToJSON(model_data);
-  
-  foreach (const QString& key, model_data.keys()) {
-    jsonObject.insert(key, model_data.value(key));
+  bool result = false;
+  if (stochasticModel != NULL) 
+    return stochasticModel->outputToJSON(jsonObject);
+  else {
+    qDebug() << "StocashicWindInput::outputToJSON - NULL model";
   }
 
   return result;
 }
 
 bool StochasticWindInput::inputFromJSON(QJsonObject& jsonObject) {
-  bool result = true;
 
-  if (jsonObject.value("type").toString() == "StochasticMotion") {
-    auto app_data = jsonObject;
-    if (app_data["modelName"].toString() == "Kwon and Kareem (2006)") {
-      modelSelection->setCurrentText(app_data["modelName"].toString());
-      // Assign current model to temporary pointer and create new model
-      auto temp_model = stochasticModel;
-      stochasticModel = new KwonKareem2006(rvInputWidget, this);
-      stochasticModel->inputFromJSON(jsonObject);
-      // Replace current widget with new one and delete current one
-      parametersLayout->replaceWidget(temp_model, stochasticModel);
-      parametersLayout->addStretch();
-      delete temp_model;
-      temp_model = nullptr;
-    }
-  } else {
-    result = false;
+  bool result = false;
+  if (stochasticModel != NULL) 
+    return stochasticModel->inputFromJSON(jsonObject);
+  else {
+    qDebug() << "StocashicWindInput::outputToJSON - NULL model";
   }
 
   return result;
 }
 
 bool StochasticWindInput::outputAppDataToJSON(QJsonObject& jsonObject) {
-  bool result = true;
 
-  jsonObject["Application"] = "StochasticWindInpuut";
-
-  // squirel in the application data selection text
-  QJsonObject appData;
-  appData.insert("modelName", modelSelection->currentText());
-
-  jsonObject["ApplicationData"] = appData;
-  jsonObject["EventClassification"] = "Wind";
-
+  bool result = false;
+  if (stochasticModel != NULL) 
+    return stochasticModel->outputAppDataToJSON(jsonObject);
+  else {
+    qDebug() << "StocashicWindInput::outputToJSON - NULL model";
+  }
   return result;
 }
 
+
 bool StochasticWindInput::inputAppDataFromJSON(QJsonObject& jsonObject) {
+
+  QString appName;
+  appName = jsonObject.value("Application").toString();
+  if (appName == "StochasticWindInput-KwonKareem2006") {  
+
+    this->modelSelectionChanged(QString("Vlachos et al. (2018)"));
+    stochasticModel->inputAppDataFromJSON(jsonObject); // no check for NULL as cannot be if i can write code!
+  } 
+  
+  else {
+    QString message = QString("StocashicWindInput::inputAppDataFromJSON - unknown application string: ") + appName;
+    //    qDebug() << message;
+    emit errorMessage(message);
+  }
+
   return true;
 }
 
 void StochasticWindInput::modelSelectionChanged(const QString& model) {
+
   // Switch the model description and form layout based on model selection
+  StochasticModelWidget *nextModel = NULL;
   if (model == "Vlachos et al. (2018)") {
-    stochasticModel = new KwonKareem2006(rvInputWidget, this);
+    nextModel = new KwonKareem2006(rvInputWidget, this);
   } else {
     qDebug() << "ERROR: In StochasticWindInput::modelSelectionChanged: "
                 "Unknown selection: "
              << model << "\n";
+  }
+  
+  if (nextModel != NULL) {
+    if (stochasticModel != NULL) {
+      parametersLayout->replaceWidget(stochasticModel, nextModel);
+      delete stochasticModel;
+    }
   }
 }
 

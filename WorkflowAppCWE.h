@@ -1,5 +1,5 @@
-#ifndef WORKFLOW_APP_CWE_H
-#define WORKFLOW_APP_CWE_H
+#ifndef INPUT_WIDGET_CWE_UQ_H
+#define INPUT_WIDGET_CWE_UQ_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -49,26 +49,28 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <WorkflowAppWidget.h>
 
 class RandomVariablesContainer;
-//class InputWidgetSheetSIM;
+class InputWidgetBIM;
+class InputWidgetUQ;
+
 class SIM_Selection;
 class InputWidgetSampling;
-class EarthquakeLoadingInput;
+
 class InputWidgetOpenSeesAnalysis;
 class UQOptions;
+class ResultsWidget;
 class GeneralInformationWidget;
 class WindEventSelection;
 class QStackedWidget;
+class DakotaResults;
 
 class RunLocalWidget;
 class RunWidget;
 class Application;
 class RemoteService;
 class RemoteJobManager;
-class InputWidgetBIM;
-class InputWidgetUQ;
 class QNetworkAccessManager;
-
-class DakotaResults;
+class QNetworkReply;
+class EDP_WindSelection;
 
 class WorkflowAppCWE : public WorkflowAppWidget
 {
@@ -92,10 +94,6 @@ signals:
     void setUpForApplicationRunDone(QString &tmpDirectory, QString &inputFile);
     void sendLoadFile(QString filename);
 
-    void sendStatusMessage(QString message);
-    void sendErrorMessage(QString message);
-    void sendFatalMessage(QString message);
-
 public slots:  
     void selectionChangedSlot(const QItemSelection &, const QItemSelection &);
 
@@ -103,9 +101,11 @@ public slots:
     void processResults(QString dakotaOut, QString dakotaTab, QString inputFile);
 
     void loadFile(QString filename);
+    void replyFinished(QNetworkReply*);
 
 private:
 
+    //MainWindow* window;
     QHBoxLayout *horizontalLayout;
     QTreeView *treeView;
     QStandardItemModel *standardModel;
@@ -114,10 +114,12 @@ private:
     GeneralInformationWidget *theGI;
     RandomVariablesContainer *theRVs;
 
+    // the AppWidgets .. not all displayed in main UI
     SIM_Selection *theSIM;
     InputWidgetSampling *theUQ_Method;
     WindEventSelection *theEvent;
     InputWidgetOpenSeesAnalysis *theAnalysis;
+    EDP_WindSelection *theEDP;
     DakotaResults *theResults;
 
     // other widgets appearing in UI
@@ -135,6 +137,8 @@ private:
 
     QStackedWidget *theStackedWidget;
     QNetworkAccessManager *manager;
+
+    static QUuid getUserId();
 };
 
-#endif // WORKFLOW_APP_CWE_H
+#endif // INPUT_WIDGET_CWE_UQ_H

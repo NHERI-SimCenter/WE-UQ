@@ -1,0 +1,1 @@
+{"mainScript": "Frame.tcl", "type": "OpenSeesInput", "NodeMapping": [{"node": 1, "cline": "1", "floor": "1"}, {"node": 3, "cline": "1", "floor": "2"}], "numStory": 1, "ndm": 2, "randomVar": [{"name": "fc", "value": "RV.fc"}, {"name": "fy", "value": "RV.fy"}, {"name": "E", "value": "RV.E"}]}

@@ -160,28 +160,25 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     } else
         return false;
 
-
     int index = 0;
-    eventSelection->addItem(tr("DEDM_HRP"));
-    eventSelection->addItem(tr("Stochastic Wind Input"));
-    eventSelection->addItem(tr("Existing"));
-    eventSelection->addItem(tr("CFD"));
+    qDebug() << "TYPE: " << type;
 
     if (type == QString("DEDM_HRP")) {
         index = 0;
-    } else if (type == QString("Stochastic Wind Input")) {
+    } else if (type.contains(QString("StochasticWindInput"))) {
         index = 1;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
       index = 2;
       /*
-    } else if ((type == QString("CFD") {
+	} else if ((type == QString("CFD") {
         index = 3;
-    } else if ((type == QString("User Application")) || (type == QString("UserDefinedApplication"))) {
+	} else if ((type == QString("User Application")) || (type == QString("UserDefinedApplication"))) {
         index = 3;
       */
     } else {
         return false;
     }
+    qDebug() << "TYPE: " << type << "INDEX: " << index;
 
     eventSelection->setCurrentIndex(index);
 
@@ -206,7 +203,7 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theDEDM_HRP_Widget;
     }
 
-    else if(arg1 == "Stochastic Wind Input") {
+    else if (arg1 == "Stochastic Wind Input") {
         theStackedWidget->setCurrentIndex(1);
         theCurrentEvent = theStochasticModel;
     }
@@ -217,11 +214,6 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     }
 
     /*
-    else if(arg1 == "Hazard Based Event") {
-        theStackedWidget->setCurrentIndex(2);
-        theCurrentEvent = theSHA_MotionWidget;
-    }
-
     else if(arg1 == "User Application") {
         theStackedWidget->setCurrentIndex(3);
         theCurrentEvent = theUserDefinedApplication;

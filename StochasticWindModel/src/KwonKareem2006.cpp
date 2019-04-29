@@ -115,9 +115,29 @@ KwonKareem2006::KwonKareem2006(RandomVariablesContainer* random_variables,
           &KwonKareem2006::provideSeed);
 }
 
+
+bool KwonKareem2006::outputAppDataToJSON(QJsonObject& jsonObject) {
+  bool result = true;
+
+  jsonObject["Application"] = "StochasticWindInput-KwonKareem2006";
+  jsonObject["EventClassification"] = "Wind";
+
+  // squirel in the application data selection text
+  QJsonObject appData;
+  jsonObject["ApplicationData"] = appData;
+
+  return result;
+}
+
+bool KwonKareem2006::inputAppDataFromJSON(QJsonObject& jsonObject) {
+  return true;
+}
+
 bool KwonKareem2006::outputToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
+  jsonObject["type"] = "StochasticWindInput-KwonKareem2006";
+  jsonObject["EventClassification"] = "Wind";
   dragCoefficient->outputToJSON(jsonObject, QString("dragCoefficient"));
   gustWindSpeed->outputToJSON(jsonObject, QString("windSpeed"));
   jsonObject.insert("exposureCategory",exposureCategory->currentText());
