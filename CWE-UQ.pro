@@ -58,6 +58,7 @@ HEADERS  += \
 
 RESOURCES += \
     ../EE-UQ/images.qrc \
+    images.qrc \
 
 #FORMS    += mainwindow.ui
 

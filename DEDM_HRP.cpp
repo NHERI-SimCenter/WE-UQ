@@ -49,7 +49,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <sectiontitle.h>
 #include <QFileInfo>
 #include <QMovie>
-#include <QPixMap>
+#include <QPixmap>
 #include <QIcon>
 #include <RandomVariablesContainer.h>
 #include <QRadioButton>
@@ -67,7 +67,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     layout = new QVBoxLayout();
 
     QPushButton *theLogo = new QPushButton("");
-    QPixmap pixmap("/Users/fmckenna/release/CWE-UQ/wImage_DEDM_HRP_Logo.png");
+    QPixmap pixmap(":/Resources/DEDM/wImage_DEDM_HRP_Logo.png");
     theLogo->setIcon(pixmap);
     theLogo->setIconSize(pixmap.rect().size());
     theLogo->setFixedSize(pixmap.rect().size());
@@ -77,14 +77,14 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     QGridLayout *windTunnelGeometryLayout = new QGridLayout(); //QVBoxLayout();
 
     QPushButton *theButton = new QPushButton();
-    QPixmap pixmap1("/Users/fmckenna/release/CWE-UQ/wImage1.png");
+    QPixmap pixmap1(":/Resources/DEDM/wImage1.png");
     theButton->setIcon(pixmap1);
     theButton->setIconSize(pixmap1.rect().size());
     theButton->setFixedSize(pixmap1.rect().size());
 
     QVBoxLayout *layout1 = new QVBoxLayout();
     QPushButton *the1x1Button = new QPushButton();
-    QPixmap pixmap2("/Users/fmckenna/release/CWE-UQ/wImage2.png");
+    QPixmap pixmap2(":/Resources/DEDM/wImage2.png");
     the1x1Button->setIcon(pixmap2);
     the1x1Button->setIconSize(pixmap2.rect().size());
     the1x1Button->setFixedSize(pixmap2.rect().size());
@@ -92,7 +92,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     QVBoxLayout *layout2 = new QVBoxLayout();
     QPushButton *the1x2Button = new QPushButton();
-    QPixmap pixmap3("/Users/fmckenna/release/CWE-UQ/wImage3.png");
+    QPixmap pixmap3(":/Resources/DEDM/wImage3.png");
     the1x2Button->setIcon(pixmap3);
     the1x2Button->setIconSize(pixmap3.rect().size());
     the1x2Button->setFixedSize(pixmap3.rect().size());
@@ -100,7 +100,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     QVBoxLayout *layout3 = new QVBoxLayout();
     QPushButton *the1x3Button = new QPushButton();
-    QPixmap pixmap4("/Users/fmckenna/release/CWE-UQ/wImage4.png");
+    QPixmap pixmap4(":/Resources/DEDM/wImage4.png");
     the1x3Button->setIcon(pixmap4);
     the1x3Button->setIconSize(pixmap4.rect().size());
     the1x3Button->setFixedSize(pixmap4.rect().size());
