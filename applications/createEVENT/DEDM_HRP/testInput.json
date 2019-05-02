@@ -1,0 +1,116 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "DEDM_HRP",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+                "method": "LHS",
+                "samples": 10,
+                "seed": 779,
+                "type": "UQ"
+            }
+        }
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "checkedExposure": 2,
+            "checkedHeight": 2,
+            "checkedPlan": 3,
+            "type": "DEDM_HRP",
+            "windSpeed": 100
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 100,
+        "height": 200,
+        "location": {
+            "latitude": 0,
+            "longitude": 0,
+            "name": ""
+        },
+        "name": "",
+        "planArea": 10000,
+        "revision": 0,
+        "stories": 2,
+        "type": "",
+        "units": {
+            "force": "kips",
+            "length": "in",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "weight": 0,
+        "width": 100,
+        "year": 2018
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "convergenceTest": "NormUnbalance",
+        "dampingRatio": 0.02,
+        "integration": "Newmark 0.5 0.25",
+        "tolerance": 0.01
+    },
+    "StructuralInformation": {
+        "Kx": 100,
+        "Ky": 100,
+        "ModelData": [
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 144,
+                "kx": 100,
+                "ky": 100,
+                "weight": 144,
+                "zeta": 0.02
+            }
+        ],
+        "height": 144,
+        "numStories": 1,
+        "randomVar": [
+        ],
+        "type": "MDOF_BuildingModel",
+        "weight": 144
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 10,
+            "seed": 779
+        }
+    },
+    "localAppDir": "/Users/fmckenna/release/CWE-UQ/CWE_UQ.app/Contents/MacOS",
+    "randomVariables": [
+    ],
+    "remoteAppDir": "/Users/fmckenna/release/CWE-UQ/CWE_UQ.app/Contents/MacOS",
+    "runType": "local",
+    "workingDir": "/Users/fmckenna/Documents/CWE-UQ/LocalWorkDir"
+}
