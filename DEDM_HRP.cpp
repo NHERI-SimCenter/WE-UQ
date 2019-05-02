@@ -265,7 +265,14 @@ DEDM_HRP::outputToJSON(QJsonObject &jsonObject)
 {
     // just need to send the class type here.. type needed in object in case user screws up
     jsonObject["type"]="DEDM_HRP";
+
     jsonObject["EventClassification"]="Wind";
+    jsonObject["checkedPlan"]= thePlanGroup->checkedId();
+    jsonObject["checkedHeight"]=theHeightGroup->checkedId();
+    jsonObject["checkedExposure"]=theExposureGroup->checkedId();
+    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+
+
     return true;
 }
 
@@ -274,6 +281,35 @@ bool
 DEDM_HRP::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
+    
+    if (jsonObject.contains("checkedPlan")) {
+      QJsonValue theValue = jsonObject["checkedPlan"];
+      int id = theValue.toInt();
+      thePlanGroup->button(id)->setChecked(true);
+    } else
+      return false;
+    
+    if (jsonObject.contains("checkedHeight")) {
+      QJsonValue theValue = jsonObject["checkedHeight"];
+      int id = theValue.toInt();
+      theHeightGroup->button(id)->setChecked(true);
+    } else
+      return false;
+    
+    if (jsonObject.contains("checkedExposure")) {
+      QJsonValue theValue = jsonObject["checkedExposure"];
+      int id = theValue.toInt();
+      theExposureGroup->button(id)->setChecked(true);
+    } else
+      return false;
+    
+    if (jsonObject.contains("windSpeed")) {
+      QJsonValue theValue = jsonObject["windSpeed"];
+      double speed = theValue.toDouble();
+      windSpeed->setText(QString::number(speed));
+    } else
+      return false;
+    
     return true;
 }
 
@@ -290,55 +326,12 @@ DEDM_HRP::outputAppDataToJSON(QJsonObject &jsonObject) {
     jsonObject["Application"] = "DEDM_HRP";
     QJsonObject dataObj;
 
-    dataObj["checkedPlan"]= thePlanGroup->checkedId();
-    dataObj["checkedHeight"]=theHeightGroup->checkedId();
-    dataObj["checkedExposure"]=theExposureGroup->checkedId();
-    dataObj["windSpeed"]=windSpeed->text().toDouble();
-
     jsonObject["ApplicationData"] = dataObj;
 
     return true;
 }
 bool
 DEDM_HRP::inputAppDataFromJSON(QJsonObject &jsonObject) {
-
-    if (jsonObject.contains("ApplicationData")) {
-
-        QJsonValue theName = jsonObject["ApplicationData"];
-        QJsonObject dataObject = theName.toObject();
-
-
-        if (dataObject.contains("checkedPlan")) {
-            QJsonValue theValue = dataObject["checkedPlan"];
-            int id = theValue.toInt();
-            thePlanGroup->button(id)->setChecked(true);
-        } else
-            return false;
-
-        if (dataObject.contains("checkedHeight")) {
-            QJsonValue theValue = dataObject["checkedHeight"];
-            int id = theValue.toInt();
-            theHeightGroup->button(id)->setChecked(true);
-        } else
-            return false;
-
-        if (dataObject.contains("checkedExposure")) {
-            QJsonValue theValue = dataObject["checkedExposure"];
-            int id = theValue.toInt();
-            theExposureGroup->button(id)->setChecked(true);
-        } else
-            return false;
-
-        if (dataObject.contains("windSpeed")) {
-            QJsonValue theValue = dataObject["windSpeed"];
-            double speed = theValue.toDouble();
-            windSpeed->setText(QString::number(speed));
-        } else
-            return false;
-
-
-    } else
-        return false;
 
     return true;
 }
