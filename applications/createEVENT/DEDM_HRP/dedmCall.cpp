@@ -4,8 +4,9 @@
  ************************************************************************/
 #include <curl/curl.h>
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <sstream>
+#include <stdlib.h>
 static 
 size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
@@ -32,6 +33,9 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 	     const char *outputFilename)        
 {   
 
+  std::cerr << shpValue << " " <<  hValue << " " << expCond << " " << timeValue << " " << uH << " " << uHHab << " " << B << " " << D << " " << H << " " << nFloor << "\n";
+
+
   // other parameters sent in call that will not effect forces returned
   double b_Den = 200.;  // building density
   double a_X = 0.; double a_Y = 0.; // mass eccentricity ex and ey
@@ -50,21 +54,15 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
     std::cerr << "callDEDM_HRP: ERROR expCondition must be 4 or 6, changing to 4\n";
   }
 
+  // make first curl call
+
+  curl_global_init(CURL_GLOBAL_ALL);
+
   CURLcode ret;
   CURL *hnd;
   struct curl_slist *slist1;
 
   slist1 = NULL;
-
-  slist1 = curl_slist_append(slist1, "Connection: keep-alive");
-  slist1 = curl_slist_append(slist1, "Cache-Control: max-age=0");
-  slist1 = curl_slist_append(slist1, "Origin: http://evovw.ce.nd.edu");
-  slist1 = curl_slist_append(slist1, "Upgrade-Insecure-Requests: 1");
-  slist1 = curl_slist_append(slist1, "Content-Type: application/x-www-form-urlencoded");
-  slist1 = curl_slist_append(slist1, "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
-  slist1 = curl_slist_append(slist1, "Referer: http://evovw.ce.nd.edu/DEDM_HRP/DEDMP_INT_v3_4evo.html");
-  slist1 = curl_slist_append(slist1, "Accept-Encoding: gzip, deflate");
-  slist1 = curl_slist_append(slist1, "Accept-Language: en-US,en;q=0.9");
 
   hnd = curl_easy_init();
   curl_easy_setopt(hnd, CURLOPT_URL, "http://evovw.ce.nd.edu/DEDM_HRP/DEDM_HRP_v3_4evo.php");
@@ -88,16 +86,21 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 
   std::string postString = postStream.str();
   const char *postFields = postString.c_str();
+
+  std::cerr << postFields << "\n";
+
   curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, postFields);
 
+  /*
   curl_easy_setopt(hnd, CURLOPT_POSTFIELDSIZE_LARGE, (curl_off_t)326);
   curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.54.0");
   curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, slist1);
   curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
   curl_easy_setopt(hnd, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
-  curl_easy_setopt(hnd, CURLOPT_COOKIEJAR, "ompressed");
+  curl_easy_setopt(hnd, CURLOPT_COOKIEJAR, "compressed");
   curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
   curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
+  */
 
   //
   // store the output data in a file
@@ -111,6 +114,8 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 
   // make first http call
 
+  std::cerr << "DEDM_HRP - MAKING FIRST CALL\n";
+
   ret = curl_easy_perform(hnd);
   fclose(pagefile);
 
@@ -122,6 +127,8 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
     const char *str = curl_easy_strerror(ret);
     std::cerr <<  "DEDM_HRP: curl FAILED with error string:" << str << "\n";
     return -1;
+  } else {
+    std::cerr << "DEDM_HRP - Performed call now checking\n";
   }
 
   //
@@ -135,7 +142,9 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 
   fscanf(pagefile,"%[^\n]", c);
   fclose(pagefile);
-  
+
+  std::cerr << "CURL RETURNED: " << c << "\n";
+
   char *p1=strchr(c,'h');
   char *p2=NULL, *p3 = NULL;
   if (p1 != NULL) {
@@ -170,22 +179,29 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
   strcat(loc,&d[4]);
   strcat(loc,"_fullscale_forces.mat");
 
+  std::cerr << "DEDM_HRP - obtained link: " << loc << "\n";
+  
+
+
   curl_easy_setopt(hnd, CURLOPT_URL, loc);
-  curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.54.0");
-  curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
-  curl_easy_setopt(hnd, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
-  curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
+  curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
+  curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
+
+  // curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.54.0");
+  // curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
+  // curl_easy_setopt(hnd, CURLOPT_HTTP_VERSION, (long)CURL_HTTP_VERSION_2TLS);
+  // curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
 
   // send data to outputFilename file
   pagefile = fopen(outputFilename, "wb");
   if(pagefile) {
     curl_easy_setopt(hnd, CURLOPT_WRITEFUNCTION, write_data);
     curl_easy_setopt(hnd, CURLOPT_WRITEDATA, pagefile);
+    // perform call
+    ret = curl_easy_perform(hnd);
+    // close file
+    fclose(pagefile);
   }
-
-  // make second http request
-  ret = curl_easy_perform(hnd);
-  fclose(pagefile);
 
   //
   // check for success
@@ -206,8 +222,11 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 }
 		 
 
+/* 1 0.2 6 3600 100 75 2.54 2.54 5.08 1 */
+/* test it
 int main(int argc, char *argv[])
 {
-  return callDEDM_HRP(1.0, 0.5, 4, 3600, 53, 34, 40, 40, 200, 50, "testOfDEDM_HRP.mat");
+  return callDEDM_HRP(1.0, 0.2, 4, 3600, 53, 34, 40, 40, 200, 2, "testOfDEDM_HRP.mat");
 }
-/**** End of sample code ****/
+*/
+
