@@ -149,7 +149,7 @@ bool StochasticWindInput::inputAppDataFromJSON(QJsonObject& jsonObject) {
 void StochasticWindInput::modelSelectionChanged(const QString& model) {
 
   // Switch the model description and form layout based on model selection
-  StochasticModelWidget *nextModel = NULL;
+  SimCenterAppWidget *nextModel = NULL;
   if (model == "Vlachos et al. (2018)") {
     nextModel = new KwonKareem2006(rvInputWidget, this);
   } else {

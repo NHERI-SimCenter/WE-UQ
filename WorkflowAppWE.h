@@ -1,5 +1,5 @@
-#ifndef INPUT_WIDGET_CWE_UQ_H
-#define INPUT_WIDGET_CWE_UQ_H
+#ifndef INPUT_WIDGET_WE_UQ_H
+#define INPUT_WIDGET_WE_UQ_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -72,12 +72,12 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class EDP_WindSelection;
 
-class WorkflowAppCWE : public WorkflowAppWidget
+class WorkflowAppWE : public WorkflowAppWidget
 {
     Q_OBJECT
 public:
-    explicit WorkflowAppCWE(RemoteService *theService, QWidget *parent = 0);
-    ~WorkflowAppCWE();
+    explicit WorkflowAppWE(RemoteService *theService, QWidget *parent = 0);
+    ~WorkflowAppWE();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
@@ -141,4 +141,4 @@ private:
     static QUuid getUserId();
 };
 
-#endif // INPUT_WIDGET_CWE_UQ_H
+#endif // INPUT_WIDGET_WE_UQ_H

@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
-#include "WorkflowAppCWE.h"
+#include "WorkflowAppWE.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -90,14 +90,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <GoogleAnalytics.h>
 
 // static pointer for global procedure set in constructor
-static WorkflowAppCWE *theApp = 0;
+static WorkflowAppWE *theApp = 0;
 
 // global procedure
 int getNumParallelTasks() {
     return theApp->getMaxNumParallelTasks();
 }
 
-WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
+WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     : WorkflowAppWidget(theService, parent)
 {
     // set static pointer for global procedure
@@ -280,18 +280,18 @@ WorkflowAppCWE::WorkflowAppCWE(RemoteService *theService, QWidget *parent)
     infoItemIdx = resultsItem->index();
 }
 
-WorkflowAppCWE::~WorkflowAppCWE()
+WorkflowAppWE::~WorkflowAppWE()
 {
 
 }
 
-void WorkflowAppCWE::replyFinished(QNetworkReply *pReply)
+void WorkflowAppWE::replyFinished(QNetworkReply *pReply)
 {
     return;
 }
 
 //TODO: This code may need to be refactored and shared in SimCenterCommon
-QUuid WorkflowAppCWE::getUserId()
+QUuid WorkflowAppWE::getUserId()
 {
     QSettings commonSettings("SimCenter", "Common"); //These names will need to be constants to be shared
     QVariant userIdSetting = commonSettings.value("userId");
@@ -304,7 +304,7 @@ QUuid WorkflowAppCWE::getUserId()
 }
 
 void
-WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/) {
+WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/) {
 
     //get the text of the selected item
     const QModelIndex index = treeView->selectionModel()->currentIndex();
@@ -330,7 +330,7 @@ WorkflowAppCWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, co
 
 
 bool
-WorkflowAppCWE::outputToJSON(QJsonObject &jsonObjectTop) {
+WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     //
     // get each of the main widgets to output themselves
     //
@@ -398,7 +398,7 @@ WorkflowAppCWE::outputToJSON(QJsonObject &jsonObjectTop) {
 
 
  void
- WorkflowAppCWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
+ WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
 
       theResults->processResults(dakotaOut, dakotaTab, inputFile);
       theRunWidget->hide();
@@ -407,14 +407,14 @@ WorkflowAppCWE::outputToJSON(QJsonObject &jsonObjectTop) {
  }
 
 void
-WorkflowAppCWE::clear(void)
+WorkflowAppWE::clear(void)
 {
     theGI->clear();
     theSIM->clear();
 }
 
 bool
-WorkflowAppCWE::inputFromJSON(QJsonObject &jsonObject)
+WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
 {
 
     //
@@ -500,7 +500,7 @@ WorkflowAppCWE::inputFromJSON(QJsonObject &jsonObject)
 
 
 void
-WorkflowAppCWE::onRunButtonClicked() {
+WorkflowAppWE::onRunButtonClicked() {
     theRunWidget->hide();
     theRunWidget->setMinimumWidth(this->width()*0.5);
     theRunWidget->showLocalApplication();
@@ -508,7 +508,7 @@ WorkflowAppCWE::onRunButtonClicked() {
 }
 
 void
-WorkflowAppCWE::onRemoteRunButtonClicked(){
+WorkflowAppWE::onRemoteRunButtonClicked(){
     emit errorMessage("");
 
     bool loggedIn = theRemoteService->isLoggedIn();
@@ -527,7 +527,7 @@ WorkflowAppCWE::onRemoteRunButtonClicked(){
 }
 
 void
-WorkflowAppCWE::onRemoteGetButtonClicked(){
+WorkflowAppWE::onRemoteGetButtonClicked(){
 
     emit errorMessage("");
 
@@ -545,12 +545,12 @@ WorkflowAppCWE::onRemoteGetButtonClicked(){
 }
 
 void
-WorkflowAppCWE::onExitButtonClicked(){
+WorkflowAppWE::onExitButtonClicked(){
 
 }
 
 void
-WorkflowAppCWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
+WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
 
     errorMessage("");
 
@@ -620,7 +620,7 @@ WorkflowAppCWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
 }
 
 void
-WorkflowAppCWE::loadFile(const QString fileName){
+WorkflowAppWE::loadFile(const QString fileName){
 
     //
     // open file
@@ -653,6 +653,6 @@ WorkflowAppCWE::loadFile(const QString fileName){
 }
 
 int
-WorkflowAppCWE::getMaxNumParallelTasks() {
+WorkflowAppWE::getMaxNumParallelTasks() {
     return theUQ_Method->getNumParallelTasks();
 }
