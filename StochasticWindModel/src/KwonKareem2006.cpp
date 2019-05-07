@@ -52,16 +52,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <StochasticWindModel/include/KwonKareem2006.h>
 
-KwonKareem2006::KwonKareem2006(RandomVariablesContainer* random_variables,
+KwonKareem2006::KwonKareem2006(RandomVariablesContainer* randomVariables,
                                    QWidget* parent)
-    : StochasticModelWidget(random_variables, parent)
+: SimCenterAppWidget(parent)
 {
 
   // Initialize member variables
-  dragCoefficient = new LineEditRV(random_variables);
+  dragCoefficient = new LineEditRV(randomVariables);
   dragCoefficient->setText("1.5");
 
-  gustWindSpeed = new LineEditRV(random_variables);
+  gustWindSpeed = new LineEditRV(randomVariables);
   gustWindSpeed->setText("95.0");
 
   exposureCategory = new QComboBox();

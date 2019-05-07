@@ -49,8 +49,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QString>
 #include <QWidget>
 #include <RandomVariablesContainer.h>
-#include <SimCenterWidget.h>
-#include "StochasticModelWidget.h"
+#include <SimCenterAppWidget.h>
 
 // Forward declarations
 class LineEditRV;
@@ -69,7 +68,7 @@ class RandomVariablesContainer;
  * Widget for inputting parameters for stochastic earthquake time history
  * generation model
  */
-class KwonKareem2006 : public StochasticModelWidget {
+class KwonKareem2006 : public SimCenterAppWidget {
   Q_OBJECT
  public:
   /**
@@ -78,8 +77,8 @@ class KwonKareem2006 : public StochasticModelWidget {
    * @param[in, out] parent Pointer to parent widget. Defaults to nullptr.
    */
   explicit KwonKareem2006(RandomVariablesContainer* random_variables,
-                            QWidget* parent = nullptr);
-
+			  QWidget* parent = nullptr);
+  
   /**
    * @destructor Virtual desctructor for stochastic model input widget
    */
@@ -90,16 +89,16 @@ class KwonKareem2006 : public StochasticModelWidget {
    * @param[in] jsonObject JSON object containing input information
    * @return Returns true if successful, false otherwise
    */
-  bool inputFromJSON(QJsonObject& jsonObject) override;
+  bool inputFromJSON(QJsonObject& jsonObject);
 
   /**
    * Write all current class data to JSON required to reconstruct class
    * @param[in, out] jsonObject JSON object to write output to
    * @return Returns true if successful, false otherwise
    */
-  bool outputToJSON(QJsonObject& jsonObject) override;
+  bool outputToJSON(QJsonObject& jsonObject);
 
-  bool inputAppDataFromJSON(QJsonObject& jsonObject) override;
+  bool inputAppDataFromJSON(QJsonObject& jsonObject);
 
   /**
    * Write application name to object and add a black ApplicationData
@@ -107,7 +106,7 @@ class KwonKareem2006 : public StochasticModelWidget {
    * @return Returns true if successful, false otherwise
    */
 
-  bool outputAppDataToJSON(QJsonObject& jsonObject) override;
+  bool outputAppDataToJSON(QJsonObject& jsonObject);
 
   /**
    * Read application specific data

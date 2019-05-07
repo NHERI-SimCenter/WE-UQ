@@ -45,7 +45,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QWidget>
 #include <RandomVariablesContainer.h>
 #include <SimCenterAppWidget.h>
-#include "StochasticModelWidget.h"
 
 // Forward declarations
 class QComboBox;
@@ -86,21 +85,21 @@ class StochasticWindInput : public SimCenterAppWidget {
    * @param[in, out] rvObject JSON object to write output to
    * @return Returns true if successful, false otherwise
    */
-  bool outputToJSON(QJsonObject& rvObject) override;
+  bool outputToJSON(QJsonObject& rvObject);
 
   /**
    * Read application-specific data from JSON object
    * @param[in] rvObject JSON object to read application data from
    * @return Returns true if successful, false otherwise
    */
-  bool inputAppDataFromJSON(QJsonObject& rvObject) override;
+  bool inputAppDataFromJSON(QJsonObject& rvObject);
 
   /**
    * Write application-specific data to JSON object
    * @param[in, out] rvObject JSON object to write application data to
    * @return Returns true if successful, false otherwise
    */
-  bool outputAppDataToJSON(QJsonObject& rvObject) override;
+  bool outputAppDataToJSON(QJsonObject& rvObject);
 
  signals:
   void sendErrorMessage(QString message);
@@ -123,7 +122,7 @@ class StochasticWindInput : public SimCenterAppWidget {
 						  variables */
   QHBoxLayout * parametersLayout; /**< Layout for stochastic model widget */
   QComboBox* modelSelection; /**< Selection of ground motion model inputs */
-  StochasticModelWidget* stochasticModel; /**< Widget for inputting currently
+  SimCenterAppWidget* stochasticModel; /**< Widget for inputting currently
 					       selected model parameters */
 };
 
