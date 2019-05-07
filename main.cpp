@@ -57,8 +57,8 @@ int main(int argc, char *argv[])
 
   QCoreApplication::setApplicationName("WE-UQ");
   QCoreApplication::setOrganizationName("SimCenter");
-  QCoreApplication::setApplicationVersion("0.1.0");
-  // turn off  GoogleAnalytics::SetTrackingId("UA-121615795-1");
+  QCoreApplication::setApplicationVersion("1.0.0");
+  // turn off while developing  GoogleAnalytics::SetTrackingId("UA-121615795-1");
   GoogleAnalytics::StartSession();
   GoogleAnalytics::ReportStart();
 
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
              we provide and will be enthused to provide their own applications for others \
              to use. \
           <p>\
-          This is Version 0.1.0 of the tool and as such is limited in scope. Researchers are\
+          This is Version 1.0.0 of the tool and as such is limited in scope. Researchers are\
            encouraged to comment on what additional features and applications they would \
            like to see in the WE-UQ App. If you want a feature, chances are many of your \
            colleagues would also benefit from it.\
