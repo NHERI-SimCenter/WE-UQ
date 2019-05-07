@@ -9,7 +9,7 @@
 #include <QObject>
 
 #include <AgaveCurl.h>
-#include <WorkflowAppCWE.h>
+#include <WorkflowAppWE.h>
 
 #include <QTime>
 #include <QTextStream>
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   //Setting Core Application Name, Organization, Version and Google Analytics Tracking Id
   //
 
-  QCoreApplication::setApplicationName("CWE-UQ");
+  QCoreApplication::setApplicationName("WE-UQ");
   QCoreApplication::setOrganizationName("SimCenter");
   QCoreApplication::setApplicationVersion("0.1.0");
   // turn off  GoogleAnalytics::SetTrackingId("UA-121615795-1");
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
   QString tenant("designsafe");
   QString storage("agave://designsafe.storage.default/");
-  QString dirName("CWE-UQ");
+  QString dirName("WE-UQ");
 
   AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage, &dirName);
 
@@ -96,22 +96,22 @@ int main(int argc, char *argv[])
   //
   // create the main window
   //
-  WorkflowAppWidget *theInputApp = new WorkflowAppCWE(theRemoteService);
-  MainWindowWorkflowApp w(QString("CWE-UQ:  Computational Wind Engineering Application"),theInputApp, theRemoteService);
+  WorkflowAppWidget *theInputApp = new WorkflowAppWE(theRemoteService);
+  MainWindowWorkflowApp w(QString("WE-UQ: Wind Engineering with Uncertainty Quantification"),theInputApp, theRemoteService);
 
-  QString textAboutCWE = "\
+  QString textAboutWE = "\
           <p> \
-          This is the Performance Based Engineering (CWE) Application.\
+          This is the Performance Based Engineering (WE) Application.\
           <p> \
-          The CWE Application (CWE App) is an open-source software \
-          (https://github.com/NHERI-SimCenterCWE) that provides researchers a tool to \
+          The WE Application (WE App) is an open-source software \
+          (https://github.com/NHERI-SimCenterWE) that provides researchers a tool to \
           assess the performance of a building to wind loading. The application \
           focuses on quantifying building performance through decision variables. Given \
           that the properties of the buildings and the wind events are not known \
           exactly, and that the simulation software and the user make simplifying \
           assumptions in the numerical modeling of the structure, the estimate response of\
            the structure already exhibits significant variability. Such response can be \
-           estimated using our CWE-UQ Application (https://simcenter.designsafe-ci.org/\
+           estimated using our WE-UQ Application (https://simcenter.designsafe-ci.org/\
               research-tools/cwe-uq-application/).\
           <p> \
           Depending on the type of structural system, the fidelity of the numerical model \
@@ -125,9 +125,9 @@ int main(int argc, char *argv[])
           <p> \
           The computations are performed in a workflow application. That is, the numerical\
            simulations are actually performed by a sequence of different applications. The\
-            CWE-UQ backend software runs these various applications for the user, taking the \
+            WE-UQ backend software runs these various applications for the user, taking the \
             outputs from some programs and providing them as inputs to others. The design \
-            of the CWE-UQ App is such that researchers are able to modify the backend \
+            of the WE-UQ App is such that researchers are able to modify the backend \
             application to utilize their own application in the workflow computations. \
             This will ensure researchers are not limited to using the default applications\
              we provide and will be enthused to provide their own applications for others \
@@ -135,13 +135,13 @@ int main(int argc, char *argv[])
           <p>\
           This is Version 0.1.0 of the tool and as such is limited in scope. Researchers are\
            encouraged to comment on what additional features and applications they would \
-           like to see in the CWE-UQ App. If you want a feature, chances are many of your \
+           like to see in the WE-UQ App. If you want a feature, chances are many of your \
            colleagues would also benefit from it.\
           <p>";
 
-     w.setAbout(textAboutCWE);
+     w.setAbout(textAboutWE);
 
-  QString version("0.1.0");
+  QString version("1.0.0");
   w.setVersion(version);
 
   //

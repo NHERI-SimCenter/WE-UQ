@@ -6,7 +6,7 @@
 
 QT       += core gui charts concurrent network
 
-TARGET = CWE_UQ
+TARGET = WE_UQ
 TEMPLATE = app
 
 CONFIG += debug
@@ -35,7 +35,7 @@ include(./MiniZip/MiniZip.pri)
 INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
-    WorkflowAppCWE.cpp \
+    WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEventSelection.cpp \
     EDP_WindSelection.cpp \
@@ -46,7 +46,7 @@ SOURCES += main.cpp \
 
 
 HEADERS  += \
-    WorkflowAppCWE.h \
+    WorkflowAppWE.h \
     RunWidget.h \
     WindEventSelection.h \
     StandardWindEDP.h \
