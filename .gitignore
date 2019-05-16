@@ -36,12 +36,18 @@ moc*
 *.exe
 *.out
 *.app
+WE_UQ
 
 # QT
 *.pro.user
 qcustomplot.h
 qcustomplot.cpp
 *.stash
+debug.log
+qrc_images.cpp
+qrc_images1.cpp
+qrc_styles.cpp
+
 
 # OTHER
 Makefile
