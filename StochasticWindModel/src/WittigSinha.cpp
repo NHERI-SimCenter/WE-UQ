@@ -50,9 +50,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RandomVariablesContainer.h>
 #include <SimCenterWidget.h>
 
-#include <StochasticWindModel/include/KwonKareem2006.h>
+#include <StochasticWindModel/include/WittigSinha.h>
 
-KwonKareem2006::KwonKareem2006(RandomVariablesContainer* randomVariables,
+WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
                                    QWidget* parent)
 : SimCenterAppWidget(parent)
 {
@@ -89,8 +89,11 @@ KwonKareem2006::KwonKareem2006(RandomVariablesContainer* randomVariables,
   parameters->addRow(new QLabel(tr("Gust Wind Speed (mph)")), gustWindSpeed);
 
   // Add description label
-  modelDescription = new QLabel(
-      tr("This model implements the method described in Kwon and Kareem (2006) "));
+  modelDescription =
+      new QLabel(tr("This model provides wind speed time histories using a "
+                    "power law for the wind profile based on the ASCE Exposure "
+                    "Category and a discrete frequency function with FFT to "
+                    "account for wind fluctuations (Wittig & Sinha, 1975)"));
   //model_description_->setStyleSheet("QLabel { color : gray; }");
 
   // Construct required layouts
@@ -112,14 +115,14 @@ KwonKareem2006::KwonKareem2006(RandomVariablesContainer* randomVariables,
 
   // Connect slots
   connect(useSeed, &QRadioButton::toggled, this,
-          &KwonKareem2006::provideSeed);
+          &WittigSinha::provideSeed);
 }
 
 
-bool KwonKareem2006::outputAppDataToJSON(QJsonObject& jsonObject) {
+bool WittigSinha::outputAppDataToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["Application"] = "StochasticWindInput-KwonKareem2006";
+  jsonObject["Application"] = "StochasticWindInput-WittigSinha";
   jsonObject["EventClassification"] = "Wind";
 
   // squirel in the application data selection text
@@ -129,14 +132,14 @@ bool KwonKareem2006::outputAppDataToJSON(QJsonObject& jsonObject) {
   return result;
 }
 
-bool KwonKareem2006::inputAppDataFromJSON(QJsonObject& jsonObject) {
+bool WittigSinha::inputAppDataFromJSON(QJsonObject& jsonObject) {
   return true;
 }
 
-bool KwonKareem2006::outputToJSON(QJsonObject& jsonObject) {
+bool WittigSinha::outputToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["type"] = "StochasticWindInput-KwonKareem2006";
+  jsonObject["type"] = "StochasticWindInput-WittigSinha";
   jsonObject["EventClassification"] = "Wind";
   dragCoefficient->outputToJSON(jsonObject, QString("dragCoefficient"));
   gustWindSpeed->outputToJSON(jsonObject, QString("windSpeed"));
@@ -151,7 +154,7 @@ bool KwonKareem2006::outputToJSON(QJsonObject& jsonObject) {
   return result;
 }
 
-bool KwonKareem2006::inputFromJSON(QJsonObject& jsonObject) {
+bool WittigSinha::inputFromJSON(QJsonObject& jsonObject) {
   bool result = true;
 
   dragCoefficient->inputFromJSON(jsonObject, QString("dragCoefficient"));
@@ -176,7 +179,7 @@ bool KwonKareem2006::inputFromJSON(QJsonObject& jsonObject) {
   return result;
 }
 
-void KwonKareem2006::provideSeed(const bool& checked) {
+void WittigSinha::provideSeed(const bool& checked) {
   if (checked) {
     seed->setEnabled(true);
   } else {

@@ -7,7 +7,7 @@
         },
         "Events": [
             {
-                "Application": "StochasticWindInput-KwonKareem2006",
+                "Application": "StochasticWindInput-WittigSinha",
                 "ApplicationData": {
                 },
                 "EventClassification": "Wind"
@@ -42,7 +42,7 @@
             "dragCoefficient": 2,
             "exposureCategory": "B",
             "seed": 600,
-            "type": "StochasticWindInput-KwonKareem2006",
+            "type": "StochasticWindInput-WittigSinha",
             "windSpeed": 100
         }
     ],
