@@ -142,7 +142,7 @@ bool WittigSinha::outputToJSON(QJsonObject& jsonObject) {
   jsonObject["type"] = "StochasticWindInput-WittigSinha";
   jsonObject["EventClassification"] = "Wind";
   dragCoefficient->outputToJSON(jsonObject, QString("dragCoefficient"));
-  gustWindSpeed->outputToJSON(jsonObject, QString("windSpeed"));
+  gustWindSpeed->outputToJSON(jsonObject, QString("gustSpeed"));
   jsonObject.insert("exposureCategory",exposureCategory->currentText());
 
   if (useSeed->isChecked()) {
@@ -158,7 +158,7 @@ bool WittigSinha::inputFromJSON(QJsonObject& jsonObject) {
   bool result = true;
 
   dragCoefficient->inputFromJSON(jsonObject, QString("dragCoefficient"));
-  gustWindSpeed->inputFromJSON(jsonObject, QString("windSpeed"));
+  gustWindSpeed->inputFromJSON(jsonObject, QString("gustSpeed"));
 
   if (jsonObject.contains("exposureCategory")) {
 
