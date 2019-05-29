@@ -13,6 +13,11 @@ static DispatchRegister<std::tuple<std::vector<double>, nlohmann::json>,
                         unsigned int, double>
     wittig_sinha_function("WittigSinha1975", floor_forces::wittig_sinha);
 
+static DispatchRegister<std::tuple<std::vector<double>, nlohmann::json>,
+                        std::string, double, double, double, double,
+                        unsigned int, double, int>
+    wittig_sinha_function_seed("WittigSinha1975", floor_forces::wittig_sinha);
+
 namespace floor_forces {
   
 std::function<std::tuple<std::vector<double>, nlohmann::json>(
