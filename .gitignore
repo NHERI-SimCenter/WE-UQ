@@ -37,6 +37,7 @@ moc*
 *.out
 *.app
 WE_UQ
+StochasticWind
 
 # QT
 *.pro.user
@@ -48,13 +49,13 @@ qrc_images.cpp
 qrc_images1.cpp
 qrc_styles.cpp
 
-
 # OTHER
 Makefile
+Makefile.Debug
+Makefile.Release
 StandardEarthquakeEDP
 OpenSeesInput
 OpenSeesPostprocessor
 OpenSeesPreprocessor
 extractEDP
-StochasticWind
 *.mat

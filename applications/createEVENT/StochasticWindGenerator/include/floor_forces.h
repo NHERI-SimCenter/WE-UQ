@@ -25,19 +25,22 @@ namespace floor_forces {
  * @param[in] height Building height
  * @param[in] num_floors Number of floors in building
  * @param[in] total_time Total time desired for time history
+ * @param[in] force_conversion Force conversion factor
  * @return Returns a tuple containing a vector of the static floor wind loads
  *         and a JSON object containing the event details for the dynamic floor
  *         wind loads
  */
 std::function<std::tuple<std::vector<double>, nlohmann::json>(
-    std::string, double, double, double, double, unsigned int, double)>
+    std::string, double, double, double, double, unsigned int, double, double)>
     wittig_sinha = [](std::string exposure_category, double gust_speed,
                       double drag_coeff, double width, double height,
-                      unsigned int num_floors, double total_time)
+                      unsigned int num_floors, double total_time,
+                      double force_conversion)
     -> std::tuple<std::vector<double>, nlohmann::json> {
   double density = 1.226;
-  auto wind_model = WindGenerator("WittigSinha", exposure_category, gust_speed,
-                                  height, num_floors, total_time);
+  auto wind_model =
+      WindGenerator("WittigSinhaDiscreteFreqWind", exposure_category,
+                    gust_speed, height, num_floors, total_time);
   // Calculate floor heights
   auto heights = std::vector<double>(num_floors);
   heights[0] = height / num_floors;
@@ -67,8 +70,8 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
 
     // Calculate dynamic wind force
     for (auto &vel : velocity) {
-      vel = density * drag_coeff * vel * static_wind[counter] * width * height /
-            num_floors;
+      vel = force_conversion * density * drag_coeff * vel *
+            static_wind[counter] * width * height / num_floors;
     }
     // Set data to be wind force
     it->at("data") = velocity;
@@ -77,8 +80,9 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
 
   // Calculate static wind force
   for (unsigned int i = 0; i < static_wind.size(); ++i) {
-    static_wind[i] = 0.5 * density * drag_coeff * static_wind[i] *
-                     static_wind[i] * width * height / num_floors;
+    static_wind[i] = force_conversion * 0.5 * density * drag_coeff *
+                     static_wind[i] * static_wind[i] * width * height /
+                     num_floors;
   }
 
   return std::make_tuple(static_wind, dynamic_wind);
@@ -94,20 +98,24 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
  * @param[in] height Building height
  * @param[in] num_floors Number of floors in building
  * @param[in] total_time Total time desired for time history
+ * @param[in] force_conversion Force conversion factor
  * @param[in] seed Seed to use in random number generator
  * @return Returns a tuple containing a vector of the static floor wind loads
  *         and a JSON object containing the event details for the dynamic floor
  *         wind loads
  */
 std::function<std::tuple<std::vector<double>, nlohmann::json>(
-    std::string, double, double, double, double, unsigned int, double, int)>
-    wittig_sinha_seed = [](std::string exposure_category, double gust_speed,
-                      double drag_coeff, double width, double height,
-                      unsigned int num_floors, double total_time, int seed)
-    -> std::tuple<std::vector<double>, nlohmann::json> {
+    std::string, double, double, double, double, unsigned int, double, double,
+    int)>
+    wittig_sinha_seed =
+        [](std::string exposure_category, double gust_speed, double drag_coeff,
+           double width, double height, unsigned int num_floors,
+           double total_time, double force_conversion,
+           int seed) -> std::tuple<std::vector<double>, nlohmann::json> {
   double density = 1.226;
-  auto wind_model = WindGenerator("WittigSinha", exposure_category, gust_speed,
-                                  height, num_floors, total_time, seed);
+  auto wind_model =
+      WindGenerator("WittigSinhaDiscreteFreqWind", exposure_category,
+                    gust_speed, height, num_floors, total_time, seed);
   // Calculate floor heights
   auto heights = std::vector<double>(num_floors);
   heights[0] = height / num_floors;
@@ -137,8 +145,8 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
 
     // Calculate dynamic wind force
     for (auto &vel : velocity) {
-      vel = density * drag_coeff * vel * static_wind[counter] * width * height /
-            num_floors;
+      vel = force_conversion * density * drag_coeff * vel *
+            static_wind[counter] * width * height / num_floors;
     }
     // Set data to be wind force
     it->at("data") = velocity;
@@ -147,8 +155,9 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
 
   // Calculate static wind force
   for (unsigned int i = 0; i < static_wind.size(); ++i) {
-    static_wind[i] = 0.5 * density * drag_coeff * static_wind[i] *
-                     static_wind[i] * width * height / num_floors;
+    static_wind[i] = force_conversion * 0.5 * density * drag_coeff *
+                     static_wind[i] * static_wind[i] * width * height /
+                     num_floors;
   }
 
   return std::make_tuple(static_wind, dynamic_wind);

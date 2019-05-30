@@ -8,7 +8,6 @@
 #include <configure.h>
 #include <nlohmann_json/json.hpp>
 #include "command_parser.h"
-// #include "floor_forces.h"
 #include "function_dispatcher.h"
 #include "wind_generator.h"
 
@@ -42,15 +41,23 @@ int main(int argc, char** argv) {
   json input_data;
   bim_file >> input_data;
 
-  bim_units.lengthUnit = Units::ParseLengthUnit(
-      input_data["units"]["length"].get<std::string>().c_str());
+  bim_units.lengthUnit =
+      Units::ParseLengthUnit(input_data["GeneralInformation"]["units"]["length"]
+                                 .get<std::string>()
+                                 .c_str());
+  bim_units.forceUnit =
+      Units::ParseForceUnit(input_data["GeneralInformation"]["units"]["force"]
+                                 .get<std::string>()
+                                 .c_str());
   event_units.lengthUnit = Units::ParseLengthUnit("in");
+  event_units.forceUnit = Units::ParseForceUnit("N");
   double length_conversion = Units::GetLengthFactor(bim_units, event_units);
+  double force_conversion = Units::GetForceFactor(event_units, bim_units);
   double height = input_data["GeneralInformation"]["height"].get<double>() *
                   length_conversion;
   double width = input_data["GeneralInformation"]["width"].get<double>() *
                  length_conversion;
-  unsigned int num_floors = input_data["GeneralInformation"]["stories"];
+  int num_floors = input_data["GeneralInformation"]["stories"];
   // Loop over input events and generate corresponding time histories
   json events_array = json::array();
 
@@ -60,14 +67,15 @@ int main(int argc, char** argv) {
           "ERROR: In main() of StochasticWindGenerator: Check General "
           "Information inputs. Number of floors, height and width all must be "
           "greater than 0\n");
+      return 1;
     }
 
     for (json::iterator it = input_data["Events"].begin();
          it != input_data["Events"].end(); ++it) {
-      if (it->at("type") == "StochasticWindModel-WittigSinha1975") {
+      if (it->at("type") == "StochasticWindInput-WittigSinha1975") {
         json current_event;
         current_event.emplace("type", "Wind");
-        current_event.emplace("subtype", "StochasticWindModel-WittigSinha1975");
+        current_event.emplace("subtype", "StochasticWindInput-WittigSinha1975");
 
 	std::string exposure_category = it->at("exposureCategory");
         double drag_coeff = 1.0, gust_wind_speed = 100.0;
@@ -77,7 +85,7 @@ int main(int argc, char** argv) {
         // Random variable flag has NOT been passed
         if (!inputs.get_rv_flag()) {
           drag_coeff = it->at("dragCoefficient");
-          gust_wind_speed = it->at("gustSpeed");
+          gust_wind_speed = it->at("windSpeed");
 
 	  if (drag_coeff <= 0.0 || gust_wind_speed <= 0.0) {
             throw std::runtime_error(
@@ -92,16 +100,17 @@ int main(int argc, char** argv) {
             inputs.seed_provided()
                 ? Dispatcher<std::tuple<std::vector<double>, json>, std::string,
                              double, double, double, double, unsigned int,
-                             double, int>::instance()
+                             double, double, int>::instance()
                       ->dispatch("WittigSinha1975", exposure_category,
                                  gust_wind_speed, drag_coeff, width, height,
-                                 num_floors, total_time, inputs.get_seed())
+                                 num_floors, total_time, force_conversion,
+                                 inputs.get_seed())
                 : Dispatcher<std::tuple<std::vector<double>, json>, std::string,
                              double, double, double, double, unsigned int,
-                             double>::instance()
+                             double, double>::instance()
                       ->dispatch("WittigSinha1975", exposure_category,
                                  gust_wind_speed, drag_coeff, width, height,
-                                 num_floors, total_time);
+                                 num_floors, total_time, force_conversion);
 
         auto static_forces = std::get<0>(wind_forces);
 	auto dynamic_forces = std::get<1>(wind_forces);
@@ -112,17 +121,17 @@ int main(int argc, char** argv) {
 	for (unsigned int i = 0; i < static_forces.size(); ++i) {
           auto floor_pattern =
               json::object({{"dof", 1},
-                            {"floor", std::to_string(i)},
-                            {"name", std::to_string(i)},
-                            {"timeSeries", std::to_string(i)},
+                            {"floor", std::to_string(i + 1)},
+                            {"name", std::to_string(i + 1)},
+                            {"timeSeries", std::to_string(i + 1)},
                             {"staticWindLoad", static_forces[i]},
                             {"type", "WindFloorLoad"}});
           pattern.push_back(floor_pattern);
 	}
-
+	
 	// Add pattern and time series to current event
 	current_event.emplace("pattern", pattern);
-	current_event.emplace("timeSeries", dynamic_forces.at("timeSeries"));
+	current_event.emplace("timeSeries", dynamic_forces["Events"][0]["timeSeries"]);
 
 	// Add event to current events array
 	events_array.push_back(current_event);

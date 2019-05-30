@@ -10,10 +10,6 @@
 CommandParser::CommandParser(int& number_of_arguments, char* arguments[]) {
   command_parser_ =
       clara::detail::Help(configuration_.help).optional() |
-      clara::detail::Opt(
-          configuration_.model_name,
-          "Model name")["--modelName"]("Name of stochastic model to use")
-          .required() |
       clara::detail::Opt(configuration_.event_file,
                          "Event file location")["--filenameEVENT"](
           "Location where generated time history should be stored")
@@ -42,10 +38,6 @@ CommandParser::CommandParser(int& number_of_arguments, char* arguments[]) {
   if (configuration_.help) {
     std::cout << command_parser_ << std::endl;
   }
-}
-
-std::string CommandParser::get_model_name() const {
-  return configuration_.model_name;
 }
 
 bool CommandParser::seed_provided() const {

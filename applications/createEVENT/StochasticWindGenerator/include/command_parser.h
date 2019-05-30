@@ -27,7 +27,6 @@ class CommandParser {
    * Structure for storing configuration
    */
   struct Config {
-    std::string model_name; /**< Name of stochastic model to use */
     std::string seed =
         "None"; /**< Seed value to use for random number generator */
     std::string event_file; /**< Location where event should be saved */
@@ -37,13 +36,6 @@ class CommandParser {
     bool rv_flag = false; /**< Flag indicating whether to generate event file
                              that specifies random variable */
   };
-
-  /**
-   * Get the name of the stochastic model that will be used to generate time
-   * histories
-   * @return Name of stochastic model to use
-   */
-  std::string get_model_name() const;
 
   /**
    * Get whether seed value provided
