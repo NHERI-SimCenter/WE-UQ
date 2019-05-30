@@ -49,8 +49,9 @@ int main(int argc, char** argv) {
       Units::ParseForceUnit(input_data["GeneralInformation"]["units"]["force"]
                                  .get<std::string>()
                                  .c_str());
-  event_units.lengthUnit = Units::ParseLengthUnit("in");
+  event_units.lengthUnit = Units::ParseLengthUnit("m");
   event_units.forceUnit = Units::ParseForceUnit("N");
+
   double length_conversion = Units::GetLengthFactor(bim_units, event_units);
   double force_conversion = Units::GetForceFactor(event_units, bim_units);
   double height = input_data["GeneralInformation"]["height"].get<double>() *

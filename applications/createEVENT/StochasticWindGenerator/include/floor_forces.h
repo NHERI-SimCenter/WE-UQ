@@ -54,35 +54,39 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
       wind_model.generate_time_history("DynamicWindSpeed").get_library_json();
 
   // Get static wind velocities
-  std::vector<double> static_wind;
-  Dispatcher<double, const std::string &, const std::vector<double> &, double,
-             double, std::vector<double> &>::instance()
-      ->dispatch("ExposureCategoryVel", exposure_category, heights, 0.4,
-                 gust_speed, static_wind);
+  std::vector<double> static_wind(num_floors);
+
+  unsigned int counter = 0;  
+  for (nlohmann::json::iterator it =
+           dynamic_wind["Events"][0]["pattern"].begin();
+       it != dynamic_wind["Events"][0]["pattern"].end(); ++it) {
+    static_wind[counter] = it->at("profileVelocity");
+    counter++;
+  }
 
   // Iterate over floor dynamic velocity time histories and find dynamic wind
   // force
-  unsigned int counter = 0;
+  counter = 0;
   for (nlohmann::json::iterator it =
            dynamic_wind["Events"][0]["timeSeries"].begin();
        it != dynamic_wind["Events"][0]["timeSeries"].end(); ++it) {
     std::vector<double> velocity = it->at("data");
 
     // Calculate dynamic wind force
-    for (auto &vel : velocity) {
+    for (auto& vel : velocity) {
       vel = force_conversion * density * drag_coeff * vel *
-            static_wind[counter] * width * height / num_floors;
+            static_wind[counter] * width * heights[counter] / num_floors;
     }
     // Set data to be wind force
     it->at("data") = velocity;
     counter++;
   }
-
+  
   // Calculate static wind force
   for (unsigned int i = 0; i < static_wind.size(); ++i) {
     static_wind[i] = force_conversion * 0.5 * density * drag_coeff *
-                     static_wind[i] * static_wind[i] * width * height /
-                     num_floors;
+                     static_wind[i] * static_wind[i] * width *
+                     heights[i] / num_floors;
   }
 
   return std::make_tuple(static_wind, dynamic_wind);
@@ -129,24 +133,28 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
       wind_model.generate_time_history("DynamicWindSpeed").get_library_json();
 
   // Get static wind velocities
-  std::vector<double> static_wind;
-  Dispatcher<double, const std::string &, const std::vector<double> &, double,
-             double, std::vector<double> &>::instance()
-      ->dispatch("ExposureCategoryVel", exposure_category, heights, 0.4,
-                 gust_speed, static_wind);
+  std::vector<double> static_wind(num_floors);
+
+  unsigned int counter = 0;  
+  for (nlohmann::json::iterator it =
+           dynamic_wind["Events"][0]["pattern"].begin();
+       it != dynamic_wind["Events"][0]["pattern"].end(); ++it) {
+    static_wind[counter] = it->at("profileVelocity");
+    counter++;
+  }
 
   // Iterate over floor dynamic velocity time histories and find dynamic wind
   // force
-  unsigned int counter = 0;
+  counter = 0;
   for (nlohmann::json::iterator it =
            dynamic_wind["Events"][0]["timeSeries"].begin();
        it != dynamic_wind["Events"][0]["timeSeries"].end(); ++it) {
     std::vector<double> velocity = it->at("data");
 
     // Calculate dynamic wind force
-    for (auto &vel : velocity) {
+    for (auto& vel : velocity) {
       vel = force_conversion * density * drag_coeff * vel *
-            static_wind[counter] * width * height / num_floors;
+            static_wind[counter] * width * heights[counter] / num_floors;
     }
     // Set data to be wind force
     it->at("data") = velocity;
@@ -156,8 +164,8 @@ std::function<std::tuple<std::vector<double>, nlohmann::json>(
   // Calculate static wind force
   for (unsigned int i = 0; i < static_wind.size(); ++i) {
     static_wind[i] = force_conversion * 0.5 * density * drag_coeff *
-                     static_wind[i] * static_wind[i] * width * height /
-                     num_floors;
+                     static_wind[i] * static_wind[i] * width *
+                     heights[i] / num_floors;
   }
 
   return std::make_tuple(static_wind, dynamic_wind);
