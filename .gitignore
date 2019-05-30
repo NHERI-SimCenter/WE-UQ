@@ -56,4 +56,5 @@ OpenSeesInput
 OpenSeesPostprocessor
 OpenSeesPreprocessor
 extractEDP
+StochasticWind
 *.mat

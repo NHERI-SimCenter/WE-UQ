@@ -8,7 +8,7 @@
 #include <configure.h>
 #include <nlohmann_json/json.hpp>
 #include "command_parser.h"
-#include "floor_forces.h"
+// #include "floor_forces.h"
 #include "function_dispatcher.h"
 #include "wind_generator.h"
 
@@ -42,11 +42,14 @@ int main(int argc, char** argv) {
   json input_data;
   bim_file >> input_data;
 
-  bim_units.lengthUnit = Units::ParseLengthUnit(input_data["units"]["length"]);
+  bim_units.lengthUnit = Units::ParseLengthUnit(
+      input_data["units"]["length"].get<std::string>().c_str());
   event_units.lengthUnit = Units::ParseLengthUnit("in");
-  double length_conversion = Units::GetLengthFactor(bimUnits, eventUnits);
-  double height = input_data["GeneralInformation"]["height"];
-  double width = input_data["GeneralInformation"]["width"];
+  double length_conversion = Units::GetLengthFactor(bim_units, event_units);
+  double height = input_data["GeneralInformation"]["height"].get<double>() *
+                  length_conversion;
+  double width = input_data["GeneralInformation"]["width"].get<double>() *
+                 length_conversion;
   unsigned int num_floors = input_data["GeneralInformation"]["stories"];
   // Loop over input events and generate corresponding time histories
   json events_array = json::array();
@@ -66,7 +69,6 @@ int main(int argc, char** argv) {
         current_event.emplace("type", "Wind");
         current_event.emplace("subtype", "StochasticWindModel-WittigSinha1975");
 
-	int seed = it->at("seed");
 	std::string exposure_category = it->at("exposureCategory");
         double drag_coeff = 1.0, gust_wind_speed = 100.0;
         double total_time = 600.0; // This generates 10 mins of wind loading,
@@ -120,7 +122,7 @@ int main(int argc, char** argv) {
 
 	// Add pattern and time series to current event
 	current_event.emplace("pattern", pattern);
-	current_event.emplace("timeSeries", dynamic_forces->at("timeSeries"));
+	current_event.emplace("timeSeries", dynamic_forces.at("timeSeries"));
 
 	// Add event to current events array
 	events_array.push_back(current_event);
