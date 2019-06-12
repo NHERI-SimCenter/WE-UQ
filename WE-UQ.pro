@@ -19,10 +19,10 @@ linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
 INCLUDEPATH += StochasticWindModel/include
 
 win32 {
-    RC_ICONS = icons/NHERI-CWE-Icon.ico
+    RC_ICONS = icons/NHERI-WEuq-Icon.ico
 } else {
     mac {
-    ICON = icons/NHERI-CWE-Icon.icns
+    ICON = icons/NHERI-WEuq-Icon.icns
     }
 }
 

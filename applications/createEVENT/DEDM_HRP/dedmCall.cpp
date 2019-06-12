@@ -65,7 +65,8 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
   slist1 = NULL;
 
   hnd = curl_easy_init();
-  curl_easy_setopt(hnd, CURLOPT_URL, "http://evovw.ce.nd.edu/DEDM_HRP/DEDM_HRP_v3_4evo.php");
+  curl_easy_setopt(hnd, CURLOPT_URL, "http://evovw.ce.nd.edu/DEDM_HRP/DEDM_HRP_v3_4evo_SimCenter1.php");
+  // DK original  curl_easy_setopt(hnd, CURLOPT_URL, "http://evovw.ce.nd.edu/DEDM_HRP/DEDM_HRP_v3_4evo.php");
   curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
 
   //
@@ -138,13 +139,15 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
 
   pagefile = fopen(outputFilename, "r");
   char c[1000]; c[0]='\0';
-  char d[100];  d[0]='\0';
 
   fscanf(pagefile,"%[^\n]", c);
   fclose(pagefile);
 
   std::cerr << "CURL RETURNED: " << c << "\n";
 
+  /* ********************************************************************************
+  * DK modified return .. following code not needed, keep around in case he changes
+  char d[100];  d[0]='\0';
   char *p1=strchr(c,'h');
   char *p2=NULL, *p3 = NULL;
   if (p1 != NULL) {
@@ -157,14 +160,11 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
     return -2;
   }
 
-  //
-  // obtain unique encoding to retrieve forces file 
-  //
-
   p2 += 1;
   strncpy(d, p2, p3-p2);
   p2 = &d[p3-p2+1];
   strcpy(p2, "\0");
+  * DK modified return .. ********************************************************  */
 
   // reset the handle so methods can fill in the different options before next call
   curl_easy_reset(hnd);
@@ -176,12 +176,12 @@ callDEDM_HRP(double shpValue,   // Cross-sectional shape (model):  1.00, 0.50, 0
   char loc[1024];
   loc[0]='\0';
   strcat(loc,"http://evovw.ce.nd.edu/DEDM_HRP/DEDMHRP_");
-  strcat(loc,&d[4]);
+  //DK original  strcat(loc,&d[4]);
+  strcat(loc,&c[4]);
   strcat(loc,"_fullscale_forces.mat");
 
   std::cerr << "DEDM_HRP - obtained link: " << loc << "\n";
   
-
 
   curl_easy_setopt(hnd, CURLOPT_URL, loc);
   curl_easy_setopt(hnd, CURLOPT_VERBOSE, 1L);
