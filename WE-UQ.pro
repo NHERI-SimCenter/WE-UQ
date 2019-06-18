@@ -41,7 +41,7 @@ SOURCES += main.cpp \
     EDP_WindSelection.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
-    StochasticWindModel/src/KwonKareem2006.cpp \
+    StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp
 
 
@@ -52,7 +52,7 @@ HEADERS  += \
     StandardWindEDP.h \
     EDP_WindSelection.h \
     DEDM_HRP.h \
-    StochasticWindModel/include/KwonKareem2006.h \
+    StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h
 
 
@@ -71,6 +71,3 @@ DISTFILES += \
     wImage4.gif \
     wImage1.png \
     wImage_DEDM_HRP_Logo
-
-
-

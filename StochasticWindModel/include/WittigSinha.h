@@ -68,7 +68,7 @@ class RandomVariablesContainer;
  * Widget for inputting parameters for stochastic earthquake time history
  * generation model
  */
-class KwonKareem2006 : public SimCenterAppWidget {
+class WittigSinha : public SimCenterAppWidget {
   Q_OBJECT
  public:
   /**
@@ -76,13 +76,13 @@ class KwonKareem2006 : public SimCenterAppWidget {
    * @param[in, out] random_variables Widget to store random variables to
    * @param[in, out] parent Pointer to parent widget. Defaults to nullptr.
    */
-  explicit KwonKareem2006(RandomVariablesContainer* random_variables,
+  explicit WittigSinha(RandomVariablesContainer* random_variables,
 			  QWidget* parent = nullptr);
   
   /**
    * @destructor Virtual desctructor for stochastic model input widget
    */
-  virtual ~KwonKareem2006() {};
+  virtual ~WittigSinha() {};
 
   /**
    * Instantiate stochastic motion input widget from input JSON object
