@@ -216,7 +216,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     rootNode->appendRow(edpItem);
     rootNode->appendRow(resultsItem);
 
-    infoItemIdx = rootNode->index();
+    infoItemIdx = giItem->index();
 
     //register the model
     treeView->setModel(standardModel);
