@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os, sys
+import argparse
 
 def validateCaseDirectoryStructure(caseDir):
     """
@@ -97,13 +98,19 @@ def AddBuildingsForces(caseDir, floorsCount):
     writeForceDictionary(controlDictLines, lineIndex, floorsCount)
 
     #Writing updated controlDict
-    with open(controlDictPath+"'", 'w') as controlDict:
+    with open(controlDictPath, 'w') as controlDict:
         controlDict.writelines(controlDictLines)
 
 
 
-if __name__ == "__main__": 
-    #TODO:Hardcoded inputs should be changed to arguments
-    caseDir = "FlowAroundBuildingTest"
-    floorsCount = 5
-    AddBuildingsForces(caseDir, floorsCount)
+if __name__ == "__main__":
+    #CLI parser
+    parser = argparse.ArgumentParser(description="Add forces postprocessing to OpenFOAM controlDict")
+    parser.add_argument('-c', '--case', help="OpenFOAM case directory", required=True)
+    parser.add_argument('-f', '--floors', help= "Number of Floors", type=int, required=True)
+
+    #Parsing arguments
+    arguments = parser.parse_args()
+
+    #Add building forces to post-processing
+    AddBuildingsForces(arguments.case, arguments.floors)
