@@ -100,12 +100,53 @@ double GetTimeFactor(UnitSystem& fromUnitSystem, UnitSystem& toUnitsystem)
     return toSecond * fromSecond;
 }
 
-double GetAccelerationFactor(UnitSystem& fromUnitSystem, UnitSystem& toUnitSystem)
-{
-    double timeFactor = GetTimeFactor(fromUnitSystem, toUnitSystem);
-    double lengthFactor = GetLengthFactor(fromUnitSystem, toUnitSystem);
+double GetForceFactor(const UnitSystem &fromUnitSystem,
+                      const UnitSystem &toUnitSystem) {
 
-    return lengthFactor / (timeFactor*timeFactor);
+  // Unknown force unit
+  if (fromUnitSystem.forceUnit == ForceUnit::Unknown || toUnitSystem.forceUnit == ForceUnit::Unknown) {
+    std::cerr << "Unknown force unit!!!" << std::endl;
+    return 1.0;
+  }
+
+  // Force units equal
+  if (fromUnitSystem.forceUnit == toUnitSystem.forceUnit) {
+    return 1.0;
+  }
+
+  // Converting from fromUnitSystem to newtons
+  double toNewtons = 1.0;
+
+  if (ForceUnit::Kilonewton == fromUnitSystem.forceUnit)
+    toNewtons = 1000.0;
+
+  else if (ForceUnit::Pounds == fromUnitSystem.forceUnit)
+    toNewtons = 4.4482216;
+
+  else if (ForceUnit::Kips == fromUnitSystem.forceUnit)
+    toNewtons = 4448.2216;
+
+  // Converting from newtons to toUnitSystem
+  double fromNewtons = 1.0;
+
+  if (ForceUnit::Kilonewton == toUnitSystem.forceUnit)
+    fromNewtons = 1.0 / 1000.0;
+
+  else if (ForceUnit::Pounds == toUnitSystem.forceUnit)
+    fromNewtons = 1.0 / 4.4482216;
+
+  else if (ForceUnit::Kips == toUnitSystem.forceUnit)
+    fromNewtons = 1.0 / 4448.2216;
+
+  return toNewtons * fromNewtons;
+}
+
+double GetAccelerationFactor(UnitSystem &fromUnitSystem,
+                             UnitSystem &toUnitSystem) {
+  double timeFactor = GetTimeFactor(fromUnitSystem, toUnitSystem);
+  double lengthFactor = GetLengthFactor(fromUnitSystem, toUnitSystem);
+
+  return lengthFactor / (timeFactor * timeFactor);
 }
 
 LengthUnit ParseLengthUnit(const char* lengthUnit)
@@ -141,6 +182,38 @@ LengthUnit ParseLengthUnit(const char* lengthUnit)
 
     std::cerr << "Failed to parse length unit: " << lengthUnitString  << "!!!" << std::endl;
     return LengthUnit::Unknown;
+}
+
+ForceUnit ParseForceUnit(const char *forceUnit) {
+  std::string forceUnitString(forceUnit);
+  std::transform(forceUnitString.begin(), forceUnitString.end(),
+                 forceUnitString.begin(), ::tolower);
+
+  static std::map<std::string, ForceUnit> forceUnitMap
+  {
+      {"pounds", ForceUnit::Pounds},
+      {"lbs", ForceUnit::Pounds},
+      {"lb", ForceUnit::Pounds},
+
+      {"k", ForceUnit::Kips},
+      {"kips", ForceUnit::Kips},
+
+      {"newton", ForceUnit::Newton},
+      {"newtons", ForceUnit::Newton},
+      {"n", ForceUnit::Newton},
+
+      {"kn", ForceUnit::Kilonewton},
+      {"kilonewton", ForceUnit::Kilonewton},
+      {"kilonewtons", ForceUnit::Kilonewton}
+  };
+
+  if (forceUnitMap.end() != forceUnitMap.find(forceUnitString))
+    return forceUnitMap[forceUnitString];
+
+  std::cerr << "Failed to parse force unit: " << forceUnitString << "!!!"
+            << std::endl;
+
+  return ForceUnit::Unknown;
 }
 
 TimeUnit ParseTimeUnit(const char* timeUnit)

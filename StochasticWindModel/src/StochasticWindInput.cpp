@@ -49,7 +49,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <RandomVariablesContainer.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
-#include <StochasticWindModel/include/KwonKareem2006.h>
+#include <StochasticWindModel/include/WittigSinha.h>
 
 
 StochasticWindInput::StochasticWindInput(
@@ -66,8 +66,8 @@ StochasticWindInput::StochasticWindInput(
   //selection_label->setStyleSheet("font-weight: bold");
   modelSelection = new QComboBox();
   modelSelection->setObjectName("StochasticLoadingModel");
-  modelSelection->addItem(tr("Kwon and Kareem (2006)"));
-  stochasticModel = new KwonKareem2006(rvInputWidget, this);
+  modelSelection->addItem(tr("Wittig & Sinha (1975)"));
+  stochasticModel = new WittigSinha(rvInputWidget, this);
   
   // Add widgets to layouts and layouts to this
 
@@ -131,9 +131,9 @@ bool StochasticWindInput::inputAppDataFromJSON(QJsonObject& jsonObject) {
 
   QString appName;
   appName = jsonObject.value("Application").toString();
-  if (appName == "StochasticWindInput-KwonKareem2006") {  
+  if (appName == "StochasticWindInput-WittigSinha") {  
 
-    this->modelSelectionChanged(QString("Vlachos et al. (2018)"));
+    this->modelSelectionChanged(QString("Wittig & Sinha (1975)"));
     stochasticModel->inputAppDataFromJSON(jsonObject); // no check for NULL as cannot be if i can write code!
   } 
   
@@ -150,8 +150,8 @@ void StochasticWindInput::modelSelectionChanged(const QString& model) {
 
   // Switch the model description and form layout based on model selection
   SimCenterAppWidget *nextModel = NULL;
-  if (model == "Vlachos et al. (2018)") {
-    nextModel = new KwonKareem2006(rvInputWidget, this);
+  if (model == "Wittig & Sinha (1975)") {
+    nextModel = new WittigSinha(rvInputWidget, this);
   } else {
     qDebug() << "ERROR: In StochasticWindInput::modelSelectionChanged: "
                 "Unknown selection: "
