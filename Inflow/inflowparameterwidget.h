@@ -115,6 +115,8 @@ private:
     QDir newLocation = QDir(".");
 
     QMap<QString, double> theParameters;
+
+    RandomVariablesContainer *theRandomVariablesContainer;
 };
 
 #endif // INFLOWPARAMETERWIDGET_H

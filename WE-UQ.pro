@@ -62,6 +62,7 @@ HEADERS  += \
 RESOURCES += \
     ../EE-UQ/images.qrc \
     images.qrc \
+    we-uq-resources.qrc
 
 #FORMS    += mainwindow.ui
 

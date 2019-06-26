@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>InflowParameterWidget</class>
- <widget class="QFrame" name="InflowParameterWidget">
+ <widget class="SimCenterAppWidget" name="InflowParameterWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -100,6 +100,11 @@
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="source">
+             <url>
+              <string>qrc:/Resources/TInF/sourceFileInfo.html</string>
+             </url>
             </property>
            </widget>
           </item>
@@ -1083,6 +1088,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SimCenterAppWidget</class>
+   <extends>QWidget</extends>
+   <header>simcenterappwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

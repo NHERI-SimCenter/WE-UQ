@@ -39,13 +39,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "inflowparameterwidget.h"
 #include "ui_inflowparameterwidget.h"
 
+#include <RandomVariablesContainer.h>
+
 #include "math.h"
 
 #include <QFileDialog>
 #include <QStandardItem>
 #include <QStandardItemModel>
 
-#include <RandomVariablesContainer.h>
 
 #include <QDebug>
 
@@ -330,7 +331,6 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
     ui->sourceLocationDisplay->setText(fileTreeLocation.path());
 
     QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
-    int stack = folders.length();
 
     if (folders.contains("0") && folders.contains("constant") ) {
         //
