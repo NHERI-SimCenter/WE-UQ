@@ -62,11 +62,22 @@ class InflowParameterWidget : public SimCenterAppWidget
 public:
     explicit InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
     ~InflowParameterWidget();
+
     void selectSourceLocation(void);
+
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+    bool outputAppDataToJSON(QJsonObject &rvObject);
+    bool inputAppDataFromJSON(QJsonObject &rvObject);
+    bool copyFiles(QString &dirName);
 
 signals:
     void parametersReady(QMap<QString, double> &);
     void boundarySelection(int);
+
+public slots:
+    void clear(void);
+    void chooseFileName(void);
 
 private slots:
     void on_RB_digitalFilter_clicked();
@@ -84,9 +95,7 @@ private slots:
 
     void on_btn_export_clicked(void);
 
-private:
-    Ui::InflowParameterWidget *ui;
-
+private:  /* methods */
     void setLocationAvailable(bool status, QDir &loc);
     void setUniformTurbulent(void);
     void setExponentialTurbulent(void);
@@ -96,6 +105,9 @@ private:
     bool readUfile(QString);
     QStringList getLine(void);
     QMap<QString, QString> *readParameters(void);
+
+private:  /* variables */
+    Ui::InflowParameterWidget *ui;
 
     bool hasLocation = false;
     bool hasParameters = false;
@@ -115,6 +127,15 @@ private:
     QDir newLocation = QDir(".");
 
     QMap<QString, double> theParameters;
+
+    /* from th etemplate */
+
+    QString fileName;         // filename
+    QString applicationName;  // application name
+    QString copyFilePath;     // path to copy files
+
+    //QLineEdit *file;
+    //QLineEdit *application;
 
     RandomVariablesContainer *theRandomVariablesContainer;
 };

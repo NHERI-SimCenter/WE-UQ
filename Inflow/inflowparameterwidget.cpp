@@ -836,3 +836,49 @@ void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
     ui->boundarySelection->setCurrentIndex(index);
 }
 
+/* ************************************************************
+ *
+ *      overloading virtual methods
+ *
+ * ************************************************************/
+
+bool InflowParameterWidget::outputToJSON(QJsonObject &rvObject)
+{
+    return true;
+}
+
+bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
+{
+    return true;
+}
+
+bool InflowParameterWidget::outputAppDataToJSON(QJsonObject &rvObject)
+{
+    return true;
+}
+
+bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
+{
+    return true;
+}
+
+bool InflowParameterWidget::copyFiles(QString &dirName)
+{
+    return true;
+}
+
+/* ************************************************************
+ *
+ *      public slots
+ *
+ * ************************************************************/
+
+void InflowParameterWidget::clear(void)
+{
+
+}
+
+void InflowParameterWidget::chooseFileName(void)
+{
+
+}
