@@ -1002,6 +1002,60 @@ bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::copyFiles(QString &dirName)
 {
+    // time to export :)
+
+    // we place new file into the existing file structure
+    // but we do save one version of the existing file as
+    // filename.orig before writing the new one
+
+    //
+    // ... inflowProperties file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("constant")) {
+        newLocation.mkdir("constant");
+        newLocation.cd("constant");
+    }
+
+    QString newFile = newLocation.absoluteFilePath("inflowProperties");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // write the new file
+    this->exportInflowParameterFile(newFile);
+
+    //
+    // ... U file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("0")) {
+        newLocation.mkdir("0");
+        newLocation.cd("0");
+    }
+
+    newFile  = newLocation.absoluteFilePath("U");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update U file
+    this->exportUFile(newFile);
+
     return true;
 }
 
