@@ -89,21 +89,7 @@ void InflowParameterWidget::selectSourceLocation(void)
 
 void InflowParameterWidget::setDefaultParameters()
 {
-    this->on_modelSelectionCBX_currentIndexChanged(0);
-
-    ui->PHI11->setValue(0.1);
-    ui->PHI21->setValue(0.0);
-    ui->PHI31->setValue(0.0);
-    ui->PHI22->setValue(0.1);
-    ui->PHI32->setValue(0.0);
-    ui->PHI33->setValue(0.1);
-
-    ui->alpha1->setValue(0.1);
-    ui->alpha2->setValue(0.1);
-    ui->alpha3->setValue(0.1);
-
-    // NEED MORE ...
-
+    theParameters.clear();
 
     /* for use in inflowProperties file */
 
@@ -1027,7 +1013,7 @@ bool InflowParameterWidget::copyFiles(QString &dirName)
 
 void InflowParameterWidget::clear(void)
 {
-
+    setDefaultParameters();
 }
 
 void InflowParameterWidget::chooseFileName(void)
