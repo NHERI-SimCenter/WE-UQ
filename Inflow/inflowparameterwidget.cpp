@@ -103,6 +103,72 @@ void InflowParameterWidget::setDefaultParameters()
     ui->alpha3->setValue(0.1);
 
     // NEED MORE ...
+
+
+    /* for use in inflowProperties file */
+
+    theParameters["profile"] = 0;
+
+    theParameters["vel0"] = 1.0;
+    theParameters["refAngleU"] = 0.0;
+    theParameters["refDistU"] = 0.0;
+    theParameters["alphaU"] = 0.0;
+
+    theParameters["alpha0"] = 0.0;
+    theParameters["alpha1"] = 0.0;
+    theParameters["alpha2"] = 0.0;
+
+    theParameters["phi00"] = 0.1;
+    theParameters["phi10"] = 0.0;
+    theParameters["phi20"] = 0.0;
+    theParameters["phi11"] = 0.1;
+    theParameters["phi21"] = 0.0;
+    theParameters["phi22"] = 0.1;
+
+    theParameters["Lu0"] = 1.0;
+    theParameters["Lu10"] = 0.0;
+    theParameters["Lu20"] = 0.0;
+
+    theParameters["Lv0"] = 1.0;
+    theParameters["Lv10"] = 0.0;
+    theParameters["Lv20"] = 0.0;
+
+    theParameters["Lw0"] = 1.0;
+    theParameters["Lw10"] = 0.0;
+    theParameters["Lw20"] = 0.0;
+
+    theParameters["LuAlpha"] = 0.0;
+    theParameters["LvAlpha"] = 0.0;
+    theParameters["LwAlpha"] = 0.0;
+
+    theParameters["LuRefAngle"] = 0.0;
+    theParameters["LvRefAngle"] = 0.0;
+    theParameters["LwRefAngle"] = 0.0;
+
+    theParameters["LuRefDist"] = 0.0;
+    theParameters["LvRefDist"] = 0.0;
+    theParameters["LwRefDist"] = 0.0;
+
+    /* for use in U file */
+
+    theParameters["FilterMethod"] = 0;
+
+    theParameters["shapeFunction"] = 0;
+    theParameters["gridFactor"] = 1.0;
+    theParameters["filterFactor"] = 4;
+
+    theParameters["velocityShape"] = 0;
+    theParameters["eddieDensity"] = 0.0;
+
+    theParameters["intersection0"] = 0.0;
+    theParameters["intersection1"] = 1.0;
+    theParameters["intersection2"] = 0.0;
+    theParameters["yOffset"] = 0.0;
+    theParameters["zOffset"] = 0.0;
+
+    hasParameters = true;
+
+    refreshDisplay();
 }
 
 void InflowParameterWidget::on_PHI21_valueChanged(double arg1)
@@ -366,8 +432,6 @@ void InflowParameterWidget::refreshDisplay(void)
     ui->dir3->setValue(theParameters.value("intersection2"));
     ui->yOffset->setValue(theParameters.value("yOffset"));
     ui->zOffset->setValue(theParameters.value("zOffset"));
-
-    hasParameters = true;
 }
 
 void InflowParameterWidget::on_RB_digitalFilter_clicked()
