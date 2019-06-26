@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/styleSheets/WEUQLinux.qss</file>
+        <file>Resources/styleSheets/WEUQMac.qss</file>
+        <file>Resources/styleSheets/WEUQStyles.qss</file>
+        <file>Resources/styleSheets/WEUQWin.qss</file>
+        <file>Resources/DEDM/wImage_DEDM_HRP_Logo.png</file>
+        <file>Resources/DEDM/wImage1.png</file>
+        <file>Resources/DEDM/wImage2.png</file>
+        <file>Resources/DEDM/wImage3.png</file>
+        <file>Resources/DEDM/wImage4.png</file>
+        <file>Resources/TInF/sourceFileInfo.html</file>
+    </qresource>
+</RCC>
