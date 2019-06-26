@@ -56,6 +56,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
       ui(new Ui::InflowParameterWidget)
 {
     ui->setupUi(this);
+    ui->exportGroup->hide();
     setDefaultParameters();
 
     theParameters.clear();
@@ -227,7 +228,7 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->line4->show();
 }
 
-void InflowParameterWidget::sendParameterMap(void)
+void InflowParameterWidget::refreshParameterMap(void)
 {
     // collect data
     theParameters.clear();
@@ -238,8 +239,7 @@ void InflowParameterWidget::sendParameterMap(void)
 
     /* for use in inflowProperties file */
 
-    double val= double(ui->modelSelectionCBX->currentIndex());
-    theParameters.insert("profile",val);
+    theParameters.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
 
     theParameters.insert("vel0",ui->vel->value());
     theParameters.insert("refAngleU",ui->refAngleU->value());
@@ -300,6 +300,72 @@ void InflowParameterWidget::sendParameterMap(void)
     theParameters.insert("intersection2",ui->dir3->value());
     theParameters.insert("yOffset",ui->yOffset->value());
     theParameters.insert("zOffset",ui->zOffset->value());
+
+    hasParameters = true;
+}
+
+void InflowParameterWidget::refreshDisplay(void)
+{
+    /* for use in inflowProperties file */
+
+    ui->modelSelectionCBX->setCurrentIndex(int(theParameters.value("profile")));
+
+    ui->vel->setValue(theParameters.value("vel0"));
+    ui->refAngleU->setValue(theParameters.value("refAngleU"));
+    ui->refDistU->setValue(theParameters.value("refDistU"));
+    ui->alphaU->setValue(theParameters.value("alphaU"));
+
+    ui->alpha1->setValue(theParameters.value("alpha0"));
+    ui->alpha2->setValue(theParameters.value("alpha1"));
+    ui->alpha3->setValue(theParameters.value("alpha2"));
+
+    ui->PHI11->setValue(theParameters.value("phi00"));
+    ui->PHI21->setValue(theParameters.value("phi10"));
+    ui->PHI31->setValue(theParameters.value("phi20"));
+    ui->PHI22->setValue(theParameters.value("phi11"));
+    ui->PHI23->setValue(theParameters.value("phi21"));
+    ui->PHI33->setValue(theParameters.value("phi22"));
+
+    ui->Lux->setValue(theParameters.value("Lu0"));
+    ui->LuyLux->setValue(theParameters.value("Lu10"));
+    ui->LuzLux->setValue(theParameters.value("Lu20"));
+
+    ui->Lvx->setValue(theParameters.value("Lv0"));
+    ui->LvyLvx->setValue(theParameters.value("Lv10"));
+    ui->LvzLvx->setValue(theParameters.value("Lv20"));
+
+    ui->Lwx->setValue(theParameters.value("Lw0"));
+    ui->LwyLwx->setValue(theParameters.value("Lw10"));
+    ui->LwzLwx->setValue(theParameters.value("Lw20"));
+
+    ui->LuAlpha->setValue(theParameters.value("LuAlpha"));
+    ui->LvAlpha->setValue(theParameters.value("LvAlpha"));
+    ui->LwAlpha->setValue(theParameters.value("LwAlpha"));
+
+    ui->refAngleLu->setValue(theParameters.value("LuRefAngle"));
+    ui->refAngleLv->setValue(theParameters.value("LvRefAngle"));
+    ui->refAngleLw->setValue(theParameters.value("LwRefAngle"));
+
+    ui->refDistLu->setValue(theParameters.value("LuRefDist"));
+    ui->refDistLv->setValue(theParameters.value("LvRefDist"));
+    ui->refDistLw->setValue(theParameters.value("LwRefDist"));
+
+    /* for use in U file */
+
+    ui->RB_digitalFilter->setChecked(int(theParameters.value("FilterMethod"))==0?true:false);
+
+    ui->shapeFunction->setCurrentIndex(int(theParameters.value("shapeFunction")));
+    ui->gridFactor->setValue(theParameters.value("gridFactor"));
+    ui->filterFactor->setValue(int(theParameters.value("filterFactor")));
+
+    ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
+    ui->eddieDensity->setValue(theParameters.value("eddieDensity"));
+
+    ui->dir1->setValue(theParameters.value("intersection0"));
+    ui->dir2->setValue(theParameters.value("intersection1"));
+    ui->dir3->setValue(theParameters.value("intersection2"));
+    ui->yOffset->setValue(theParameters.value("yOffset"));
+    ui->zOffset->setValue(theParameters.value("zOffset"));
 
     hasParameters = true;
 }
@@ -527,16 +593,7 @@ void InflowParameterWidget::setLocationAvailable(bool status, QDir &loc)
 
 void InflowParameterWidget::exportInflowParameterFile(QString fileName)
 {
-    hasParameters = false;
-
-    // requests parameters to be sent
-    emit sendParameterMap();
-
-    // wait for parameters to arrive
-    int i = 0;
-    while (!hasParameters) { i++; }
-
-    qDebug() << "Had to wait for " << i << "cycles";
+    refreshParameterMap();
 
     QString profile;
 
@@ -684,6 +741,8 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
 
 void InflowParameterWidget::exportUFile(QString fileName)
 {
+    refreshParameterMap();
+
     // get the boundary condition to generate
     QString BCselected = ui->boundarySelection->currentText();
 
@@ -844,11 +903,40 @@ void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
 
 bool InflowParameterWidget::outputToJSON(QJsonObject &rvObject)
 {
+    refreshParameterMap();
+
+    // just need to send the class type here.. type needed in object in case user screws up
+    rvObject["type"]="CFD";
+
+    rvObject["EventClassification"]="Wind";
+
+    foreach (QString key, theParameters.keys())
+    {
+        rvObject[key] = theParameters.value(key);
+    }
+
     return true;
 }
 
 bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
 {
+    // initialize theParameters to reflect all properties
+    refreshParameterMap();
+
+    // update theParameters using information from the JSON file
+    foreach (QString key, theParameters.keys())
+    {
+        if (rvObject.contains(key)) {
+          QJsonValue theValue = rvObject[key];
+          theParameters[key] = theValue.toDouble();
+        }
+        else
+          return false;
+    }
+
+    // update parameter values
+    refreshDisplay();
+
     return true;
 }
 

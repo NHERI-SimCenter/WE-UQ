@@ -88,7 +88,6 @@ private slots:
     void setDefaultParameters();
     void on_resetButton_clicked();
     void on_modelSelectionCBX_currentIndexChanged(int index);
-    void sendParameterMap(void);
     //-----
     void on_sourceLocateBtn_clicked();
     void on_boundarySelection_currentIndexChanged(int index);
@@ -96,6 +95,8 @@ private slots:
     void on_btn_export_clicked(void);
 
 private:  /* methods */
+    void refreshParameterMap(void);
+    void refreshDisplay(void);
     void setLocationAvailable(bool status, QDir &loc);
     void setUniformTurbulent(void);
     void setExponentialTurbulent(void);
