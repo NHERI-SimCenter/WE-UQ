@@ -46,7 +46,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QStackedWidget>
 #include <QComboBox>
 
-
 #include <QPushButton>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -62,7 +61,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <ExistingSimCenterEvents.h>
 #include <DEDM_HRP.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
-
+#include <Inflow/inflowparameterwidget.h>
 
 #include <UserDefinedApplication.h>
 
@@ -110,8 +109,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
 
-    // theUserDefinedApplication = new UserDefinedApplication(theRandomVariablesContainer);
-    // theStackedWidget->addWidget(theUserDefinedApplication);
+    theCFDModel = new InflowParameterWidget(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theCFDModel);
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
@@ -213,12 +212,11 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theExistingEvents;
     }
 
-    /*
-    else if(arg1 == "User Application") {
+    else if(arg1 == "CFD") {
         theStackedWidget->setCurrentIndex(3);
-        theCurrentEvent = theUserDefinedApplication;
+        theCurrentEvent = theCFDModel;
     }
-    */
+
     else {
         qDebug() << "ERROR .. WindEventSelection selection .. type unknown: " << arg1;
     }

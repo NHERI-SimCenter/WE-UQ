@@ -17,6 +17,7 @@ win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
 linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
 
 INCLUDEPATH += StochasticWindModel/include
+INCLUDEPATH += Inflow
 
 win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
@@ -35,6 +36,7 @@ include(./MiniZip/MiniZip.pri)
 INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
+    Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEventSelection.cpp \
@@ -46,6 +48,7 @@ SOURCES += main.cpp \
 
 
 HEADERS  += \
+    Inflow/inflowparameterwidget.h \
     WorkflowAppWE.h \
     RunWidget.h \
     WindEventSelection.h \
@@ -71,6 +74,9 @@ DISTFILES += \
     wImage4.gif \
     wImage1.png \
     wImage_DEDM_HRP_Logo
+
+FORMS += \
+    Inflow/inflowparameterwidget.ui
 
 
 
