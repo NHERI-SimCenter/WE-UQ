@@ -36,15 +36,23 @@ moc*
 *.exe
 *.out
 *.app
+WE_UQ
+StochasticWind
 
 # QT
 *.pro.user
 qcustomplot.h
 qcustomplot.cpp
 *.stash
+debug.log
+qrc_images.cpp
+qrc_images1.cpp
+qrc_styles.cpp
 
 # OTHER
 Makefile
+Makefile.Debug
+Makefile.Release
 StandardEarthquakeEDP
 OpenSeesInput
 OpenSeesPostprocessor
