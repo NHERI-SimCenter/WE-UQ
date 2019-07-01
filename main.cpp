@@ -141,8 +141,15 @@ int main(int argc, char *argv[])
 
      w.setAbout(textAboutWE);
 
-  QString version("1.0.0");
+
+  QString version("Version 1.0.0");
   w.setVersion(version);
+
+  QString citeText(" ");
+  w.setCite(citeText);
+
+  QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE-UQ");
+  w.setDocumentationURL(manualURL);
 
   //
   // move remote interface to a thread
