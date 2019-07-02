@@ -91,7 +91,7 @@ WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
   // Add description label
   modelDescription =
       new QLabel(tr("This model provides wind speed time histories using a "
-                    "power law for the wind profile based on the ASCE Exposure "
+                    "power law for the wind profile based on the ASCE Exposure\n"
                     "Category and a discrete frequency function with FFT to "
                     "account for wind fluctuations (Wittig & Sinha, 1975)"));
   //model_description_->setStyleSheet("QLabel { color : gray; }");
