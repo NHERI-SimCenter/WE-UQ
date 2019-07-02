@@ -131,7 +131,7 @@ bool StochasticWindInput::inputAppDataFromJSON(QJsonObject& jsonObject) {
 
   QString appName;
   appName = jsonObject.value("Application").toString();
-  if (appName == "StochasticWindInput-WittigSinha") {  
+  if (appName == "StochasticWindInput-WittigSinha1975") {  
 
     this->modelSelectionChanged(QString("Wittig & Sinha (1975)"));
     stochasticModel->inputAppDataFromJSON(jsonObject); // no check for NULL as cannot be if i can write code!

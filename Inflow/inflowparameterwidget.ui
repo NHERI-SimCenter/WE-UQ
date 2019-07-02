@@ -1092,7 +1092,7 @@
   <customwidget>
    <class>SimCenterAppWidget</class>
    <extends>QWidget</extends>
-   <header>simcenterappwidget.h</header>
+   <header>SimCenterAppWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

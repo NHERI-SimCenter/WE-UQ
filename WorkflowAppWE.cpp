@@ -278,6 +278,8 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     // set current selection to GI
     treeView->setCurrentIndex( infoItemIdx );
     infoItemIdx = resultsItem->index();
+
+    theGI->setDefaultProperties(1,144,360,360,37.8716,-127.2717);
 }
 
 WorkflowAppWE::~WorkflowAppWE()
