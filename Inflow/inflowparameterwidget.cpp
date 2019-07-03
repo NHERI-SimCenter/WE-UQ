@@ -69,16 +69,19 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
 
     if(isRemote)
     {
-        this->ui->sourceLocationDisplay->setHidden(true);
-        this->ui->sourceLocateBtn->setHidden(true);
-        QPushButton* refreshButton = new QPushButton("Refresh");
-        refreshButton->setMaximumWidth(200);
-        this->ui->gridLayout->addWidget(refreshButton, 4, 1);
+        ui->sourceLocationDisplay->hide();
+        ui->sourceLocateBtn->hide();
+        ui->refreshButton->show();
 
-        connect(refreshButton, &QPushButton::clicked, this, [this]()
+        connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
         {
            this->on_UFileChanged(UFilePath);
         });
+    }
+    else {
+        ui->sourceLocationDisplay->show();
+        ui->sourceLocateBtn->show();
+        ui->refreshButton->hide();
     }
 }
 
