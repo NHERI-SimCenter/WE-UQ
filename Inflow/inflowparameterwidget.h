@@ -60,7 +60,7 @@ class InflowParameterWidget : public SimCenterAppWidget
     Q_OBJECT
 
 public:
-    explicit InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
+    explicit InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote = false, QWidget *parent = nullptr);
     ~InflowParameterWidget();
 
     void selectSourceLocation(void);
@@ -78,6 +78,7 @@ signals:
 public slots:
     void clear(void);
     void chooseFileName(void);
+    void on_UFileChanged(QString uFilePath);
 
 private slots:
     void on_RB_digitalFilter_clicked();
@@ -115,6 +116,7 @@ private:  /* variables */
     bool hasLocation = false;
     bool hasParameters = false;
     bool validSourcePresent = false;
+    bool isRemote = false;
 
     QString UFilePath;
     QByteArray UFileContents = "";
@@ -144,6 +146,7 @@ private:  /* variables */
     //QLineEdit *application;
 
     RandomVariablesContainer *theRandomVariablesContainer;
+    void processUfile();
 };
 
 #endif // INFLOWPARAMETERWIDGET_H
