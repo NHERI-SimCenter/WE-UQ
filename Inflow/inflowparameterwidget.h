@@ -102,8 +102,10 @@ private:  /* methods */
     void setExponentialTurbulent(void);
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
+    void exportControlDictFile(QString);
     void clearBoundaryMap(void);
     bool readUfile(QString);
+    bool readControlDict(QString);
     QStringList getLine(void);
     QMap<QString, QString> *readParameters(void);
 
@@ -118,6 +120,9 @@ private:  /* variables */
     QByteArray UFileContents = "";
     QByteArray UFileHead = "";
     QByteArray UFileTail = "";
+
+    QString ControlDictPath;
+    QByteArray CDictContents = "";
 
     QFile UFile;
     QList<QByteArray> UFileList;
