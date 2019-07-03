@@ -930,7 +930,7 @@ void InflowParameterWidget::exportControlDictFile(QString fileName)
     QList<QByteArray> CDictList = CDictContents.split('\n');
     foreach (QByteArray line, CDictList)
     {
-        if (line.contains("")) {
+        if (line.contains("application")) {
             out << "libs" << endl;
             out << "(" << endl;
             out << "    \"libturbulentInflow.so\"" << endl;
