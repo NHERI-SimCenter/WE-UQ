@@ -50,10 +50,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QDebug>
 
-InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote, QWidget *parent)
     : SimCenterAppWidget(parent),
       theRandomVariablesContainer(theRandomVariableIW),
-      ui(new Ui::InflowParameterWidget)
+      ui(new Ui::InflowParameterWidget),
+      isRemote(isRemote)
 {
     ui->setupUi(this);
     ui->exportGroup->hide();
@@ -65,6 +66,23 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     UFileHead = "";
     UFileTail = "";
     clearBoundaryMap();
+
+    if(isRemote)
+    {
+        ui->sourceLocationDisplay->hide();
+        ui->sourceLocateBtn->hide();
+        ui->refreshButton->show();
+
+        connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
+        {
+           this->on_UFileChanged(UFilePath);
+        });
+    }
+    else {
+        ui->sourceLocationDisplay->show();
+        ui->sourceLocateBtn->show();
+        ui->refreshButton->hide();
+    }
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -144,7 +162,7 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["filterFactor"] = 4;
 
     theParameters["velocityShape"] = 0;
-    theParameters["eddieDensity"] = 0.0;
+    theParameters["eddyDensity"] = 0.0;
 
     theParameters["intersection0"] = 0.0;
     theParameters["intersection1"] = 1.0;
@@ -345,7 +363,7 @@ void InflowParameterWidget::refreshParameterMap(void)
     theParameters.insert("filterFactor",ui->filterFactor->value());
 
     theParameters.insert("velocityShape",ui->velocityShape->currentIndex());
-    theParameters.insert("eddieDensity",ui->eddieDensity->value());
+    theParameters.insert("eddyDensity",ui->eddyDensity->value());
 
     theParameters.insert("intersection0",ui->dir1->value());
     theParameters.insert("intersection1",ui->dir2->value());
@@ -411,7 +429,7 @@ void InflowParameterWidget::refreshDisplay(void)
     ui->filterFactor->setValue(int(theParameters.value("filterFactor")));
 
     ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
-    ui->eddieDensity->setValue(theParameters.value("eddieDensity"));
+    ui->eddyDensity->setValue(theParameters.value("eddyDensity"));
 
     ui->dir1->setValue(theParameters.value("intersection0"));
     ui->dir2->setValue(theParameters.value("intersection1"));
@@ -485,61 +503,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
     delete dlg;
 
     if (validSourcePresent) {
-        // parse files for available boundaries
-        QStringList boundaryList;
-
-        UFileList = UFileContents.split('\n');
-        UIter = new QListIterator<QByteArray>(UFileList);
-
-        // read till boundaryField keyword
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileHead.append(line);
-            UFileHead.append('\n');
-            if (line.contains("boundaryField")) {
-                while ( (!line.contains('{')) && UIter->hasNext()) {
-                    line = UIter->next();
-                    UFileHead.append(line);
-                    UFileHead.append('\n');
-                }
-                break;
-            }
-        }
-
-        // parse for boundary patches
-        while (UIter->hasNext())
-        {
-            QStringList list = this->getLine();
-
-            // skip empty lines
-            if (list.length() == 0) continue;
-
-            // terminate if done with boundaryFields section
-            if (list[0] == '}') {
-                UFileTail.append("}\n");
-                break;
-            }
-
-            // read and store the boundary item
-            boundaryList.append(list[0]);
-            boundaries.insert(list[0], this->readParameters());
-        }
-
-        // collect the remainder of the file
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileTail.append(line);
-            UFileTail.append('\n');
-        }
-
-        QStandardItemModel *theModel= new QStandardItemModel();
-        foreach(QString s, boundaryList)
-        {
-            theModel->appendRow(new QStandardItem(s));
-        }
-        ui->boundarySelection->setModel(theModel);
+        this->processUfile();
     }
     else {
         // user not ready to proceed
@@ -643,6 +607,65 @@ QMap<QString, QString> *InflowParameterWidget::readParameters(void)
     }
 
     return params;
+}
+
+void InflowParameterWidget::processUfile()
+{
+    // parse files for available boundaries
+    QStringList boundaryList;
+
+    UFileList = UFileContents.split('\n');
+    UIter = new QListIterator<QByteArray>(UFileList);
+
+    // read till boundaryField keyword
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileHead.append(line);
+        UFileHead.append('\n');
+        if (line.contains("boundaryField")) {
+            while ( (!line.contains('{')) && UIter->hasNext()) {
+                line = UIter->next();
+                UFileHead.append(line);
+                UFileHead.append('\n');
+            }
+            break;
+        }
+    }
+
+    // parse for boundary patches
+    while (UIter->hasNext())
+    {
+        QStringList list = this->getLine();
+
+        // skip empty lines
+        if (list.length() == 0) continue;
+
+        // terminate if done with boundaryFields section
+        if (list[0] == '}') {
+            UFileTail.append("}\n");
+            break;
+        }
+
+        // read and store the boundary item
+        boundaryList.append(list[0]);
+        boundaries.insert(list[0], this->readParameters());
+    }
+
+    // collect the remainder of the file
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileTail.append(line);
+        UFileTail.append('\n');
+    }
+
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+    ui->boundarySelection->setModel(theModel);
 }
 
 // --- from exportWidget
@@ -876,7 +899,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
                 default:
                     out << "        filterShape        gaussian;" << endl;
                 }
-                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+                out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
                 break;
             default:
@@ -894,7 +917,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");
@@ -1015,6 +1038,13 @@ void InflowParameterWidget::on_btn_export_clicked()
 
     // update controlDict file
     this->exportControlDictFile(newFile);
+}
+
+void InflowParameterWidget::on_UFileChanged(QString uFilePath)
+{
+    UFilePath = uFilePath;
+    if (readUfile(uFilePath))
+        processUfile();
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
