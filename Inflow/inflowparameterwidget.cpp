@@ -50,10 +50,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QDebug>
 
-InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote, QWidget *parent)
     : SimCenterAppWidget(parent),
       theRandomVariablesContainer(theRandomVariableIW),
-      ui(new Ui::InflowParameterWidget)
+      ui(new Ui::InflowParameterWidget),
+      isRemote(isRemote)
 {
     ui->setupUi(this);
     ui->exportGroup->hide();
@@ -65,6 +66,20 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     UFileHead = "";
     UFileTail = "";
     clearBoundaryMap();
+
+    if(isRemote)
+    {
+        this->ui->sourceLocationDisplay->setHidden(true);
+        this->ui->sourceLocateBtn->setHidden(true);
+        QPushButton* refreshButton = new QPushButton("Refresh");
+        refreshButton->setMaximumWidth(200);
+        this->ui->gridLayout->addWidget(refreshButton, 4, 1);
+
+        connect(refreshButton, &QPushButton::clicked, this, [this]()
+        {
+           this->on_UFileChanged(UFilePath);
+        });
+    }
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -485,61 +500,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
     delete dlg;
 
     if (validSourcePresent) {
-        // parse files for available boundaries
-        QStringList boundaryList;
-
-        UFileList = UFileContents.split('\n');
-        UIter = new QListIterator<QByteArray>(UFileList);
-
-        // read till boundaryField keyword
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileHead.append(line);
-            UFileHead.append('\n');
-            if (line.contains("boundaryField")) {
-                while ( (!line.contains('{')) && UIter->hasNext()) {
-                    line = UIter->next();
-                    UFileHead.append(line);
-                    UFileHead.append('\n');
-                }
-                break;
-            }
-        }
-
-        // parse for boundary patches
-        while (UIter->hasNext())
-        {
-            QStringList list = this->getLine();
-
-            // skip empty lines
-            if (list.length() == 0) continue;
-
-            // terminate if done with boundaryFields section
-            if (list[0] == '}') {
-                UFileTail.append("}\n");
-                break;
-            }
-
-            // read and store the boundary item
-            boundaryList.append(list[0]);
-            boundaries.insert(list[0], this->readParameters());
-        }
-
-        // collect the remainder of the file
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileTail.append(line);
-            UFileTail.append('\n');
-        }
-
-        QStandardItemModel *theModel= new QStandardItemModel();
-        foreach(QString s, boundaryList)
-        {
-            theModel->appendRow(new QStandardItem(s));
-        }
-        ui->boundarySelection->setModel(theModel);
+        this->processUfile();
     }
     else {
         // user not ready to proceed
@@ -643,6 +604,65 @@ QMap<QString, QString> *InflowParameterWidget::readParameters(void)
     }
 
     return params;
+}
+
+void InflowParameterWidget::processUfile()
+{
+    // parse files for available boundaries
+    QStringList boundaryList;
+
+    UFileList = UFileContents.split('\n');
+    UIter = new QListIterator<QByteArray>(UFileList);
+
+    // read till boundaryField keyword
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileHead.append(line);
+        UFileHead.append('\n');
+        if (line.contains("boundaryField")) {
+            while ( (!line.contains('{')) && UIter->hasNext()) {
+                line = UIter->next();
+                UFileHead.append(line);
+                UFileHead.append('\n');
+            }
+            break;
+        }
+    }
+
+    // parse for boundary patches
+    while (UIter->hasNext())
+    {
+        QStringList list = this->getLine();
+
+        // skip empty lines
+        if (list.length() == 0) continue;
+
+        // terminate if done with boundaryFields section
+        if (list[0] == '}') {
+            UFileTail.append("}\n");
+            break;
+        }
+
+        // read and store the boundary item
+        boundaryList.append(list[0]);
+        boundaries.insert(list[0], this->readParameters());
+    }
+
+    // collect the remainder of the file
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileTail.append(line);
+        UFileTail.append('\n');
+    }
+
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+    ui->boundarySelection->setModel(theModel);
 }
 
 // --- from exportWidget
@@ -1015,6 +1035,13 @@ void InflowParameterWidget::on_btn_export_clicked()
 
     // update controlDict file
     this->exportControlDictFile(newFile);
+}
+
+void InflowParameterWidget::on_UFileChanged(QString uFilePath)
+{
+    UFilePath = uFilePath;
+    if (readUfile(uFilePath))
+        processUfile();
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
