@@ -629,10 +629,13 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
         }
     }
 
+    RemoteApplication* remoteApplication = (RemoteApplication*)remoteApp;
+
+    remoteApplication->clearExtraInputs();
+    remoteApplication->clearExtraParameters();
+
     if(hasCFDEvent)
     {
-        RemoteApplication* remoteApplication = (RemoteApplication*)remoteApp;
-
         //Adding extra job inputs for CFD
         QMap<QString, QString> extraInputs;
         extraInputs.insert("OpenFOAMCase", eventAppData["OpenFOAMCase"].toString());
@@ -642,7 +645,6 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
         QMap<QString, QString> extraParameters;
         extraParameters.insert("OpenFOAMSolver", eventAppData["OpenFOAMSolver"].toString());
         remoteApplication->setExtraParameters(extraParameters);
-
     }
 
     statusMessage("SetUp Done .. Now starting application");
