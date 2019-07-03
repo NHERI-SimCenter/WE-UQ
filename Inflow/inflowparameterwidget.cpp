@@ -448,7 +448,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
 
     QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
 
-    if (folders.contains("0") && folders.contains("constant") ) {
+    if (folders.contains("0") && folders.contains("constant")  && folders.contains("system")) {
         //
         // look for U file
         //
@@ -457,7 +457,15 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
         UDir.cd("0");
         UFilePath = UDir.filePath("U");
 
-        validSourcePresent = readUfile(UFilePath);
+        //
+        // look for controlDict file
+        //
+
+        QDir CDictDir = fileTreeLocation;
+        CDictDir.cd("system");
+        ControlDictPath = CDictDir.filePath("controlDict");
+
+        validSourcePresent = readUfile(UFilePath) && readControlDict(ControlDictPath);
 
         if (validSourcePresent)
         { ui->sourceLocationDisplay->setStyleSheet("color: #000000;"); }
@@ -542,7 +550,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
 
 bool InflowParameterWidget::readUfile(QString filename)
 {
-    QFile UFile(UFilePath);
+    QFile UFile(filename);
 
     if (UFile.exists()) {
         //
@@ -559,6 +567,30 @@ bool InflowParameterWidget::readUfile(QString filename)
         // U file missing
         //
         UFileContents = "";
+
+        return false;
+    }
+}
+
+bool InflowParameterWidget::readControlDict(QString filename)
+{
+    QFile CDictFile(filename);
+
+    if (CDictFile.exists()) {
+        //
+        // controlDict file exists
+        //
+        CDictFile.open(QFile::ReadOnly);
+        CDictContents = CDictFile.readAll();
+        CDictFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // controlDict file missing
+        //
+        CDictContents = "";
 
         return false;
     }
@@ -888,6 +920,30 @@ void InflowParameterWidget::exportUFile(QString fileName)
     UFile.close();
 }
 
+void InflowParameterWidget::exportControlDictFile(QString fileName)
+{
+    // file handle for the controlDict file
+    QFile CDict(fileName);
+    CDict.open(QFile::WriteOnly);
+    QTextStream out(&CDict);
+
+    QList<QByteArray> CDictList = CDictContents.split('\n');
+    foreach (QByteArray line, CDictList)
+    {
+        if (line.contains("")) {
+            out << "libs" << endl;
+            out << "(" << endl;
+            out << "    \"libturbulentInflow.so\"" << endl;
+            out << ");" << endl;
+            out << endl;
+        }
+
+        out << line << endl;
+    }
+
+    CDict.close();
+}
+
 void InflowParameterWidget::on_btn_export_clicked()
 {
     // time to export :)
@@ -938,6 +994,27 @@ void InflowParameterWidget::on_btn_export_clicked()
 
     // update U file
     this->exportUFile(newFile);
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = oldLocation;
+    newLocation.cd("systen");
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+    this->exportControlDictFile(newFile);
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
@@ -1055,6 +1132,30 @@ bool InflowParameterWidget::copyFiles(QString &dirName)
 
     // update U file
     this->exportUFile(newFile);
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+    this->exportControlDictFile(newFile);
 
     return true;
 }
