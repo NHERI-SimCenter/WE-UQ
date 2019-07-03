@@ -162,7 +162,7 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["filterFactor"] = 4;
 
     theParameters["velocityShape"] = 0;
-    theParameters["eddieDensity"] = 0.0;
+    theParameters["eddyDensity"] = 0.0;
 
     theParameters["intersection0"] = 0.0;
     theParameters["intersection1"] = 1.0;
@@ -363,7 +363,7 @@ void InflowParameterWidget::refreshParameterMap(void)
     theParameters.insert("filterFactor",ui->filterFactor->value());
 
     theParameters.insert("velocityShape",ui->velocityShape->currentIndex());
-    theParameters.insert("eddieDensity",ui->eddieDensity->value());
+    theParameters.insert("eddyDensity",ui->eddyDensity->value());
 
     theParameters.insert("intersection0",ui->dir1->value());
     theParameters.insert("intersection1",ui->dir2->value());
@@ -429,7 +429,7 @@ void InflowParameterWidget::refreshDisplay(void)
     ui->filterFactor->setValue(int(theParameters.value("filterFactor")));
 
     ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
-    ui->eddieDensity->setValue(theParameters.value("eddieDensity"));
+    ui->eddyDensity->setValue(theParameters.value("eddyDensity"));
 
     ui->dir1->setValue(theParameters.value("intersection0"));
     ui->dir2->setValue(theParameters.value("intersection1"));
@@ -899,7 +899,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
                 default:
                     out << "        filterShape        gaussian;" << endl;
                 }
-                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+                out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
                 break;
             default:
@@ -917,7 +917,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");
