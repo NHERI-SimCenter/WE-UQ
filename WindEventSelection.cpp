@@ -82,7 +82,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("Stochastic Wind Input"));
     eventSelection->addItem(tr("Existing"));
-    eventSelection->addItem(tr("CFD"));
+    eventSelection->addItem(tr("CFD - Expert"));
+    eventSelection->addItem(tr("CFD - Inflow"));
 
     eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
 
@@ -109,8 +110,11 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
 
-    theCFDModel = new InflowParameterWidget(theRandomVariablesContainer);
-    theStackedWidget->addWidget(theCFDModel);
+    theCFDInflowModel = new InflowParameterWidget(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theCFDInflowModel);
+
+    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer);
+    theStackedWidget->addWidget(CFDExpertEventWidget);
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
@@ -212,9 +216,14 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theExistingEvents;
     }
 
-    else if(arg1 == "CFD") {
+    else if(arg1 == "CFD - Inflow") {
         theStackedWidget->setCurrentIndex(3);
-        theCurrentEvent = theCFDModel;
+        theCurrentEvent = theCFDInflowModel;
+    }
+
+    else if(arg1 == "CFD - Expert") {
+        theStackedWidget->setCurrentIndex(4);
+        theCurrentEvent = CFDExpertEventWidget;
     }
 
     else {

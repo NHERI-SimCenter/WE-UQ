@@ -2,6 +2,7 @@ from __future__ import print_function
 import os, sys
 import re
 import json
+import argparse
 
 class FloorForces:
     def __init__(self):
@@ -92,6 +93,7 @@ def directionToDof(direction):
 
     return directioMap[direction]
 
+
 def addFloorForceToEvent(timeSeriesArray, patternsArray, force, direction, floor, dT):
     """
     Add force (one component) time series and pattern in the event file
@@ -117,18 +119,31 @@ def addFloorForceToEvent(timeSeriesArray, patternsArray, force, direction, floor
 
     patternsArray.append(pattern)
 
+def addFloorPressure(pressureArray, floor):
+    """
+    Add floor pressure in the event file
+    """
+    floorPressure = {
+        "story":str(floor),
+        "pressure":[0.0, 0.0]
+    }
+
+    pressureArray.append(floorPressure)
+
+
 def writeEVENT(forces, deltaT):
     """
     This method writes the EVENT.json file
     """
     timeSeriesArray = []
     patternsArray = []
+    pressureArray = []
     windEventJson = {
         "type" : "Wind",
         "subtype": "OpenFOAM CFD Expert Event",
         "timeSeries": timeSeriesArray,
         "pattern": patternsArray,
-        "pressure": [],
+        "pressure": pressureArray,
         "dT": deltaT,
         "numSteps": len(forces[0].X),
         "units": {
@@ -147,8 +162,9 @@ def writeEVENT(forces, deltaT):
         addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.X, "X", floor, deltaT)
         addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.Y, "Y", floor, deltaT)
         addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.Z, "Z", floor, deltaT)
+        addFloorPressure(pressureArray, floor)
 
-    with open("EVENTS.json", "w") as eventsFile:
+    with open("EVENT.json", "w") as eventsFile:
         json.dump(eventDict, eventsFile)
 
 
@@ -167,15 +183,29 @@ def GetOpenFOAMEvent(caseDir, floorsCount):
     # Write the EVENT file
     writeEVENT(forces, deltaT)
 
-    print("OpenFOAM event is written to EVENt.json")
+    print("OpenFOAM event is written to EVENT.json")
 
+def GetFloorsCount(BIMFilePath):
+    with open(BIMFilePath,'r') as BIMFile:
+	    bim = json.load(BIMFile)
+
+    return int(bim["GeneralInformation"]["stories"])
 
 if __name__ == "__main__":
     """
     Entry point to read the forces from OpenFOAM case and use it for the EVENT
     """
-    #TODO:Hardcoded inputs should be changed to arguments
-    caseDir = "BuildingForceTest"
-    floorsCount = 5
-    GetOpenFOAMEvent(caseDir, floorsCount)
+    #CLI parser
+    parser = argparse.ArgumentParser(description="Get EVENT file from OpenFOAM output")
+    parser.add_argument('-c', '--case', help="OpenFOAM case directory", required=True)
+    parser.add_argument('-f', '--floors', help= "Number of Floors", type=int, required=False)
+    parser.add_argument('-b', '--bim', help= "path to BIM file", required=False)
+
+    #parsing arguments
+    arguments, unknowns = parser.parse_known_args()
+    floors = arguments.floors
+    if not floors:
+        floors = GetFloorsCount(arguments.bim)
+
+    GetOpenFOAMEvent(arguments.case, floors)
     

@@ -9,8 +9,6 @@ QT       += core gui charts concurrent network
 TARGET = WE_UQ
 TEMPLATE = app
 
-CONFIG += debug
-
 macos:LIBS += /usr/lib/libcurl.dylib
 win32:INCLUDEPATH += "c:\Users\SimCenter\libCurl-7.59.0\include"
 win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
@@ -36,6 +34,7 @@ include(./MiniZip/MiniZip.pri)
 INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
+    CFD/UI/CFDExpertWidget.cpp \
     Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
@@ -48,6 +47,7 @@ SOURCES += main.cpp \
 
 
 HEADERS  += \
+    CFD/UI/CFDExpertWidget.h \
     Inflow/inflowparameterwidget.h \
     WorkflowAppWE.h \
     RunWidget.h \

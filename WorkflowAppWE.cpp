@@ -615,6 +615,37 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     file.write(doc.toJson());
     file.close();
 
+    QJsonArray events = json["Applications"].toObject()["Events"].toArray();
+    bool hasCFDEvent = false;
+    QJsonObject eventAppData;
+    for (QJsonValueRef eventJson: events)
+    {
+        QString eventApp = eventJson.toObject()["Application"].toString();
+        if(0 == eventApp.compare("CFDEvent", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            eventAppData = eventJson.toObject()["ApplicationData"].toObject();
+            hasCFDEvent = true;
+            break;
+        }
+    }
+
+    RemoteApplication* remoteApplication = (RemoteApplication*)remoteApp;
+
+    remoteApplication->clearExtraInputs();
+    remoteApplication->clearExtraParameters();
+
+    if(hasCFDEvent)
+    {
+        //Adding extra job inputs for CFD
+        QMap<QString, QString> extraInputs;
+        extraInputs.insert("OpenFOAMCase", eventAppData["OpenFOAMCase"].toString());
+        remoteApplication->setExtraInputs(extraInputs);
+
+        //Adding extra job parameters for CFD
+        QMap<QString, QString> extraParameters;
+        extraParameters.insert("OpenFOAMSolver", eventAppData["OpenFOAMSolver"].toString());
+        remoteApplication->setExtraParameters(extraParameters);
+    }
 
     statusMessage("SetUp Done .. Now starting application");
 
