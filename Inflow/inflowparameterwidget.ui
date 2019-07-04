@@ -93,7 +93,17 @@
           <property name="bottomMargin">
            <number>6</number>
           </property>
-          <item row="0" column="0" colspan="2">
+          <item row="4" column="0" colspan="3">
+           <widget class="QLabel" name="listLabel">
+            <property name="text">
+             <string>select what boundary to modify</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="3">
+           <widget class="QComboBox" name="boundarySelection"/>
+          </item>
+          <item row="0" column="0" colspan="3">
            <widget class="QTextBrowser" name="sourceSelectionBrowser">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -127,7 +137,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="1" colspan="2">
            <widget class="QPushButton" name="sourceLocateBtn">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -140,13 +150,16 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QComboBox" name="boundarySelection"/>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="listLabel">
+          <item row="2" column="0" colspan="3">
+           <widget class="QPushButton" name="refreshButton">
+            <property name="maximumSize">
+             <size>
+              <width>16777</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="text">
-             <string>select what boundary to modify</string>
+             <string>Refresh boundary patch list</string>
             </property>
            </widget>
           </item>
@@ -174,7 +187,7 @@
           <item row="0" column="1">
            <widget class="QRadioButton" name="RB_syntheticEddie">
             <property name="text">
-             <string>synthetic eddie</string>
+             <string>synthetic eddy</string>
             </property>
            </widget>
           </item>
@@ -276,9 +289,9 @@
                <number>6</number>
               </property>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_eddieDensity">
+               <widget class="QLabel" name="label_eddyDensity">
                 <property name="text">
-                 <string>eddie density</string>
+                 <string>eddy density</string>
                 </property>
                </widget>
               </item>
@@ -309,7 +322,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QDoubleSpinBox" name="eddieDensity">
+               <widget class="QDoubleSpinBox" name="eddyDensity">
                 <property name="minimum">
                  <double>1.000000000000000</double>
                 </property>
@@ -587,9 +600,9 @@
        <item>
         <widget class="QGroupBox" name="phiTensorGroup">
          <property name="title">
-          <string>Turbulence intensity</string>
+          <string>Turbulence intensity (tensor)</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0">
           <property name="leftMargin">
            <number>6</number>
           </property>
@@ -602,24 +615,64 @@
           <property name="bottomMargin">
            <number>6</number>
           </property>
-          <item row="7" column="0" colspan="3">
+          <item row="5" column="2">
+           <widget class="QDoubleSpinBox" name="PHI33"/>
+          </item>
+          <item row="10" column="0">
+           <widget class="QDoubleSpinBox" name="alpha1">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="PHI22"/>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="PHI32"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="PHI13">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" colspan="3">
            <widget class="Line" name="line_3">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
-          <item row="6" column="2">
-           <widget class="QDoubleSpinBox" name="PHI33"/>
-          </item>
-          <item row="9" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="refDistPHI">
-            <property name="maximum">
-             <double>300.000000000000000</double>
+          <item row="1" column="1">
+           <widget class="QDoubleSpinBox" name="PHI12">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="8" column="1" colspan="2">
+          <item row="1" column="0">
+           <widget class="QDoubleSpinBox" name="PHI11"/>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_refAnglePHI">
+            <property name="text">
+             <string>reference angle (deg)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QDoubleSpinBox" name="PHI23">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1" colspan="2">
            <widget class="QDoubleSpinBox" name="refAnglePHI">
             <property name="decimals">
              <number>1</number>
@@ -632,7 +685,14 @@
             </property>
            </widget>
           </item>
-          <item row="10" column="0" colspan="3">
+          <item row="8" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="refDistPHI">
+            <property name="maximum">
+             <double>300.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0" colspan="3">
            <widget class="QLabel" name="label_alphaPHI">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -645,65 +705,10 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="2" column="0">
            <widget class="QDoubleSpinBox" name="PHI21"/>
           </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="label_refAnglePHI">
-            <property name="text">
-             <string>reference angle (deg)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="0">
-           <widget class="QDoubleSpinBox" name="alpha1">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QDoubleSpinBox" name="PHI23">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="label_refDistPHI">
-            <property name="text">
-             <string>reference distance</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="PHI12">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="2">
-           <widget class="QDoubleSpinBox" name="alpha3">
-            <property name="decimals">
-             <number>3</number>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QDoubleSpinBox" name="PHI13">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="11" column="1">
+          <item row="10" column="1">
            <widget class="QDoubleSpinBox" name="alpha2">
             <property name="decimals">
              <number>3</number>
@@ -713,24 +718,25 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QDoubleSpinBox" name="PHI11"/>
+          <item row="5" column="0">
+           <widget class="QDoubleSpinBox" name="PHI31"/>
           </item>
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="PHI22"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_PHI">
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_refDistPHI">
             <property name="text">
-             <string>PHI (tensor)</string>
+             <string>reference distance</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QDoubleSpinBox" name="PHI31"/>
-          </item>
-          <item row="6" column="1">
-           <widget class="QDoubleSpinBox" name="PHI32"/>
+          <item row="10" column="2">
+           <widget class="QDoubleSpinBox" name="alpha3">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

@@ -43,6 +43,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QGroupBox>
 #include <QVector>
+#include <CFD/UI/CFDExpertWidget.h>
 class QComboBox;
 class QStackedWidget;
 class UserDefinedApplication;
@@ -74,8 +75,9 @@ private:
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theCFDModel;
+   SimCenterAppWidget *theCFDInflowModel;
    SimCenterAppWidget *theExistingEvents;
+   SimCenterAppWidget *CFDExpertEventWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };

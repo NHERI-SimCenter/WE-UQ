@@ -60,7 +60,7 @@ class InflowParameterWidget : public SimCenterAppWidget
     Q_OBJECT
 
 public:
-    explicit InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
+    explicit InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote = false, QWidget *parent = nullptr);
     ~InflowParameterWidget();
 
     void selectSourceLocation(void);
@@ -78,6 +78,7 @@ signals:
 public slots:
     void clear(void);
     void chooseFileName(void);
+    void on_UFileChanged(QString uFilePath);
 
 private slots:
     void on_RB_digitalFilter_clicked();
@@ -102,8 +103,10 @@ private:  /* methods */
     void setExponentialTurbulent(void);
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
+    void exportControlDictFile(QString);
     void clearBoundaryMap(void);
     bool readUfile(QString);
+    bool readControlDict(QString);
     QStringList getLine(void);
     QMap<QString, QString> *readParameters(void);
 
@@ -113,11 +116,15 @@ private:  /* variables */
     bool hasLocation = false;
     bool hasParameters = false;
     bool validSourcePresent = false;
+    bool isRemote = false;
 
     QString UFilePath;
     QByteArray UFileContents = "";
     QByteArray UFileHead = "";
     QByteArray UFileTail = "";
+
+    QString ControlDictPath;
+    QByteArray CDictContents = "";
 
     QFile UFile;
     QList<QByteArray> UFileList;
@@ -139,6 +146,7 @@ private:  /* variables */
     //QLineEdit *application;
 
     RandomVariablesContainer *theRandomVariablesContainer;
+    void processUfile();
 };
 
 #endif // INFLOWPARAMETERWIDGET_H

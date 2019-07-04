@@ -50,10 +50,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QDebug>
 
-InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote, QWidget *parent)
     : SimCenterAppWidget(parent),
       theRandomVariablesContainer(theRandomVariableIW),
-      ui(new Ui::InflowParameterWidget)
+      ui(new Ui::InflowParameterWidget),
+      isRemote(isRemote)
 {
     ui->setupUi(this);
     ui->exportGroup->hide();
@@ -65,6 +66,23 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     UFileHead = "";
     UFileTail = "";
     clearBoundaryMap();
+
+    if(isRemote)
+    {
+        ui->sourceLocationDisplay->hide();
+        ui->sourceLocateBtn->hide();
+        ui->refreshButton->show();
+
+        connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
+        {
+           this->on_UFileChanged(UFilePath);
+        });
+    }
+    else {
+        ui->sourceLocationDisplay->show();
+        ui->sourceLocateBtn->show();
+        ui->refreshButton->hide();
+    }
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -144,7 +162,7 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["filterFactor"] = 4;
 
     theParameters["velocityShape"] = 0;
-    theParameters["eddieDensity"] = 0.0;
+    theParameters["eddyDensity"] = 0.0;
 
     theParameters["intersection0"] = 0.0;
     theParameters["intersection1"] = 1.0;
@@ -345,7 +363,7 @@ void InflowParameterWidget::refreshParameterMap(void)
     theParameters.insert("filterFactor",ui->filterFactor->value());
 
     theParameters.insert("velocityShape",ui->velocityShape->currentIndex());
-    theParameters.insert("eddieDensity",ui->eddieDensity->value());
+    theParameters.insert("eddyDensity",ui->eddyDensity->value());
 
     theParameters.insert("intersection0",ui->dir1->value());
     theParameters.insert("intersection1",ui->dir2->value());
@@ -411,7 +429,7 @@ void InflowParameterWidget::refreshDisplay(void)
     ui->filterFactor->setValue(int(theParameters.value("filterFactor")));
 
     ui->velocityShape->setCurrentIndex(int(theParameters.value("velocityShape")));
-    ui->eddieDensity->setValue(theParameters.value("eddieDensity"));
+    ui->eddyDensity->setValue(theParameters.value("eddyDensity"));
 
     ui->dir1->setValue(theParameters.value("intersection0"));
     ui->dir2->setValue(theParameters.value("intersection1"));
@@ -448,7 +466,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
 
     QStringList folders = fileTreeLocation.entryList(QStringList(),QDir::Dirs);
 
-    if (folders.contains("0") && folders.contains("constant") ) {
+    if (folders.contains("0") && folders.contains("constant")  && folders.contains("system")) {
         //
         // look for U file
         //
@@ -457,7 +475,15 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
         UDir.cd("0");
         UFilePath = UDir.filePath("U");
 
-        validSourcePresent = readUfile(UFilePath);
+        //
+        // look for controlDict file
+        //
+
+        QDir CDictDir = fileTreeLocation;
+        CDictDir.cd("system");
+        ControlDictPath = CDictDir.filePath("controlDict");
+
+        validSourcePresent = readUfile(UFilePath) && readControlDict(ControlDictPath);
 
         if (validSourcePresent)
         { ui->sourceLocationDisplay->setStyleSheet("color: #000000;"); }
@@ -477,61 +503,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
     delete dlg;
 
     if (validSourcePresent) {
-        // parse files for available boundaries
-        QStringList boundaryList;
-
-        UFileList = UFileContents.split('\n');
-        UIter = new QListIterator<QByteArray>(UFileList);
-
-        // read till boundaryField keyword
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileHead.append(line);
-            UFileHead.append('\n');
-            if (line.contains("boundaryField")) {
-                while ( (!line.contains('{')) && UIter->hasNext()) {
-                    line = UIter->next();
-                    UFileHead.append(line);
-                    UFileHead.append('\n');
-                }
-                break;
-            }
-        }
-
-        // parse for boundary patches
-        while (UIter->hasNext())
-        {
-            QStringList list = this->getLine();
-
-            // skip empty lines
-            if (list.length() == 0) continue;
-
-            // terminate if done with boundaryFields section
-            if (list[0] == '}') {
-                UFileTail.append("}\n");
-                break;
-            }
-
-            // read and store the boundary item
-            boundaryList.append(list[0]);
-            boundaries.insert(list[0], this->readParameters());
-        }
-
-        // collect the remainder of the file
-        while (UIter->hasNext())
-        {
-            QByteArray line = UIter->next();
-            UFileTail.append(line);
-            UFileTail.append('\n');
-        }
-
-        QStandardItemModel *theModel= new QStandardItemModel();
-        foreach(QString s, boundaryList)
-        {
-            theModel->appendRow(new QStandardItem(s));
-        }
-        ui->boundarySelection->setModel(theModel);
+        this->processUfile();
     }
     else {
         // user not ready to proceed
@@ -542,7 +514,7 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
 
 bool InflowParameterWidget::readUfile(QString filename)
 {
-    QFile UFile(UFilePath);
+    QFile UFile(filename);
 
     if (UFile.exists()) {
         //
@@ -559,6 +531,30 @@ bool InflowParameterWidget::readUfile(QString filename)
         // U file missing
         //
         UFileContents = "";
+
+        return false;
+    }
+}
+
+bool InflowParameterWidget::readControlDict(QString filename)
+{
+    QFile CDictFile(filename);
+
+    if (CDictFile.exists()) {
+        //
+        // controlDict file exists
+        //
+        CDictFile.open(QFile::ReadOnly);
+        CDictContents = CDictFile.readAll();
+        CDictFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // controlDict file missing
+        //
+        CDictContents = "";
 
         return false;
     }
@@ -611,6 +607,65 @@ QMap<QString, QString> *InflowParameterWidget::readParameters(void)
     }
 
     return params;
+}
+
+void InflowParameterWidget::processUfile()
+{
+    // parse files for available boundaries
+    QStringList boundaryList;
+
+    UFileList = UFileContents.split('\n');
+    UIter = new QListIterator<QByteArray>(UFileList);
+
+    // read till boundaryField keyword
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileHead.append(line);
+        UFileHead.append('\n');
+        if (line.contains("boundaryField")) {
+            while ( (!line.contains('{')) && UIter->hasNext()) {
+                line = UIter->next();
+                UFileHead.append(line);
+                UFileHead.append('\n');
+            }
+            break;
+        }
+    }
+
+    // parse for boundary patches
+    while (UIter->hasNext())
+    {
+        QStringList list = this->getLine();
+
+        // skip empty lines
+        if (list.length() == 0) continue;
+
+        // terminate if done with boundaryFields section
+        if (list[0] == '}') {
+            UFileTail.append("}\n");
+            break;
+        }
+
+        // read and store the boundary item
+        boundaryList.append(list[0]);
+        boundaries.insert(list[0], this->readParameters());
+    }
+
+    // collect the remainder of the file
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileTail.append(line);
+        UFileTail.append('\n');
+    }
+
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+    ui->boundarySelection->setModel(theModel);
 }
 
 // --- from exportWidget
@@ -844,7 +899,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
                 default:
                     out << "        filterShape        gaussian;" << endl;
                 }
-                out << "        eddieDensity       " << theParameters.value("eddieDensity") << ";" << endl;
+                out << "        eddyDensity       " << theParameters.value("eddyDensity") << ";" << endl;
 
                 break;
             default:
@@ -862,7 +917,7 @@ void InflowParameterWidget::exportUFile(QString fileName)
             if (theMap.contains("filterShape"))  theMap.remove("filterShape");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
             if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
-            if (theMap.contains("eddieDensity")) theMap.remove("eddieDensity");
+            if (theMap.contains("eddyDensity"))  theMap.remove("eddyDensity");
 
             if (theMap.contains("intersection"))    theMap.remove("intersection");
             if (theMap.contains("yOffset"))         theMap.remove("yOffset");
@@ -886,6 +941,30 @@ void InflowParameterWidget::exportUFile(QString fileName)
     out << UFileTail;
 
     UFile.close();
+}
+
+void InflowParameterWidget::exportControlDictFile(QString fileName)
+{
+    // file handle for the controlDict file
+    QFile CDict(fileName);
+    CDict.open(QFile::WriteOnly);
+    QTextStream out(&CDict);
+
+    QList<QByteArray> CDictList = CDictContents.split('\n');
+    foreach (QByteArray line, CDictList)
+    {
+        if (line.contains("application")) {
+            out << "libs" << endl;
+            out << "(" << endl;
+            out << "    \"libturbulentInflow.so\"" << endl;
+            out << ");" << endl;
+            out << endl;
+        }
+
+        out << line << endl;
+    }
+
+    CDict.close();
 }
 
 void InflowParameterWidget::on_btn_export_clicked()
@@ -938,6 +1017,34 @@ void InflowParameterWidget::on_btn_export_clicked()
 
     // update U file
     this->exportUFile(newFile);
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = oldLocation;
+    newLocation.cd("systen");
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+    this->exportControlDictFile(newFile);
+}
+
+void InflowParameterWidget::on_UFileChanged(QString uFilePath)
+{
+    UFilePath = uFilePath;
+    if (readUfile(uFilePath))
+        processUfile();
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
@@ -1055,6 +1162,30 @@ bool InflowParameterWidget::copyFiles(QString &dirName)
 
     // update U file
     this->exportUFile(newFile);
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+    this->exportControlDictFile(newFile);
 
     return true;
 }
