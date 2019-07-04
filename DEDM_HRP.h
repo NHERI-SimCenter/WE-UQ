@@ -41,10 +41,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
-#include <QGroupBox>
-#include <QVector>
-#include <QVBoxLayout>
 #include <QComboBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QVector>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -76,6 +77,7 @@ private:
 
     QLineEdit *windSpeed;
     QComboBox *windDuration;
+    QSpinBox *incidenceAngle;    
     QButtonGroup *thePlanGroup;
     QButtonGroup *theHeightGroup;
     QButtonGroup *theExposureGroup;
