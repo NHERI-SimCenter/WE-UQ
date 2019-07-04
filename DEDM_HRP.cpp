@@ -188,9 +188,25 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     windLayout->addWidget(speedUnit,0,3);
 
     QLabel *labelDuration = new QLabel("Duration");
+    QLabel *durationUnit = new QLabel("min");    
     windDuration = new QComboBox;
     windDuration->addItem("10");
     windDuration->addItem("60");
+
+    windLayout->addWidget(labelDuration,1,0);
+    windLayout->addWidget(windDuration,1,2);
+    windLayout->addWidget(durationUnit,1,3);
+    
+    QLabel *labelIncidenceAngle = new QLabel("Angle of Incidence");
+    QLabel *angleUnit = new QLabel("degrees");
+    incidenceAngle = new QSpinBox;
+    incidenceAngle->setRange(0, 90);
+    incidenceAngle->setSingleStep(5);
+
+    windLayout->addWidget(labelIncidenceAngle, 2, 0);
+    windLayout->addWidget(incidenceAngle, 2, 2);
+    windLayout->addWidget(angleUnit, 2, 3);
+    
     /*
     windDuration->setEditable(true);
     windDuration->lineEdit()->setDisabled(true);
@@ -201,12 +217,6 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     //  windDuration->setItemData(1, Qt::AlignRight, Qt::TextAlignmentRole);
     //windDuration->lineEdit()->setDisabled(true);
     //windDuration->lineEdit()->setReadOnly(true);
-
-    QLabel *durationUnit = new QLabel("min");
-    windLayout->addWidget(labelDuration,1,0);
-
-    windLayout->addWidget(windDuration,1,2);
-    windLayout->addWidget(durationUnit,1,3);
 
 
     windSpeedBox->setLayout(windLayout);
@@ -271,8 +281,8 @@ DEDM_HRP::outputToJSON(QJsonObject &jsonObject)
     jsonObject["checkedHeight"]=theHeightGroup->checkedId();
     jsonObject["checkedExposure"]=theExposureGroup->checkedId();
     jsonObject["windSpeed"]=windSpeed->text().toDouble();
-
-
+    jsonObject["incidenceAngle"] = incidenceAngle->value();
+    
     return true;
 }
 
@@ -309,6 +319,13 @@ DEDM_HRP::inputFromJSON(QJsonObject &jsonObject)
       windSpeed->setText(QString::number(speed));
     } else
       return false;
+
+    if (jsonObject.contains("incidenceAngle")) {
+      QJsonValue theValue = jsonObject["incidenceAngle"];
+      int angle = theValue.toInt();
+      incidenceAngle->setValue(angle);
+    } else
+      return false;    
     
     return true;
 }
@@ -325,7 +342,6 @@ DEDM_HRP::outputAppDataToJSON(QJsonObject &jsonObject) {
     jsonObject["EventClassification"]="Wind";
     jsonObject["Application"] = "DEDM_HRP";
     QJsonObject dataObj;
-
     jsonObject["ApplicationData"] = dataObj;
 
     return true;
