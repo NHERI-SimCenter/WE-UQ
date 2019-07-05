@@ -83,6 +83,8 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
         ui->sourceLocateBtn->show();
         ui->refreshButton->hide();
     }
+    // fmk - removed but left in .ui file in case absolutely must have
+    ui->sourceSelectionBrowser->hide();
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -1063,7 +1065,7 @@ bool InflowParameterWidget::outputToJSON(QJsonObject &rvObject)
     refreshParameterMap();
 
     // just need to send the class type here.. type needed in object in case user screws up
-    rvObject["type"]="CFD";
+    rvObject["type"]="CFD-Inflow";
 
     rvObject["EventClassification"]="Wind";
 
@@ -1099,6 +1101,14 @@ bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::outputAppDataToJSON(QJsonObject &rvObject)
 {
+    rvObject["EventClassification"]="Wind";
+    rvObject["Application"] = "CFD Inflow";
+    QJsonObject dataObj;
+
+
+    rvObject["ApplicationData"] = dataObj;
+    return true;
+
     return true;
 }
 
