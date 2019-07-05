@@ -65,7 +65,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <UserDefinedApplication.h>
 
-WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
 {
     QVBoxLayout *layout = new QVBoxLayout();
@@ -113,7 +113,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theCFDInflowModel = new InflowParameterWidget(theRandomVariablesContainer);
     theStackedWidget->addWidget(theCFDInflowModel);
 
-    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer);
+    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
 
     layout->addWidget(theStackedWidget);
@@ -178,7 +178,11 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 	} else if ((type == QString("User Application")) || (type == QString("UserDefinedApplication"))) {
         index = 3;
       */
-    } else {
+    }
+    else if (type == QString("CFD")) {
+        index = 3;
+    }
+    else {
         return false;
     }
     qDebug() << "TYPE: " << type << "INDEX: " << index;
