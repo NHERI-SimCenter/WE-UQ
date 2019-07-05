@@ -50,7 +50,7 @@
         <x>0</x>
         <y>0</y>
         <width>626</width>
-        <height>1445</height>
+        <height>1488</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -146,7 +146,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>locate</string>
+             <string>Browse</string>
             </property>
            </widget>
           </item>
