@@ -75,7 +75,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
 
         connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
         {
-           this->on_UFileChanged(UFilePath);
+            this->uFileUpdateRequested();
         });
     }
     else {

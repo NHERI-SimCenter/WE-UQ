@@ -74,6 +74,7 @@ public:
 signals:
     void parametersReady(QMap<QString, double> &);
     void boundarySelection(int);
+    void uFileUpdateRequested();
 
 public slots:
     void clear(void);
