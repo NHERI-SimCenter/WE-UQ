@@ -51,6 +51,7 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QButtonGroup;
 class QComboBox;
+class QRadioButton;
 
 class DEDM_HRP : public SimCenterAppWidget
 {
@@ -69,9 +70,12 @@ signals:
 
 public slots:
    void clear(void);
+   void oneByOneToggled(bool);
 
 private:
 
+   QRadioButton *h1Radio;
+   QRadioButton *h2Radio;
     QVBoxLayout *layout;
     QWidget     *femSpecific;
 

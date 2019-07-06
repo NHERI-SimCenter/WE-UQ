@@ -123,8 +123,8 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     QLabel *h3Label = new QLabel("H=3");
     QLabel *h4Label = new QLabel("H=4");
     QLabel *h5Label = new QLabel("H=5");
-    QRadioButton *h1Radio = new QRadioButton();
-    QRadioButton *h2Radio = new QRadioButton();
+    h1Radio = new QRadioButton();
+    h2Radio = new QRadioButton();
     QRadioButton *h3Radio = new QRadioButton();
     QRadioButton *h4Radio = new QRadioButton();
     QRadioButton *h5Radio = new QRadioButton();
@@ -253,7 +253,23 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     h1Radio->setChecked(true);
     exp1Radio->setChecked(true);
 
+    connect(the1x1RadioButton, SIGNAL(toggled(bool)), this, SLOT(oneByOneToggled(bool)));
     this->setLayout(layout);
+
+}
+
+void
+DEDM_HRP::oneByOneToggled(bool toggle) {
+    qDebug() << "toggled" << toggle;
+    if (toggle == true) {
+        h1Radio->setEnabled(true);
+    } else {
+        if (h1Radio->isChecked() == true) {
+            h1Radio->setChecked(false);
+            h2Radio->setChecked(true);
+        }
+        h1Radio->setEnabled(false);
+    }
 
 }
 
