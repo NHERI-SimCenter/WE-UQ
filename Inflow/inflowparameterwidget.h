@@ -79,7 +79,7 @@ signals:
 public slots:
     void clear(void);
     void chooseFileName(void);
-    void on_UFileChanged(QString uFilePath);
+    void on_RemoteFilesChanged(QString uFilePath, QString controlDictPath);
 
 private slots:
     void on_RB_digitalFilter_clicked();

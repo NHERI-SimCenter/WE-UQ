@@ -783,7 +783,7 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for u component" << endl;
         out << "LuxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Lux") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lu0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
@@ -799,7 +799,7 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for v component" << endl;
         out << "LvxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Luv") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lv0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
@@ -816,7 +816,7 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
         out << "// turbulence length scale profile for w component" << endl;
         out << "LwxDict" << endl;
         out << "{" << endl;
-        out << "    referenceValue          " << theParameters.value("Luw") << ";" << endl;
+        out << "    referenceValue          " << theParameters.value("Lw0") << ";" << endl;
 
         out << "    profile                 " << profile << ";" << endl;
 
@@ -1042,11 +1042,16 @@ void InflowParameterWidget::on_btn_export_clicked()
     this->exportControlDictFile(newFile);
 }
 
-void InflowParameterWidget::on_UFileChanged(QString uFilePath)
+void InflowParameterWidget::on_RemoteFilesChanged(QString uFilePath, QString controlDictPath)
 {
     UFilePath = uFilePath;
+    UFileHead = "";
+    UFileTail = "";
+
     if (readUfile(uFilePath))
         processUfile();
+
+    readControlDict(controlDictPath);
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)

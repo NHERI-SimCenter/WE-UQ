@@ -14,7 +14,7 @@ CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, 
     setupConnections();
 
     originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U.orig";
-    modifiedUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U";
+    originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/controlDict.orig";
 }
 
 bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
@@ -56,6 +56,14 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &rvObject)
     return true;
 }
 
+bool CFDExpertWidget::copyFiles(QString &path)
+{
+    if (inflowCheckBox->isChecked())
+        return inflowWidget->copyFiles(path);
+
+    return true;
+}
+
 void CFDExpertWidget::selectButtonPushed()
 {
     if(remoteService->isLoggedIn())
@@ -70,16 +78,15 @@ void CFDExpertWidget::remoteLSReturn(QJsonArray dirList)
     qDebug() << dirList;
 }
 
-void CFDExpertWidget::downloadBoundayCondition()
+void CFDExpertWidget::downloadRemoteCaseFiles()
 {
     if(remoteService->isLoggedIn())
     {
         QStringList remoteFilePath;
-        remoteFilePath << getRemoteUFilePath();
+        remoteFilePath << getRemoteFilesPaths();
 
         QStringList localFilePath;
-        localFilePath << originalUFilePath;
-
+        localFilePath << originalUFilePath << originalControlDictPath;
         ensureUFileExists();
         remoteService->downloadFilesCall(remoteFilePath, localFilePath, this);
     }
@@ -101,7 +108,7 @@ void CFDExpertWidget::ensureUFileExists()
     uFile.close();
 }
 
-QString CFDExpertWidget::getRemoteUFilePath()
+QStringList CFDExpertWidget::getRemoteFilesPaths()
 {
     QString caseDir = caseEditBox->text();
 
@@ -111,7 +118,7 @@ QString CFDExpertWidget::getRemoteUFilePath()
         caseDir = caseDir.prepend("system/");
     }
 
-    return caseDir.append("/0/U");
+    return {caseDir + "/0/U", caseDir + "/system/controlDict"};
 }
 
 void CFDExpertWidget::initializeUI()
@@ -236,7 +243,7 @@ void CFDExpertWidget::setupConnections()
         if(state)
         {
             inflowWidget->setHidden(false);
-            downloadBoundayCondition();
+            downloadRemoteCaseFiles();
         }
         else
             inflowWidget->setHidden(true);
@@ -245,10 +252,10 @@ void CFDExpertWidget::setupConnections()
     connect(remoteService, &RemoteService::downloadFilesReturn, this, [this](bool result, QObject* sender)
     {
         if(result && sender == this)
-            inflowWidget->on_UFileChanged(originalUFilePath);
+            inflowWidget->on_RemoteFilesChanged(originalUFilePath, originalControlDictPath);
     });
 
 
-    connect(inflowWidget, &InflowParameterWidget::uFileUpdateRequested, this, &CFDExpertWidget::downloadBoundayCondition);
+    connect(inflowWidget, &InflowParameterWidget::uFileUpdateRequested, this, &CFDExpertWidget::downloadRemoteCaseFiles);
 
 }

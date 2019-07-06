@@ -15,6 +15,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &jsonObject);
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
+    bool copyFiles(QString &path);
 
 signals:
 
@@ -30,12 +31,12 @@ private:
     QCheckBox* inflowCheckBox;
 
     QString originalUFilePath;
-    QString modifiedUFilePath;
+    QString originalControlDictPath;
 
 
-    void downloadBoundayCondition();
+    void downloadRemoteCaseFiles();
     void ensureUFileExists();
-    QString getRemoteUFilePath();
+    QStringList getRemoteFilesPaths();
     void initializeUI();
     void setupConnections();
 };
