@@ -77,7 +77,6 @@ private:
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theCFDInflowModel;
    SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
 

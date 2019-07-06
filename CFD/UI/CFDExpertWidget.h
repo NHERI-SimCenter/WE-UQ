@@ -29,6 +29,7 @@ private:
     RemoteService* remoteService;
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
+    QPushButton* caseSelectButton;
 
     QString originalUFilePath;
     QString originalControlDictPath;

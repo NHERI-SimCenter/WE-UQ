@@ -35,7 +35,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &rvObject)
     rvObject["OpenFOAMCase"] = caseEditBox->text();
     rvObject["OpenFOAMSolver"] = solverComboBox->currentText();
     rvObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
-    rvObject["type"]="CFDEvent";
+    rvObject["type"]="CFD - Expert";
 
     return true;
 }
@@ -135,10 +135,8 @@ void CFDExpertWidget::initializeUI()
     QHBoxLayout* caseLayout = new QHBoxLayout();
     caseLayout->addWidget(caseEditBox);
     caseEditBox->setToolTip(tr("OpenFOAM Remote Case Directory"));
-    QPushButton* caseSelectButton = new QPushButton(tr("Select"));
+    caseSelectButton = new QPushButton(tr("Select"));
     caseLayout->addWidget(caseSelectButton);
-
-    connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
 
     QLabel *caseLabel = new QLabel("Case");
     parametersLayout->addLayout(caseLayout,0,1);
@@ -236,6 +234,8 @@ void CFDExpertWidget::initializeUI()
 
 void CFDExpertWidget::setupConnections()
 {
+    connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
+
     connect(remoteService, &RemoteService::remoteLSReturn, this, &CFDExpertWidget::remoteLSReturn);
 
     connect(inflowCheckBox, &QCheckBox::stateChanged, this, [this](int state)

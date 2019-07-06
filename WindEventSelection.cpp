@@ -82,7 +82,6 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("Stochastic Wind"));
     eventSelection->addItem(tr("CFD - Expert"));
-    eventSelection->addItem(tr("CFD - Inflow"));
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
@@ -106,9 +105,6 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
-
-    theCFDInflowModel = new InflowParameterWidget(theRandomVariablesContainer);
-    theStackedWidget->addWidget(theCFDInflowModel);
 
     CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
@@ -171,11 +167,9 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 1;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-      index = 4;
-    } else if (type == QString("CFDEvent")) {
+      index = 3;
+    } else if (type == QString("CFD - Expert")) {
         index = 2;
-    } else if (type == QString("CFD-Inflow")) {
-        index = 3;
     }
     else {
         return false;
@@ -210,18 +204,13 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theStochasticModel;
     }
 
-    else if(arg1 == "CFD - Inflow") {
-        theStackedWidget->setCurrentIndex(2);
-        theCurrentEvent = theCFDInflowModel;
-    }
-
     else if(arg1 == "CFD - Expert") {
-        theStackedWidget->setCurrentIndex(3);
+        theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
     else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(4);
+        theStackedWidget->setCurrentIndex(3);
         theCurrentEvent = theExistingEvents;
     }
 
