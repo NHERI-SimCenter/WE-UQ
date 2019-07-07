@@ -64,6 +64,11 @@ bool CFDExpertWidget::copyFiles(QString &path)
     return true;
 }
 
+bool CFDExpertWidget::supportsLocalRun()
+{
+    return false;
+}
+
 void CFDExpertWidget::selectButtonPushed()
 {
     if(remoteService->isLoggedIn())

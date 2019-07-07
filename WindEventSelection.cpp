@@ -265,3 +265,8 @@ WindEventSelection::copyFiles(QString &destDir) {
 
     return false;
 }
+
+bool WindEventSelection::supportsLocalRun()
+{
+    return theCurrentEvent->supportsLocalRun();
+}

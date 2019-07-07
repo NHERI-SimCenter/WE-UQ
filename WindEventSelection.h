@@ -64,6 +64,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
+    bool supportsLocalRun() override;
 
  signals:
 
