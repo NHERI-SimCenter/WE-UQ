@@ -31,6 +31,7 @@ private:
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
     QPushButton* caseSelectButton;
+    QLabel* loginRequiredLabel;
 
     QString originalUFilePath;
     QString originalControlDictPath;

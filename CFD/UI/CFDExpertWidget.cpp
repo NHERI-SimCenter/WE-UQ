@@ -129,6 +129,9 @@ QStringList CFDExpertWidget::getRemoteFilesPaths()
 void CFDExpertWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
+    loginRequiredLabel = new QLabel(tr("Logging into DesignSafe is required to use CFD - Expert."));
+    layout->addWidget(loginRequiredLabel);
+
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
     QGridLayout *parametersLayout = new QGridLayout();
@@ -235,6 +238,7 @@ void CFDExpertWidget::initializeUI()
     layout->addStretch();
 
     this->setLayout(layout);
+    this->setEnabled(false);
 }
 
 void CFDExpertWidget::setupConnections()
@@ -262,5 +266,23 @@ void CFDExpertWidget::setupConnections()
 
 
     connect(inflowWidget, &InflowParameterWidget::uFileUpdateRequested, this, &CFDExpertWidget::downloadRemoteCaseFiles);
+
+    connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
+    {
+        if(loggedIn)
+        {
+            loginRequiredLabel->hide();
+            this->setEnabled(true);
+        }
+    });
+
+    connect(remoteService, &RemoteService::logoutReturn, this, [this](bool loggedOut)
+    {
+        if (loggedOut)
+        {
+            loginRequiredLabel->show();
+            this->setDisabled(true);
+        }
+    });
 
 }
