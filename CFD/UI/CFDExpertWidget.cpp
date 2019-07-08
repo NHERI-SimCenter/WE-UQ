@@ -14,7 +14,7 @@ CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, 
     setupConnections();
 
     originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U.orig";
-    modifiedUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U";
+    originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/controlDict.orig";
 }
 
 bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
@@ -29,31 +29,47 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool CFDExpertWidget::outputToJSON(QJsonObject &rvObject)
+bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
 {
-    inflowWidget->outputToJSON(rvObject);
-    rvObject["OpenFOAMCase"] = caseEditBox->text();
-    rvObject["OpenFOAMSolver"] = solverComboBox->currentText();
-    rvObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
-    rvObject["type"]="CFDEvent";
+    inflowWidget->outputToJSON(eventObject);
+    eventObject["OpenFOAMCase"] = caseEditBox->text();
+    eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+    eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
+    eventObject["type"] = "CFD - Expert";
+    eventObject["start"] = startTimeBox->value();
+    return true;
+}
+
+bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
+{
+    if(eventObject.contains("OpenFOAMCase"))
+        caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
+
+    if(eventObject.contains("OpenFOAMSolver"))
+        solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
+
+    if(eventObject.contains("InflowConditions"))
+        inflowCheckBox->setChecked(eventObject["InflowConditions"].toBool());
+
+    if(eventObject.contains("start"))
+        this->startTimeBox->setValue(eventObject["start"].toDouble());
+
+    inflowWidget->inputFromJSON(eventObject);
 
     return true;
 }
 
-bool CFDExpertWidget::inputFromJSON(QJsonObject &rvObject)
+bool CFDExpertWidget::copyFiles(QString &path)
 {
-    if(rvObject.contains("OpenFOAMCase"))
-        caseEditBox->setText(rvObject["OpenFOAMCase"].toString());
-
-    if(rvObject.contains("OpenFOAMSolver"))
-        solverComboBox->setCurrentText(rvObject["OpenFOAMSolver"].toString());
-
-    if(rvObject.contains("InflowConditions"))
-        inflowCheckBox->setChecked(rvObject["InflowConditions"].toBool());
-
-    inflowWidget->inputFromJSON(rvObject);
+    if (inflowCheckBox->isChecked())
+        return inflowWidget->copyFiles(path);
 
     return true;
+}
+
+bool CFDExpertWidget::supportsLocalRun()
+{
+    return false;
 }
 
 void CFDExpertWidget::selectButtonPushed()
@@ -70,16 +86,15 @@ void CFDExpertWidget::remoteLSReturn(QJsonArray dirList)
     qDebug() << dirList;
 }
 
-void CFDExpertWidget::downloadBoundayCondition()
+void CFDExpertWidget::downloadRemoteCaseFiles()
 {
     if(remoteService->isLoggedIn())
     {
         QStringList remoteFilePath;
-        remoteFilePath << getRemoteUFilePath();
+        remoteFilePath << getRemoteFilesPaths();
 
         QStringList localFilePath;
-        localFilePath << originalUFilePath;
-
+        localFilePath << originalUFilePath << originalControlDictPath;
         ensureUFileExists();
         remoteService->downloadFilesCall(remoteFilePath, localFilePath, this);
     }
@@ -101,7 +116,7 @@ void CFDExpertWidget::ensureUFileExists()
     uFile.close();
 }
 
-QString CFDExpertWidget::getRemoteUFilePath()
+QStringList CFDExpertWidget::getRemoteFilesPaths()
 {
     QString caseDir = caseEditBox->text();
 
@@ -111,43 +126,44 @@ QString CFDExpertWidget::getRemoteUFilePath()
         caseDir = caseDir.prepend("system/");
     }
 
-    return caseDir.append("/0/U");
+    return {caseDir + "/0/U", caseDir + "/system/controlDict"};
 }
 
 void CFDExpertWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
+    loginRequiredLabel = new QLabel(tr("Logging into DesignSafe is required to use CFD - Expert."));
+    layout->addWidget(loginRequiredLabel);
+
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
     QGridLayout *parametersLayout = new QGridLayout();
 
     //QFormLayout* parametersLayout = new QFormLayout();
 
-    caseEditBox = new QLineEdit();
+    caseEditBox = new QLineEdit(this);
     caseEditBox->setText("agave://designsafe.storage.community/SimCenter/Software/WE_UQ/Examples/SampleBuilding");
     QHBoxLayout* caseLayout = new QHBoxLayout();
     caseLayout->addWidget(caseEditBox);
     caseEditBox->setToolTip(tr("OpenFOAM Remote Case Directory"));
-    QPushButton* caseSelectButton = new QPushButton(tr("Select"));
+    caseSelectButton = new QPushButton(tr("Select"));
     caseLayout->addWidget(caseSelectButton);
 
-    connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
-
-    QLabel *caseLabel = new QLabel("Case");
+    QLabel *caseLabel = new QLabel("Case", this);
     parametersLayout->addLayout(caseLayout,0,1);
     parametersLayout->addWidget(caseLabel,0,0);
 
     //parametersLayout->addRow("Case", caseLayout);
 
-    solverComboBox = new QComboBox();
+    solverComboBox = new QComboBox(this);
     solverComboBox->addItem("pisoFoam");
-    QLabel *solverLabel = new QLabel("Solver");
+    QLabel *solverLabel = new QLabel("Solver", this);
    // parametersLayout->addRow("Solver", solverComboBox);
     parametersLayout->addWidget(solverLabel,1,0);
     parametersLayout->addWidget(solverComboBox,1,1);
     solverComboBox->setToolTip(tr("OpenFOAM solver used in the analysis"));
 
-    QLabel *forceLabel = new QLabel("Force Calculation");
+    QLabel *forceLabel = new QLabel("Force Calculation", this);
     QComboBox* forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     //parametersLayout->addRow("Force Calculation     ", forceComboBox);
@@ -155,7 +171,7 @@ void CFDExpertWidget::initializeUI()
      parametersLayout->addWidget(forceLabel,2,0);
     forceComboBox->setToolTip(tr("Method used for calculating the forces on the building model"));
 
-    QComboBox* meshingComboBox = new QComboBox();
+    QComboBox* meshingComboBox = new QComboBox(this);
     meshingComboBox->addItem("blockMesh");
     QLabel *meshingLabel = new QLabel("Meshing");
     //parametersLayout->addRow("Meshing", meshingComboBox);
@@ -164,11 +180,20 @@ void CFDExpertWidget::initializeUI()
 
     meshingComboBox->setToolTip(tr("Method used for generating the mesh for the model"));
 
+    QLabel *startTimeLabel = new QLabel("Start time", this);
+    parametersLayout->addWidget(startTimeLabel, 4, 0);
+    startTimeBox = new QDoubleSpinBox(this);
+    parametersLayout->addWidget(startTimeBox, 4, 1);
+    startTimeBox->setDecimals(3);
+    startTimeBox->setSingleStep(0.001);
+    startTimeBox->setMinimum(0);
+    startTimeBox->setValue(0.01);
+
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox,4,1);
-    parametersLayout->addWidget(inflowLabel, 4, 0);
+    parametersLayout->addWidget(inflowCheckBox,5,1);
+    parametersLayout->addWidget(inflowLabel, 5, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
     //parametersLayout->setMargin();
@@ -225,10 +250,13 @@ void CFDExpertWidget::initializeUI()
     layout->addStretch();
 
     this->setLayout(layout);
+    this->setEnabled(false);
 }
 
 void CFDExpertWidget::setupConnections()
 {
+    connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
+
     connect(remoteService, &RemoteService::remoteLSReturn, this, &CFDExpertWidget::remoteLSReturn);
 
     connect(inflowCheckBox, &QCheckBox::stateChanged, this, [this](int state)
@@ -236,7 +264,7 @@ void CFDExpertWidget::setupConnections()
         if(state)
         {
             inflowWidget->setHidden(false);
-            downloadBoundayCondition();
+            downloadRemoteCaseFiles();
         }
         else
             inflowWidget->setHidden(true);
@@ -245,10 +273,28 @@ void CFDExpertWidget::setupConnections()
     connect(remoteService, &RemoteService::downloadFilesReturn, this, [this](bool result, QObject* sender)
     {
         if(result && sender == this)
-            inflowWidget->on_UFileChanged(originalUFilePath);
+            inflowWidget->on_RemoteFilesChanged(originalUFilePath, originalControlDictPath);
     });
 
 
-    connect(inflowWidget, &InflowParameterWidget::uFileUpdateRequested, this, &CFDExpertWidget::downloadBoundayCondition);
+    connect(inflowWidget, &InflowParameterWidget::uFileUpdateRequested, this, &CFDExpertWidget::downloadRemoteCaseFiles);
+
+    connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
+    {
+        if(loggedIn)
+        {
+            loginRequiredLabel->hide();
+            this->setEnabled(true);
+        }
+    });
+
+    connect(remoteService, &RemoteService::logoutReturn, this, [this](bool loggedOut)
+    {
+        if (loggedOut)
+        {
+            loginRequiredLabel->show();
+            this->setDisabled(true);
+        }
+    });
 
 }

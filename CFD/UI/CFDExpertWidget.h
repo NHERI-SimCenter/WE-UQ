@@ -5,6 +5,7 @@
 #include  <RandomVariablesContainer.h>
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
+#include <QDoubleSpinBox>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -15,6 +16,8 @@ public:
     bool outputAppDataToJSON(QJsonObject &jsonObject);
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
+    bool copyFiles(QString &path);
+    bool supportsLocalRun() override;
 
 signals:
 
@@ -28,14 +31,17 @@ private:
     RemoteService* remoteService;
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
+    QPushButton* caseSelectButton;
+    QLabel* loginRequiredLabel;
+    QDoubleSpinBox* startTimeBox;
 
     QString originalUFilePath;
-    QString modifiedUFilePath;
+    QString originalControlDictPath;
 
 
-    void downloadBoundayCondition();
+    void downloadRemoteCaseFiles();
     void ensureUFileExists();
-    QString getRemoteUFilePath();
+    QStringList getRemoteFilesPaths();
     void initializeUI();
     void setupConnections();
 };

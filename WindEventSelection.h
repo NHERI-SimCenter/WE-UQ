@@ -64,6 +64,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
+    bool supportsLocalRun() override;
 
  signals:
 
@@ -77,7 +78,6 @@ private:
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theCFDInflowModel;
    SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
 
