@@ -147,6 +147,7 @@ void CFDExpertWidget::initializeUI()
     caseLayout->addWidget(caseEditBox);
     caseEditBox->setToolTip(tr("OpenFOAM Remote Case Directory"));
     caseSelectButton = new QPushButton(tr("Select"));
+    caseSelectButton->hide();
     caseLayout->addWidget(caseSelectButton);
 
     QLabel *caseLabel = new QLabel("Case", this);
@@ -188,6 +189,7 @@ void CFDExpertWidget::initializeUI()
     startTimeBox->setSingleStep(0.001);
     startTimeBox->setMinimum(0);
     startTimeBox->setValue(0.01);
+    startTimeBox->setToolTip(tr("The time in the OpenFOAM simulation when the building force event starts. Forces before that time are ignored."));
 
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
