@@ -5,6 +5,7 @@
 #include  <RandomVariablesContainer.h>
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
+#include <QDoubleSpinBox>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -32,6 +33,7 @@ private:
     QCheckBox* inflowCheckBox;
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
+    QDoubleSpinBox* startTimeBox;
 
     QString originalUFilePath;
     QString originalControlDictPath;

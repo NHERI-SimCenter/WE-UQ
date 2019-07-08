@@ -29,29 +29,32 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool CFDExpertWidget::outputToJSON(QJsonObject &rvObject)
+bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
 {
-    inflowWidget->outputToJSON(rvObject);
-    rvObject["OpenFOAMCase"] = caseEditBox->text();
-    rvObject["OpenFOAMSolver"] = solverComboBox->currentText();
-    rvObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
-    rvObject["type"]="CFD - Expert";
-
+    inflowWidget->outputToJSON(eventObject);
+    eventObject["OpenFOAMCase"] = caseEditBox->text();
+    eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+    eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
+    eventObject["type"] = "CFD - Expert";
+    eventObject["start"] = startTimeBox->value();
     return true;
 }
 
-bool CFDExpertWidget::inputFromJSON(QJsonObject &rvObject)
+bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 {
-    if(rvObject.contains("OpenFOAMCase"))
-        caseEditBox->setText(rvObject["OpenFOAMCase"].toString());
+    if(eventObject.contains("OpenFOAMCase"))
+        caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
 
-    if(rvObject.contains("OpenFOAMSolver"))
-        solverComboBox->setCurrentText(rvObject["OpenFOAMSolver"].toString());
+    if(eventObject.contains("OpenFOAMSolver"))
+        solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
 
-    if(rvObject.contains("InflowConditions"))
-        inflowCheckBox->setChecked(rvObject["InflowConditions"].toBool());
+    if(eventObject.contains("InflowConditions"))
+        inflowCheckBox->setChecked(eventObject["InflowConditions"].toBool());
 
-    inflowWidget->inputFromJSON(rvObject);
+    if(eventObject.contains("start"))
+        this->startTimeBox->setValue(eventObject["start"].toDouble());
+
+    inflowWidget->inputFromJSON(eventObject);
 
     return true;
 }
@@ -138,7 +141,7 @@ void CFDExpertWidget::initializeUI()
 
     //QFormLayout* parametersLayout = new QFormLayout();
 
-    caseEditBox = new QLineEdit();
+    caseEditBox = new QLineEdit(this);
     caseEditBox->setText("agave://designsafe.storage.community/SimCenter/Software/WE_UQ/Examples/SampleBuilding");
     QHBoxLayout* caseLayout = new QHBoxLayout();
     caseLayout->addWidget(caseEditBox);
@@ -146,21 +149,21 @@ void CFDExpertWidget::initializeUI()
     caseSelectButton = new QPushButton(tr("Select"));
     caseLayout->addWidget(caseSelectButton);
 
-    QLabel *caseLabel = new QLabel("Case");
+    QLabel *caseLabel = new QLabel("Case", this);
     parametersLayout->addLayout(caseLayout,0,1);
     parametersLayout->addWidget(caseLabel,0,0);
 
     //parametersLayout->addRow("Case", caseLayout);
 
-    solverComboBox = new QComboBox();
+    solverComboBox = new QComboBox(this);
     solverComboBox->addItem("pisoFoam");
-    QLabel *solverLabel = new QLabel("Solver");
+    QLabel *solverLabel = new QLabel("Solver", this);
    // parametersLayout->addRow("Solver", solverComboBox);
     parametersLayout->addWidget(solverLabel,1,0);
     parametersLayout->addWidget(solverComboBox,1,1);
     solverComboBox->setToolTip(tr("OpenFOAM solver used in the analysis"));
 
-    QLabel *forceLabel = new QLabel("Force Calculation");
+    QLabel *forceLabel = new QLabel("Force Calculation", this);
     QComboBox* forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     //parametersLayout->addRow("Force Calculation     ", forceComboBox);
@@ -168,7 +171,7 @@ void CFDExpertWidget::initializeUI()
      parametersLayout->addWidget(forceLabel,2,0);
     forceComboBox->setToolTip(tr("Method used for calculating the forces on the building model"));
 
-    QComboBox* meshingComboBox = new QComboBox();
+    QComboBox* meshingComboBox = new QComboBox(this);
     meshingComboBox->addItem("blockMesh");
     QLabel *meshingLabel = new QLabel("Meshing");
     //parametersLayout->addRow("Meshing", meshingComboBox);
@@ -177,11 +180,20 @@ void CFDExpertWidget::initializeUI()
 
     meshingComboBox->setToolTip(tr("Method used for generating the mesh for the model"));
 
+    QLabel *startTimeLabel = new QLabel("Start time", this);
+    parametersLayout->addWidget(startTimeLabel, 4, 0);
+    startTimeBox = new QDoubleSpinBox(this);
+    parametersLayout->addWidget(startTimeBox, 4, 1);
+    startTimeBox->setDecimals(3);
+    startTimeBox->setSingleStep(0.001);
+    startTimeBox->setMinimum(0);
+    startTimeBox->setValue(0.01);
+
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox,4,1);
-    parametersLayout->addWidget(inflowLabel, 4, 0);
+    parametersLayout->addWidget(inflowCheckBox,5,1);
+    parametersLayout->addWidget(inflowLabel, 5, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
     //parametersLayout->setMargin();
