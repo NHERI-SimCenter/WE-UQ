@@ -103,7 +103,7 @@ private:  /* methods */
     void setExponentialTurbulent(void);
     void exportInflowParameterFile(QString);
     void exportUFile(QString);
-    void exportControlDictFile(QString);
+    void exportControlDictFile(QString, QString);
     void clearBoundaryMap(void);
     bool readUfile(QString);
     bool readControlDict(QString);

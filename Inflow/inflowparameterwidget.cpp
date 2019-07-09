@@ -943,9 +943,14 @@ void InflowParameterWidget::exportUFile(QString fileName)
     UFile.close();
 }
 
-void InflowParameterWidget::exportControlDictFile(QString fileName)
+void InflowParameterWidget::exportControlDictFile(QString origFileName, QString fileName)
 {
     // file handle for the controlDict file
+    QFile CDictIn(origFileName);
+    CDictIn.open(QFile::ReadOnly);
+    CDictContents = CDictIn.readAll();
+    CDictIn.close();
+
     QFile CDict(fileName);
     CDict.open(QFile::WriteOnly);
     QTextStream out(&CDict);
@@ -1037,7 +1042,7 @@ void InflowParameterWidget::on_btn_export_clicked()
     qDebug() << "move" << newFile << origFile;
 
     // update controlDict file
-    this->exportControlDictFile(newFile);
+    this->exportControlDictFile(origFile, newFile);
 }
 
 void InflowParameterWidget::on_UFileChanged(QString uFilePath)
@@ -1185,7 +1190,7 @@ bool InflowParameterWidget::copyFiles(QString &dirName)
     qDebug() << "move" << newFile << origFile;
 
     // update controlDict file
-    this->exportControlDictFile(newFile);
+    this->exportControlDictFile(origFile, newFile);
 
     return true;
 }
