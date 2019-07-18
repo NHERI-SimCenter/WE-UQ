@@ -13,17 +13,16 @@ class CFDExpertWidget : public SimCenterAppWidget
 public:
     explicit CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent = nullptr);
 
-    bool outputAppDataToJSON(QJsonObject &jsonObject);
-    bool outputToJSON(QJsonObject &rvObject);
-    bool inputFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &path);
+    bool outputAppDataToJSON(QJsonObject &jsonObject) override;
+    bool outputToJSON(QJsonObject &rvObject) override;
+    bool inputFromJSON(QJsonObject &rvObject) override;
+    bool copyFiles(QString &path) override;
     bool supportsLocalRun() override;
 
 signals:
 
 public slots:
     void selectButtonPushed();
-    void remoteLSReturn(QJsonArray dirList);
 
 private:
     QLineEdit* caseEditBox;
