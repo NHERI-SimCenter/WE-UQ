@@ -86,6 +86,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkRequest>
 #include <QHostInfo>
+#include <QMessageBox>
 
 #include <GoogleAnalytics.h>
 
@@ -110,7 +111,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theRVs = new RandomVariablesContainer();
     theGI = GeneralInformationWidget::getInstance();
     theSIM = new SIM_Selection(theRVs);
-    theEvent = new WindEventSelection(theRVs);
+    theEvent = new WindEventSelection(theRVs, theService);
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
     theUQ_Method = new InputWidgetSampling();
     theEDP = new EDP_WindSelection(theRVs);
@@ -157,11 +158,20 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     connect(remoteApp,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
     connect(remoteApp,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
 
-    connect(localApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
+    connect(localApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
+    {
+        currentApp = localApp;
+        setUpForApplicationRun(workingDir, subDir);
+    });
+
     connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     connect(localApp,SIGNAL(processResults(QString, QString, QString)), this, SLOT(processResults(QString, QString, QString)));
 
-    connect(remoteApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
+    connect(remoteApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
+    {
+        currentApp = remoteApp;
+        setUpForApplicationRun(workingDir, subDir);
+    });
 
     connect(theJobManager,SIGNAL(processResults(QString , QString, QString)), this, SLOT(processResults(QString, QString, QString)));
     connect(theJobManager,SIGNAL(loadFile(QString)), this, SLOT(loadFile(QString)));
@@ -303,6 +313,24 @@ QUuid WorkflowAppWE::getUserId()
         userIdSetting = commonSettings.value("userId");
     }
     return userIdSetting.toUuid();
+}
+
+bool WorkflowAppWE::canRunLocally()
+{
+    QList<SimCenterAppWidget*> apps({theEvent, theEDP, theSIM});
+
+    foreach(SimCenterAppWidget* app, apps)
+    {
+        if(!app->supportsLocalRun())
+        {
+            theRunWidget->close();
+            QMessageBox msgBox;
+            msgBox.setText("The current workflow cannot run locally, please run at DesignSafe instead.");
+            msgBox.exec();
+            return false;
+        }
+    }
+    return true;
 }
 
 void
@@ -629,10 +657,18 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
         }
     }
 
-    RemoteApplication* remoteApplication = (RemoteApplication*)remoteApp;
+    RemoteApplication* remoteApplication = static_cast<RemoteApplication*>(remoteApp);
 
-    remoteApplication->clearExtraInputs();
-    remoteApplication->clearExtraParameters();
+    if(currentApp == remoteApp)
+    {
+        remoteApplication->clearExtraInputs();
+        remoteApplication->clearExtraParameters();
+    }
+    else
+    {
+        if (!canRunLocally())
+            return;
+    }
 
     if(hasCFDEvent)
     {

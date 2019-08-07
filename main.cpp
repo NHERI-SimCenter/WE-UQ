@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
   qInstallMessageHandler(customMessageOutput);
 
   // window scaling for mac
-  //QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
   QApplication a(argc, argv);
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
           This is the Performance Based Engineering (WE) Application.\
           <p> \
           The WE Application (WE App) is an open-source software \
-          (https://github.com/NHERI-SimCenterWE) that provides researchers a tool to \
+          (https://github.com/NHERI-SimCenter/WE-UQ) that provides researchers a tool to \
           assess the performance of a building to wind loading. The application \
           focuses on quantifying building performance through decision variables. Given \
           that the properties of the buildings and the wind events are not known \

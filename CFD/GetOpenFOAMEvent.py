@@ -39,7 +39,7 @@ def parseForceComponents(forceArray):
     z = float(components[2])
     return [x, y, z]
 
-def ReadOpenFOAMForces(buildingForcesPath, floorsCount):
+def ReadOpenFOAMForces(buildingForcesPath, floorsCount, startTime):
     """
     This method will read the forces from the output files in the OpenFOAM case output (post processing)
     """
@@ -59,23 +59,25 @@ def ReadOpenFOAMForces(buildingForcesPath, floorsCount):
                 deltaT = float(line.split()[0])
                 needsDeltaT = False
 
-            detectedForces = re.findall(forcePattern, line)
+            t = float(line.split()[0])
+            if t > startTime:
+                detectedForces = re.findall(forcePattern, line)
 
-            for i in range(floorsCount):
-                # Read the different force types (pressure, viscous and porous!)
-                pressureForce = detectedForces[6 * i]
-                viscousForce = detectedForces[6 * i + 1]
-                porousForce = detectedForces[6 * i + 2]
+                for i in range(floorsCount):
+                    # Read the different force types (pressure, viscous and porous!)
+                    pressureForce = detectedForces[6 * i]
+                    viscousForce = detectedForces[6 * i + 1]
+                    porousForce = detectedForces[6 * i + 2]
 
-                # Parse force components 
-                [fprx, fpry, fprz] = parseForceComponents(pressureForce)
-                [fvx, fvy, fvz] = parseForceComponents(viscousForce)
-                [fpox, fpoy, fpoz] = parseForceComponents(porousForce)
-                
-                # Aggregate forces in X, Y, Z directions
-                forces[i].X.append(fprx + fvx + fpox)
-                forces[i].Y.append(fpry + fvy + fpoy)
-                forces[i].Z.append(fprz + fvz + fpoz)
+                    # Parse force components 
+                    [fprx, fpry, fprz] = parseForceComponents(pressureForce)
+                    [fvx, fvy, fvz] = parseForceComponents(viscousForce)
+                    [fpox, fpoy, fpoz] = parseForceComponents(porousForce)
+                    
+                    # Aggregate forces in X, Y, Z directions
+                    forces[i].X.append(fprx + fvx + fpox)
+                    forces[i].Y.append(fpry + fvy + fpoy)
+                    forces[i].Z.append(fprz + fvz + fpoz)
 
         
 
@@ -161,14 +163,13 @@ def writeEVENT(forces, deltaT):
         floor = forces.index(floorForces) + 1
         addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.X, "X", floor, deltaT)
         addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.Y, "Y", floor, deltaT)
-        addFloorForceToEvent(timeSeriesArray, patternsArray, floorForces.Z, "Z", floor, deltaT)
         addFloorPressure(pressureArray, floor)
 
     with open("EVENT.json", "w") as eventsFile:
         json.dump(eventDict, eventsFile)
 
 
-def GetOpenFOAMEvent(caseDir, floorsCount):
+def GetOpenFOAMEvent(caseDir, floorsCount, startTime):
     """
     Read OpenFOAM output and generate an EVENT file for the building
     """
@@ -177,19 +178,23 @@ def GetOpenFOAMEvent(caseDir, floorsCount):
         print("Invalid OpenFOAM Case Directory!")
         sys.exit(-1)
 
-    buildingForcesPath = os.path.join(caseDir, "postProcessing", forcesOutputName, "0", "forces_bins.dat")
-    [deltaT, forces] = ReadOpenFOAMForces(buildingForcesPath, floorsCount)
+    if floorsCount == 1:        
+        buildingForcesPath = os.path.join(caseDir, "postProcessing", forcesOutputName, "0", "forces.dat")
+    else:
+        buildingForcesPath = os.path.join(caseDir, "postProcessing", forcesOutputName, "0", "forces_bins.dat")
+
+    [deltaT, forces] = ReadOpenFOAMForces(buildingForcesPath, floorsCount, startTime)
 
     # Write the EVENT file
     writeEVENT(forces, deltaT)
 
     print("OpenFOAM event is written to EVENT.json")
 
-def GetFloorsCount(BIMFilePath):
+def ReadBIM(BIMFilePath):
     with open(BIMFilePath,'r') as BIMFile:
 	    bim = json.load(BIMFile)
 
-    return int(bim["GeneralInformation"]["stories"])
+    return [int(bim["GeneralInformation"]["stories"]), float(bim["Events"][0]["start"])]
 
 if __name__ == "__main__":
     """
@@ -205,7 +210,7 @@ if __name__ == "__main__":
     arguments, unknowns = parser.parse_known_args()
     floors = arguments.floors
     if not floors:
-        floors = GetFloorsCount(arguments.bim)
+        [floors, startTime] = ReadBIM(arguments.bim)
 
-    GetOpenFOAMEvent(arguments.case, floors)
+    GetOpenFOAMEvent(arguments.case, floors, startTime)
     

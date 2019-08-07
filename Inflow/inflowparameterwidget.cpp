@@ -75,7 +75,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
 
         connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
         {
-           this->on_UFileChanged(UFilePath);
+            this->uFileUpdateRequested();
         });
     }
     else {
@@ -83,6 +83,8 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
         ui->sourceLocateBtn->show();
         ui->refreshButton->hide();
     }
+    // fmk - removed but left in .ui file in case absolutely must have
+    ui->sourceSelectionBrowser->hide();
 }
 
 InflowParameterWidget::~InflowParameterWidget()
@@ -1054,11 +1056,16 @@ void InflowParameterWidget::on_btn_export_clicked()
     this->exportControlDictFile(origFile, newFile);
 }
 
-void InflowParameterWidget::on_UFileChanged(QString uFilePath)
+void InflowParameterWidget::on_RemoteFilesChanged(QString uFilePath, QString controlDictPath)
 {
     UFilePath = uFilePath;
+    UFileHead = "";
+    UFileTail = "";
+
     if (readUfile(uFilePath))
         processUfile();
+
+    readControlDict(controlDictPath);
 }
 
 void InflowParameterWidget::on_boundarySelection_currentIndexChanged(int index)
@@ -1077,7 +1084,7 @@ bool InflowParameterWidget::outputToJSON(QJsonObject &rvObject)
     refreshParameterMap();
 
     // just need to send the class type here.. type needed in object in case user screws up
-    rvObject["type"]="CFD";
+    rvObject["type"]="CFD-Inflow";
 
     rvObject["EventClassification"]="Wind";
 
@@ -1113,6 +1120,14 @@ bool InflowParameterWidget::inputFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::outputAppDataToJSON(QJsonObject &rvObject)
 {
+    rvObject["EventClassification"]="Wind";
+    rvObject["Application"] = "CFD Inflow";
+    QJsonObject dataObj;
+
+
+    rvObject["ApplicationData"] = dataObj;
+    return true;
+
     return true;
 }
 

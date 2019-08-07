@@ -129,6 +129,7 @@ private:
     RunWidget *theRunWidget;
     Application *localApp;
     Application *remoteApp;
+    Application* currentApp;
     RemoteJobManager *theJobManager;
 
     QModelIndex infoItemIdx;
@@ -139,6 +140,7 @@ private:
     QNetworkAccessManager *manager;
 
     static QUuid getUserId();
+    bool canRunLocally();
 };
 
 #endif // INPUT_WIDGET_WE_UQ_H

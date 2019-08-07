@@ -44,6 +44,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVector>
 #include <CFD/UI/CFDExpertWidget.h>
+#include <RemoteService.h>
+
 class QComboBox;
 class QStackedWidget;
 class UserDefinedApplication;
@@ -54,7 +56,7 @@ class WindEventSelection : public  SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, QWidget *parent = 0);
+    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
     ~WindEventSelection();
 
     bool outputToJSON(QJsonObject &rvObject);
@@ -62,6 +64,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
+    bool supportsLocalRun() override;
 
  signals:
 
@@ -75,7 +78,6 @@ private:
 
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theCFDInflowModel;
    SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
 

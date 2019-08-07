@@ -115,5 +115,6 @@ void
 RunWidget::setupForRunApplicationDone(QString &tmpDirectory, QString &inputFile) {
     qDebug() << "RunWidget::setupForRunApplicationDone";
     //this->hide();
-    theCurrentApplication->setupDoneRunApplication(tmpDirectory, inputFile);
+    if(!theCurrentApplication->setupDoneRunApplication(tmpDirectory, inputFile))
+        this->hide();
 }

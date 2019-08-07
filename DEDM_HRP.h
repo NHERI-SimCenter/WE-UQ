@@ -41,15 +41,17 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
-#include <QGroupBox>
-#include <QVector>
-#include <QVBoxLayout>
 #include <QComboBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QVector>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
 class QButtonGroup;
 class QComboBox;
+class QRadioButton;
 
 class DEDM_HRP : public SimCenterAppWidget
 {
@@ -68,14 +70,18 @@ signals:
 
 public slots:
    void clear(void);
+   void oneByOneToggled(bool);
 
 private:
 
+   QRadioButton *h1Radio;
+   QRadioButton *h2Radio;
     QVBoxLayout *layout;
     QWidget     *femSpecific;
 
     QLineEdit *windSpeed;
     QComboBox *windDuration;
+    QSpinBox *incidenceAngle;    
     QButtonGroup *thePlanGroup;
     QButtonGroup *theHeightGroup;
     QButtonGroup *theExposureGroup;
