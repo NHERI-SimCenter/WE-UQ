@@ -42,6 +42,7 @@ SOURCES += main.cpp \
     EDP_WindSelection.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
+    LowRiseTPU.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp
 
@@ -55,6 +56,7 @@ HEADERS  += \
     StandardWindEDP.h \
     EDP_WindSelection.h \
     DEDM_HRP.h \
+    LowRiseTPU.h \
     StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h
 
