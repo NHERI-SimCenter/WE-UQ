@@ -85,6 +85,10 @@ int main(int argc, char *argv[])
     // remove old log file
     QFile debugFile(logFilePath);
     debugFile.remove();
+  QApplication a(argc, argv);
+  Q_INIT_RESOURCE(images1);
+  Q_INIT_RESOURCE(images);
+  Q_INIT_RESOURCE(styles);
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 

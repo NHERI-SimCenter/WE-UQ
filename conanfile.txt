@@ -1,0 +1,5 @@
+[requires]
+SimCenterCommonWorkflow/0.0.1@elhaddad/testing 
+
+[generators]
+qmake
