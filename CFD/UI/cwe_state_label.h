@@ -39,7 +39,8 @@
 #include <QLabel>
 
 enum class CaseState;
-class CWEcaseInstance;
+
+//class CWEcaseInstance;
 
 class cwe_state_label : public QLabel
 {
@@ -49,7 +50,7 @@ public:
     void setNewState(CaseState newState);
 
 private:
-    CWEcaseInstance * currentCase = nullptr;
+    //CWEcaseInstance * currentCase = nullptr;
 };
 
 #endif // CWE_STATE_LABEL_H

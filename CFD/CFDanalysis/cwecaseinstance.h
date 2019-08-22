@@ -42,11 +42,12 @@
 #include <QJsonObject>
 #include <QList>
 #include <QThread>
+#include <QDir>
 
 // #include "remoteFiles/filenoderef.h"
 //#include "filenoderef.h"
 
-class cweResultInstance;
+//class cweResultInstance;
 class CWEanalysisType;
 class RemoteJobData;
 class JobListNode;
@@ -72,6 +73,8 @@ enum class InternalCaseState {OFFLINE, INVALID, ERROR, DEFUNCT,
                              STARTING_JOB, STOPPING_JOB, RUNNING_JOB,
                              DOWNLOAD};
 
+
+#if 0
 class CWEcaseInstance : public QObject
 {
     Q_OBJECT
@@ -85,7 +88,7 @@ public:
     bool isDefunct();
     CaseState getCaseState();
     //const FileNodeRef getCaseFolder();
-    const QString getCaseFolder();
+    const QDir getCaseFolder();
     QString getCaseName();
 
     //Note: For these, it can always answer "I don't know"
@@ -115,8 +118,8 @@ private slots:
     void fileTaskDone(RequestState invokeStatus);
     void fileTaskStarted();
 
-    void jobInvoked(RequestState invokeStatus, QJsonDocument jobData);
-    void jobKilled(RequestState invokeStatus);
+    //void jobInvoked(RequestState invokeStatus, QJsonDocument jobData);
+    //void jobKilled(RequestState invokeStatus);
 
 private:
     void computeInitState();
@@ -142,11 +145,11 @@ private:
     void state_InitParam_taskDone(RequestState invokeStatus);
     void state_MakingFolder_taskDone(RequestState invokeStatus);
     void state_Ready_fileChange_jobList();
-    void state_Running_jobList();
-    void state_StartingJob_jobInvoked(QString jobID);
-    void state_StoppingJob_jobKilled();
-    void state_WaitingFolderDel_taskDone(RequestState invokeStatus);
-    void state_Download_recursiveOpDone(RequestState invokeStatus);
+    //void state_Running_jobList();
+    //void state_StartingJob_jobInvoked(QString jobID);
+    //void state_StoppingJob_jobKilled();
+    //void state_WaitingFolderDel_taskDone(RequestState invokeStatus);
+    //void state_Download_recursiveOpDone(RequestState invokeStatus);
     void state_Param_Save_taskDone(RequestState invokeStatus);
 
     void computeIdleState();
@@ -161,7 +164,7 @@ private:
     InternalCaseState myState = InternalCaseState::ERROR;
 
     //FileNodeRef caseFolder;
-    QString caseFolder;
+    QDir caseFolder;
     CWEanalysisType * myType = nullptr;
 
     QString expectedNewCaseFolder;
@@ -171,5 +174,6 @@ private:
     QString exitFileName = ".exit";
     bool triedParamFile = false;
 };
+#endif
 
 #endif // CFDCASEINSTANCE_H

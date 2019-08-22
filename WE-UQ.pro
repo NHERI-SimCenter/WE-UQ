@@ -67,6 +67,7 @@ SOURCES += main.cpp \
     CFD/UI/cwe_param_tabs/cwe_grouptab.cpp \
     CFD/UI/cwe_param_tabs/cwe_paneltab.cpp \
     CFD/UI/cwe_param_tabs/cwe_paramtab.cpp \
+    CFD/UI/cwe_param_tabs/cwe_stagestatustab.cpp \
     CFD/Analysis/remotejobdata.cpp
 
 
@@ -96,9 +97,7 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrtextdatawidget.h \
     CFD/CFDanalysis/cweanalysistype.h \
     CFD/CFDanalysis/cwejobaccountant.h \
-    CFD/CFDanalysis/cweresultinstance.h \
     CFD/CFDanalysis/cwecaseinstance.h \
-    CFD/UI/cwe_param_tabs/cwe_stagestatustab.cpp \
     CFD/UI/cwe_param_tabs/cwe_stagestatustab.h \
     CFD/UI/cwe_param_tabs/cwe_grouptab.h \
     CFD/UI/cwe_param_tabs/cwe_paneltab.h \

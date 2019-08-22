@@ -45,7 +45,7 @@
 
 class CWE_MainWindow;
 class CWEanalysisType;
-class CWEcaseInstance;
+//class CWEcaseInstance;
 class RemoteJobData;
 //class FileNodeRef;
 class CWEjobAccountant;
