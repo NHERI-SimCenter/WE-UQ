@@ -50,7 +50,7 @@
 //#include "CFDanalysis/cwejobaccountant.h"
 
 //#include "mainWindow/cwe_mainwindow.h"
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
 bool offlineMode=true;
 

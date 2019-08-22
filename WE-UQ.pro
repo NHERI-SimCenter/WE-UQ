@@ -40,6 +40,7 @@ INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
     CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/CFDTemplateWidget.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
@@ -53,7 +54,6 @@ SOURCES += main.cpp \
     CFD/cwe_interfacedriver.cpp \
     CFD/UI/cwe_parameters.cpp \
     CFD/UI/cwe_state_label.cpp \
-    CFD/Analysis/cwe_globals.cpp \
     CFD/Analysis/filemetadata.cpp \
     CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
     CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
@@ -71,6 +71,7 @@ SOURCES += main.cpp \
 
 
 HEADERS  += \
+    CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
     CFD/UI/RemoteCaseSelector.h \
     Inflow/inflowparameterwidget.h \
@@ -85,7 +86,6 @@ HEADERS  += \
     CFD/cwe_interfacedriver.h \
     CFD/UI/cwe_parameters.h \
     CFD/UI/cwe_state_label.h \
-    CFD/Analysis/cwe_globals.h \
     CFD/Analysis/filemetadata.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \

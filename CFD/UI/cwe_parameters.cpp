@@ -71,7 +71,7 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
     ui->setupUi(this);
     ui->buttonGroup->hide();
     ui->bottomLine->hide();
-    ui->frame_parameterInfo->hide(); //???
+    //ui->frame_parameterInfo->hide(); //???
 
     QVBoxLayout * stageLayout = qobject_cast<QVBoxLayout *>(ui->tabsBar->layout());
     stageLayout->setMargin(0);
@@ -88,6 +88,30 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
 
     //TODO: Implement optional reference image
     ui->optionalImage->setVisible(false);
+
+    // load the case template
+
+    QString confPath = ":/CWE/";
+    QString caseConfigFile = "upload3D.json";
+    QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
+    if (rawConfig.isEmpty())
+    {
+        //qCDebug(agaveAppLayer, "Unreadable template config file skipped: %s", qPrintable(caseConfigFile));
+    }
+
+    CWEanalysisType * newTemplate = new CWEanalysisType(rawConfig);
+    if (!newTemplate->validParse())
+    {
+        //qCDebug(agaveAppLayer, "Template Parse Invalid: %s", qPrintable(caseConfigFile));
+        delete newTemplate;
+    }
+    else
+    {
+        theTemplate = newTemplate;
+        //qCDebug(agaveAppLayer, "Added New Template: %s", qPrintable(caseConfigFile));
+    }
+
+    this->paramsChanged();
 }
 
 CWE_Parameters::~CWE_Parameters()

@@ -43,7 +43,7 @@
 
 CWEjobAccountant::CWEjobAccountant(QObject *parent) : QObject(parent)
 {
-    cwe_globals::set_CWE_Job_Accountant(this);
+    //cwe_globals::set_CWE_Job_Accountant(this);
 //    QObject::connect(cwe_globals::get_job_handle(), SIGNAL(newJobData()),
 //                     this, SLOT(reloadJobListsInterlock()),
 //                     Qt::QueuedConnection);

@@ -37,7 +37,7 @@
 #define CWE_GLOBALS_H
 
 //#include "ae_globals.h"
-#include "CFD/Analysis/cwejobaccountant.h"
+//#include "CFD/Analysis/cwejobaccountant.h"
 
 class CWE_InterfaceDriver;
 
@@ -48,11 +48,11 @@ public:
     cwe_globals();
 
     static CWE_InterfaceDriver * get_CWE_Driver();
-    static void set_CWE_Job_Accountant(CWEjobAccountant * theAccountant);
-    static CWEjobAccountant * get_CWE_Job_Accountant();
+    //static void set_CWE_Job_Accountant(CWEjobAccountant * theAccountant);
+    //static CWEjobAccountant * get_CWE_Job_Accountant();
 
 private:
-    static CWEjobAccountant * theJobAccountant;
+    //static CWEjobAccountant * theJobAccountant;
 };
 
 #endif // CWE_GLOBALS_H

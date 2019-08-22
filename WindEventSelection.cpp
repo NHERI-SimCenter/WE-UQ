@@ -81,6 +81,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("Stochastic Wind"));
+    eventSelection->addItem(tr("CFD - Guided"));
     eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("Existing"));
 
@@ -105,6 +106,9 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
+
+    CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);
+    theStackedWidget->addWidget(CFDTemplateEventWidget);
 
     CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
@@ -166,10 +170,12 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 0;
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 1;
-    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-      index = 3;
-    } else if (type == QString("CFD - Expert")) {
+    } else if (type == QString("CFD - Guided")) {
         index = 2;
+    } else if (type == QString("CFD - Expert")) {
+        index = 3;
+    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
+        index = 4;
     }
     else {
         return false;
@@ -204,13 +210,18 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theStochasticModel;
     }
 
-    else if(arg1 == "CFD - Expert") {
+    else if(arg1 == "CFD - Guided") {
         theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
-    else if(arg1 == "Existing") {
+    else if(arg1 == "CFD - Expert") {
         theStackedWidget->setCurrentIndex(3);
+        theCurrentEvent = CFDExpertEventWidget;
+    }
+
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(4);
         theCurrentEvent = theExistingEvents;
     }
 

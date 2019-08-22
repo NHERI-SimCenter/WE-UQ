@@ -75,6 +75,8 @@ class RandomVariablesContainer;
 #define SimCenterButtonMode_RESET     0x0004u
 #define SimCenterButtonMode_RESULTS   0x0008u
 
+class CWEanalysisType;
+
 namespace Ui {
 class CWE_Parameters;
 }
@@ -152,6 +154,9 @@ private:
     bool isRemote = false;
 
     RandomVariablesContainer *theRandomVariablesContainer;
+
+    // new since pulled from CWE
+    CWEanalysisType * theTemplate;
 };
 
 #endif // CWE_PARAMETERS_H
