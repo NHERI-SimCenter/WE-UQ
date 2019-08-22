@@ -55,7 +55,6 @@ SOURCES += main.cpp \
     CFD/UI/cwe_parameters.cpp \
     CFD/UI/cwe_state_label.cpp \
     CFD/Analysis/cwe_globals.cpp \
-    CFD/Analysis/cwejobaccountant.cpp \
     CFD/Analysis/filemetadata.cpp \
     CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
     CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
@@ -89,7 +88,6 @@ HEADERS  += \
     CFD/UI/cwe_parameters.h \
     CFD/UI/cwe_state_label.h \
     CFD/Analysis/cwe_globals.h \
-    CFD/Analysis/cwejobaccountant.h \
     CFD/Analysis/filemetadata.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \
