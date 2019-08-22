@@ -71,7 +71,7 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
     ui->setupUi(this);
     ui->buttonGroup->hide();
     ui->bottomLine->hide();
-    //ui->frame_parameterInfo->hide(); //???
+    //ui->frame_parameterInfo->hide();
 
     QVBoxLayout * stageLayout = qobject_cast<QVBoxLayout *>(ui->tabsBar->layout());
     stageLayout->setMargin(0);
@@ -933,3 +933,73 @@ QString CWE_Parameters::getStateText(StageState theState)
     }
     return "*** TOTAL ERROR ***";
 }
+
+CWEcaseInstance * CWE_Parameters::getCurrentCase()
+{
+    return currentCase;
+}
+
+void CWE_Parameters::setCurrentCase()
+{
+    if (currentCase == nullptr) return;
+
+    deactivateCurrentCase();
+    currentCase = nullptr;
+    //stateLabel->setNewState(CaseState::DEFUNCT);
+    //emit haveNewCase();
+    this->newCaseGiven();
+}
+
+void CWE_Parameters::setCurrentCase(CWEcaseInstance * newCase)
+{
+    if (newCase == currentCase) return;
+
+    //changeParamsAndResultsEnabled(false);
+    deactivateCurrentCase();
+    currentCase = newCase;
+    if (currentCase == nullptr) return;
+
+    /*
+    QObject::connect(currentCase, SIGNAL(haveNewState(CaseState)),
+                    this, SLOT(newCaseState(CaseState)),
+                    Qt::QueuedConnection);
+    //Manually invoke state change to initialize visibility
+    newCaseState(currentCase->getCaseState());
+    */
+    //emit haveNewCase();
+    this->newCaseGiven();
+}
+
+void CWE_Parameters::setCurrentCase(CWEanalysisType * newCaseType)
+{
+    CWEcaseInstance * newCase = getCaseFromType(newCaseType);
+    if (newCase == nullptr)
+    {
+        setCurrentCase();
+        return;
+    }
+    setCurrentCase(newCase);
+}
+
+void CWE_Parameters::deactivateCurrentCase()
+{
+    if (currentCase == nullptr) return;
+    QObject::disconnect(currentCase,nullptr,nullptr,nullptr);
+    currentCase->deleteLater();
+    currentCase = nullptr;
+}
+
+CWEcaseInstance * CWE_Parameters::getCaseFromType(CWEanalysisType * caseType)
+{
+    CWEcaseInstance * ret;
+    if (caseType == nullptr)
+    {
+        ret = new CWEcaseInstance();
+    }
+    else
+    {
+        ret = new CWEcaseInstance(caseType);
+    }
+    return ret;
+}
+
