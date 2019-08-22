@@ -3,6 +3,7 @@
 #include <QComboBox>
 #include <QDir>
 #include <QStandardPaths>
+#include "RemoteCaseSelector.h"
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
@@ -76,14 +77,12 @@ void CFDExpertWidget::selectButtonPushed()
 {
     if(remoteService->isLoggedIn())
     {
-        remoteService->remoteLSCall("elhaddad");
+        RemoteCaseSelector selector(remoteService, this);
+        selector.setWindowModality(Qt::ApplicationModal);
+        connect(&selector, &RemoteCaseSelector::caseSelected, caseEditBox, &QLineEdit::setText);
+        selector.exec();
+        selector.close();
     }
-}
-
-void CFDExpertWidget::remoteLSReturn(QJsonArray dirList)
-{
-    //TODO:implement remote file listing and selection
-    qDebug() << dirList;
 }
 
 void CFDExpertWidget::downloadRemoteCaseFiles()
@@ -146,8 +145,7 @@ void CFDExpertWidget::initializeUI()
     QHBoxLayout* caseLayout = new QHBoxLayout();
     caseLayout->addWidget(caseEditBox);
     caseEditBox->setToolTip(tr("OpenFOAM Remote Case Directory"));
-    caseSelectButton = new QPushButton(tr("Select"));
-    caseSelectButton->hide();
+    caseSelectButton = new QPushButton(tr("Browse"));
     caseLayout->addWidget(caseSelectButton);
 
     QLabel *caseLabel = new QLabel("Case", this);
@@ -258,8 +256,6 @@ void CFDExpertWidget::initializeUI()
 void CFDExpertWidget::setupConnections()
 {
     connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
-
-    connect(remoteService, &RemoteService::remoteLSReturn, this, &CFDExpertWidget::remoteLSReturn);
 
     connect(inflowCheckBox, &QCheckBox::stateChanged, this, [this](int state)
     {
