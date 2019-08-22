@@ -14,8 +14,8 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     setupConnections();
 
-    originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U.orig";
-    originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/controlDict.orig";
+    //originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U.orig";
+    //originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/controlDict.orig";
 }
 
 bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
@@ -79,49 +79,6 @@ void CFDTemplateWidget::selectButtonPushed()
         selector.exec();
         selector.close();
     }
-}
-
-void CFDTemplateWidget::downloadRemoteCaseFiles()
-{
-    if(remoteService->isLoggedIn())
-    {
-        QStringList remoteFilePath;
-        remoteFilePath << getRemoteFilesPaths();
-
-        QStringList localFilePath;
-        localFilePath << originalUFilePath << originalControlDictPath;
-        ensureUFileExists();
-        remoteService->downloadFilesCall(remoteFilePath, localFilePath, this);
-    }
-}
-
-void CFDTemplateWidget::ensureUFileExists()
-{
-    QFile uFile(originalUFilePath);
-    if (uFile.exists())
-        return;
-
-    QFileInfo fileInfo(originalUFilePath);
-    QString dirPath = fileInfo.dir().absolutePath();
-    QDir uFileDir(dirPath);
-    if (!uFileDir.exists())
-        uFileDir.mkpath(dirPath);
-
-    uFile.open(QFile::ReadWrite);
-    uFile.close();
-}
-
-QStringList CFDTemplateWidget::getRemoteFilesPaths()
-{
-    QString caseDir = caseEditBox->text();
-
-    if(caseDir.startsWith("agave://", Qt::CaseInsensitive))
-    {
-        caseDir = caseDir.remove(0, 8);
-        caseDir = caseDir.prepend("system/");
-    }
-
-    return {caseDir + "/0/U", caseDir + "/system/controlDict"};
 }
 
 void CFDTemplateWidget::initializeUI()
@@ -198,7 +155,7 @@ void CFDTemplateWidget::initializeUI()
     layout->addStretch();
 
     this->setLayout(layout);
-    this->setEnabled(false);
+    this->setEnabled(true);
 }
 
 void CFDTemplateWidget::setupConnections()
