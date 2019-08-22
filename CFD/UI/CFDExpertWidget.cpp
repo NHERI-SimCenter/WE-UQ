@@ -8,7 +8,8 @@
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    inflowWidget = new InflowParameterWidget(theRandomVariableIW, true);
+    inflowWidget    = new InflowParameterWidget(theRandomVariableIW, true);
+    parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
 
     initializeUI();
 
@@ -32,6 +33,7 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 
 bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
 {
+    parameterWidget->outputToJSON(eventObject);
     inflowWidget->outputToJSON(eventObject);
     eventObject["OpenFOAMCase"] = caseEditBox->text();
     eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
@@ -55,6 +57,7 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
     if(eventObject.contains("start"))
         this->startTimeBox->setValue(eventObject["start"].toDouble());
 
+    parameterWidget->inputFromJSON(eventObject);
     inflowWidget->inputFromJSON(eventObject);
 
     return true;
@@ -245,6 +248,7 @@ void CFDExpertWidget::initializeUI()
 
     layout->addWidget(CFDGroupBox);
     inflowWidget->setHidden(true);
+    layout->addWidget(parameterWidget, 1);
     layout->addWidget(inflowWidget, 1);
 
     layout->addStretch();

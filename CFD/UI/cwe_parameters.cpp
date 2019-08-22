@@ -35,6 +35,8 @@
 #include "cwe_parameters.h"
 #include "ui_cwe_parameters.h"
 
+#include <RandomVariablesContainer.h>
+
 #include "filemetadata.h"
 
 //#include "remoteFiles/filetreenode.h"
@@ -58,10 +60,13 @@
 
 // #include "mainWindow/cwe_mainwindow.h"
 
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
-CWE_Parameters::CWE_Parameters(QWidget *parent) :
-    ui(new Ui::CWE_Parameters)
+CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bool isRemote, QWidget *parent)
+    : SimCenterAppWidget(parent),
+      theRandomVariablesContainer(theRandomVariableIW),
+      ui(new Ui::CWE_Parameters),
+      isRemote(isRemote)
 {
     ui->setupUi(this);
 

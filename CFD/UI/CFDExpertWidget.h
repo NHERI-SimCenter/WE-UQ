@@ -2,10 +2,11 @@
 #define CFDEXPERTWIDGET_H
 
 #include <SimCenterAppWidget.h>
-#include  <RandomVariablesContainer.h>
+#include <RandomVariablesContainer.h>
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
+#include <CFD/UI/cwe_parameters.h>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -28,6 +29,7 @@ private:
     QLineEdit* caseEditBox;
     QComboBox* solverComboBox;
     RemoteService* remoteService;
+    CWE_Parameters * parameterWidget;
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
     QPushButton* caseSelectButton;

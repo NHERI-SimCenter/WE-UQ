@@ -51,7 +51,6 @@ SOURCES += main.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
     CFD/cwe_interfacedriver.cpp \
-    CFD/UI/CFDExpertWidget.cpp \
     CFD/UI/cwe_parameters.cpp \
     CFD/UI/cwe_state_label.cpp \
     CFD/Analysis/cwe_globals.cpp \
@@ -84,7 +83,6 @@ HEADERS  += \
     StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h \
     CFD/cwe_interfacedriver.h \
-    CFD/UI/CFDExpertWidget.h \
     CFD/UI/cwe_parameters.h \
     CFD/UI/cwe_state_label.h \
     CFD/Analysis/cwe_globals.h \

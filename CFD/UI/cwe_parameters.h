@@ -37,6 +37,8 @@
 
 //#include "cwe_super.h"
 
+#include <SimCenterAppWidget.h>
+
 #include <QVector>
 #include <QLabel>
 #include <QJsonObject>
@@ -54,6 +56,8 @@ enum class CaseState;
 enum class StageState;
 
 enum class SimCenterViewState;
+
+class RandomVariablesContainer;
 
 #define SimCenterButtonMode  std::uint32_t
 
@@ -75,13 +79,13 @@ namespace Ui {
 class CWE_Parameters;
 }
 
-class CWE_Parameters : QWidget
+class CWE_Parameters : public SimCenterAppWidget
 //        class CWE_Parameters : public CWE_Super
 {
     Q_OBJECT
 
 public:
-    explicit CWE_Parameters(QWidget *parent = nullptr);
+    explicit CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bool isRemote = false, QWidget *parent = nullptr);
     ~CWE_Parameters();
 
     virtual void linkMainWindow(CWE_MainWindow *theMainWin);
@@ -141,8 +145,13 @@ private:
 
     QLabel * loadingLabel = nullptr;
 
-    // temporary fix ...
+    // PETER: this is a temporary fix ...
     QObject *theMainWindow = nullptr;
+
+    // needed for SimCenterAppWidget
+    bool isRemote = false;
+
+    RandomVariablesContainer *theRandomVariablesContainer;
 };
 
 #endif // CWE_PARAMETERS_H
