@@ -38,7 +38,7 @@
 
 //#include "remoteFiles/remotefiletree.h"
 //#include "remoteFiles/filetreenode.h"
-#include "filetreenode.h"
+//#include "filetreenode.h"
 #include "filemetadata.h"
 #include "cwe_interfacedriver.h"
 //#include "mainWindow/cwe_mainwindow.h"

@@ -36,7 +36,7 @@
 
 //#include "remoteFiles/fileoperator.h"
 //#include "remoteJobs/joboperator.h"
-#include "fileoperator.h"
+//#include "fileoperator.h"
 //#include "joboperator.h"
 #include "remotejobdata.h"
 #include "cwe_globals.h"

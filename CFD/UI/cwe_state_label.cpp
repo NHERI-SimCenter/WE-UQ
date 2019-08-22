@@ -36,7 +36,7 @@
 #include "cwe_state_label.h"
 
 // #include "CFDanalysis/cwecaseinstance.h"
-#include "CFD/analysis/cwecaseinstance.h"
+#include "CFDanalysis/cwecaseinstance.h"
 
 cwe_state_label::cwe_state_label(QWidget *parent) : QLabel(parent)
 {

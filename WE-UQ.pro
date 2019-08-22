@@ -88,7 +88,6 @@ HEADERS  += \
     CFD/Analysis/cwe_globals.h \
     CFD/Analysis/cwejobaccountant.h \
     CFD/Analysis/filemetadata.h \
-    CFD/Analysis/filetreenode.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \
     CFD/SimCenter_widgets/sctrfiledatawidget.h \
