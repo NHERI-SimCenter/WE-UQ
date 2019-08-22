@@ -111,7 +111,7 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
         //qCDebug(agaveAppLayer, "Added New Template: %s", qPrintable(caseConfigFile));
     }
 
-    this->paramsChanged();
+    this->setCurrentCase(theTemplate);
 }
 
 CWE_Parameters::~CWE_Parameters()
@@ -143,8 +143,7 @@ bool CWE_Parameters::allowClickAway()
 
 void CWE_Parameters::newCaseGiven()
 {
-/*
-    CWEcaseInstance * newCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * newCase = this->getCurrentCase();
 
     clearStageTabs();
 
@@ -159,7 +158,6 @@ void CWE_Parameters::newCaseGiven()
         setHeaderLabels();
         loadingLabel->setText("No Case Selected.");
     }
-*/
 }
 
 void CWE_Parameters::setHeaderLabels()
@@ -963,11 +961,12 @@ void CWE_Parameters::setCurrentCase(CWEcaseInstance * newCase)
     QObject::connect(currentCase, SIGNAL(haveNewState(CaseState)),
                     this, SLOT(newCaseState(CaseState)),
                     Qt::QueuedConnection);
+    */
     //Manually invoke state change to initialize visibility
     newCaseState(currentCase->getCaseState());
-    */
+
     //emit haveNewCase();
-    this->newCaseGiven();
+    newCaseGiven();
 }
 
 void CWE_Parameters::setCurrentCase(CWEanalysisType * newCaseType)
