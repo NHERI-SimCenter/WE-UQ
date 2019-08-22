@@ -16,6 +16,11 @@ linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
+INCLUDEPATH += CFD
+INCLUDEPATH += CFD/UI
+INCLUDEPATH += CFD/Analysis
+INCLUDEPATH += CFD/SimCenter_widgets
+INCLUDEPATH += CFD/CFDanalysis
 
 win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
@@ -43,7 +48,29 @@ SOURCES += main.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
-    StochasticWindModel/src/StochasticWindInput.cpp
+    StochasticWindModel/src/StochasticWindInput.cpp \
+    CFD/cwe_interfacedriver.cpp \
+    CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/cwe_parameters.cpp \
+    CFD/UI/cwe_state_label.cpp \
+    CFD/Analysis/cwe_globals.cpp \
+    CFD/Analysis/cwejobaccountant.cpp \
+    CFD/Analysis/cwecaseinstance.cpp \
+    CFD/Analysis/filemetadata.cpp \
+    CFD/Analysis/filenoderef.cpp \
+    CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
+    CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
+    CFD/SimCenter_widgets/sctrfiledatawidget.cpp \
+    CFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
+    CFD/SimCenter_widgets/sctrstddatawidget.cpp \
+    CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
+    CFD/CFDanalysis/cweanalysistype.cpp \
+    CFD/CFDanalysis/cwecaseinstance.cpp \
+    CFD/CFDanalysis/cwejobaccountant.cpp \
+    CFD/UI/cwe_param_tabs/cwe_grouptab.cpp \
+    CFD/UI/cwe_param_tabs/cwe_paneltab.cpp \
+    CFD/UI/cwe_param_tabs/cwe_paramtab.cpp \
+    CFD/Analysis/remotejobdata.cpp
 
 
 HEADERS  += \
@@ -56,7 +83,34 @@ HEADERS  += \
     EDP_WindSelection.h \
     DEDM_HRP.h \
     StochasticWindModel/include/WittigSinha.h \
-    StochasticWindModel/include/StochasticWindInput.h
+    StochasticWindModel/include/StochasticWindInput.h \
+    CFD/cwe_interfacedriver.h \
+    CFD/UI/CFDExpertWidget.h \
+    CFD/UI/cwe_parameters.h \
+    CFD/UI/cwe_state_label.h \
+    CFD/Analysis/cwe_globals.h \
+    CFD/Analysis/cwejobaccountant.h \
+    CFD/Analysis/cwecaseinstance.h \
+    CFD/Analysis/filenoderef.h \
+    CFD/Analysis/filemetadata.h \
+    CFD/Analysis/filetreenode.h \
+    CFD/Analysis/fileoperator.h \
+    CFD/SimCenter_widgets/sctrbooldatawidget.h \
+    CFD/SimCenter_widgets/sctrchoicedatawidget.h \
+    CFD/SimCenter_widgets/sctrfiledatawidget.h \
+    CFD/SimCenter_widgets/sctrmasterdatawidget.h \
+    CFD/SimCenter_widgets/sctrstddatawidget.h \
+    CFD/SimCenter_widgets/sctrtextdatawidget.h \
+    CFD/CFDanalysis/cweanalysistype.h \
+    CFD/CFDanalysis/cwecaseinstance.h \
+    CFD/CFDanalysis/cwejobaccountant.h \
+    CFD/CFDanalysis/cweresultinstance.h \
+    CFD/UI/cwe_param_tabs/cwe_stagestatustab.cpp \
+    CFD/UI/cwe_param_tabs/cwe_stagestatustab.h \
+    CFD/UI/cwe_param_tabs/cwe_grouptab.h \
+    CFD/UI/cwe_param_tabs/cwe_paneltab.h \
+    CFD/UI/cwe_param_tabs/cwe_paramtab.h \
+    CFD/Analysis/remotejobdata.h
 
 
 RESOURCES += \
@@ -65,6 +119,12 @@ RESOURCES += \
     we-uq-resources.qrc
 
 #FORMS    += mainwindow.ui
+FORMS    += \
+    Inflow/inflowparameterwidget.ui \
+    CFD/UI/cwe_param_tabs/cwe_stagestatustab.ui \
+    CFD/UI/cwe_param_tabs/cwe_paneltab.ui \
+    CFD/UI/cwe_param_tabs/cwe_grouptab.ui \
+    CFD/UI/cwe_parameters.ui 
 
 #RESOURCES += \
 #    schema.qrc
@@ -75,7 +135,4 @@ DISTFILES += \
     wImage4.gif \
     wImage1.png \
     wImage_DEDM_HRP_Logo
-
-FORMS += \
-    Inflow/inflowparameterwidget.ui
 
