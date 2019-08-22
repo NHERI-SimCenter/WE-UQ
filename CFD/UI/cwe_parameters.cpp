@@ -69,6 +69,9 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
       isRemote(isRemote)
 {
     ui->setupUi(this);
+    ui->buttonGroup->hide();
+    ui->bottomLine->hide();
+    ui->frame_parameterInfo->hide(); //???
 
     QVBoxLayout * stageLayout = qobject_cast<QVBoxLayout *>(ui->tabsBar->layout());
     stageLayout->setMargin(0);
