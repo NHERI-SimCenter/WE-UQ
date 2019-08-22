@@ -55,9 +55,7 @@ SOURCES += main.cpp \
     CFD/UI/cwe_state_label.cpp \
     CFD/Analysis/cwe_globals.cpp \
     CFD/Analysis/cwejobaccountant.cpp \
-    CFD/Analysis/cwecaseinstance.cpp \
     CFD/Analysis/filemetadata.cpp \
-    CFD/Analysis/filenoderef.cpp \
     CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
     CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
     CFD/SimCenter_widgets/sctrfiledatawidget.cpp \
@@ -65,7 +63,6 @@ SOURCES += main.cpp \
     CFD/SimCenter_widgets/sctrstddatawidget.cpp \
     CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
     CFD/CFDanalysis/cweanalysistype.cpp \
-    CFD/CFDanalysis/cwecaseinstance.cpp \
     CFD/CFDanalysis/cwejobaccountant.cpp \
     CFD/UI/cwe_param_tabs/cwe_grouptab.cpp \
     CFD/UI/cwe_param_tabs/cwe_paneltab.cpp \
@@ -90,11 +87,8 @@ HEADERS  += \
     CFD/UI/cwe_state_label.h \
     CFD/Analysis/cwe_globals.h \
     CFD/Analysis/cwejobaccountant.h \
-    CFD/Analysis/cwecaseinstance.h \
-    CFD/Analysis/filenoderef.h \
     CFD/Analysis/filemetadata.h \
     CFD/Analysis/filetreenode.h \
-    CFD/Analysis/fileoperator.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \
     CFD/SimCenter_widgets/sctrfiledatawidget.h \
@@ -102,9 +96,9 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrstddatawidget.h \
     CFD/SimCenter_widgets/sctrtextdatawidget.h \
     CFD/CFDanalysis/cweanalysistype.h \
-    CFD/CFDanalysis/cwecaseinstance.h \
     CFD/CFDanalysis/cwejobaccountant.h \
     CFD/CFDanalysis/cweresultinstance.h \
+    CFD/CFDanalysis/cwecaseinstance.h \
     CFD/UI/cwe_param_tabs/cwe_stagestatustab.cpp \
     CFD/UI/cwe_param_tabs/cwe_stagestatustab.h \
     CFD/UI/cwe_param_tabs/cwe_grouptab.h \

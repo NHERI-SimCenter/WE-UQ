@@ -46,7 +46,7 @@
 #include <QKeyValueIterator>
 
 //#include "remoteFiles/filenoderef.h"
-#include "filenoderef.h"
+//#include "filenoderef.h"
 #include "CFDanalysis/cweanalysistype.h"
 
 enum class SimCenterViewState  { visible,

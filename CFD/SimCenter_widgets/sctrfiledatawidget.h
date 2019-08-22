@@ -52,7 +52,7 @@ public:
     virtual QString shownValue();
 
 private slots:
-    void newFileSelected(FileNodeRef);
+    //void newFileSelected(FileNodeRef);
     void newFileSelected(QString);
 
 private:

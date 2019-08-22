@@ -44,7 +44,7 @@
 #include <QThread>
 
 // #include "remoteFiles/filenoderef.h"
-#include "filenoderef.h"
+//#include "filenoderef.h"
 
 class cweResultInstance;
 class CWEanalysisType;
@@ -77,13 +77,15 @@ class CWEcaseInstance : public QObject
     Q_OBJECT
 
 public:
-    CWEcaseInstance(const FileNodeRef &newCaseFolder);
+    //CWEcaseInstance(const FileNodeRef &newCaseFolder);
+    CWEcaseInstance(const QString &newCaseFolder);
     CWEcaseInstance(CWEanalysisType * caseType); //For new cases
     CWEcaseInstance(); // For duplications
 
     bool isDefunct();
     CaseState getCaseState();
-    const FileNodeRef getCaseFolder();
+    //const FileNodeRef getCaseFolder();
+    const QString getCaseFolder();
     QString getCaseName();
 
     //Note: For these, it can always answer "I don't know"
@@ -94,8 +96,8 @@ public:
 
     //Of the following, only one enacted at a time
     //Return true if enacted, false if not
-    bool createCase(QString newName, const FileNodeRef &containingFolder);
-    bool duplicateCase(QString newName, const FileNodeRef &containingFolder, const FileNodeRef &oldCase);
+    //bool createCase(QString newName, const FileNodeRef &containingFolder);
+    //bool duplicateCase(QString newName, const FileNodeRef &containingFolder, const FileNodeRef &oldCase);
     bool changeParameters(QMap<QString, QString> paramList);
     bool startStageApp(QString stageID);
     bool rollBack(QString stageToDelete);
@@ -107,7 +109,7 @@ signals:
     void underlyingFilesInterlockSignal();
 
 private slots:
-    void underlyingFilesInterlock(const FileNodeRef changedNode);
+    //void underlyingFilesInterlock(const FileNodeRef changedNode);
     void underlyingFilesUpdated();
     void jobListUpdated();
     void fileTaskDone(RequestState invokeStatus);
@@ -158,7 +160,8 @@ private:
     QString runningStage;
     InternalCaseState myState = InternalCaseState::ERROR;
 
-    FileNodeRef caseFolder;
+    //FileNodeRef caseFolder;
+    QString caseFolder;
     CWEanalysisType * myType = nullptr;
 
     QString expectedNewCaseFolder;

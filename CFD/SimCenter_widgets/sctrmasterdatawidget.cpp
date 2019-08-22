@@ -36,7 +36,7 @@
 
 #include "SimCenter_widgets/sctrmasterdatawidget.h"
 // #include "remoteFiles/filenoderef.h"
-#include "filenoderef.h"
+//#include "filenoderef.h"
 #include "CFDanalysis/cweanalysistype.h"
 
 SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :

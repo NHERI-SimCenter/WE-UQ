@@ -36,7 +36,7 @@
 #ifndef FILETREENODE_H
 #define FILETREENODE_H
 
-#include "filenoderef.h"
+//#include "filenoderef.h"
 
 #include <QObject>
 #include <QStandardItem>
@@ -123,7 +123,7 @@ private:
     FileOperator * myFileOperator = nullptr;
     FileTreeNode * myParent = nullptr;
 
-    FileNodeRef fileData;
+    //FileNodeRef fileData;
     QList<FileTreeNode *> childList;
 
     QByteArray * fileDataBuffer = nullptr;

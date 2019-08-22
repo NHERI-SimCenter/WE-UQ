@@ -43,11 +43,11 @@
 
 //#include "remoteJobs/joboperator.h"
 //#include "remoteFiles/fileoperator.h"
-#include "fileoperator.h"
+//#include "fileoperator.h"
 
-#include "CFDanalysis/cwecaseinstance.h"
+//#include "CFDanalysis/cwecaseinstance.h"
 #include "CFDanalysis/cweanalysistype.h"
-#include "CFDanalysis/cwejobaccountant.h"
+//#include "CFDanalysis/cwejobaccountant.h"
 
 //#include "mainWindow/cwe_mainwindow.h"
 #include "cwe_globals.h"
