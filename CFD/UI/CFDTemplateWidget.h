@@ -1,17 +1,18 @@
-#ifndef CFDEXPERTWIDGET_H
-#define CFDEXPERTWIDGET_H
+#ifndef CFDTemplateWidget_H
+#define CFDTemplateWidget_H
 
 #include <SimCenterAppWidget.h>
 #include <RandomVariablesContainer.h>
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
+#include <CFD/UI/cwe_parameters.h>
 
-class CFDExpertWidget : public SimCenterAppWidget
+class CFDTemplateWidget : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent = nullptr);
+    explicit CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent = nullptr);
 
     bool outputAppDataToJSON(QJsonObject &jsonObject) override;
     bool outputToJSON(QJsonObject &rvObject) override;
@@ -28,8 +29,7 @@ private:
     QLineEdit* caseEditBox;
     QComboBox* solverComboBox;
     RemoteService* remoteService;
-    InflowParameterWidget* inflowWidget;
-    QCheckBox* inflowCheckBox;
+    CWE_Parameters * parameterWidget;
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
     QDoubleSpinBox* startTimeBox;
@@ -45,4 +45,4 @@ private:
     void setupConnections();
 };
 
-#endif // CFDEXPERTWIDGET_H
+#endif // CFDTemplateWidget_H
