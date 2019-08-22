@@ -74,7 +74,7 @@ enum class InternalCaseState {OFFLINE, INVALID, ERROR, DEFUNCT,
                              DOWNLOAD};
 
 
-#if 0
+#if 1
 class CWEcaseInstance : public QObject
 {
     Q_OBJECT
@@ -113,10 +113,10 @@ signals:
 
 private slots:
     //void underlyingFilesInterlock(const FileNodeRef changedNode);
-    void underlyingFilesUpdated();
-    void jobListUpdated();
-    void fileTaskDone(RequestState invokeStatus);
-    void fileTaskStarted();
+    //void underlyingFilesUpdated();
+    //void jobListUpdated();
+    //void fileTaskDone(RequestState invokeStatus);
+    //void fileTaskStarted();
 
     //void jobInvoked(RequestState invokeStatus, QJsonDocument jobData);
     //void jobKilled(RequestState invokeStatus);
@@ -131,7 +131,7 @@ private:
 
     bool stageStatesEqual(QMap<QString, StageState> * list1, QMap<QString, StageState> * list2);
     bool updateStageStatesIfNew(QMap<QString, StageState> * newStageStates);
-    bool recomputeStageStates();
+    //bool recomputeStageStates();
     void computeParamList();
 
     QByteArray produceJSONparams(QMap<QString, QString> paramList);
@@ -152,7 +152,7 @@ private:
     //void state_Download_recursiveOpDone(RequestState invokeStatus);
     void state_Param_Save_taskDone(RequestState invokeStatus);
 
-    void computeIdleState();
+    //void computeIdleState();
 
     bool defunct = false;
     bool interlockHasFileChange = false;

@@ -48,6 +48,7 @@ class CWE_MainWindow;
 class CWE_StageStatusTab;
 class CWE_GroupTab;
 class CWE_ParamTab;
+class CWEcaseInstance;
 class SCtrMasterDataWidget;
 
 struct PARAM_VARIABLE_TYPE;
@@ -93,6 +94,11 @@ public:
     virtual void linkMainWindow(CWE_MainWindow *theMainWin);
     virtual bool allowClickAway();
 
+    CWEcaseInstance * getCurrentCase();
+    void setCurrentCase();
+    void setCurrentCase(CWEcaseInstance * newCase);
+    void setCurrentCase(CWEanalysisType * newCaseType);
+
 private slots:
     void save_all_button_clicked();
     void run_button_clicked();
@@ -134,6 +140,14 @@ private:
     void clearGroupTabs();
     void clearParamScreen();
 
+    /* ======================= */
+
+    void addWindowPanel(QWidget * thePanel, QString panelName, QString tabText);
+    void deactivateCurrentCase();
+    CWEcaseInstance * getCaseFromType(CWEanalysisType *caseType);
+
+    /* ======================= */
+
     static QString getStateText(StageState theState);
 
     Ui::CWE_Parameters *ui;
@@ -157,6 +171,8 @@ private:
 
     // new since pulled from CWE
     CWEanalysisType * theTemplate;
+    CWEcaseInstance * currentCase = nullptr;
+    //cwe_state_label * stateLabel  = nullptr; // ???
 };
 
 #endif // CWE_PARAMETERS_H

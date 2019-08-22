@@ -34,13 +34,6 @@ private:
     QLabel* loginRequiredLabel;
     QDoubleSpinBox* startTimeBox;
 
-    QString originalUFilePath;
-    QString originalControlDictPath;
-
-
-    void downloadRemoteCaseFiles();
-    void ensureUFileExists();
-    QStringList getRemoteFilesPaths();
     void initializeUI();
     void setupConnections();
 };
