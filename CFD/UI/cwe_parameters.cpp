@@ -162,8 +162,7 @@ void CWE_Parameters::newCaseGiven()
 
 void CWE_Parameters::setHeaderLabels()
 {
-/*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = getCurrentCase();
     if (theCase == nullptr)
     {
         ui->label_theName->setText("N/A");
@@ -192,6 +191,7 @@ void CWE_Parameters::setHeaderLabels()
         ui->label_theType->setText(theType->getDisplayName());
     }
 
+    /*
     if (theCase->getCaseFolder().isNil())
     {
         ui->label_theLocation->setText("Loading . . .");
@@ -200,14 +200,15 @@ void CWE_Parameters::setHeaderLabels()
     {
         ui->label_theLocation->setText(theCase->getCaseFolder().getFullPath());
     }
-*/
+    */
+    ui->label_theLocation->setText("UNKNOWN");
 }
 
 void CWE_Parameters::newCaseState(CaseState)
 {
     setHeaderLabels();
-/*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+
+    CWEcaseInstance * theCase = getCurrentCase();
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -223,7 +224,7 @@ void CWE_Parameters::newCaseState(CaseState)
     }
 
     //Sets the listed states of the stage tabs
-    QMap<QString, StageState> stageStates = theMainWindow->getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = getCurrentCase()->getStageStates();
     for (CWE_StageStatusTab * aStageTab :  stageTabList)
     {
         if (!stageStates.contains(aStageTab->getRefKey()))
@@ -236,7 +237,7 @@ void CWE_Parameters::newCaseState(CaseState)
     }
     //Once the state tabs are updated, we adjust the state of the shown parameters:
     resetButtonAndView();
-*/
+
 }
 
 void CWE_Parameters::stageSelected(CWE_ParamTab * chosenTab)
