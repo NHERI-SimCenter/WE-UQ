@@ -63,6 +63,7 @@ SOURCES += main.cpp \
     CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
     CFD/CFDanalysis/cweanalysistype.cpp \
     CFD/CFDanalysis/cwejobaccountant.cpp \
+    CFD/CFDanalysis/cwecaseinstance.cpp \
     CFD/UI/cwe_param_tabs/cwe_grouptab.cpp \
     CFD/UI/cwe_param_tabs/cwe_paneltab.cpp \
     CFD/UI/cwe_param_tabs/cwe_paramtab.cpp \

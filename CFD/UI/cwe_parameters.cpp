@@ -984,7 +984,7 @@ void CWE_Parameters::setCurrentCase(CWEanalysisType * newCaseType)
 void CWE_Parameters::deactivateCurrentCase()
 {
     if (currentCase == nullptr) return;
-    QObject::disconnect(currentCase,nullptr,nullptr,nullptr);
+    //QObject::disconnect(currentCase,nullptr,nullptr,nullptr);
     currentCase->deleteLater();
     currentCase = nullptr;
 }
