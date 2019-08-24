@@ -100,11 +100,11 @@ public:
     //void setCurrentCase(CWEanalysisType * newCaseType);
 
 private slots:
-    void save_all_button_clicked();
-    void run_button_clicked();
-    void cancel_button_clicked();
-    void results_button_clicked();
-    void rollback_button_clicked();
+    //void save_all_button_clicked();
+    //void run_button_clicked();
+    //void cancel_button_clicked();
+    //void results_button_clicked();
+    //void rollback_button_clicked();
 
     void newCaseGiven();
     void newCaseState(CaseState newState);

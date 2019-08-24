@@ -69,8 +69,6 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
       isRemote(isRemote)
 {
     ui->setupUi(this);
-    ui->buttonGroup->hide();
-    ui->bottomLine->hide();
     //ui->frame_parameterInfo->hide();
 
     QVBoxLayout * stageLayout = qobject_cast<QVBoxLayout *>(ui->tabsBar->layout());
@@ -112,6 +110,9 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
     {
         qFatal("Corrupted CFD template");
     }
+
+    // now that we have the template, populate the parametertabs
+
 }
 
 CWE_Parameters::~CWE_Parameters()
@@ -291,7 +292,6 @@ void CWE_Parameters::paramWidgetChanged()
 
 void CWE_Parameters::resetButtonAndView()
 {
-#if 0
     if (currentCase == nullptr) return;
     if (selectedStage == nullptr) return;
 
@@ -327,7 +327,6 @@ void CWE_Parameters::resetButtonAndView()
         setButtonState(currentStageState);
         break;
     }
-#endif
 }
 
 void CWE_Parameters::setButtonState(StageState newMode)
@@ -360,6 +359,9 @@ void CWE_Parameters::setButtonState(StageState newMode)
 
 void CWE_Parameters::setButtonState(SimCenterButtonMode newMode)
 {
+    qDebug() << "setButtonState was called but should not!";
+
+    /*
     ui->pbtn_run->setDisabled(true);
     ui->pbtn_cancel->setDisabled(true);
     ui->pbtn_results->setDisabled(true);
@@ -376,6 +378,7 @@ void CWE_Parameters::setButtonState(SimCenterButtonMode newMode)
     if (newMode & SimCenterButtonMode_CANCEL)  { ui->pbtn_cancel->setEnabled(true);  }
     if (newMode & SimCenterButtonMode_RESET)   { ui->pbtn_rollback->setEnabled(true);}
     if (newMode & SimCenterButtonMode_RESULTS) { ui->pbtn_results->setEnabled(true); }
+    */
 }
 
 void CWE_Parameters::setViewState(StageState newMode)
@@ -577,9 +580,9 @@ bool CWE_Parameters::panelSwitchPermitted()
     return false;
 }
 
+#if 0
 void CWE_Parameters::save_all_button_clicked()
 {
-/*
     CWEcaseInstance * linkedCFDCase = currentCase;
     if (linkedCFDCase == nullptr) return;
     if (selectedStage == nullptr) return;
@@ -609,12 +612,10 @@ void CWE_Parameters::save_all_button_clicked()
     {
         // cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
     }
-*/
 }
 
 void CWE_Parameters::run_button_clicked()
 {
-/*
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
@@ -630,7 +631,6 @@ void CWE_Parameters::run_button_clicked()
 
 void CWE_Parameters::cancel_button_clicked()
 {
-/*
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
@@ -641,22 +641,18 @@ void CWE_Parameters::cancel_button_clicked()
         // cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
         return;
     }
-*/
 }
 
 void CWE_Parameters::results_button_clicked()
 {
-/*
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
 
     theMainWindow->switchToResultsTab();
-*/
 }
 
 void CWE_Parameters::rollback_button_clicked()
 {
-/*
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
@@ -667,8 +663,9 @@ void CWE_Parameters::rollback_button_clicked()
         // cwe_globals::displayPopup("Unable to roll back this stage, please check that this stage is done and check your network connection.", "Network Issue");
         return;
     }
-*/
 }
+#endif
+
 
 void CWE_Parameters::createStageTabs()
 {
@@ -716,7 +713,6 @@ void CWE_Parameters::createStageTabs()
 
 void CWE_Parameters::createGroupTabs()
 {
-#if 0
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
@@ -751,12 +747,10 @@ void CWE_Parameters::createGroupTabs()
     }
 
     groupSelected(groupTabList.at(0));
-#endif
 }
 
 void CWE_Parameters::createParamWidgets()
 {
-#if 1
     CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
@@ -793,7 +787,6 @@ void CWE_Parameters::createParamWidgets()
     }
 
     resetButtonAndView();
-#endif
 }
 
 void CWE_Parameters::addVariable(PARAM_VARIABLE_TYPE &theVariable, QString * nonDefaultValue)
