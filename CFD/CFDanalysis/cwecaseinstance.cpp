@@ -753,7 +753,7 @@ bool CWEcaseInstance::updateStageStatesIfNew(QMap<QString, StageState> * newStag
     return true;
 }
 
-#if 0
+#if 1
 bool CWEcaseInstance::recomputeStageStates()
 {
     //Return true if stage states have changed
@@ -803,11 +803,11 @@ bool CWEcaseInstance::recomputeStageStates()
         newStageStates.insert((*itr), StageState::LOADING);
     }
 
-    if ((caseFolder.isNil()) || (!caseFolder.folderContentsLoaded()) ||
-            (myState == InternalCaseState::STOPPING_JOB) || (myState == InternalCaseState::MAKING_FOLDER) ||
-            (myState == InternalCaseState::INIT_PARAM_UPLOAD) ||
-            (myState == InternalCaseState::COPYING_FOLDER) ||
-            (myState == InternalCaseState::WAITING_FOLDER_DEL))
+    //if ((caseFolder.isNil()) || (!caseFolder.folderContentsLoaded()) ||
+    //        (myState == InternalCaseState::STOPPING_JOB) || (myState == InternalCaseState::MAKING_FOLDER) ||
+    //        (myState == InternalCaseState::INIT_PARAM_UPLOAD) ||
+    //        (myState == InternalCaseState::COPYING_FOLDER) ||
+    //        (myState == InternalCaseState::WAITING_FOLDER_DEL))
     {
         return updateStageStatesIfNew(&newStageStates);
     }
@@ -833,6 +833,8 @@ bool CWEcaseInstance::recomputeStageStates()
             continue;
         }
 
+        /*
+         *
         FileNodeRef checkNode = caseFolder.getChildWithName(*itr);
         if (checkNode.isNil())
         {
@@ -860,6 +862,10 @@ bool CWEcaseInstance::recomputeStageStates()
         }
 
         newStageStates[*itr] = StageState::FINISHED;
+
+        */
+
+        newStageStates[*itr] = StageState::UNRUN;  // PETER added this.  Could be FINISHED
     }
 
     for (int i = 0; i < stageList.length(); i++)

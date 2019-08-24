@@ -91,27 +91,27 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
 
     // load the case template
 
-    QString confPath = ":/CWE/";
+    QString confPath = ":/Resources/CWE/";
     QString caseConfigFile = "upload3D.json";
     QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
     if (rawConfig.isEmpty())
     {
-        //qCDebug(agaveAppLayer, "Unreadable template config file skipped: %s", qPrintable(caseConfigFile));
+        qWarning("Unreadable template config file skipped: %s", qPrintable(caseConfigFile));
     }
 
     CWEanalysisType * newTemplate = new CWEanalysisType(rawConfig);
     if (!newTemplate->validParse())
     {
-        //qCDebug(agaveAppLayer, "Template Parse Invalid: %s", qPrintable(caseConfigFile));
+        qWarning("Template Parse Invalid: %s", qPrintable(caseConfigFile));
         delete newTemplate;
     }
     else
     {
         theTemplate = newTemplate;
-        //qCDebug(agaveAppLayer, "Added New Template: %s", qPrintable(caseConfigFile));
+        qWarning("Added New Template: %s", qPrintable(caseConfigFile));
     }
 
-    this->setCurrentCase(theTemplate);
+    setCurrentCase(theTemplate);
 }
 
 CWE_Parameters::~CWE_Parameters()
@@ -213,7 +213,7 @@ void CWE_Parameters::newCaseState(CaseState)
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
 
-    if (loadingLabel != nullptr)
+    //if (loadingLabel != nullptr)
     {
         createStageTabs();
     }
@@ -541,11 +541,9 @@ QString CWE_Parameters::getVarValByName(QString varName)
         }
     }
 
-/*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = getCurrentCase();
     if (theCase == nullptr) return QString();
     return theCase->getCurrentParams().value(varName);
-*/
 }
 
 bool CWE_Parameters::paramsChanged()
@@ -674,8 +672,7 @@ void CWE_Parameters::rollback_button_clicked()
 
 void CWE_Parameters::createStageTabs()
 {
-#if 0
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = getCurrentCase();
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -711,11 +708,10 @@ void CWE_Parameters::createStageTabs()
 
     if (stageTabList.length() < 1)
     {
-        // ae_globals::displayFatalPopup("Invalid Configuration for template, no stages given.", "Internal Program Error");
+        qWarning("Invalid Configuration for template, no stages given.", "Internal Program Error");
     }
 
     stageSelected(stageTabList.at(0));
-#endif
 }
 
 void CWE_Parameters::createGroupTabs()
@@ -760,8 +756,8 @@ void CWE_Parameters::createGroupTabs()
 
 void CWE_Parameters::createParamWidgets()
 {
-#if 0
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+#if 1
+    CWEcaseInstance * theCase = getCurrentCase();
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
