@@ -88,9 +88,9 @@ void CFDTemplateWidget::initializeUI()
 
 void CFDTemplateWidget::setupConnections()
 {
+    /*
     connect(caseSelectButton, &QPushButton::clicked, this, &CFDTemplateWidget::selectButtonPushed);
 
-    /*
     connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
     {
         if(loggedIn)
