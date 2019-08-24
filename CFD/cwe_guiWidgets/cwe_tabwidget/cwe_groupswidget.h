@@ -32,41 +32,53 @@
 
 // Contributors:
 
-#ifndef CWE_PARAMTAB_H
-#define CWE_PARAMTAB_H
+#ifndef CWE_GROUPSWIDGET_H
+#define CWE_GROUPSWIDGET_H
 
-#include <QFrame>
-#include <QMouseEvent>
+#include <QTabWidget>
 
-class CWE_ParamTab : public QFrame
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QScrollArea>
+#include "CFDanalysis/CFDanalysisType.h"
+
+class CWE_StageStatusTab;
+class CWE_ParamTab;
+class SCtrMasterDataWidget;
+class CWE_InterfaceDriver;
+enum class SimCenterViewState;
+enum class StageState;
+
+class CWE_GroupsWidget : public QTabWidget
 {
-    Q_OBJECT
-
 public:
-    explicit CWE_ParamTab(QString refKey, QString displayedText, QWidget *parent = nullptr);
-    ~CWE_ParamTab() override;
+    CWE_GroupsWidget(QWidget *parent = NULL);
+    ~CWE_GroupsWidget();
+    void setCorrespondingTab(CWE_StageStatusTab * newTab);
 
-    QString getRefKey();
+    void setViewState(SimCenterViewState);  // set the view state
+    void addVSpacer(const QString &key, const QString &label);
+    void addVarsToTab(QString key, const QString &label, QJsonArray *, QJsonObject *, QMap<QString,QString> * );
 
-    bool tabIsActive();
-    void setActive(bool b=true);
-    void setInActive(bool b=true);
+    void setParameterConfig(QString key, CFDanalysisType *myType);
+    void linkWidget(CWE_StageStatusTab *tab);
+    QMap<QString, SCtrMasterDataWidget *> getParameterWidgetMap();
 
-signals:
-    void btn_clicked(CWE_ParamTab *);
+    void initQuickParameterPtr();
+    void updateParameterValues(QMap<QString, QString> );
+    int collectParamData(QMap<QString, QString> &);
+
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    CWE_ParamTab *getGroupTab();  // returns pointer to group tab widget
 
-    void setButtonState(bool tabPressed, bool tabActive);
-    virtual void setButtonAppearance() = 0;
+private:
+    SimCenterViewState m_viewState;
+    QJsonObject m_obj;
 
-    QString tabKey = "UNKNOWN";
-    QString tabDisplay = "UNKNOWN";
+    CWE_StageStatusTab * myTab;
 
-    bool tab_active = false;
-    bool tab_pressed = false;
+    QMap<QString, SCtrMasterDataWidget *> *quickParameterPtr;
 };
 
-#endif // PARAMTAB_H
+#endif // CWE_GROUPSWIDGET_H

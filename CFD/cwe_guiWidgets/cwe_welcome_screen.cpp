@@ -1,12 +1,12 @@
 /*********************************************************************************
 **
-** Copyright (c) 2018 The University of Notre Dame
-** Copyright (c) 2018 The Regents of the University of California
+** Copyright (c) 2017 The University of Notre Dame
+** Copyright (c) 2017 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
 **
-** 1. Redistributions of source code must retain the above copyright notice, this
+** 1. Redistributions of source code must retain the above copyright notice, this 
 ** list of conditions and the following disclaimer.
 **
 ** 2. Redistributions in binary form must reproduce the above copyright notice, this
@@ -31,29 +31,19 @@
 ***********************************************************************************/
 
 // Contributors:
+// Peter Mackenzie-Helnwein, UW Seattle
 
-#ifndef CWE_GROUPTAB_H
-#define CWE_GROUPTAB_H
+#include "cwe_welcome_screen.h"
+#include "ui_cwe_welcome_screen.h"
 
-#include "cwe_paramtab.h"
-
-namespace Ui {
-class CWE_GroupTab;
+CWE_welcome_screen::CWE_welcome_screen(QWidget *parent) :
+    CWE_Super(parent),
+    ui(new Ui::CWE_welcome_screen)
+{
+    ui->setupUi(this);
 }
 
-class CWE_GroupTab : public CWE_ParamTab
+CWE_welcome_screen::~CWE_welcome_screen()
 {
-    Q_OBJECT
-
-public:
-    explicit CWE_GroupTab(QString groupKey, QString groupName, QWidget *parent = nullptr);
-    ~CWE_GroupTab();
-
-protected:
-    virtual void setButtonAppearance();
-
-private:
-    Ui::CWE_GroupTab *ui;
-};
-
-#endif // CWE_GROUPTAB_H
+    delete ui;
+}

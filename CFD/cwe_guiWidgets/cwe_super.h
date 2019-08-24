@@ -1,6 +1,5 @@
 /*********************************************************************************
 **
-** Copyright (c) 2017 The University of Notre Dame
 ** Copyright (c) 2017 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
@@ -33,77 +32,23 @@
 // Contributors:
 // Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
 
-#include "cwe_state_label.h"
+#ifndef CWE_SUPER_H
+#define CWE_SUPER_H
 
-// #include "CFDanalysis/cwecaseinstance.h"
-#include "CFDanalysis/cwecaseinstance.h"
+#include <QFrame>
+#include "../AgaveExplorer/remoteFileOps/filenoderef.h"
 
-cwe_state_label::cwe_state_label(QWidget *parent) : QLabel(parent)
+class CWE_MainWindow;
+
+class CWE_Super : public QFrame
 {
-    this->setText("No Case Selected");
-}
+    Q_OBJECT
+public:
+    explicit CWE_Super(QWidget *parent = nullptr);
+    virtual void linkMainWindow(CWE_MainWindow * newMainWindow);
 
-void cwe_state_label::setNewState(CaseState newState)
-{
-    if (newState == CaseState::RUNNING)
-    {
-        this->setText("Running Remote Task . . . Please Wait");
-        return;
-    }
-    if (newState == CaseState::OP_INVOKE)
-    {
-        this->setText("Updating remote files . . . Please Wait");
-        return;
-    }
-    if (newState == CaseState::DOWNLOAD)
-    {
-        this->setText("Downloading remote case . . . Please Wait");
-        return;
-    }
-    if (newState == CaseState::DEFUNCT)
-    {
-        this->setText("No Case Selected");
-        return;
-    }
-    if (newState == CaseState::ERROR)
-    {
-        this->setText("ERROR");
-        return;
-    }
-    if (newState == CaseState::INVALID)
-    {
-        this->setText("No Case Selected");
-        return;
-    }
-    if (newState == CaseState::LOADING)
-    {
-        this->setText("Getting remote data  . . . Please Wait");
-        return;
-    }
-    if (newState == CaseState::EXTERN_OP)
-    {
-        this->setText("File Operation in Progress . . . Please Wait");
-        return;
-    }
-    if (newState == CaseState::READY)
-    {
-        this->setText("Ready for user input");
-        return;
-    }
-    if (newState == CaseState::READY_ERROR)
-    {
-        this->setText("Error in remote task process.");
-        return;
-    }
-    if (newState == CaseState::OFFLINE)
-    {
-        this->setText("OFFLINE MODE");
-        return;
-    }
-    if (newState == CaseState::PARAM_SAVE)
-    {
-        this->setText("Saving Parameters");
-        return;
-    }
-    this->setText("ERROR");
-}
+protected:
+    CWE_MainWindow * theMainWindow;
+};
+
+#endif // CWE_SUPER_H

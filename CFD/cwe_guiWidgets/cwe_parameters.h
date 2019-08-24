@@ -32,46 +32,54 @@
 
 // Contributors:
 
-#include "cwe_grouptab.h"
-#include "ui_cwe_grouptab.h"
+#ifndef CWE_PARAMETERS_H
+#define CWE_PARAMETERS_H
 
-CWE_GroupTab::CWE_GroupTab(QString groupKey, QString groupName, QWidget *parent) :
-    CWE_ParamTab(groupKey, groupName, parent),
-    ui(new Ui::CWE_GroupTab)
-{
-    ui->setupUi(this);
-    ui->mainLabel->setText(tabDisplay);
+#include <QFrame>
+#include <QJsonObject>
 
-    this->setStyleSheet("QFrame {background: #C0C0C8; border-color: #808080; border-width: 2px; border-radius: 5px; border-style: onset;} QLabel {border-style: none; font: 12pt bold; color: #101010;}");
+#include "SimCenter_widgets/sctrstates.h"
+
+class CWE_MainWindow;
+enum class CaseState;
+enum class CaseCommand { ROLLBACK, RUN, CANCEL };
+
+namespace Ui {
+class CWE_Parameters;
 }
 
-CWE_GroupTab::~CWE_GroupTab()
+class CWE_Parameters : public QFrame
 {
-    delete ui;
-}
+    Q_OBJECT
 
-void CWE_GroupTab::setButtonAppearance()
-{
-    if (tab_pressed)
-    {
-        if (tab_active)
-        {
-            this->setStyleSheet("QFrame {background: #63a39d; border-color: #63a39d; border-width: 2px; border-radius: 5px; border-style: inset; } QLabel {border-style: none; font: 12pt bold; color: #101010;}");
-        }
-        else
-        {
-            this->setStyleSheet("QFrame {background: #B0BEC5; border-color: #808080; border-width: 2px; border-radius: 5px; border-style: onset;} QLabel {border-style: none; font: 12pt bold; color: #101010;}");
-        }
-    }
-    else
-    {
-        if (tab_active)
-        {
-            this->setStyleSheet("QFrame {background: #63a39d; border-color: #808080; border-width: 2px; border-radius: 5px; border-style: inset;} QLabel {border-style: none; font: 12pt bold; color: #101010;}");
-        }
-        else
-        {
-            this->setStyleSheet("QFrame {background: #C0C0C8; border-color: #808080; border-width: 2px; border-radius: 5px; border-style: onset;} QLabel {border-style: none; font: 12pt bold; color: #101010;}");
-        }
-    }
-}
+public:
+    explicit CWE_Parameters(QWidget *parent = 0);
+    ~CWE_Parameters();
+
+    virtual void linkMainWindow(CWE_MainWindow *theMainWin);
+    void resetViewInfo();
+
+    void switchToResults();
+    void performCaseCommand(QString stage, CaseCommand toEnact);
+    void setSaveAllButtonDisabled(bool newSetting);
+    void setSaveAllButtonEnabled(bool newSetting);
+
+private slots:
+    void on_pbtn_saveAllParameters_clicked();
+
+    void newCaseGiven();
+    void newCaseState(CaseState newState);
+
+private:
+    void setButtonsAccordingToStage();
+    void setVisibleAccordingToStage();
+    void createUnderlyingParamWidgets();
+
+    void saveAllParams();
+
+    Ui::CWE_Parameters *ui;
+    bool paramWidgetsExist = false;
+
+};
+
+#endif // CWE_PARAMETERS_H

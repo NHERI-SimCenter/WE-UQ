@@ -1,6 +1,5 @@
 /*********************************************************************************
 **
-** Copyright (c) 2017 The University of Notre Dame
 ** Copyright (c) 2017 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
@@ -33,24 +32,13 @@
 // Contributors:
 // Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
 
-#ifndef CWE_STATE_LABEL_H
-#define CWE_STATE_LABEL_H
+#include "cwe_super.h"
+#include "cwe_globals.h"
+#include "cwe_interfacedriver.h"
 
-#include <QLabel>
+CWE_Super::CWE_Super(QWidget *parent) : QFrame(parent) {}
 
-enum class CaseState;
-
-//class CWEcaseInstance;
-
-class cwe_state_label : public QLabel
+void CWE_Super::linkMainWindow(CWE_MainWindow * newMainWindow)
 {
-    Q_OBJECT
-public:
-    cwe_state_label(QWidget *parent);
-    void setNewState(CaseState newState);
-
-private:
-    //CWEcaseInstance * currentCase = nullptr;
-};
-
-#endif // CWE_STATE_LABEL_H
+    theMainWindow = newMainWindow;
+}

@@ -19,8 +19,8 @@ INCLUDEPATH += Inflow
 INCLUDEPATH += CFD
 INCLUDEPATH += CFD/UI
 INCLUDEPATH += CFD/Analysis
+INCLUDEPATH += CFD/CFDAnalysis
 INCLUDEPATH += CFD/SimCenter_widgets
-INCLUDEPATH += CFD/CFDanalysis
 
 win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
@@ -39,9 +39,16 @@ include(./MiniZip/MiniZip.pri)
 INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
+    CFD/CFDanalysis/CFDanalysisType.cpp \
+    CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
-    CFD/UI/RemoteCaseSelector.cpp \
+    CFD/cwe_guiWidgets/cwe_parameters.cpp \
+    CFD/cwe_guiWidgets/cwe_state_label.cpp \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.cpp \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
     Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
@@ -52,8 +59,6 @@ SOURCES += main.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
     CFD/cwe_interfacedriver.cpp \
-    CFD/UI/cwe_parameters.cpp \
-    CFD/UI/cwe_state_label.cpp \
     CFD/Analysis/filemetadata.cpp \
     CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
     CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
@@ -61,20 +66,21 @@ SOURCES += main.cpp \
     CFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
     CFD/SimCenter_widgets/sctrstddatawidget.cpp \
     CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
-    CFD/CFDanalysis/cweanalysistype.cpp \
-    CFD/CFDanalysis/cwejobaccountant.cpp \
-    CFD/CFDanalysis/cwecaseinstance.cpp \
-    CFD/UI/cwe_param_tabs/cwe_grouptab.cpp \
-    CFD/UI/cwe_param_tabs/cwe_paneltab.cpp \
-    CFD/UI/cwe_param_tabs/cwe_paramtab.cpp \
-    CFD/UI/cwe_param_tabs/cwe_stagestatustab.cpp \
     CFD/Analysis/remotejobdata.cpp
 
 
 HEADERS  += \
+    CFD/CFDanalysis/CFDanalysisType.h \
+    CFD/CFDanalysis/CFDcaseInstance.h \
+    CFD/SimCenter_widgets/sctrstates.h \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
-    CFD/UI/RemoteCaseSelector.h \
+    CFD/cwe_guiWidgets/cwe_parameters.h \
+    CFD/cwe_guiWidgets/cwe_state_label.h \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
     Inflow/inflowparameterwidget.h \
     WorkflowAppWE.h \
     RunWidget.h \
@@ -85,8 +91,6 @@ HEADERS  += \
     StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h \
     CFD/cwe_interfacedriver.h \
-    CFD/UI/cwe_parameters.h \
-    CFD/UI/cwe_state_label.h \
     CFD/Analysis/filemetadata.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \
@@ -94,13 +98,6 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrmasterdatawidget.h \
     CFD/SimCenter_widgets/sctrstddatawidget.h \
     CFD/SimCenter_widgets/sctrtextdatawidget.h \
-    CFD/CFDanalysis/cweanalysistype.h \
-    CFD/CFDanalysis/cwejobaccountant.h \
-    CFD/CFDanalysis/cwecaseinstance.h \
-    CFD/UI/cwe_param_tabs/cwe_stagestatustab.h \
-    CFD/UI/cwe_param_tabs/cwe_grouptab.h \
-    CFD/UI/cwe_param_tabs/cwe_paneltab.h \
-    CFD/UI/cwe_param_tabs/cwe_paramtab.h \
     CFD/Analysis/remotejobdata.h
 
 
@@ -111,11 +108,11 @@ RESOURCES += \
 
 #FORMS    += mainwindow.ui
 FORMS    += \
-    Inflow/inflowparameterwidget.ui \
-    CFD/UI/cwe_param_tabs/cwe_stagestatustab.ui \
-    CFD/UI/cwe_param_tabs/cwe_paneltab.ui \
-    CFD/UI/cwe_param_tabs/cwe_grouptab.ui \
-    CFD/UI/cwe_parameters.ui 
+    CFD/cwe_guiWidgets/cwe_parameters.ui \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.ui \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \
+    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.ui \
+    Inflow/inflowparameterwidget.ui
 
 #RESOURCES += \
 #    schema.qrc
