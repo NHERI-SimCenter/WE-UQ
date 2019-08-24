@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
+    CFD/UI/cwe_parameters.cpp \
     CFD/cwe_guiWidgets/cwe_parameters.cpp \
     CFD/cwe_guiWidgets/cwe_state_label.cpp \
     CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.cpp \

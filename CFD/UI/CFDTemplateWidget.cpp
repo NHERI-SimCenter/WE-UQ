@@ -12,6 +12,37 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     initializeUI();
 
+
+    // ========== load the case template ===========
+
+    QString confPath = ":/Resources/CWE/";
+    QString caseConfigFile = "upload3D.json";
+    QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
+
+    CWEanalysisType * newTemplate = new CWEanalysisType(rawConfig);
+    if (!newTemplate->validParse())
+    {
+        qWarning("Template Parse Invalid: %s", qPrintable(caseConfigFile));
+        delete newTemplate;
+    }
+    else
+    {
+        theTemplate = newTemplate;
+        qDebug("Added New Template: %s", qPrintable(caseConfigFile));
+    }
+
+    currentCase = getCaseFromType(theTemplate);
+    if (currentCase == nullptr)
+    {
+        qFatal("Corrupted CFD template");
+    }
+
+    // now that we have the template, populate the parametertabs
+
+
+
+    // ============ done with case template operations ================
+
     setupConnections();
 }
 

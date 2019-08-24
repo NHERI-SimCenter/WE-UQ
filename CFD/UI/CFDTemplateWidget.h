@@ -6,7 +6,10 @@
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
-#include <CFD/UI/cwe_parameters.h>
+#include <CFD/cwe_guiWidgets/cwe_parameters.h>
+#include <CFD/CFDanalysis/CFDcaseInstance.h>
+#include <CFD/CFDanalysis/CFDanalysisType.h>
+#include <CFD/SimCenter_widgets/sctrstates.h>
 
 class QJsonObject;
 
@@ -53,6 +56,8 @@ private:
 
     void initializeUI();
     void setupConnections();
+
+    CFDanalysisType * currentcase;
 };
 
 #endif // CFDTemplateWidget_H
