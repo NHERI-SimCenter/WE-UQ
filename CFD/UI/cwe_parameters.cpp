@@ -143,7 +143,7 @@ bool CWE_Parameters::allowClickAway()
 
 void CWE_Parameters::newCaseGiven()
 {
-    CWEcaseInstance * newCase = this->getCurrentCase();
+    CWEcaseInstance * newCase = currentCase;
 
     clearStageTabs();
 
@@ -162,7 +162,7 @@ void CWE_Parameters::newCaseGiven()
 
 void CWE_Parameters::setHeaderLabels()
 {
-    CWEcaseInstance * theCase = getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr)
     {
         ui->label_theName->setText("N/A");
@@ -208,7 +208,7 @@ void CWE_Parameters::newCaseState(CaseState)
 {
     setHeaderLabels();
 
-    CWEcaseInstance * theCase = getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -224,7 +224,7 @@ void CWE_Parameters::newCaseState(CaseState)
     }
 
     //Sets the listed states of the stage tabs
-    QMap<QString, StageState> stageStates = getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = currentCase->getStageStates();
     for (CWE_StageStatusTab * aStageTab :  stageTabList)
     {
         if (!stageStates.contains(aStageTab->getRefKey()))
@@ -292,13 +292,13 @@ void CWE_Parameters::paramWidgetChanged()
 void CWE_Parameters::resetButtonAndView()
 {
 #if 0
-    if (theMainWindow->getCurrentCase() == nullptr) return;
+    if (currentCase == nullptr) return;
     if (selectedStage == nullptr) return;
 
-    QMap<QString, StageState> stageStates = theMainWindow->getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = currentCase->getStageStates();
     StageState currentStageState = stageStates.value(selectedStage->getRefKey());
 
-    switch (theMainWindow->getCurrentCase()->getCaseState())
+    switch (currentCase->getCaseState())
     {
     case CaseState::DEFUNCT:
     case CaseState::ERROR:
@@ -322,7 +322,7 @@ void CWE_Parameters::resetButtonAndView()
         break;
     case CaseState::READY:
     case CaseState::READY_ERROR:
-        //updateParameterValues(theMainWindow->getCurrentCase()->getCurrentParams());
+        //updateParameterValues(currentCase->getCurrentParams());
         setViewState(currentStageState);
         setButtonState(currentStageState);
         break;
@@ -541,7 +541,7 @@ QString CWE_Parameters::getVarValByName(QString varName)
         }
     }
 
-    CWEcaseInstance * theCase = getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return QString();
     return theCase->getCurrentParams().value(varName);
 }
@@ -580,7 +580,7 @@ bool CWE_Parameters::panelSwitchPermitted()
 void CWE_Parameters::save_all_button_clicked()
 {
 /*
-    CWEcaseInstance * linkedCFDCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * linkedCFDCase = currentCase;
     if (linkedCFDCase == nullptr) return;
     if (selectedStage == nullptr) return;
     if (!paramsChanged()) return;
@@ -615,12 +615,12 @@ void CWE_Parameters::save_all_button_clicked()
 void CWE_Parameters::run_button_clicked()
 {
 /*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
     if (paramsChanged()) return;
 
-    if (!theMainWindow->getCurrentCase()->startStageApp(selectedStage->getRefKey()))
+    if (!currentCase->startStageApp(selectedStage->getRefKey()))
     {
         // cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
         return;
@@ -631,12 +631,12 @@ void CWE_Parameters::run_button_clicked()
 void CWE_Parameters::cancel_button_clicked()
 {
 /*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
     if (paramsChanged()) return;
 
-    if (!theMainWindow->getCurrentCase()->stopJob())
+    if (!currentCase->stopJob())
     {
         // cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
         return;
@@ -647,7 +647,7 @@ void CWE_Parameters::cancel_button_clicked()
 void CWE_Parameters::results_button_clicked()
 {
 /*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
 
     theMainWindow->switchToResultsTab();
@@ -657,12 +657,12 @@ void CWE_Parameters::results_button_clicked()
 void CWE_Parameters::rollback_button_clicked()
 {
 /*
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     if (selectedStage == nullptr) return;
     if (paramsChanged()) return;
 
-    if (!theMainWindow->getCurrentCase()->rollBack(selectedStage->getRefKey()))
+    if (!currentCase->rollBack(selectedStage->getRefKey()))
     {
         // cwe_globals::displayPopup("Unable to roll back this stage, please check that this stage is done and check your network connection.", "Network Issue");
         return;
@@ -672,7 +672,7 @@ void CWE_Parameters::rollback_button_clicked()
 
 void CWE_Parameters::createStageTabs()
 {
-    CWEcaseInstance * theCase = getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -717,7 +717,7 @@ void CWE_Parameters::createStageTabs()
 void CWE_Parameters::createGroupTabs()
 {
 #if 0
-    CWEcaseInstance * theCase = theMainWindow->getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -757,7 +757,7 @@ void CWE_Parameters::createGroupTabs()
 void CWE_Parameters::createParamWidgets()
 {
 #if 1
-    CWEcaseInstance * theCase = getCurrentCase();
+    CWEcaseInstance * theCase = currentCase;
     if (theCase == nullptr) return;
     CWEanalysisType * theType = theCase->getMyType();
     if (theType == nullptr) return;
@@ -929,12 +929,12 @@ QString CWE_Parameters::getStateText(StageState theState)
     return "*** TOTAL ERROR ***";
 }
 
+#if 0
 CWEcaseInstance * CWE_Parameters::getCurrentCase()
 {
     return currentCase;
 }
 
-#if 0
 void CWE_Parameters::setCurrentCase()
 {
     if (currentCase == nullptr) return;

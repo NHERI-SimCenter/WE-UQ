@@ -94,7 +94,7 @@ public:
     virtual void linkMainWindow(CWE_MainWindow *theMainWin);
     virtual bool allowClickAway();
 
-    CWEcaseInstance * getCurrentCase();
+    //CWEcaseInstance * getCurrentCase();
     //void setCurrentCase();
     //void setCurrentCase(CWEcaseInstance * newCase);
     //void setCurrentCase(CWEanalysisType * newCaseType);
