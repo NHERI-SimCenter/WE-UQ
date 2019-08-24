@@ -583,7 +583,7 @@ void CWEcaseInstance::computeInitState()
     */
 
     myState = InternalCaseState::RE_DATA_LOAD;
-    //recomputeStageStates();
+    recomputeStageStates();
     //computeIdleState();
 }
 
@@ -603,12 +603,12 @@ void CWEcaseInstance::emitNewState(InternalCaseState newState)
     if (newState != myState)
     {
         myState = newState;
-        //recomputeStageStates();
+        recomputeStageStates();
         emit haveNewState(getCaseState());
         return;
     }
 
-    //if (recomputeStageStates())
+    if (recomputeStageStates())
     {
         emit haveNewState(getCaseState());
     }
@@ -1017,24 +1017,29 @@ void CWEcaseInstance::state_ExternOp_taskDone()
 }
 #endif
 
-#if 0
 void CWEcaseInstance::state_InitParam_taskDone(RequestState invokeStatus)
 {
     if (myState != InternalCaseState::INIT_PARAM_UPLOAD) return;
 
+    /*
     if (invokeStatus != RequestState::GOOD)
     {
         emitNewState(InternalCaseState::ERROR);
-        cwe_globals::displayPopup("Unable to upload parameters to new case. Please check connection try again with new case.", "Network Error");
+        qWarning("Unable to upload parameters to new case. Please check connection try again with new case.", "Network Error");
         return;
     }
+    */
 
     //This line is a stopgap measure against a race condition if one reads too quickly an uploaded file.
     //QThread::msleep(500);
 
+    // PETER: this is a hack !!!
+    emitNewState(InternalCaseState::OFFLINE);
+
+
     computeIdleState();
 }
-#endif
+
 
 #if 0
 void CWEcaseInstance::state_MakingFolder_taskDone(RequestState invokeStatus)
@@ -1185,17 +1190,20 @@ void CWEcaseInstance::state_Param_Save_taskDone(RequestState invokeStatus)
 }
 #endif
 
-/*
+
 void CWEcaseInstance::computeIdleState()
 {
     if (defunct) return;
-    if (caseDataInvalid())
-    {
-        emitNewState(InternalCaseState::INVALID);
-        return;
-    }
+    //if (caseDataInvalid())
+    //{
+    //    emitNewState(InternalCaseState::INVALID);
+    //    return;
+    //}
 
-    computeCaseType();
+    //computeCaseType();
+
+    /*
+
     if (!caseDataLoaded())
     {
         const FileNodeRef varFile = caseFolder.getChildWithName(caseParamFileName);
@@ -1240,6 +1248,10 @@ void CWEcaseInstance::computeIdleState()
         return;
     }
 
+    */
+
+    /*
+
     RemoteJobData myJob = cwe_globals::get_CWE_Job_Accountant()->getJobByFolder(caseFolder.getFullPath());
     if (myJob.isValidEntry())
     {
@@ -1265,10 +1277,14 @@ void CWEcaseInstance::computeIdleState()
         return;
     }
 
+    */
+
     computeParamList();
 
     runningStage.clear();
     runningID.clear();
+
+    /*
 
     for (QString aStage : myType->getStageIds())
     {
@@ -1294,6 +1310,7 @@ void CWEcaseInstance::computeIdleState()
         }
     }
 
+    */
+
     emitNewState(InternalCaseState::READY);
 }
-*/

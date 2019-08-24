@@ -95,9 +95,9 @@ public:
     virtual bool allowClickAway();
 
     CWEcaseInstance * getCurrentCase();
-    void setCurrentCase();
-    void setCurrentCase(CWEcaseInstance * newCase);
-    void setCurrentCase(CWEanalysisType * newCaseType);
+    //void setCurrentCase();
+    //void setCurrentCase(CWEcaseInstance * newCase);
+    //void setCurrentCase(CWEanalysisType * newCaseType);
 
 private slots:
     void save_all_button_clicked();
@@ -143,7 +143,7 @@ private:
     /* ======================= */
 
     void addWindowPanel(QWidget * thePanel, QString panelName, QString tabText);
-    void deactivateCurrentCase();
+    //void deactivateCurrentCase();
     CWEcaseInstance * getCaseFromType(CWEanalysisType *caseType);
 
     /* ======================= */

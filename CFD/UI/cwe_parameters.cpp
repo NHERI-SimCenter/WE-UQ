@@ -94,10 +94,6 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
     QString confPath = ":/Resources/CWE/";
     QString caseConfigFile = "upload3D.json";
     QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
-    if (rawConfig.isEmpty())
-    {
-        qWarning("Unreadable template config file skipped: %s", qPrintable(caseConfigFile));
-    }
 
     CWEanalysisType * newTemplate = new CWEanalysisType(rawConfig);
     if (!newTemplate->validParse())
@@ -108,10 +104,14 @@ CWE_Parameters::CWE_Parameters(RandomVariablesContainer *theRandomVariableIW, bo
     else
     {
         theTemplate = newTemplate;
-        qWarning("Added New Template: %s", qPrintable(caseConfigFile));
+        qDebug("Added New Template: %s", qPrintable(caseConfigFile));
     }
 
-    setCurrentCase(theTemplate);
+    currentCase = getCaseFromType(theTemplate);
+    if (currentCase == nullptr)
+    {
+        qFatal("Corrupted CFD template");
+    }
 }
 
 CWE_Parameters::~CWE_Parameters()
@@ -934,6 +934,7 @@ CWEcaseInstance * CWE_Parameters::getCurrentCase()
     return currentCase;
 }
 
+#if 0
 void CWE_Parameters::setCurrentCase()
 {
     if (currentCase == nullptr) return;
@@ -942,7 +943,7 @@ void CWE_Parameters::setCurrentCase()
     currentCase = nullptr;
     //stateLabel->setNewState(CaseState::DEFUNCT);
     //emit haveNewCase();
-    this->newCaseGiven();
+    newCaseGiven();
 }
 
 void CWE_Parameters::setCurrentCase(CWEcaseInstance * newCase)
@@ -984,6 +985,7 @@ void CWE_Parameters::deactivateCurrentCase()
     currentCase->deleteLater();
     currentCase = nullptr;
 }
+#endif
 
 CWEcaseInstance * CWE_Parameters::getCaseFromType(CWEanalysisType * caseType)
 {
