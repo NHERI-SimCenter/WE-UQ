@@ -35,22 +35,18 @@
 #include "cwe_parameters.h"
 #include "ui_cwe_parameters.h"
 
-//#include "../AgaveClientInterface/filemetadata.h"
-
-//#include "../AgaveExplorer/remoteFileOps/filetreenode.h"
 
 #include "cwe_interfacedriver.h"
 
 #include "CFDanalysis/CFDanalysisType.h"
 #include "CFDanalysis/CFDcaseInstance.h"
 
-//#include "mainWindow/cwe_mainwindow.h"
 #include "cwe_tabwidget/cwe_tabwidget.h"
 
-#include "cwe_globals.h"
+#include "cfd_globals.h"
 
 CWE_Parameters::CWE_Parameters(QWidget *parent) :
-    ui(new Ui::CWE_Parameters)
+  : ui(new Ui::CWE_Parameters)
 {
     ui->setupUi(this);
     ui->theTabWidget->setController(this);
@@ -59,15 +55,6 @@ CWE_Parameters::CWE_Parameters(QWidget *parent) :
 CWE_Parameters::~CWE_Parameters()
 {
     delete ui;
-}
-
-void CWE_Parameters::linkMainWindow(CWE_MainWindow *theMainWin)
-{
-    /*
-    CWE_Super::linkMainWindow(theMainWin);
-    QObject::connect(theMainWindow, SIGNAL(haveNewCase()),
-                     this, SLOT(newCaseGiven()));
-    */
 }
 
 void CWE_Parameters::resetViewInfo()
@@ -85,18 +72,18 @@ void CWE_Parameters::on_pbtn_saveAllParameters_clicked()
 
 void CWE_Parameters::saveAllParams()
 {
-    CFDcaseInstance * linkedCFDCase = theMainWindow->getCurrentCase();
+    CFDcaseInstance * linkedCFDCase = getCurrentCase();
     if (linkedCFDCase == NULL) return;
 
     if (!linkedCFDCase->changeParameters(ui->theTabWidget->collectParamData()))
     {
-        cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
+        cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
     }
 }
 
 void CWE_Parameters::newCaseGiven()
 {
-    CFDcaseInstance * newCase = theMainWindow->getCurrentCase();
+    CFDcaseInstance * newCase = getCurrentCase();
 
     this->resetViewInfo();
 
@@ -121,7 +108,7 @@ void CWE_Parameters::newCaseState(CaseState newState)
     }
 
     //Sets the listed states of the stage tabs
-    QMap<QString, StageState> stageStates = theMainWindow->getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = getCurrentCase()->getStageStates();
     for (auto itr = stageStates.cbegin(); itr != stageStates.cend(); itr++)
     {
         ui->theTabWidget->setTabStage(*itr, itr.key());
@@ -151,12 +138,12 @@ void CWE_Parameters::newCaseState(CaseState newState)
         break;
     case CaseState::READY:
     case CaseState::READY_ERROR:
-        ui->theTabWidget->updateParameterValues(theMainWindow->getCurrentCase()->getCurrentParams());
+        ui->theTabWidget->updateParameterValues(getCurrentCase()->getCurrentParams());
         setVisibleAccordingToStage();
         setButtonsAccordingToStage();
         break;
     default:
-        cwe_globals::displayFatalPopup("Remote case has unhandled state");
+        cfd_globals::displayFatalPopup("Remote case has unhandled state");
         return;
         break;
     }
@@ -164,7 +151,7 @@ void CWE_Parameters::newCaseState(CaseState newState)
 
 void CWE_Parameters::setButtonsAccordingToStage()
 {
-    QMap<QString, StageState> stageStates = theMainWindow->getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = getCurrentCase()->getStageStates();
     for (auto itr = stageStates.cbegin(); itr != stageStates.cend(); itr++)
     {
         switch (*itr)
@@ -199,7 +186,7 @@ void CWE_Parameters::setButtonsAccordingToStage()
 
 void CWE_Parameters::setVisibleAccordingToStage()
 {
-    QMap<QString, StageState> stageStates = theMainWindow->getCurrentCase()->getStageStates();
+    QMap<QString, StageState> stageStates = getCurrentCase()->getStageStates();
     for (auto itr = stageStates.cbegin(); itr != stageStates.cend(); itr++)
     {
         switch (*itr)
@@ -225,7 +212,7 @@ void CWE_Parameters::createUnderlyingParamWidgets()
 {
     if (paramWidgetsExist) return;
 
-    CFDcaseInstance * newCase = theMainWindow->getCurrentCase();
+    CFDcaseInstance * newCase = getCurrentCase();
 
     if (newCase == NULL) return;
     if (newCase->getMyType() == NULL) return;
@@ -245,14 +232,9 @@ void CWE_Parameters::createUnderlyingParamWidgets()
     paramWidgetsExist = true;
 }
 
-void CWE_Parameters::switchToResults()
-{
-    cwe_globals::get_CWE_Driver()->getMainWindow()->switchToResultsTab();
-}
-
 void CWE_Parameters::performCaseCommand(QString stage, CaseCommand toEnact)
 {
-    if (theMainWindow->getCurrentCase() == NULL)
+    if (getCurrentCase() == NULL)
     {
         return;
     }
@@ -261,25 +243,25 @@ void CWE_Parameters::performCaseCommand(QString stage, CaseCommand toEnact)
 
     if (toEnact == CaseCommand::CANCEL)
     {
-        if (!theMainWindow->getCurrentCase()->stopJob())
+        if (!getCurrentCase()->stopJob())
         {
-            cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
+            cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
             return;
         }
     }
     else if (toEnact == CaseCommand::ROLLBACK)
     {
-        if (!theMainWindow->getCurrentCase()->rollBack(stage))
+        if (!getCurrentCase()->rollBack(stage))
         {
-            cwe_globals::displayPopup("Unable to rool back this stage, please check that this stage is done and check your network connection.", "Network Issue");
+            cfd_globals::displayPopup("Unable to rool back this stage, please check that this stage is done and check your network connection.", "Network Issue");
             return;
         }
     }
     else if (toEnact == CaseCommand::RUN)
     {
-        if (!theMainWindow->getCurrentCase()->changeParameters(ui->theTabWidget->collectParamData(), stage))
+        if (!getCurrentCase()->changeParameters(ui->theTabWidget->collectParamData(), stage))
         {
-            cwe_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
+            cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
             return;
         }
     }

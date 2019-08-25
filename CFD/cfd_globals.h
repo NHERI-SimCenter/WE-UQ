@@ -1,6 +1,7 @@
 /*********************************************************************************
 **
-** Copyright (c) 2017 The Regents of the University of California
+** Copyright (c) 2018 The University of Notre Dame
+** Copyright (c) 2018 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
@@ -30,76 +31,46 @@
 ***********************************************************************************/
 
 // Contributors:
-// Renamed, modifed by Peter Sempolinski
+// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
+// modified by Peter Mackenzie-Helnwein,UW Seattle
 
-#ifndef CFDANALYSISTYPE_H
-#define CFDANALYSISTYPE_H
+#ifndef CFD_GLOBALS_H
+#define CFD_GLOBALS_H
 
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QIcon>
-#include <QFile>
+#include <QMessageBox>
+#include <QLoggingCategory>
 
-struct RESULTS_STYLE {
-    QString name;
-    QString type;
-    QString file;
-    QString values;
-};
+Q_DECLARE_LOGGING_CATEGORY(agaveAppLayer)
 
-struct KEY_VAL_PAIR {
-    QString key;
-    QString value;
-};
+class AgaveSetupDriver;
+class RemoteDataInterface;
+class FileOperator;
+class JobOperator;
 
-struct VARIABLE_TYPE {
-    QString displayName;
-    QString type;
-    QString defaultValue;
-    QString unit;
-    QString precision;
-    QString sign;
-    QList<KEY_VAL_PAIR> options;
-};
+/*! \brief The cfd_globals are a set of static methods, intended as global functions for CFD in the WE-UQ programs.
+ *
+ *  These utility functions include error popups
+ */
 
-
-class CFDanalysisType
+class cfd_globals
 {
 public:
-    CFDanalysisType(QString configFile);
+    /*! \brief cfd_globals is a static class. The constructor should never be used.
+     */
+    cfd_globals();
 
-    QJsonDocument * getRawConfig(); // should become a private method (?)
+    /*! \brief This will display an informational popup and kill the program.
+     *
+     *  \param message This is the content of the message displayed in the popup.
+     *  \param header This short text appears in the header of the popup. The default is: "Critical Error"
+     *
+     *  After construction, use show() or exec() to display the window.
+     */
+    [[ noreturn ]] static void displayFatalPopup(QString message, QString header = "Critical Error");
 
-    QString getInternalName();
-    QString getName();
-    QString getDescription();
-    QString getIconName();
-    QStringList getStageNames();
-    QStringList getStageSequence();
-
-    QString getStageName(QString stage);
-    QStringList getStageGroups(QString stage);
-    QList<RESULTS_STYLE> getStageResults(QString stage);
-
-    QStringList getVarGroup(QString group);
-    VARIABLE_TYPE getVariableInfo(QString name);
-
-    QString getStageApp(QString stageName);
-    QString getExtraInput(QString stageName);
-
-    QString translateStageId(QString stageId);
-
-    QIcon * getIcon();
-
-    bool isDebugOnly();
+    static void displayPopup(QString message, QString header = "Error");
 
 private:
-    QString myName;
-    QIcon myIcon;
-
-    QJsonDocument myConfiguration;
-
 };
 
-#endif // CFDANALYSISTYPE_H
+#endif // CFD_GLOBALS_H

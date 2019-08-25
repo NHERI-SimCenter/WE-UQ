@@ -267,21 +267,6 @@ QMap<QString, QString> CWE_TabWidget::collectParamData()
     return currentParameters;
 }
 
-void CWE_TabWidget::on_pbtn_cancel_clicked()
-{
-    myController->performCaseCommand(getCurrentSelectedStage(), CaseCommand::CANCEL);
-}
-
-void CWE_TabWidget::on_pbtn_results_clicked()
-{
-    myController->switchToResults();
-}
-
-void CWE_TabWidget::on_pbtn_rollback_clicked()
-{
-    myController->performCaseCommand(getCurrentSelectedStage(), CaseCommand::ROLLBACK);
-}
-
 QString CWE_TabWidget::getStateText(StageState theState)
 {
     if (theState == StageState::DOWNLOADING)    { return "Downloading . . ."; }

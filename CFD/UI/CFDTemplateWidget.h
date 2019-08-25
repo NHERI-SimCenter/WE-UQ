@@ -57,7 +57,9 @@ private:
     void initializeUI();
     void setupConnections();
 
-    CFDanalysisType * currentcase;
+    // new since pulled from CWE
+    CFDanalysisType * theTemplate;
+    CFDcaseInstance * currentCase = nullptr;
 };
 
 #endif // CFDTemplateWidget_H

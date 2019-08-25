@@ -47,7 +47,7 @@
 #include "CFDanalysis/CFDanalysisType.h"
 
 #include "cwe_interfacedriver.h"
-#include "cwe_globals.h"
+#include "cfd_globals.h"
 
 CWE_ParamPanel::CWE_ParamPanel(QWidget *parent) :
     QFrame(parent)
@@ -104,13 +104,13 @@ void CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
         layout->addWidget(theVar);
     }
     else if (theVariable.type.toLower() == "file") {
-        theVar = new SCtrFileDataWidget(cwe_globals::get_CWE_Driver()->getMainWindow(), this);
+        theVar = new SCtrFileDataWidget(this);
         theVar->setStyleSheet("QLineEdit {background-color: #fff}");
         layout->addWidget(theVar);
     }
     else {
         /* add an error message */
-        cwe_globals::displayPopup(QString("Variable %1 of unknown type %2.\nVariable ignored.").arg(varName).arg(theVariable.type), "Warning");
+        cfd_globals::displayPopup(QString("Variable %1 of unknown type %2.\nVariable ignored.").arg(varName).arg(theVariable.type), "Warning");
         theVar->deleteLater();
         return;
     }

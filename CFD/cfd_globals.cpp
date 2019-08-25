@@ -1,6 +1,7 @@
 /*********************************************************************************
 **
-** Copyright (c) 2017 The Regents of the University of California
+** Copyright (c) 2018 The University of Notre Dame
+** Copyright (c) 2018 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
@@ -30,76 +31,31 @@
 ***********************************************************************************/
 
 // Contributors:
-// Renamed, modifed by Peter Sempolinski
+// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
 
-#ifndef CFDANALYSISTYPE_H
-#define CFDANALYSISTYPE_H
+#include "cfd_globals.h"
+#include <QCoreApplication>
 
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QIcon>
-#include <QFile>
+cfd_globals::cfd_globals() {}
 
-struct RESULTS_STYLE {
-    QString name;
-    QString type;
-    QString file;
-    QString values;
-};
-
-struct KEY_VAL_PAIR {
-    QString key;
-    QString value;
-};
-
-struct VARIABLE_TYPE {
-    QString displayName;
-    QString type;
-    QString defaultValue;
-    QString unit;
-    QString precision;
-    QString sign;
-    QList<KEY_VAL_PAIR> options;
-};
-
-
-class CFDanalysisType
+void cfd_globals::displayFatalPopup(QString message, QString header)
 {
-public:
-    CFDanalysisType(QString configFile);
+    QMessageBox errorMessage;
+    errorMessage.setWindowTitle(header);
+    errorMessage.setText(message);
+    errorMessage.setStandardButtons(QMessageBox::Close);
+    errorMessage.setDefaultButton(QMessageBox::Close);
+    errorMessage.setIcon(QMessageBox::Critical);
+    errorMessage.exec();
+    QCoreApplication::instance()->exit(1);
+    qFatal("%s", qPrintable(message));
+}
 
-    QJsonDocument * getRawConfig(); // should become a private method (?)
-
-    QString getInternalName();
-    QString getName();
-    QString getDescription();
-    QString getIconName();
-    QStringList getStageNames();
-    QStringList getStageSequence();
-
-    QString getStageName(QString stage);
-    QStringList getStageGroups(QString stage);
-    QList<RESULTS_STYLE> getStageResults(QString stage);
-
-    QStringList getVarGroup(QString group);
-    VARIABLE_TYPE getVariableInfo(QString name);
-
-    QString getStageApp(QString stageName);
-    QString getExtraInput(QString stageName);
-
-    QString translateStageId(QString stageId);
-
-    QIcon * getIcon();
-
-    bool isDebugOnly();
-
-private:
-    QString myName;
-    QIcon myIcon;
-
-    QJsonDocument myConfiguration;
-
-};
-
-#endif // CFDANALYSISTYPE_H
+void cfd_globals::displayPopup(QString message, QString header)
+{
+    QMessageBox infoMessage;
+    infoMessage.setWindowTitle(header);
+    infoMessage.setText(message);
+    infoMessage.setIcon(QMessageBox::Information);
+    infoMessage.exec();
+}

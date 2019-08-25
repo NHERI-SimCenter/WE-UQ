@@ -3,7 +3,8 @@
 #include <QComboBox>
 #include <QDir>
 #include <QStandardPaths>
-#include "RemoteCaseSelector.h"
+//#include "RemoteCaseSelector.h"
+#include <cwe_guiWidgets/cwe_parameters.h>
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
@@ -39,7 +40,8 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     // now that we have the template, populate the parametertabs
 
-
+    parameterWidget = new CWE_Parameters(this);
+    parameterWidget->newCaseGiven(currentCase);
 
     // ============ done with case template operations ================
 

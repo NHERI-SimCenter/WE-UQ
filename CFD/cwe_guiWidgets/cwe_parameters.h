@@ -39,6 +39,11 @@
 #include <QJsonObject>
 
 #include "SimCenter_widgets/sctrstates.h"
+#include <SimCenterAppWidget.h>
+
+#include <RandomVariablesContainer.h>
+
+class CFDcaseInstance;
 
 class CWE_MainWindow;
 enum class CaseState;
@@ -48,7 +53,7 @@ namespace Ui {
 class CWE_Parameters;
 }
 
-class CWE_Parameters : public QFrame
+class CWE_Parameters : QFrame
 {
     Q_OBJECT
 
@@ -56,10 +61,8 @@ public:
     explicit CWE_Parameters(QWidget *parent = 0);
     ~CWE_Parameters();
 
-    virtual void linkMainWindow(CWE_MainWindow *theMainWin);
     void resetViewInfo();
 
-    void switchToResults();
     void performCaseCommand(QString stage, CaseCommand toEnact);
     void setSaveAllButtonDisabled(bool newSetting);
     void setSaveAllButtonEnabled(bool newSetting);
@@ -68,17 +71,23 @@ private slots:
     void on_pbtn_saveAllParameters_clicked();
 
     void newCaseGiven();
+    void newCaseGiven(CFDcaseInstance * newCase) { currentCase = newCase;}
     void newCaseState(CaseState newState);
 
 private:
     void setButtonsAccordingToStage();
     void setVisibleAccordingToStage();
     void createUnderlyingParamWidgets();
+    CFDcaseInstance * getCurrentCase() { return currentCase; }
 
     void saveAllParams();
 
     Ui::CWE_Parameters *ui;
     bool paramWidgetsExist = false;
+
+    CFDcaseInstance * currentCase = nullptr;
+
+    RandomVariablesContainer *theRandomVariablesContainer;
 
 };
 

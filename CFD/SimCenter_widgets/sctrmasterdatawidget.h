@@ -44,14 +44,11 @@
 #include <QJsonObject>
 #include <QBoxLayout>
 #include <QKeyValueIterator>
+#include <CFD/SimCenter_widgets/sctrstates.h>
 
 //#include "remoteFiles/filenoderef.h"
 //#include "filenoderef.h"
-#include "CFDanalysis/cweanalysistype.h"
-
-enum class SimCenterViewState  { visible,
-                                 editable,
-                                 hidden };
+#include "CFDanalysis/CFDanalysisType.h"
 
 class SCtrMasterDataWidget : public QFrame
 {
@@ -63,8 +60,8 @@ public:
     SimCenterViewState viewState();
     void setViewState(SimCenterViewState);
 
-    void setDataType(PARAM_VARIABLE_TYPE &);
-    PARAM_VARIABLE_TYPE getTypeInfo();
+    void setDataType(VARIABLE_TYPE &);
+    VARIABLE_TYPE getTypeInfo();
 
     void setValue(QString newValue); //Sets both saved and shown value to newValue
     virtual QString shownValue() = 0; //Return string of raw value now shown in widget
@@ -89,7 +86,7 @@ private:
     virtual void setShownValue(QString newValue) = 0; //Put the new value into the displayed widget
     virtual bool shownValueIsValid(); //Return true if raw value now shown in widget is valid
 
-    PARAM_VARIABLE_TYPE m_obj;
+    VARIABLE_TYPE m_obj;
 
     bool doingManualUpdate = false;
     QString savedValue;
