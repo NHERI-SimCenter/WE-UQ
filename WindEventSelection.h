@@ -81,6 +81,7 @@ private:
    SimCenterAppWidget *theStochasticModel;
    SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
+   SimCenterAppWidget *CFDBeginnerEventWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };

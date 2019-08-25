@@ -65,6 +65,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <Inflow/inflowparameterwidget.h>
 
 #include <UserDefinedApplication.h>
+#include <CWE.h>
 
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
@@ -83,6 +84,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("LowRiseTPU"));
     eventSelection->addItem(tr("Stochastic Wind"));
+    eventSelection->addItem(tr("CFD - Beginner"));
     eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("Existing"));
 
@@ -110,6 +112,9 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
+
+    CFDBeginnerEventWidget = new CWE(theRandomVariablesContainer);
+    theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
     CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
@@ -173,10 +178,12 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 1;
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 2;
-    } else if (type == QString("CFD - Expert")) {
+    } else if (type == QString("CWE")) {
       index = 3;
-    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
+    } else if (type == QString("CFD - Expert")) {
       index = 4;
+    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
+      index = 5;
     }
     else {
         return false;
@@ -216,8 +223,13 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theStochasticModel;
     }
 
-    else if(arg1 == "CFD - Expert") {
+    else if ((arg1 == "CFD - Beginner") || (arg1 == "CWE")) {
         theStackedWidget->setCurrentIndex(3);
+        theCurrentEvent = CFDBeginnerEventWidget;
+    }
+
+    else if(arg1 == "CFD - Expert") {
+        theStackedWidget->setCurrentIndex(4);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
@@ -265,7 +277,7 @@ WindEventSelection::inputAppDataFromJSON(QJsonObject &jsonObject)
 
     if (theCurrentEvent != 0 && !theEvent.isEmpty()) {
         return theCurrentEvent->inputAppDataFromJSON(theEvent);
-    }
+   }
 }
 
 bool
