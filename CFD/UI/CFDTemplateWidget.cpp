@@ -5,6 +5,7 @@
 #include <QStandardPaths>
 //#include "RemoteCaseSelector.h"
 #include <cwe_guiWidgets/cwe_parameters.h>
+#include <CFDanalysisType.h>
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
@@ -17,9 +18,11 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     // ========== load the case template ===========
 
+    // load the case template
+
     QString confPath = ":/Resources/CWE/";
     QString caseConfigFile = "upload3D.json";
-    QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
+    QJsonDocument rawConfig = CFDanalysisType::getRawJSON(confPath, caseConfigFile);
 
     CFDanalysisType * newTemplate = new CFDanalysisType(rawConfig);
     if (!newTemplate->validParse())
@@ -130,3 +133,18 @@ void CFDTemplateWidget::setupConnections()
     });
     */
 }
+
+CFDcaseInstance * CFDTemplateWidget::getCaseFromType(CFDanalysisType * caseType)
+{
+    CFDcaseInstance * ret;
+    if (caseType == nullptr)
+    {
+        ret = new CFDcaseInstance();
+    }
+    else
+    {
+        ret = new CFDcaseInstance(caseType);
+    }
+    return ret;
+}
+

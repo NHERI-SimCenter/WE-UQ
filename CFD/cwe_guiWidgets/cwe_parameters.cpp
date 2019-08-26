@@ -42,7 +42,7 @@
 
 #include "cfd_globals.h"
 
-CWE_Parameters::CWE_Parameters(QWidget *parent) :
+CWE_Parameters::CWE_Parameters(QWidget *parent)
   : ui(new Ui::CWE_Parameters)
 {
     ui->setupUi(this);
@@ -65,20 +65,6 @@ void CWE_Parameters::resetViewInfo()
 void CWE_Parameters::on_pbtn_saveAllParameters_clicked()
 {
     saveAllParams();
-}
-
-void CWE_Parameters::newCaseGiven()
-{
-    CFDcaseInstance * newCase = getCurrentCase();
-
-    this->resetViewInfo();
-
-    if (newCase != NULL)
-    {
-        QObject::connect(newCase, SIGNAL(haveNewState(CaseState)),
-                         this, SLOT(newCaseState(CaseState)));
-        newCaseState(newCase->getCaseState());
-    }
 }
 
 void CWE_Parameters::newCaseState(CaseState newState)
@@ -226,4 +212,178 @@ void CWE_Parameters::setSaveAllButtonDisabled(bool newSetting)
 void CWE_Parameters::setSaveAllButtonEnabled(bool newSetting)
 {
     ui->pbtn_saveAllParameters->setEnabled(newSetting);
+}
+
+/* ************************************************************
+ *
+ *      overloading virtual methods
+ *
+ * ************************************************************/
+
+void CWE_Parameters::refreshParameterMap(void)
+{
+    // collect data
+    theParameters.clear();
+
+    //
+    // populate theParameters map
+    //
+
+    /*
+    theParameters.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
+
+    theParameters.insert("vel0",ui->vel->value());
+    theParameters.insert("refAngleU",ui->refAngleU->value());
+    theParameters.insert("refDistU",ui->refDistU->value());
+    theParameters.insert("alphaU",ui->alphaU->value());
+
+    theParameters.insert("refAnglePHI",ui->refAnglePHI->value());
+    theParameters.insert("refDistPHI",ui->refDistPHI->value());
+
+    theParameters.insert("alpha0",ui->alpha1->value());
+    theParameters.insert("alpha1",ui->alpha2->value());
+    theParameters.insert("alpha2",ui->alpha3->value());
+
+    theParameters.insert("phi00",ui->PHI11->value());
+    theParameters.insert("phi10",ui->PHI21->value());
+    theParameters.insert("phi20",ui->PHI31->value());
+    theParameters.insert("phi11",ui->PHI22->value());
+    theParameters.insert("phi21",ui->PHI23->value());
+    theParameters.insert("phi22",ui->PHI33->value());
+
+    theParameters.insert("Lu0",ui->Lux->value());
+    theParameters.insert("Lu10",ui->LuyLux->value());
+    theParameters.insert("Lu20",ui->LuzLux->value());
+
+    theParameters.insert("Lv0",ui->Lvx->value());
+    theParameters.insert("Lv10",ui->LvyLvx->value());
+    theParameters.insert("Lv20",ui->LvzLvx->value());
+
+    theParameters.insert("Lw0",ui->Lwx->value());
+    theParameters.insert("Lw10",ui->LwyLwx->value());
+    theParameters.insert("Lw20",ui->LwzLwx->value());
+
+    theParameters.insert("LuAlpha",ui->LuAlpha->value());
+    theParameters.insert("LvAlpha",ui->LvAlpha->value());
+    theParameters.insert("LwAlpha",ui->LwAlpha->value());
+
+    theParameters.insert("LuRefAngle",ui->refAngleLu->value());
+    theParameters.insert("LvRefAngle",ui->refAngleLv->value());
+    theParameters.insert("LwRefAngle",ui->refAngleLw->value());
+
+    theParameters.insert("LuRefDist",ui->refDistLu->value());
+    theParameters.insert("LvRefDist",ui->refDistLv->value());
+    theParameters.insert("LwRefDist",ui->refDistLw->value());
+    */
+
+    hasParameters = true;
+}
+
+void CWE_Parameters::refreshDisplay(void)
+{
+    /* for use in inflowProperties file */
+
+    /*
+    ui->modelSelectionCBX->setCurrentIndex(int(theParameters.value("profile")));
+
+    ui->vel->setValue(theParameters.value("vel0"));
+    ui->refAngleU->setValue(theParameters.value("refAngleU"));
+    ui->refDistU->setValue(theParameters.value("refDistU"));
+    ui->alphaU->setValue(theParameters.value("alphaU"));
+
+    ui->refAnglePHI->setValue(theParameters.value("refAnglePHI"));
+    ui->refDistPHI->setValue(theParameters.value("refDistPHI"));
+
+    ui->alpha1->setValue(theParameters.value("alpha0"));
+    ui->alpha2->setValue(theParameters.value("alpha1"));
+    ui->alpha3->setValue(theParameters.value("alpha2"));
+
+    ui->PHI11->setValue(theParameters.value("phi00"));
+    ui->PHI21->setValue(theParameters.value("phi10"));
+    ui->PHI31->setValue(theParameters.value("phi20"));
+    ui->PHI22->setValue(theParameters.value("phi11"));
+    ui->PHI23->setValue(theParameters.value("phi21"));
+    ui->PHI33->setValue(theParameters.value("phi22"));
+
+    ui->Lux->setValue(theParameters.value("Lu0"));
+    ui->LuyLux->setValue(theParameters.value("Lu10"));
+    ui->LuzLux->setValue(theParameters.value("Lu20"));
+
+    ui->Lvx->setValue(theParameters.value("Lv0"));
+    ui->LvyLvx->setValue(theParameters.value("Lv10"));
+    ui->LvzLvx->setValue(theParameters.value("Lv20"));
+
+    ui->Lwx->setValue(theParameters.value("Lw0"));
+    ui->LwyLwx->setValue(theParameters.value("Lw10"));
+    ui->LwzLwx->setValue(theParameters.value("Lw20"));
+
+    ui->LuAlpha->setValue(theParameters.value("LuAlpha"));
+    ui->LvAlpha->setValue(theParameters.value("LvAlpha"));
+    ui->LwAlpha->setValue(theParameters.value("LwAlpha"));
+
+    ui->refAngleLu->setValue(theParameters.value("LuRefAngle"));
+    ui->refAngleLv->setValue(theParameters.value("LvRefAngle"));
+    ui->refAngleLw->setValue(theParameters.value("LwRefAngle"));
+
+    ui->refDistLu->setValue(theParameters.value("LuRefDist"));
+    ui->refDistLv->setValue(theParameters.value("LvRefDist"));
+    ui->refDistLw->setValue(theParameters.value("LwRefDist"));
+    */
+}
+
+bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
+{
+    refreshParameterMap();
+
+    // just need to send the class type here.. type needed in object in case user screws up
+    rvObject["type"]="CFD-Guided";
+
+    rvObject["EventClassification"]="Wind";
+
+    foreach (QString key, theParameters.keys())
+    {
+        rvObject[key] = theParameters.value(key);
+    }
+
+    return true;
+}
+
+bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
+{
+    // initialize theParameters to reflect all properties
+    refreshParameterMap();
+
+    // update theParameters using information from the JSON file
+    foreach (QString key, theParameters.keys())
+    {
+        if (rvObject.contains(key)) {
+          QJsonValue theValue = rvObject[key];
+          theParameters[key] = theValue.toDouble();
+        }
+        else
+          return false;
+    }
+
+    // update parameter values
+    refreshDisplay();
+
+    return true;
+}
+
+bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
+{
+    rvObject["EventClassification"]="Wind";
+    rvObject["Application"] = "CFD Guided";
+    QJsonObject dataObj;
+
+
+    rvObject["ApplicationData"] = dataObj;
+    return true;
+
+    return true;
+}
+
+bool CWE_Parameters::inputAppDataFromJSON(QJsonObject &rvObject)
+{
+    return true;
 }

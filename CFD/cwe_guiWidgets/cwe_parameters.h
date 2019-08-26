@@ -61,17 +61,23 @@ public:
     explicit CWE_Parameters(QWidget *parent = 0);
     ~CWE_Parameters();
 
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+    bool outputAppDataToJSON(QJsonObject &rvObject);
+    bool inputAppDataFromJSON(QJsonObject &rvObject);
+    //bool copyFiles(QString &dirName);
+
     void resetViewInfo();
 
     void performCaseCommand(QString stage, CaseCommand toEnact);
     void setSaveAllButtonDisabled(bool newSetting);
     void setSaveAllButtonEnabled(bool newSetting);
+    void newCaseGiven(CFDcaseInstance * newCase) { currentCase = newCase;}
 
 private slots:
     void on_pbtn_saveAllParameters_clicked();
 
-    void newCaseGiven();
-    void newCaseGiven(CFDcaseInstance * newCase) { currentCase = newCase;}
+    //void newCaseGiven();
     void newCaseState(CaseState newState);
 
 private:
@@ -80,12 +86,18 @@ private:
     void createUnderlyingParamWidgets();
     CFDcaseInstance * getCurrentCase() { return currentCase; }
 
+    void refreshParameterMap(void);
+    void refreshDisplay(void);
+
     void saveAllParams();
 
     Ui::CWE_Parameters *ui;
     bool paramWidgetsExist = false;
 
     CFDcaseInstance * currentCase = nullptr;
+
+    QMap<QString, double> theParameters;
+    bool hasParameters = false;
 
     RandomVariablesContainer *theRandomVariablesContainer;
 

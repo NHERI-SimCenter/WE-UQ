@@ -302,8 +302,6 @@ void CFDcaseInstance::computeCaseType()
         }
     }
     */
-
-    myType = CFDanalysisType(theTemplate);
 }
 
 bool CFDcaseInstance::stageStatesEqual(QMap<QString, StageState> *list1, QMap<QString, StageState> *list2)
@@ -482,17 +480,7 @@ bool CFDcaseInstance::recomputeStageStates()
 
 void CFDcaseInstance::computeParamList()
 {
-    if (defunct) return;
-
     QJsonDocument varDoc = QJsonDocument::fromJson(varStore);
-
-    /*
-     * if (varDoc.isNull())
-    {
-        emitNewState(InternalCaseState::ERROR);
-        return;
-    }
-    */
 
     QJsonObject varsList = varDoc.object().value("vars").toObject();
     storedParamList.clear();
@@ -537,7 +525,7 @@ void CFDcaseInstance::computeIdleState()
         return;
     }
 
-    computeCaseType();
+    //computeCaseType();
 
     //emitNewState(InternalCaseState::RE_DATA_LOAD);
     //return;

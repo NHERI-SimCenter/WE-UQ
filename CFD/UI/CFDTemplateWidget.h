@@ -38,8 +38,6 @@ public:
     bool copyFiles(QString &path) override;
     bool supportsLocalRun() override;
 
-
-
 signals:
 
 public slots:
@@ -55,6 +53,8 @@ private:
 
     void initializeUI();
     void setupConnections();
+
+    CFDcaseInstance * getCaseFromType(CFDanalysisType *caseType);
 
     // new since pulled from CWE
     CFDanalysisType * theTemplate;

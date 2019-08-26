@@ -182,9 +182,6 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
 
     QStringList stages = myType->getStageSequence();
 
-    QMap<QString, StageState> stageStates;
-    stageStates = cwe_globals::get_CWE_Driver()->getMainWindow()->getCurrentCase()->getStageStates();
-
     foreach (QString stageName, stages)
     {
         QString stageLabel = myType->getStageName(stageName);
@@ -193,7 +190,7 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
         /* create a CWE_StageStatusTab */
         CWE_StageStatusTab *tab = new CWE_StageStatusTab(stageName, stageLabel, this);
 
-        tab->setStatus(getStateText(stageStates.value(stageName)));
+        tab->setStatus("offline");
 
         tablayout->addWidget(tab);
         stageTabList->insert(stageName, tab);
