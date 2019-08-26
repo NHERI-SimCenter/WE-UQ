@@ -54,6 +54,7 @@ struct KEY_VAL_PAIR {
 };
 
 struct VARIABLE_TYPE {
+    QString name;
     QString displayName;
     QString type;
     QString defaultValue;
@@ -85,8 +86,10 @@ public:
     QStringList getStageGroups(QString stage);
     QList<RESULTS_STYLE> getStageResults(QString stage);
 
-    QStringList getVarGroup(QString group);
+    QString getGroupName(QString group);
+    QList<VARIABLE_TYPE> getVarGroup(QString group);
     VARIABLE_TYPE getVariableInfo(QString name);
+    VARIABLE_TYPE getVariableInfoFromJson(QJsonObject &name);
 
     QString getStageApp(QString stageName);
     QString getExtraInput(QString stageName);

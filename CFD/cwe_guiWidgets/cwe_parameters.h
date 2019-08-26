@@ -72,7 +72,7 @@ public:
     void performCaseCommand(QString stage, CaseCommand toEnact);
     void setSaveAllButtonDisabled(bool newSetting);
     void setSaveAllButtonEnabled(bool newSetting);
-    void newCaseGiven(CFDcaseInstance * newCase) { currentCase = newCase;}
+    void newCaseGiven(CFDcaseInstance * newCase);
 
 private slots:
     //void on_pbtn_saveAllParameters_clicked();

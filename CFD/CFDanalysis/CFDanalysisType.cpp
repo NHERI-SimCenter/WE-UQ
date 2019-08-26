@@ -33,6 +33,7 @@
 // Renamed, modifed by Peter Sempolinski
 
 #include "CFDanalysisType.h"
+#include <QDebug>
 
 CFDanalysisType::CFDanalysisType(QString configFile)
 {
@@ -73,7 +74,7 @@ QString CFDanalysisType::getInternalName()
 QString CFDanalysisType::getName()
 {
     QJsonObject obj = myConfiguration.object();
-    return obj["name"].toString();
+    return obj["displayName"].toString();
 }
 
 QString CFDanalysisType::getDescription()
@@ -90,26 +91,46 @@ QString CFDanalysisType::getIconName()
 
 QString CFDanalysisType::getStageName(QString stage)
 {
+    QString name = "unknown";
+
     QJsonObject obj = myConfiguration.object();
-    QString    name = obj["stages"].toObject().value(stage).toObject().value("name").toString();
-    if (name.isEmpty())
+    QJsonArray stages = obj["stages"].toArray();
+
+    foreach (auto stageObject,  stages)
     {
-        name = "unknown";
+        if (stageObject["internalName"].toString() == stage)
+        {
+            name = stageObject["displayName"].toString();
+            break;
+        }
     }
+
     return name;
 }
 
 QStringList CFDanalysisType::getStageGroups(QString stage)
 {
     QStringList list;
+    QJsonArray groups;
 
     QJsonObject obj = myConfiguration.object();
-    QJsonArray groups = obj["stages"].toObject().value(stage).toObject().value("groups").toArray();
+    QJsonArray stages = obj["stages"].toArray();
+
+    foreach (auto stageObject,  stages)
+    {
+        if (stageObject["internalName"].toString() == stage)
+        {
+            groups = stageObject["groups"].toArray();
+            break;
+        }
+    }
 
     foreach (QJsonValue item, groups)
     {
-        list.append(item.toString());
+        list.append(item.toObject().value("internalName").toString());
     }
+
+    qDebug() << list;
 
     return list;
 }
@@ -138,19 +159,49 @@ QList<RESULTS_STYLE> CFDanalysisType::getStageResults(QString stage)
     return list;
 }
 
-QStringList CFDanalysisType::getVarGroup(QString group)
+QString CFDanalysisType::getGroupName(QString group)
 {
-    QStringList list;
+    QJsonObject obj = myConfiguration.object();
+    QJsonArray stages = obj["stages"].toArray();
+
+    foreach (auto stageObject,  stages)
+    {
+        foreach (auto groupObject,  stageObject["groups"].toArray() )
+        {
+            if (groupObject["internalName"].toString() == group)
+            {
+                QString name = groupObject["displayName"].toString();
+                return name;
+            }
+        }
+    }
+
+    return group;
+}
+
+QList<VARIABLE_TYPE> CFDanalysisType::getVarGroup(QString group)
+{
+    QList<VARIABLE_TYPE>  list;
 
     QJsonObject obj = myConfiguration.object();
-    QJsonArray vars = obj["groups"].toObject().value(group).toObject().value("vars").toArray();
+    QJsonArray stages = obj["stages"].toArray();
 
-    foreach (QJsonValue val, vars)
+    foreach (auto stageObject,  stages)
     {
-        QString str = val.toString();
-        if (!str.isEmpty())
+        foreach (auto groupObject,  stageObject["groups"].toArray() )
         {
-            list.append( str);
+            if (groupObject["internalName"].toString() == group)
+            {
+                QJsonArray vars = groupObject["vars"].toArray();
+
+                foreach (QJsonValue var, vars)
+                {
+                    QJsonObject varObj = var.toObject();
+                    list.append( getVariableInfoFromJson(varObj) );
+                }
+
+                return list;
+            }
         }
     }
 
@@ -161,6 +212,7 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfo(QString name)
 {
     VARIABLE_TYPE res;
 
+    res.name = name;
     res.unit = "";
     res.precision = "";
     res.sign = "";
@@ -173,7 +225,7 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfo(QString name)
     {
         QJsonObject item = vals.value(name).toObject();
 
-        if (item.contains("displayname")) { res.displayName = item.value("displayname").toString(); }
+        if (item.contains("displayName")) { res.displayName = item.value("displayName").toString(); }
         if (item.contains("type"))        { res.type = item.value("type").toString(); }
         if (item.contains("default"))     { res.defaultValue = item.value("default").toString(); }
         if (item.contains("unit"))        { res.unit = item.value("unit").toString(); }
@@ -200,6 +252,45 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfo(QString name)
         res.displayName   = "none";
         res.type          = "text";
         res.defaultValue  = QString("missing definition for variable '%1'").arg(name);
+    }
+
+    return res;
+}
+
+VARIABLE_TYPE CFDanalysisType::getVariableInfoFromJson(QJsonObject &item)
+{
+    VARIABLE_TYPE res;
+
+    res.name          = "not_specified_variable";
+    res.displayName   = "none";
+    res.type          = "text";
+    res.defaultValue  = QString("missing definition");
+    res.unit          = "";
+    res.precision     = "";
+    res.sign          = "";
+    res.options       = QList<KEY_VAL_PAIR>();
+
+    if (item.contains("internalName")) { res.name = item.value("internalName").toString(); }
+    if (item.contains("displayName"))  { res.displayName = item.value("displayName").toString(); }
+    if (item.contains("type"))         { res.type = item.value("type").toString(); }
+    if (item.contains("default"))      { res.defaultValue = item.value("default").toString(); }
+    if (item.contains("unit"))         { res.unit = item.value("unit").toString(); }
+    if (item.contains("precision"))    { res.precision = item.value("precision").toString(); }
+    if (item.contains("sign"))         { res.sign = item.value("sign").toString(); }
+    if (item.contains("options"))
+    {
+        QList<KEY_VAL_PAIR> allOptions;
+
+        foreach (QString key, item["options"].toObject().keys())
+        {
+            KEY_VAL_PAIR pair;
+            pair.key   = key;
+            pair.value = item["options"].toObject().value(key).toString();
+
+            allOptions.append(pair);
+        }
+
+        res.options = allOptions;
     }
 
     return res;
@@ -234,12 +325,13 @@ QStringList CFDanalysisType::getStageNames()
 QStringList CFDanalysisType::getStageSequence()
 {
     QJsonObject obj = myConfiguration.object();
-    QJsonArray stages = obj["sequence"].toArray();
+    QJsonArray stages = obj["stages"].toArray();
 
     QStringList ret;
     for (auto itr = stages.constBegin(); itr != stages.constEnd(); itr++)
     {
-        QString aStage = (*itr).toString();
+        QJsonObject oneStage = (*itr).toObject();
+        QString aStage = oneStage.value("internalName").toString();
         if (!aStage.isEmpty())
         {
             ret.append(aStage);

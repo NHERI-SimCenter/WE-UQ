@@ -114,22 +114,21 @@ void CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
         return;
     }
 
-    //  PETER: what was this supposed to do?
-    //theVar->setData(theVariable);
+    theVar->setDataType(theVariable);
 
     variableWidgets->insert(varName, theVar);
 }
 
-void CWE_ParamPanel::addParameterConfig(QStringList &groupVars, CFDanalysisType *myType)
+void CWE_ParamPanel::addParameterConfig(QList<VARIABLE_TYPE> &groupVars, CFDanalysisType *myType)
 {
     QVBoxLayout *layout = (QVBoxLayout *)this->layout();
     if (layout != NULL) { delete layout; }
     layout = new QVBoxLayout();
     this->setLayout(layout);
 
-    foreach (QString varName, groupVars)
+    foreach (VARIABLE_TYPE theVariable, groupVars)
     {
-        VARIABLE_TYPE theVariable = myType->getVariableInfo(varName);
+        QString varName= theVariable.name;
         this->addVariable(varName, theVariable);
     }
 

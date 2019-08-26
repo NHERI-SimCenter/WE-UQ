@@ -15,7 +15,6 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     initializeUI();
 
-
     // ========== load the case template ===========
 
     // load the case template
@@ -30,8 +29,6 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
     }
 
     // now that we have the template, populate the parametertabs
-
-    parameterWidget = new CWE_Parameters(this);
     parameterWidget->newCaseGiven(currentCase);
 
     // ============ done with case template operations ================
@@ -94,31 +91,13 @@ void CFDTemplateWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(parameterWidget);
+    layout->setMargin(0);
     this->setLayout(layout);
     this->setEnabled(true);
 }
 
 void CFDTemplateWidget::setupConnections()
 {
-    /*
-    connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
-    {
-        if(loggedIn)
-        {
-            loginRequiredLabel->hide();
-            this->setEnabled(true);
-        }
-    });
-
-    connect(remoteService, &RemoteService::logoutReturn, this, [this](bool loggedOut)
-    {
-        if (loggedOut)
-        {
-            loginRequiredLabel->show();
-            this->setDisabled(true);
-        }
-    });
-    */
 }
 
 CFDcaseInstance * CFDTemplateWidget::getCaseFromType(CFDanalysisType * caseType)

@@ -62,7 +62,7 @@ public:
     void setViewState(SimCenterViewState);
     SimCenterViewState getViewState();
     void addVariable(QString varName, VARIABLE_TYPE &theVariable);
-    void addParameterConfig(QStringList &groupVars, CFDanalysisType *myType);
+    void addParameterConfig(QList<VARIABLE_TYPE>  &groupVars, CFDanalysisType *myType);
     QMap<QString, SCtrMasterDataWidget *> getParameterWidgetMap();
 
 private:

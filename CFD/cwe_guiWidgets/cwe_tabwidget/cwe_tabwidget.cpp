@@ -224,7 +224,7 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
     }
 
     this->setButtonMode(SimCenterButtonMode_NONE);
-    this->setViewState(SimCenterViewState::hidden);
+    //this->setViewState(SimCenterViewState::hidden);
 }
 
 void CWE_TabWidget::updateParameterValues(QMap<QString, QString> newValues)

@@ -87,8 +87,8 @@ void CWE_Parameters::newCaseState(CaseState newState)
     case CaseState::ERROR:
     case CaseState::INVALID:
     case CaseState::OFFLINE:
-        ui->theTabWidget->setViewState(SimCenterViewState::hidden);
-        ui->theTabWidget->setButtonMode(SimCenterButtonMode_NONE);
+        //ui->theTabWidget->setViewState(SimCenterViewState::hidden);
+        //ui->theTabWidget->setButtonMode(SimCenterButtonMode_NONE);
         return; //These states should be handled elsewhere
         break;
     case CaseState::LOADING:
@@ -207,6 +207,15 @@ void CWE_Parameters::setSaveAllButtonDisabled(bool newSetting)
 void CWE_Parameters::setSaveAllButtonEnabled(bool newSetting)
 {
     //ui->pbtn_saveAllParameters->setEnabled(newSetting);
+}
+
+
+void CWE_Parameters::newCaseGiven(CFDcaseInstance * newCase)
+{
+    currentCase = newCase;
+
+    // build group tabs
+    newCaseState(CaseState::OFFLINE);
 }
 
 /* ************************************************************

@@ -77,8 +77,10 @@ void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType
     /* find all groups and create a tab per group */
     QStringList groups  = myType->getStageGroups(stage);
 
-    foreach (QString groupName, groups)
+    foreach (QString groupInternalName, groups)
     {
+        QString groupName = myType->getGroupName(groupInternalName);
+
         QScrollArea *scrollArea = new QScrollArea(this);
         CWE_ParamPanel *panel = new CWE_ParamPanel(this);
         scrollArea->setWidgetResizable(true);
@@ -87,7 +89,7 @@ void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType
         this->addTab(scrollArea, groupName);
 
         /* now add the parameter tabs */
-        QStringList groupVars = myType->getVarGroup(groupName);
+        QList<VARIABLE_TYPE> groupVars = myType->getVarGroup(groupInternalName);
 
         //TODO: If has image, need to display
         panel->addParameterConfig(groupVars, myType);
