@@ -76,13 +76,14 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     //
     // create a TreeView widget & provide items for each widget to be displayed & add to layout
     //
+    QVBoxLayout *treeviewLayout = new QVBoxLayout();
 
     treeView = new QTreeView();
     standardModel = new CustomizedItemModel; //QStandardItemModel ;
     QStandardItem *rootNode = standardModel->invisibleRootItem();
 
-    QStandardItem *meshItem = new QStandardItem("Mesh");
-    QStandardItem *simItem = new QStandardItem("Simulation");
+    QStandardItem *meshItem = new QStandardItem("Mesh Properties");
+    QStandardItem *simItem = new QStandardItem("Simulation Properties");
 
     //building up the hierarchy of the model
     rootNode->appendRow(meshItem);
@@ -94,12 +95,13 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     treeView->setModel(standardModel);
     treeView->expandAll();
     treeView->setHeaderHidden(true);
-    treeView->setMinimumWidth(200);
-    treeView->setMaximumWidth(200);
-    treeView->setMinimumWidth(200);
+    treeView->setMinimumWidth(100);
+    treeView->setMaximumWidth(100);
+    treeView->setMinimumWidth(100);
 
     treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);//Disable Edit for the TreeView
 
+    treeView->setWordWrap(true);
 
     //
     // customize the apperance of the menu on the left
@@ -108,6 +110,8 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
     treeView->setObjectName("treeViewOnTheLeft");
     treeView->setIndentation(0);
+
+    /*
     QFile file(":/styles/menuBar.qss");
     if(file.open(QFile::ReadOnly)) {
         treeView->setStyleSheet(file.readAll());
@@ -115,7 +119,10 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     }
     else
         qDebug() << "Open Style File Failed!";
+    */
 
+    treeView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    //treeView->setMaximumHeight(300);
 
     //
     // set up so that a slection change triggers the selectionChanged slot
@@ -128,7 +135,11 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
             SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
 
     // add the TreeView widget to the layout
-    horizontalLayout->addWidget(treeView);
+    treeviewLayout->addWidget(treeView);
+    treeviewLayout->addStretch();
+
+    //horizontalLayout->addWidget(treeView);
+    horizontalLayout->addLayout(treeviewLayout);
 
     //
     // create the staked widget, and add to it the widgets to be displayed, and add the stacked widget itself to layout
@@ -160,9 +171,9 @@ CWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSe
     const QModelIndex index = treeView->selectionModel()->currentIndex();
     QString selectedText = index.data(Qt::DisplayRole).toString();
 
-    if (selectedText == "Mesh")
+    if (selectedText == "Mesh Properties")
         theStackedWidget->setCurrentIndex(0);
-    if (selectedText == "Simulation")
+    if (selectedText == "Simulation Properties")
         theStackedWidget->setCurrentIndex(1);
 }
 
