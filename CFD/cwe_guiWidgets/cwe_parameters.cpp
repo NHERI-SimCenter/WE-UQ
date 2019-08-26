@@ -87,7 +87,8 @@ void CWE_Parameters::newCaseState(CaseState newState)
     case CaseState::ERROR:
     case CaseState::INVALID:
     case CaseState::OFFLINE:
-        //ui->theTabWidget->setViewState(SimCenterViewState::hidden);
+        //ui->theTabWidget->setViewState(SimCenterViewState::visible);
+        ui->theTabWidget->setViewState(SimCenterViewState::editable);
         //ui->theTabWidget->setButtonMode(SimCenterButtonMode_NONE);
         return; //These states should be handled elsewhere
         break;
@@ -194,7 +195,8 @@ void CWE_Parameters::createUnderlyingParamWidgets()
     // ui->label_theLocation->setText(newCase->getCaseFolder().getFullPath());
 
     ui->theTabWidget->setParameterConfig(myType);
-    ui->theTabWidget->setViewState(SimCenterViewState::visible);
+    //ui->theTabWidget->setViewState(SimCenterViewState::visible);
+    ui->theTabWidget->setViewState(SimCenterViewState::editable);
 
     paramWidgetsExist = true;
 }
