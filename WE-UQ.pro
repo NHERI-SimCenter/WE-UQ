@@ -35,6 +35,7 @@ INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
     CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/GeometryHelper.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
@@ -53,6 +54,7 @@ SOURCES += main.cpp \
 
 HEADERS  += \
     CFD/UI/CFDExpertWidget.h \
+    CFD/UI/GeometryHelper.h \
     CFD/UI/RemoteCaseSelector.h \
     Inflow/inflowparameterwidget.h \
     WorkflowAppWE.h \
