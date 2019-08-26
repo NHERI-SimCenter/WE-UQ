@@ -80,13 +80,12 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   // advanced
   QWidget *advanced = new QWidget();
   turbulanceModel = new QComboBox();
-  turbulanceModel->addItem(tr("Smag"));
-  turbulanceModel->addItem(tr("Sa"));
-  turbulanceModel->addItem(tr("Spalart"));
-  turbulanceModel->addItem(tr("Dynamic"));
-  turbulanceModel->addItem(tr("Dynamic"));
-  turbulanceModel->addItem(tr("k-epsilon"));
-  turbulanceModel->addItem(tr("Laminar Flow"));
+  turbulanceModel->addItem(tr("Smagorinsky Turbulance Model (LES)"));
+  turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"));
+  turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"));
+  turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"));
+  turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"));
+  turbulanceModel->addItem(tr("Laminar Flow Model"));
 
   pisoCorrectors = new QLineEdit("1");
   numOrthogonalCorrectors = new QLineEdit("0");
