@@ -143,7 +143,8 @@ void CWE_GroupsWidget::updateParameterValues(QMap<QString, QString> newValues)
         QString key = iter.key();
         if (quickParameterPtr->contains(key))
         {
-            (quickParameterPtr->value(key))->updateValue(iter.value());
+            //(quickParameterPtr->value(key))->updateValue(iter.value());
+            (quickParameterPtr->value(key))->setValue(iter.value());
         }
     }
 }
@@ -158,7 +159,8 @@ int CWE_GroupsWidget::collectParamData(QMap<QString, QString> &currentParameters
     while (iter.hasNext())
     {
         iter.next();
-        currentParameters.insert(iter.key(), (iter.value())->value());
+        //currentParameters.insert(iter.key(), (iter.value())->value());
+        currentParameters.insert(iter.key(), (iter.value())->shownValue());
         count++;
     }
 

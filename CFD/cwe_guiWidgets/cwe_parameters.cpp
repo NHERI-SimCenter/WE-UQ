@@ -35,9 +35,6 @@
 #include "cwe_parameters.h"
 #include "ui_cwe_parameters.h"
 
-
-#include "cwe_interfacedriver.h"
-
 #include "CFDanalysis/CFDanalysisType.h"
 #include "CFDanalysis/CFDcaseInstance.h"
 
@@ -68,17 +65,6 @@ void CWE_Parameters::resetViewInfo()
 void CWE_Parameters::on_pbtn_saveAllParameters_clicked()
 {
     saveAllParams();
-}
-
-void CWE_Parameters::saveAllParams()
-{
-    CFDcaseInstance * linkedCFDCase = getCurrentCase();
-    if (linkedCFDCase == NULL) return;
-
-    if (!linkedCFDCase->changeParameters(ui->theTabWidget->collectParamData()))
-    {
-        cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
-    }
 }
 
 void CWE_Parameters::newCaseGiven()
@@ -216,7 +202,7 @@ void CWE_Parameters::createUnderlyingParamWidgets()
 
     if (newCase == NULL) return;
     if (newCase->getMyType() == NULL) return;
-    if (newCase->getCaseFolder().isNil()) return;
+    // if (newCase->getCaseFolder().isNil()) return;
 
     CFDanalysisType * myType = newCase->getMyType();
 
@@ -224,47 +210,12 @@ void CWE_Parameters::createUnderlyingParamWidgets()
 
     ui->label_theName->setText(newCase->getCaseName());
     ui->label_theType->setText(myType->getName());
-    ui->label_theLocation->setText(newCase->getCaseFolder().getFullPath());
+    // ui->label_theLocation->setText(newCase->getCaseFolder().getFullPath());
 
     ui->theTabWidget->setParameterConfig(myType);
     ui->theTabWidget->setViewState(SimCenterViewState::visible);
 
     paramWidgetsExist = true;
-}
-
-void CWE_Parameters::performCaseCommand(QString stage, CaseCommand toEnact)
-{
-    if (getCurrentCase() == NULL)
-    {
-        return;
-    }
-
-    //TODO: Check that commands are valid : PRS
-
-    if (toEnact == CaseCommand::CANCEL)
-    {
-        if (!getCurrentCase()->stopJob())
-        {
-            cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
-            return;
-        }
-    }
-    else if (toEnact == CaseCommand::ROLLBACK)
-    {
-        if (!getCurrentCase()->rollBack(stage))
-        {
-            cfd_globals::displayPopup("Unable to rool back this stage, please check that this stage is done and check your network connection.", "Network Issue");
-            return;
-        }
-    }
-    else if (toEnact == CaseCommand::RUN)
-    {
-        if (!getCurrentCase()->changeParameters(ui->theTabWidget->collectParamData(), stage))
-        {
-            cfd_globals::displayPopup("Unable to contact design safe. Please wait and try again.", "Network Issue");
-            return;
-        }
-    }
 }
 
 void CWE_Parameters::setSaveAllButtonDisabled(bool newSetting)

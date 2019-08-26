@@ -59,7 +59,6 @@ SOURCES += main.cpp \
     DEDM_HRP.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
-    CFD/cwe_interfacedriver.cpp \
     CFD/Analysis/filemetadata.cpp \
     CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
     CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
@@ -92,7 +91,6 @@ HEADERS  += \
     DEDM_HRP.h \
     StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h \
-    CFD/cwe_interfacedriver.h \
     CFD/Analysis/filemetadata.h \
     CFD/SimCenter_widgets/sctrbooldatawidget.h \
     CFD/SimCenter_widgets/sctrchoicedatawidget.h \

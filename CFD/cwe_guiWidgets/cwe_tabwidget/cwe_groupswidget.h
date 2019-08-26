@@ -45,7 +45,6 @@
 class CWE_StageStatusTab;
 class CWE_ParamTab;
 class SCtrMasterDataWidget;
-class CWE_InterfaceDriver;
 enum class SimCenterViewState;
 enum class StageState;
 

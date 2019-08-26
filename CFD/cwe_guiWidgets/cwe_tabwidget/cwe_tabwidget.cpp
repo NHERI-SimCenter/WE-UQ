@@ -49,9 +49,6 @@
 #include "CFDanalysis/CFDanalysisType.h"
 
 #include "cwe_guiWidgets/cwe_parameters.h"
-#include "../CFDClientProgram/cwe_interfacedriver.h"
-
-#include "mainWindow/cwe_mainwindow.h"
 
 #include "cwe_globals.h"
 
@@ -246,11 +243,6 @@ void CWE_TabWidget::initQuickParameterPtr()
     {
         stageTabList->value(stageName)->getGroupsWidget()->initQuickParameterPtr();
     }
-}
-
-void CWE_TabWidget::on_pbtn_run_clicked()
-{
-    myController->performCaseCommand(getCurrentSelectedStage(), CaseCommand::RUN);
 }
 
 QMap<QString, QString> CWE_TabWidget::collectParamData()

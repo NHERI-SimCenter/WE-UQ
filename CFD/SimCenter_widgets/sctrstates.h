@@ -68,6 +68,7 @@ enum class SimCenterViewState { visible,
 #define SimCenterButtonMode_ALL       0x010fu
 #define SimCenterButtonMode_SAVE_ALL  0x0100u
 
+/*
 enum class SimCenterDataType { integer,
                                floatingpoint,
                                boolean,
@@ -79,5 +80,6 @@ enum class SimCenterDataType { integer,
                                vector2D,
                                vector3D,
                                unknown};
+*/
 
 #endif // SCTRSTATES_H

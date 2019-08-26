@@ -92,14 +92,7 @@ public:
 
     //Of the following, only one enacted at a time
     //Return true if enacted, false if not
-    //bool createCase(QString newName, const FileNodeRef &containingFolder);
-    //bool duplicateCase(QString newName, const FileNodeRef &containingFolder, const FileNodeRef &oldCase);
-    bool changeParameters(QMap<QString, QString> paramList);
-    bool changeParameters(QMap<QString, QString> paramList, QString stageToRun);
     bool startStageApp(QString stageID);
-    bool rollBack(QString stageToDelete);
-    bool stopJob();
-    bool downloadCase(QString destLocalFile);
 
 signals:
     void haveNewState(CaseState newState);
@@ -129,21 +122,6 @@ private:
     QByteArray produceJSONparams(QMap<QString, QString> paramList);
 
     void connectCaseSignals();
-
-    //The various state change functions:
-    void state_CopyingFolder_taskDone(RequestState invokeStatus);
-    void state_DataLoad_fileChange_jobList();
-    void state_ExternOp_taskDone();
-    void state_InitParam_taskDone(RequestState invokeStatus);
-    void state_MakingFolder_taskDone(RequestState invokeStatus);
-    void state_Ready_fileChange_jobList();
-    void state_Running_jobList();
-    void state_StartingJob_jobInvoked(QString jobID);
-    void state_StoppingJob_jobKilled();
-    void state_WaitingFolderDel_taskDone(RequestState invokeStatus);
-    void state_Download_recursiveOpDone(RequestState invokeStatus);
-    void state_Param_Save_taskDone(RequestState invokeStatus);
-    void state_Param_Save_Run_taskDone(RequestState invokeStatus);
 
     void computeIdleState();
 

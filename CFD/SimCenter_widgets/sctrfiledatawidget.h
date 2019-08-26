@@ -38,8 +38,6 @@
 #include "SimCenter_widgets/sctrmasterdatawidget.h"
 
 class RemoteFileTree;
-class CWE_InterfaceDriver;
-//class FileNodeRef;
 class RemoteFileModel;
 
 class SCtrFileDataWidget: public SCtrMasterDataWidget

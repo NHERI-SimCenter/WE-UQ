@@ -46,7 +46,6 @@
 
 #include "CFDanalysis/CFDanalysisType.h"
 
-#include "cwe_interfacedriver.h"
 #include "cfd_globals.h"
 
 CWE_ParamPanel::CWE_ParamPanel(QWidget *parent) :

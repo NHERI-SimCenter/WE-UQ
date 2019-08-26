@@ -43,7 +43,6 @@ public:
 signals:
 
 public slots:
-    void selectButtonPushed();
 
 private:
     QLineEdit* caseEditBox;

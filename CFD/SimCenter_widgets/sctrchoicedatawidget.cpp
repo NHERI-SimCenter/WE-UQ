@@ -81,8 +81,8 @@ void SCtrChoiceDataWidget::initUI()
     for (auto itr = getTypeInfo().options.cbegin(); itr != getTypeInfo().options.cend(); itr++)
     {
         QList<QStandardItem *> newRow;
-        newRow.append(new QStandardItem(itr.key()));
-        newRow.append(new QStandardItem(*itr));
+        newRow.append(new QStandardItem(itr->key));
+        newRow.append(new QStandardItem(itr->value));
 
         theModel->appendRow(newRow);
     }

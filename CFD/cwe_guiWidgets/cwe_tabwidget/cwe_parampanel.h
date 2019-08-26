@@ -45,7 +45,6 @@
 #include "CFDanalysis/CFDanalysisType.h"
 
 class SCtrMasterDataWidget;
-class CWE_InterfaceDriver;
 enum class SimCenterViewState;
 
 namespace Ui {

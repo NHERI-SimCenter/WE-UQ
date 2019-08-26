@@ -92,7 +92,7 @@ private:
     QString getCurrentSelectedStage();
     void enactButtonSetting();
 
-    CWE_Parameters * myController = NULL;
+    CWE_Parameters * myController = nullptr;
 
     Ui::CWE_TabWidget *ui;
 

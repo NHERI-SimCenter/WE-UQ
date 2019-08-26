@@ -9,7 +9,8 @@
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
+    // parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
+    parameterWidget = new CWE_Parameters(this);
 
     initializeUI();
 
@@ -20,7 +21,7 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
     QString caseConfigFile = "upload3D.json";
     QJsonDocument rawConfig = CWEanalysisType::getRawJSON(confPath, caseConfigFile);
 
-    CWEanalysisType * newTemplate = new CWEanalysisType(rawConfig);
+    CFDanalysisType * newTemplate = new CFDanalysisType(rawConfig);
     if (!newTemplate->validParse())
     {
         qWarning("Template Parse Invalid: %s", qPrintable(caseConfigFile));
@@ -99,18 +100,6 @@ bool CFDTemplateWidget::supportsLocalRun()
     return false;
 }
 
-void CFDTemplateWidget::selectButtonPushed()
-{
-    if(remoteService->isLoggedIn())
-    {
-        RemoteCaseSelector selector(remoteService, this);
-        selector.setWindowModality(Qt::ApplicationModal);
-        connect(&selector, &RemoteCaseSelector::caseSelected, caseEditBox, &QLineEdit::setText);
-        selector.exec();
-        selector.close();
-    }
-}
-
 void CFDTemplateWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
@@ -122,8 +111,6 @@ void CFDTemplateWidget::initializeUI()
 void CFDTemplateWidget::setupConnections()
 {
     /*
-    connect(caseSelectButton, &QPushButton::clicked, this, &CFDTemplateWidget::selectButtonPushed);
-
     connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
     {
         if(loggedIn)

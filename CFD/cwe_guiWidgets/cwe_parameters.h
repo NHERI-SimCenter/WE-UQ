@@ -53,7 +53,7 @@ namespace Ui {
 class CWE_Parameters;
 }
 
-class CWE_Parameters : QFrame
+class CWE_Parameters : public QFrame
 {
     Q_OBJECT
 
