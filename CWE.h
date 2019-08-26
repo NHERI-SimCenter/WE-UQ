@@ -1,5 +1,5 @@
-#ifndef WIND_EVENT_SELECTION_H
-#define WIND_EVENT_SELECTION_H
+#ifndef CWE_H
+#define CWE_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,49 +41,54 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
+#include <QComboBox>
+#include <QSpinBox>
 #include <QGroupBox>
+#include <QVBoxLayout>
 #include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <RemoteService.h>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
-
+class InputWidgetParameters;
 class RandomVariablesContainer;
+class QButtonGroup;
+class QComboBox;
+class QRadioButton;
+class QTreeView;
+class QStandardItemModel;
+class QStandardItem;
+class QStackedWidget;
+class QItemSelection;
 
-class WindEventSelection : public  SimCenterAppWidget
+class CWE : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
-    ~WindEventSelection();
+    explicit CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~CWE();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
-    bool supportsLocalRun() override;
+    bool copyFiles(QString &dirName);
 
- signals:
+signals:
 
 public slots:
-   void eventSelectionChanged(const QString &arg1);
+   void clear(void);
+   void selectionChangedSlot(const QItemSelection &, const QItemSelection &);
 
 private:
-   QComboBox   *eventSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEvent;
+   SimCenterWidget *meshParameters;
+   SimCenterWidget *simulationParameters;
 
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
-   SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
-   SimCenterAppWidget *CFDExpertEventWidget;
-   SimCenterAppWidget *CFDBeginnerEventWidget;
-
-   RandomVariablesContainer *theRandomVariablesContainer;
+   QTreeView *treeView;
+   QStandardItemModel *standardModel;
+   QStandardItem *rootNode;
+   QModelIndex infoItemIdx;
+   SimCenterWidget  *currentWidget;
+   QJsonObject *jsonObjOrig;
+   
+   QStackedWidget *theStackedWidget;   
 };
 
-#endif // WIND_EVENT_SELECTION_H
+#endif // CWE_H

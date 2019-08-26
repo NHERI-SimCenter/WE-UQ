@@ -1,5 +1,5 @@
-#ifndef WIND_EVENT_SELECTION_H
-#define WIND_EVENT_SELECTION_H
+#ifndef MeshParametersCWE_H
+#define MeshParametersCWE_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,51 +39,52 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
-#include <SimCenterAppWidget.h>
+#include <SimCenterWidget.h>
 
+#include <QComboBox>
+#include <QSpinBox>
 #include <QGroupBox>
+#include <QVBoxLayout>
 #include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <RemoteService.h>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
-
+class InputWidgetParameters;
 class RandomVariablesContainer;
+class QButtonGroup;
+class QComboBox;
+class QRadioButton;
 
-class WindEventSelection : public  SimCenterAppWidget
+class MeshParametersCWE : public SimCenterWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
-    ~WindEventSelection();
+    explicit MeshParametersCWE(QWidget *parent = 0);
+    ~MeshParametersCWE();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
-    bool supportsLocalRun() override;
+    bool copyFiles(QString &dirName);
 
- signals:
+signals:
 
 public slots:
-   void eventSelectionChanged(const QString &arg1);
+   void clear(void);
 
 private:
-   QComboBox   *eventSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEvent;
-
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
-   SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
-   SimCenterAppWidget *CFDExpertEventWidget;
-   SimCenterAppWidget *CFDBeginnerEventWidget;
-
-   RandomVariablesContainer *theRandomVariablesContainer;
+   QLineEdit *domainLengthInlet;
+   QLineEdit *domainLengthOutlet;
+   QLineEdit *domainLengthYpos;
+   QLineEdit *domainLengthYneg;
+   QLineEdit *domainLengthZpos;
+   QLineEdit *domainLengthZneg;
+   QLineEdit *gridSizeBluffBody;
+   QLineEdit *gridSizeOuterBoundary;
+   QComboBox *numSubdomains;
+   QComboBox *boundaryConditionYpos;
+   QComboBox *boundaryConditionYneg;
+   QComboBox *boundaryConditionZpos;
+   QComboBox *boundaryConditionZneg;
 };
 
-#endif // WIND_EVENT_SELECTION_H
+#endif // MeshParametersCWE_H

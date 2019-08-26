@@ -1,5 +1,5 @@
-#ifndef WIND_EVENT_SELECTION_H
-#define WIND_EVENT_SELECTION_H
+#ifndef SimulationParametersCWE_H
+#define SimulationParametersCWE_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,51 +39,47 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
-#include <SimCenterAppWidget.h>
+#include <SimCenterWidget.h>
 
+#include <QComboBox>
+#include <QSpinBox>
 #include <QGroupBox>
+#include <QVBoxLayout>
 #include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <RemoteService.h>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
-
+class InputWidgetParameters;
 class RandomVariablesContainer;
+class QButtonGroup;
+class QComboBox;
+class QRadioButton;
 
-class WindEventSelection : public  SimCenterAppWidget
+class SimulationParametersCWE : public SimCenterWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
-    ~WindEventSelection();
+    explicit SimulationParametersCWE(QWidget *parent = 0);
+    ~SimulationParametersCWE();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
-    bool supportsLocalRun() override;
+    bool copyFiles(QString &dirName);
 
- signals:
+signals:
 
 public slots:
-   void eventSelectionChanged(const QString &arg1);
+   void clear(void);
 
 private:
-   QComboBox   *eventSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEvent;
-
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
-   SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
-   SimCenterAppWidget *CFDExpertEventWidget;
-   SimCenterAppWidget *CFDBeginnerEventWidget;
-
-   RandomVariablesContainer *theRandomVariablesContainer;
+   QLineEdit *duration;
+   QLineEdit *dT;
+   QLineEdit *inflowVelocity;
+   QLineEdit *kinematicViscosity;
+   QComboBox *turbulanceModel;
+   QLineEdit *pisoCorrectors;
+   QLineEdit *numOrthogonalCorrectors;
+   QLineEdit *turbulanceIntensity;
 };
 
-#endif // WIND_EVENT_SELECTION_H
+#endif // SimulationParametersCWE_H

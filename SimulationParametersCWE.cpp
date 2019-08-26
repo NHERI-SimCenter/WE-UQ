@@ -1,0 +1,159 @@
+/* *****************************************************************************
+Copyright (c) 2016-2017, The Regents of the University of California (Regents).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without 
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.
+
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS 
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
+UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+
+*************************************************************************** */
+
+// Written: fmckenna
+
+#include "SimulationParametersCWE.h"
+
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDebug>
+#include <QFileDialog>
+#include <QFormLayout>
+#include "RandomVariablesContainer.h"
+#include <QHBoxLayout>
+
+SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
+    : SimCenterWidget(parent)
+{
+  QHBoxLayout *layout = new QHBoxLayout();
+  QTabWidget *tabbedWidget = new QTabWidget();
+  
+  // control
+  QWidget *control = new QWidget();
+  duration= new QLineEdit("1.0");
+  dT= new QLineEdit("0.1");
+  inflowVelocity= new QLineEdit("1.0");
+  kinematicViscosity= new QLineEdit("1.48e-05");
+
+  QGridLayout *controlLayout=new QGridLayout();
+  controlLayout->addWidget(new QLabel("Simulation Duration"),0,0);
+  controlLayout->addWidget(duration,0,1);
+  controlLayout->addWidget(new QLabel("s"),0,2);
+  controlLayout->addWidget(new QLabel("Simulation Time Step"),1,0);
+  controlLayout->addWidget(dT,1,1);
+  controlLayout->addWidget(new QLabel("s"),1,2);
+  controlLayout->addWidget(new QLabel("Inflow Velocity"),2,0);
+  controlLayout->addWidget(inflowVelocity,2,1);
+  controlLayout->addWidget(new QLabel("m/s"),2,2);
+  controlLayout->addWidget(new QLabel("Kinematic Viscosity"),3,0);
+  controlLayout->addWidget(kinematicViscosity,3,1);
+  controlLayout->addWidget(new QLabel("m^2/s"),3,2);
+  controlLayout->setRowStretch(4,1);
+  control->setLayout(controlLayout);
+
+  // advanced
+  QWidget *advanced = new QWidget();
+  turbulanceModel = new QComboBox();
+  turbulanceModel->addItem(tr("Smagorinsky Turbulance Model (LES)"));
+  turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"));
+  turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"));
+  turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"));
+  turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"));
+  turbulanceModel->addItem(tr("Laminar Flow Model"));
+
+  pisoCorrectors = new QLineEdit("1");
+  numOrthogonalCorrectors = new QLineEdit("0");
+  turbulanceIntensity = new QLineEdit("0.1");
+    
+  QGridLayout *advancedLayout=new QGridLayout();
+  advancedLayout->addWidget(new QLabel("Turbulance"),0,0);
+  advancedLayout->addWidget(turbulanceModel,0,1);
+  advancedLayout->addWidget(new QLabel("Number of Piso Correctors"),1,0);
+  advancedLayout->addWidget(pisoCorrectors,1,1);
+  advancedLayout->addWidget(new QLabel("Number of non-orthogonal Correctors"),2,0);
+  advancedLayout->addWidget(numOrthogonalCorrectors,2,1);
+  advancedLayout->addWidget(new QLabel("Turbulance Intensity"),3,0);
+  advancedLayout->addWidget(turbulanceIntensity,3,1);
+  advancedLayout->setRowStretch(4,1);
+  advanced->setLayout(advancedLayout);
+
+  
+  tabbedWidget->addTab(control,tr("Simulation Control"));
+  tabbedWidget->addTab(advanced,tr("Advances"));
+
+  layout->addWidget(tabbedWidget);
+  this->setLayout(layout);
+}
+
+
+SimulationParametersCWE::~SimulationParametersCWE()
+{
+
+}
+
+
+void SimulationParametersCWE::clear(void)
+{
+
+}
+
+
+
+bool
+SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
+{
+  //jsonObject["EventClassification"]="Wind";
+    
+    return true;
+}
+
+
+bool
+SimulationParametersCWE::inputFromJSON(QJsonObject &jsonObject)
+{
+    this->clear();
+    
+    /*
+    if (jsonObject.contains("checkedPlan")) {
+      QJsonValue theValue = jsonObject["checkedPlan"];
+      int id = theValue.toInt();
+      thePlanGroup->button(id)->setChecked(true);
+    } else
+      return false;
+    */
+
+    return true;
+}
+
+
+ bool
+ SimulationParametersCWE::copyFiles(QString &destDir) {
+   return true;
+ }
+

@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
   QString version("Version 1.0.0");
   w.setVersion(version);
 
-  QString citeText(" ");
+  QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jaiwei Wan, & Dae Kun Kwon. (2019, July 9). NHERI-SimCenter/WE-UQ: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3274228");
   w.setCite(citeText);
 
   QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE-UQ");

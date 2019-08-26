@@ -1,5 +1,5 @@
-#ifndef WIND_EVENT_SELECTION_H
-#define WIND_EVENT_SELECTION_H
+#ifndef LOW_RISE_TPU_H
+#define LOW_RISE_TPU_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,49 +41,55 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
-#include <QGroupBox>
-#include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <RemoteService.h>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
-
+class InputWidgetParameters;
 class RandomVariablesContainer;
+class QComboBox;
+class QGridLayout;
+class QVBoxLayout;
+class QSpinBox;
+class QLineEdit;
+class QGroupBox;
+class QPushButton;
 
-class WindEventSelection : public  SimCenterAppWidget
+class LowRiseTPU : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
-    ~WindEventSelection();
+    explicit LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~LowRiseTPU();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
-    bool supportsLocalRun() override;
+    bool copyFiles(QString &dirName);
 
- signals:
+signals:
 
 public slots:
-   void eventSelectionChanged(const QString &arg1);
+   void clear(void);
+   void onBuildingDimensionChanged(void);
+   void onRoofTypeChanged(int type);
 
 private:
-   QComboBox   *eventSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEvent;
+   QVBoxLayout *layout;
+   QWidget     *femSpecific;
+   
+   QComboBox *roofType;
+   QComboBox *heightBreadth;
+   QComboBox *depthBreadth;    
+   QComboBox *pitch;    
+   QSpinBox  *incidenceAngle;    
+   QPushButton *theBuildingButton;
+   QLineEdit *windSpeed;
 
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
-   SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
-   SimCenterAppWidget *CFDExpertEventWidget;
-   SimCenterAppWidget *CFDBeginnerEventWidget;
+   QGroupBox* windTunnelGeometryBox;
+   QGridLayout *windTunnelGeometryLayout;
 
+   
    RandomVariablesContainer *theRandomVariablesContainer;
+   QStringList varNamesAndValues;
 };
 
-#endif // WIND_EVENT_SELECTION_H
+#endif // LOW_RISE_TPU_H
