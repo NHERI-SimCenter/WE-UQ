@@ -78,6 +78,9 @@ public:
     QStringList getStageNames();
     QStringList getStageSequence();
 
+    static QJsonDocument getRawJSON(QString configFolder, QString configFile);
+    static QJsonObject getStageById(QJsonArray stageList, QString toFind);
+
     QString getStageName(QString stage);
     QStringList getStageGroups(QString stage);
     QList<RESULTS_STYLE> getStageResults(QString stage);

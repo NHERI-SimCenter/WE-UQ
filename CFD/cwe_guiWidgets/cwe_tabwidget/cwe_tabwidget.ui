@@ -165,34 +165,6 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QPushButton" name="pbtn_run">
-           <property name="text">
-            <string>Run</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbtn_cancel">
-           <property name="text">
-            <string>Cancel</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbtn_results">
-           <property name="text">
-            <string>Results</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbtn_rollback">
-           <property name="text">
-            <string>Rollback</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>

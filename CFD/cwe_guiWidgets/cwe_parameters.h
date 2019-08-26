@@ -75,7 +75,7 @@ public:
     void newCaseGiven(CFDcaseInstance * newCase) { currentCase = newCase;}
 
 private slots:
-    void on_pbtn_saveAllParameters_clicked();
+    //void on_pbtn_saveAllParameters_clicked();
 
     //void newCaseGiven();
     void newCaseState(CaseState newState);
@@ -88,8 +88,6 @@ private:
 
     void refreshParameterMap(void);
     void refreshDisplay(void);
-
-    void saveAllParams();
 
     Ui::CWE_Parameters *ui;
     bool paramWidgetsExist = false;

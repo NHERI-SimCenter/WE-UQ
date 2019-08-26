@@ -43,7 +43,7 @@
 #include "SimCenter_widgets/sctrmasterdatawidget.h"
 #include "CFDanalysis/CFDanalysisType.h"
 
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
 CWE_GroupsWidget::CWE_GroupsWidget(QWidget *parent) : QTabWidget(parent)
 {

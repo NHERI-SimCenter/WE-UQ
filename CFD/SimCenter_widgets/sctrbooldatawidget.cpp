@@ -34,7 +34,7 @@
 
 #include "sctrbooldatawidget.h"
 
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
 SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
     SCtrMasterDataWidget(parent)

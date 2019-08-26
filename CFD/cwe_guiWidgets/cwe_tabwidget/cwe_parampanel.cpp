@@ -113,7 +113,9 @@ void CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
         theVar->deleteLater();
         return;
     }
-    theVar->setData(theVariable);
+
+    //  PETER: what was this supposed to do?
+    //theVar->setData(theVariable);
 
     variableWidgets->insert(varName, theVar);
 }

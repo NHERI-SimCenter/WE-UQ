@@ -62,11 +62,6 @@ void CWE_Parameters::resetViewInfo()
     ui->theTabWidget->resetView();
 }
 
-void CWE_Parameters::on_pbtn_saveAllParameters_clicked()
-{
-    saveAllParams();
-}
-
 void CWE_Parameters::newCaseState(CaseState newState)
 {
     if (!paramWidgetsExist)
@@ -206,12 +201,12 @@ void CWE_Parameters::createUnderlyingParamWidgets()
 
 void CWE_Parameters::setSaveAllButtonDisabled(bool newSetting)
 {
-    ui->pbtn_saveAllParameters->setDisabled(newSetting);
+    //ui->pbtn_saveAllParameters->setDisabled(newSetting);
 }
 
 void CWE_Parameters::setSaveAllButtonEnabled(bool newSetting)
 {
-    ui->pbtn_saveAllParameters->setEnabled(newSetting);
+    //ui->pbtn_saveAllParameters->setEnabled(newSetting);
 }
 
 /* ************************************************************

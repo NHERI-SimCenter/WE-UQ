@@ -34,7 +34,7 @@
 
 #include "sctrchoicedatawidget.h"
 
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
 SCtrChoiceDataWidget::SCtrChoiceDataWidget(QWidget *parent):
     SCtrMasterDataWidget(parent)

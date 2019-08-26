@@ -20,21 +20,8 @@ CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariable
 
     // load the case template
 
-    QString confPath = ":/Resources/CWE/";
-    QString caseConfigFile = "upload3D.json";
-    QJsonDocument rawConfig = CFDanalysisType::getRawJSON(confPath, caseConfigFile);
-
-    CFDanalysisType * newTemplate = new CFDanalysisType(rawConfig);
-    if (!newTemplate->validParse())
-    {
-        qWarning("Template Parse Invalid: %s", qPrintable(caseConfigFile));
-        delete newTemplate;
-    }
-    else
-    {
-        theTemplate = newTemplate;
-        qDebug("Added New Template: %s", qPrintable(caseConfigFile));
-    }
+    QString caseConfigFile = ":/Resources/CWE/upload3D.json";
+    theTemplate = new CFDanalysisType(caseConfigFile);
 
     currentCase = getCaseFromType(theTemplate);
     if (currentCase == nullptr)

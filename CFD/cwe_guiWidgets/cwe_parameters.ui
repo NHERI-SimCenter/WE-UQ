@@ -149,13 +149,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QPushButton" name="pbtn_saveAllParameters">
-     <property name="text">
-      <string>save all parameters</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>

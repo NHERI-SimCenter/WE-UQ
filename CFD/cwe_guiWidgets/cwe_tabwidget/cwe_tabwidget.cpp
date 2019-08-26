@@ -50,7 +50,7 @@
 
 #include "cwe_guiWidgets/cwe_parameters.h"
 
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 
 CWE_TabWidget::CWE_TabWidget(QWidget *parent) :
     QFrame(parent),
@@ -100,6 +100,7 @@ void CWE_TabWidget::setButtonMode(SimCenterButtonMode mode, QString stageName)
 
 void CWE_TabWidget::enactButtonSetting()
 {
+    /*
     QString currentStage = getCurrentSelectedStage();
     SimCenterButtonMode currentMode = SimCenterButtonMode_NONE;
     if (currentStage != "UNKNOWN")
@@ -123,6 +124,7 @@ void CWE_TabWidget::enactButtonSetting()
     {
         if (currentMode & SimCenterButtonMode_SAVE_ALL) { myController->setSaveAllButtonEnabled(true); }
     }
+    */
 }
 
 void CWE_TabWidget::setViewState(SimCenterViewState state)
@@ -167,7 +169,6 @@ void CWE_TabWidget::resetView()
 
     enactButtonSetting();
 }
-
 
 void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
 {
@@ -258,6 +259,7 @@ QMap<QString, QString> CWE_TabWidget::collectParamData()
 
 QString CWE_TabWidget::getStateText(StageState theState)
 {
+    /*
     if (theState == StageState::DOWNLOADING)    { return "Downloading . . ."; }
     if (theState == StageState::ERROR)          { return "*** ERROR ***"; }
     if (theState == StageState::FINISHED)       { return "Task Finished"; }
@@ -268,6 +270,8 @@ QString CWE_TabWidget::getStateText(StageState theState)
     if (theState == StageState::UNREADY)        { return "Need Prev. \nStage"; }
     if (theState == StageState::UNRUN)          { return "Not Yet Run"; }
     return "*** TOTAL ERROR ***";
+    */
+    return "Setup";
 }
 
 QString CWE_TabWidget::getCurrentSelectedStage()

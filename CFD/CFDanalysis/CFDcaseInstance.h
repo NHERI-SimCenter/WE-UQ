@@ -99,19 +99,19 @@ signals:
 
 private slots:
     //void underlyingFilesUpdated(FileNodeRef changedFile);
-    void jobListUpdated();
-    void fileTaskDone(RequestState invokeStatus);
-    void fileTaskStarted();
+    //void jobListUpdated();
+    //void fileTaskDone(RequestState invokeStatus);
+    //void fileTaskStarted();
 
-    void jobInvoked(RequestState invokeStatus, QJsonDocument jobData);
-    void jobKilled(RequestState invokeStatus);
+    //void jobInvoked(RequestState invokeStatus, QJsonDocument jobData);
+    //void jobKilled(RequestState invokeStatus);
 
 private:
     void computeInitState();
 
     void emitNewState(InternalCaseState newState);
     bool caseDataLoaded();
-    bool caseDataInvalid();
+    //bool caseDataInvalid();
     void computeCaseType();
 
     bool stageStatesEqual(QMap<QString, StageState> * list1, QMap<QString, StageState> * list2);
@@ -121,7 +121,7 @@ private:
 
     QByteArray produceJSONparams(QMap<QString, QString> paramList);
 
-    void connectCaseSignals();
+    //void connectCaseSignals();
 
     void computeIdleState();
 

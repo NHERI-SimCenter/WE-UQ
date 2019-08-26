@@ -46,7 +46,7 @@
 //#include "../AgaveClientInterface/remotejobdata.h"
 
 //#include "cwe_interfacedriver.h"
-#include "cwe_globals.h"
+//#include "cwe_globals.h"
 #include "cfd_globals.h"
 
 /*
@@ -59,18 +59,18 @@ CFDcaseInstance::CFDcaseInstance(const FileNodeRef &newCaseFolder):
 }
 */
 
-CFDcaseInstance::CFDcaseInstance(CFDanalysisType * caseType):
-    QObject((QObject *) cwe_globals::get_CWE_Driver())
+CFDcaseInstance::CFDcaseInstance(CFDanalysisType * caseType)
+    //:    QObject((QObject *) cwe_globals::get_CWE_Driver())
 {
     myType = caseType;
-    connectCaseSignals();
+    //connectCaseSignals();
     computeInitState();
 }
 
-CFDcaseInstance::CFDcaseInstance():
-    QObject((QObject *) cwe_globals::get_CWE_Driver())
+CFDcaseInstance::CFDcaseInstance()
+    //:    QObject((QObject *) cwe_globals::get_CWE_Driver())
 {
-    connectCaseSignals();
+    //connectCaseSignals();
     computeInitState();
 }
 
@@ -123,6 +123,13 @@ QString CFDcaseInstance::getCaseName()
     return caseFolder.getFileName();
 }
 #endif
+
+
+QString CFDcaseInstance::getCaseName()
+{
+    QString ret ="Flow around a 3D building";
+    return ret;
+}
 
 CFDanalysisType * CFDcaseInstance::getMyType()
 {
@@ -480,9 +487,10 @@ bool CFDcaseInstance::recomputeStageStates()
 
 void CFDcaseInstance::computeParamList()
 {
-    QJsonDocument varDoc = QJsonDocument::fromJson(varStore);
+    //QJsonDocument varDoc = QJsonDocument::fromJson(varStore);
+    QJsonDocument * varDoc = myType->getRawConfig();
 
-    QJsonObject varsList = varDoc.object().value("vars").toObject();
+    QJsonObject varsList = varDoc->object().value("vars").toObject();
     storedParamList.clear();
     prospectiveNewParamList.clear();
 
@@ -518,12 +526,12 @@ QByteArray CFDcaseInstance::produceJSONparams(QMap<QString, QString> paramList)
 
 void CFDcaseInstance::computeIdleState()
 {
-    if (defunct) return;
-    if (caseDataInvalid())
-    {
-        emitNewState(InternalCaseState::INVALID);
-        return;
-    }
+    //if (defunct) return;
+    //if (caseDataInvalid())
+    //{
+    //    emitNewState(InternalCaseState::INVALID);
+    //    return;
+    //}
 
     //computeCaseType();
 

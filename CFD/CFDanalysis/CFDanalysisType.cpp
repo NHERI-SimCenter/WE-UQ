@@ -285,4 +285,69 @@ bool CFDanalysisType::isDebugOnly()
     return false;
 }
 
+QJsonDocument CFDanalysisType::getRawJSON(QString configFolder, QString configFile)
+{
+    QString configFileName = configFolder;
+    configFileName = configFileName.append("/");
+    configFileName = configFileName.append(configFile);
+
+    QFile inFile(configFileName);
+    inFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QByteArray val = inFile.readAll();
+    inFile.close();
+
+    QJsonParseError theError;
+    QJsonDocument ret = QJsonDocument::fromJson(val, &theError);
+
+    if (ret.isNull())
+    {
+        // qCDebug(agaveAppLayer, "JSON Parse Error: %s", qPrintable(theError.errorString()));
+        return QJsonDocument();
+    }
+
+    QJsonObject theConfig = ret.object();
+    if (theConfig.contains("parent") && theConfig.value("parent").isString())
+    {
+        QJsonDocument parentConfig = getRawJSON(configFolder, theConfig.value("parent").toString());
+        QJsonArray trueStages;
+        QJsonArray stageList = theConfig.value("stages").toArray();
+        QJsonArray parentStages = parentConfig.object().value("stages").toArray();
+
+        for (QJsonValue arrayEntry: stageList)
+        {
+            if (arrayEntry.isString())
+            {
+                QString stageID = arrayEntry.toString();
+                QJsonObject stageToInsert = getStageById(parentStages, stageID);
+                if (!stageToInsert.isEmpty())
+                {
+                    trueStages.append(stageToInsert);
+                }
+            }
+            else
+            {
+                trueStages.append(arrayEntry);
+            }
+        }
+
+        theConfig.remove("stages");
+        theConfig.insert("stages", trueStages);
+        ret.setObject(theConfig);
+    }
+
+    return ret;
+}
+
+QJsonObject CFDanalysisType::getStageById(QJsonArray stageList, QString toFind)
+{
+    for (QJsonValue aStage: stageList)
+    {
+        if (aStage.toObject().value("internalName").toString() == toFind)
+        {
+            return aStage.toObject();
+        }
+    }
+    return QJsonObject();
+}
+
 

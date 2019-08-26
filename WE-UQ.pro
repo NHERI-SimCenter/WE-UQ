@@ -43,6 +43,7 @@ SOURCES += main.cpp \
     CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
+    CFD/UI/RemoteCaseSelector.cpp \
     CFD/cfd_globals.cpp \
     CFD/cwe_guiWidgets/cwe_parameters.cpp \
     CFD/cwe_guiWidgets/cwe_state_label.cpp \
@@ -75,6 +76,7 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrstates.h \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
+    CFD/UI/RemoteCaseSelector.h \
     CFD/cfd_globals.h \
     CFD/cwe_guiWidgets/cwe_parameters.h \
     CFD/cwe_guiWidgets/cwe_state_label.h \
