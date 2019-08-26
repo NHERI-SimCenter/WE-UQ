@@ -35,14 +35,14 @@
 
 // Contributors:
  </comment>
- <class>CWE_GroupTab</class>
- <widget class="QFrame" name="CWE_GroupTab">
+ <class>CWE_StageStatusTab</class>
+ <widget class="QFrame" name="CWE_StageStatusTab">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>45</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -77,7 +77,7 @@
     <number>6</number>
    </property>
    <property name="rightMargin">
-    <number>4</number>
+    <number>6</number>
    </property>
    <property name="bottomMargin">
     <number>6</number>
@@ -86,6 +86,34 @@
     <widget class="QLabel" name="mainLabel">
      <property name="text">
       <string>TextLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="statusLabel">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLabel {
+color: red;
+}
+</string>
+     </property>
+     <property name="text">
+      <string>unknown</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

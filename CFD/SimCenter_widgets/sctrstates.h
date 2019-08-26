@@ -32,60 +32,54 @@
 
 // Contributors:
 
-#include "sctrbooldatawidget.h"
+#ifndef SCTRSTATES_H
+#define SCTRSTATES_H
 
-//#include "cwe_globals.h"
+enum class SimCenterViewState { visible,
+                                editable,
+                                hidden };
 
-SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
-    SCtrMasterDataWidget(parent)
-{
+/*
+ * we want to use this enum as binary selector
+ *
+ * use: SimCenterButtonMode_ALL == SimCenterButtonMode_RUN|SimCenterButtonMode_CANCEL
+ *                                     |SimCenterButtonMode_RESULTS|SimCenterButtonMode_RESET
+ *
+ * While this enum class is initially used for the 4 buttons in the CWE_TabWidget,
+ * it may be extended to more, maybe all buttons of the CWE tool.
+ */
+#define SimCenterButtonMode  std::uint32_t
 
-}
+/*
+ * SimCenterButtonMode_NONE      0000 0000 0000 0000
+ * SimCenterButtonMode_RUN       0000 0000 0000 0001
+ * SimCenterButtonMode_CANCEL    0000 0000 0000 0010
+ * SimCenterButtonMode_RESET     0000 0000 0000 0100
+ * SimCenterButtonMode_RESULTS   0000 0000 0000 1000
+ * SimCenterButtonMode_ALL       0000 0001 0000 1111
+ * SimCenterButtonMode_SAVE_ALL  0000 0001 0000 0000
+ */
 
-SCtrBoolDataWidget::~SCtrBoolDataWidget()
-{
-    if (theCheckBox != nullptr) theCheckBox->deleteLater();
-    if (label_varName != nullptr) label_varName->deleteLater();
-}
+#define SimCenterButtonMode_NONE      0x0000u
+#define SimCenterButtonMode_RUN       0x0001u
+#define SimCenterButtonMode_CANCEL    0x0002u
+#define SimCenterButtonMode_RESET     0x0004u
+#define SimCenterButtonMode_RESULTS   0x0008u
+#define SimCenterButtonMode_ALL       0x010fu
+#define SimCenterButtonMode_SAVE_ALL  0x0100u
 
-QString SCtrBoolDataWidget::shownValue()
-{
-    if (theCheckBox->isChecked())
-    {
-        return "true";
-    }
-    return "false";
-}
+/*
+enum class SimCenterDataType { integer,
+                               floatingpoint,
+                               boolean,
+                               string,
+                               selection,
+                               file,
+                               tensor2D,
+                               tensor3D,
+                               vector2D,
+                               vector3D,
+                               unknown};
+*/
 
-void SCtrBoolDataWidget::initUI()
-{
-    QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-
-    theCheckBox = new QCheckBox(this);
-    label_varName = new QLabel(getTypeInfo().displayName, this);
-
-    layout->addWidget(label_varName, 3);
-    layout->addWidget(theCheckBox, 4);
-
-    this->setLayout(layout);
-
-    QObject::connect(theCheckBox, SIGNAL(stateChanged(int)),
-                     this, SLOT(changeMadeToUnderlyingDataWidget()));
-}
-
-void SCtrBoolDataWidget::setComponetsEnabled(bool newSetting)
-{
-    theCheckBox->setEnabled(newSetting);
-}
-
-void SCtrBoolDataWidget::setShownValue(QString newValue)
-{
-    if (newValue.toLower() == "true")
-    {
-        theCheckBox->setChecked(true);
-        return;
-    }
-    theCheckBox->setChecked(false);
-}
-
+#endif // SCTRSTATES_H

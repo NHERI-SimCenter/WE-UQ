@@ -3,14 +3,35 @@
 #include <QComboBox>
 #include <QDir>
 #include <QStandardPaths>
-#include "RemoteCaseSelector.h"
+//#include "RemoteCaseSelector.h"
+#include <cwe_guiWidgets/cwe_parameters.h>
+#include <CFDanalysisType.h>
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
+    // parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
+    parameterWidget = new CWE_Parameters(this);
 
     initializeUI();
+
+    // ========== load the case template ===========
+
+    // load the case template
+
+    QString caseConfigFile = ":/Resources/CWE/upload3D.json";
+    theTemplate = new CFDanalysisType(caseConfigFile);
+
+    currentCase = getCaseFromType(theTemplate);
+    if (currentCase == nullptr)
+    {
+        qFatal("Corrupted CFD template");
+    }
+
+    // now that we have the template, populate the parametertabs
+    parameterWidget->newCaseGiven(currentCase);
+
+    // ============ done with case template operations ================
 
     setupConnections();
 }
@@ -66,47 +87,30 @@ bool CFDTemplateWidget::supportsLocalRun()
     return false;
 }
 
-void CFDTemplateWidget::selectButtonPushed()
-{
-    if(remoteService->isLoggedIn())
-    {
-        RemoteCaseSelector selector(remoteService, this);
-        selector.setWindowModality(Qt::ApplicationModal);
-        connect(&selector, &RemoteCaseSelector::caseSelected, caseEditBox, &QLineEdit::setText);
-        selector.exec();
-        selector.close();
-    }
-}
-
 void CFDTemplateWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(parameterWidget);
+    layout->setMargin(0);
     this->setLayout(layout);
     this->setEnabled(true);
 }
 
 void CFDTemplateWidget::setupConnections()
 {
-    connect(caseSelectButton, &QPushButton::clicked, this, &CFDTemplateWidget::selectButtonPushed);
-
-    /*
-    connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
-    {
-        if(loggedIn)
-        {
-            loginRequiredLabel->hide();
-            this->setEnabled(true);
-        }
-    });
-
-    connect(remoteService, &RemoteService::logoutReturn, this, [this](bool loggedOut)
-    {
-        if (loggedOut)
-        {
-            loginRequiredLabel->show();
-            this->setDisabled(true);
-        }
-    });
-    */
 }
+
+CFDcaseInstance * CFDTemplateWidget::getCaseFromType(CFDanalysisType * caseType)
+{
+    CFDcaseInstance * ret;
+    if (caseType == nullptr)
+    {
+        ret = new CFDcaseInstance();
+    }
+    else
+    {
+        ret = new CFDcaseInstance(caseType);
+    }
+    return ret;
+}
+

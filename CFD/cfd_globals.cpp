@@ -31,61 +31,31 @@
 ***********************************************************************************/
 
 // Contributors:
+// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
 
-#include "sctrbooldatawidget.h"
+#include "cfd_globals.h"
+#include <QCoreApplication>
 
-//#include "cwe_globals.h"
+cfd_globals::cfd_globals() {}
 
-SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
-    SCtrMasterDataWidget(parent)
+void cfd_globals::displayFatalPopup(QString message, QString header)
 {
-
+    QMessageBox errorMessage;
+    errorMessage.setWindowTitle(header);
+    errorMessage.setText(message);
+    errorMessage.setStandardButtons(QMessageBox::Close);
+    errorMessage.setDefaultButton(QMessageBox::Close);
+    errorMessage.setIcon(QMessageBox::Critical);
+    errorMessage.exec();
+    QCoreApplication::instance()->exit(1);
+    qFatal("%s", qPrintable(message));
 }
 
-SCtrBoolDataWidget::~SCtrBoolDataWidget()
+void cfd_globals::displayPopup(QString message, QString header)
 {
-    if (theCheckBox != nullptr) theCheckBox->deleteLater();
-    if (label_varName != nullptr) label_varName->deleteLater();
+    QMessageBox infoMessage;
+    infoMessage.setWindowTitle(header);
+    infoMessage.setText(message);
+    infoMessage.setIcon(QMessageBox::Information);
+    infoMessage.exec();
 }
-
-QString SCtrBoolDataWidget::shownValue()
-{
-    if (theCheckBox->isChecked())
-    {
-        return "true";
-    }
-    return "false";
-}
-
-void SCtrBoolDataWidget::initUI()
-{
-    QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-
-    theCheckBox = new QCheckBox(this);
-    label_varName = new QLabel(getTypeInfo().displayName, this);
-
-    layout->addWidget(label_varName, 3);
-    layout->addWidget(theCheckBox, 4);
-
-    this->setLayout(layout);
-
-    QObject::connect(theCheckBox, SIGNAL(stateChanged(int)),
-                     this, SLOT(changeMadeToUnderlyingDataWidget()));
-}
-
-void SCtrBoolDataWidget::setComponetsEnabled(bool newSetting)
-{
-    theCheckBox->setEnabled(newSetting);
-}
-
-void SCtrBoolDataWidget::setShownValue(QString newValue)
-{
-    if (newValue.toLower() == "true")
-    {
-        theCheckBox->setChecked(true);
-        return;
-    }
-    theCheckBox->setChecked(false);
-}
-

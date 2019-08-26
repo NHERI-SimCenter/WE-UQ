@@ -1,7 +1,7 @@
 /*********************************************************************************
 **
-** Copyright (c) 2018 The University of Notre Dame
-** Copyright (c) 2018 The Regents of the University of California
+** Copyright (c) 2017 The University of Notre Dame
+** Copyright (c) 2017 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
 ** are permitted provided that the following conditions are met:
@@ -31,42 +31,28 @@
 ***********************************************************************************/
 
 // Contributors:
+// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
 
-#ifndef CWE_PARAMTAB_H
-#define CWE_PARAMTAB_H
+#ifndef CWE_STATE_LABEL_H
+#define CWE_STATE_LABEL_H
 
-#include <QFrame>
-#include <QMouseEvent>
+#include <QLabel>
 
-class CWE_ParamTab : public QFrame
+enum class CaseState;
+class CFDcaseInstance;
+
+class cwe_state_label : public QLabel
 {
     Q_OBJECT
-
 public:
-    explicit CWE_ParamTab(QString refKey, QString displayedText, QWidget *parent = nullptr);
-    ~CWE_ParamTab() override;
+    cwe_state_label(QWidget *parent);
+    void setCurrentCase(CFDcaseInstance * newCase);
 
-    QString getRefKey();
+public slots:
+    void setNewState(CaseState newState);
 
-    bool tabIsActive();
-    void setActive(bool b=true);
-    void setInActive(bool b=true);
-
-signals:
-    void btn_clicked(CWE_ParamTab *);
-
-protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-
-    void setButtonState(bool tabPressed, bool tabActive);
-    virtual void setButtonAppearance() = 0;
-
-    QString tabKey = "UNKNOWN";
-    QString tabDisplay = "UNKNOWN";
-
-    bool tab_active = false;
-    bool tab_pressed = false;
+private:
+    CFDcaseInstance * currentCase = NULL;
 };
 
-#endif // PARAMTAB_H
+#endif // CWE_STATE_LABEL_H

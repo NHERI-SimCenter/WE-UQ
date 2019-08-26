@@ -35,89 +35,122 @@
 
 // Contributors:
  </comment>
- <class>CWE_StageStatusTab</class>
- <widget class="QFrame" name="CWE_StageStatusTab">
+ <class>CWE_TabWidget</class>
+ <widget class="QWidget" name="CWE_TabWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>501</width>
+    <height>372</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
   <property name="windowTitle">
-   <string>Frame</string>
+   <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true">QFrame: { border-radius: 5px; }</string>
-  </property>
-  <property name="frameShape">
-   <enum>QFrame::StyledPanel</enum>
-  </property>
-  <property name="frameShadow">
-   <enum>QFrame::Raised</enum>
-  </property>
-  <property name="lineWidth">
-   <number>1</number>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>-1</number>
+    <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="mainLabel">
-     <property name="text">
-      <string>TextLabel</string>
+    <widget class="QWidget" name="tabsBar" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>0</height>
+      </size>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
      </property>
+     <layout class="QVBoxLayout" name="verticalTabLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="statusLabel">
-     <property name="minimumSize">
+    <widget class="QFrame" name="frame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeIncrement">
       <size>
        <width>0</width>
        <height>0</height>
       </size>
      </property>
-     <property name="font">
-      <font>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="styleSheet">
-      <string notr="true">QLabel {
-color: red;
-}
-</string>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
-     <property name="text">
-      <string>unknown</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>6</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QStackedWidget" name="stagePanels">
+        <property name="currentIndex">
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>

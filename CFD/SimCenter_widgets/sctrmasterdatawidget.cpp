@@ -32,12 +32,12 @@
 
 // Contributors:
 
-#include "cwe_globals.h"
+#include "cfd_globals.h"
 
 #include "SimCenter_widgets/sctrmasterdatawidget.h"
 // #include "remoteFiles/filenoderef.h"
 //#include "filenoderef.h"
-#include "CFDanalysis/cweanalysistype.h"
+#include "CFDanalysis/CFDanalysisType.h"
 
 SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
     QFrame(parent)
@@ -45,7 +45,7 @@ SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
     m_ViewState = SimCenterViewState::hidden;
 
     m_obj.displayName = "";
-    m_obj.type = SimCenterDataType::unknown;
+    m_obj.type = "unknown";
     m_obj.defaultValue = "error in configuration file";
     m_obj.unit = "";
     m_obj.precision = "";
@@ -79,11 +79,11 @@ void SCtrMasterDataWidget::setViewState(SimCenterViewState state)
     }
 }
 
-void SCtrMasterDataWidget::setDataType(PARAM_VARIABLE_TYPE & newTypeData)
+void SCtrMasterDataWidget::setDataType(VARIABLE_TYPE & newTypeData)
 {
-    if (m_obj.type != SimCenterDataType::unknown)
+    if (m_obj.type != "unknown")
     {
-        //cwe_globals::displayFatalPopup("Parameter widget initialized twice.", "Internal Error");
+        cfd_globals::displayFatalPopup("Parameter widget initialized twice.", "Internal Error");
     }
 
     m_obj = newTypeData;
@@ -98,7 +98,7 @@ void SCtrMasterDataWidget::setDataType(PARAM_VARIABLE_TYPE & newTypeData)
     }
 }
 
-PARAM_VARIABLE_TYPE SCtrMasterDataWidget::getTypeInfo()
+VARIABLE_TYPE SCtrMasterDataWidget::getTypeInfo()
 {
     return m_obj;
 }

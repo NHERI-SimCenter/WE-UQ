@@ -86,10 +86,11 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
+    eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
-    theSelectionLayout->addWidget(eventSelection);
-    theSelectionLayout->addStretch();
+    theSelectionLayout->addWidget(eventSelection,1);
+    theSelectionLayout->addStretch(2);
     layout->addLayout(theSelectionLayout);
 
     //

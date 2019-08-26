@@ -1,6 +1,5 @@
 /*********************************************************************************
 **
-** Copyright (c) 2017 The University of Notre Dame
 ** Copyright (c) 2017 The Regents of the University of California
 **
 ** Redistribution and use in source and binary forms, with or without modification,
@@ -31,26 +30,82 @@
 ***********************************************************************************/
 
 // Contributors:
-// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
+// Renamed, modifed by Peter Sempolinski
 
-#ifndef CWE_STATE_LABEL_H
-#define CWE_STATE_LABEL_H
+#ifndef CFDANALYSISTYPE_H
+#define CFDANALYSISTYPE_H
 
-#include <QLabel>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QIcon>
+#include <QFile>
 
-enum class CaseState;
-
-//class CWEcaseInstance;
-
-class cwe_state_label : public QLabel
-{
-    Q_OBJECT
-public:
-    cwe_state_label(QWidget *parent);
-    void setNewState(CaseState newState);
-
-private:
-    //CWEcaseInstance * currentCase = nullptr;
+struct RESULTS_STYLE {
+    QString name;
+    QString type;
+    QString file;
+    QString values;
 };
 
-#endif // CWE_STATE_LABEL_H
+struct KEY_VAL_PAIR {
+    QString key;
+    QString value;
+};
+
+struct VARIABLE_TYPE {
+    QString name;
+    QString displayName;
+    QString type;
+    QString defaultValue;
+    QString unit;
+    QString precision;
+    QString sign;
+    QList<KEY_VAL_PAIR> options;
+};
+
+
+class CFDanalysisType
+{
+public:
+    CFDanalysisType(QString configFile);
+
+    QJsonDocument * getRawConfig(); // should become a private method (?)
+
+    QString getInternalName();
+    QString getName();
+    QString getDescription();
+    QString getIconName();
+    QStringList getStageNames();
+    QStringList getStageSequence();
+
+    static QJsonDocument getRawJSON(QString configFolder, QString configFile);
+    static QJsonObject getStageById(QJsonArray stageList, QString toFind);
+
+    QString getStageName(QString stage);
+    QStringList getStageGroups(QString stage);
+    QList<RESULTS_STYLE> getStageResults(QString stage);
+
+    QString getGroupName(QString group);
+    QList<VARIABLE_TYPE> getVarGroup(QString group);
+    VARIABLE_TYPE getVariableInfo(QString name);
+    VARIABLE_TYPE getVariableInfoFromJson(QJsonObject &name);
+
+    QString getStageApp(QString stageName);
+    QString getExtraInput(QString stageName);
+
+    QString translateStageId(QString stageId);
+
+    QIcon * getIcon();
+
+    bool isDebugOnly();
+
+private:
+    QString myName;
+    QIcon myIcon;
+
+    QJsonDocument myConfiguration;
+
+};
+
+#endif // CFDANALYSISTYPE_H

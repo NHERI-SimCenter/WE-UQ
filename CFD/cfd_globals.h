@@ -31,61 +31,46 @@
 ***********************************************************************************/
 
 // Contributors:
+// Written by Peter Sempolinski, for the Natural Hazard Modeling Laboratory, director: Ahsan Kareem, at Notre Dame
+// modified by Peter Mackenzie-Helnwein,UW Seattle
 
-#include "sctrbooldatawidget.h"
+#ifndef CFD_GLOBALS_H
+#define CFD_GLOBALS_H
 
-//#include "cwe_globals.h"
+#include <QMessageBox>
+#include <QLoggingCategory>
 
-SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
-    SCtrMasterDataWidget(parent)
+Q_DECLARE_LOGGING_CATEGORY(agaveAppLayer)
+
+class AgaveSetupDriver;
+class RemoteDataInterface;
+class FileOperator;
+class JobOperator;
+
+/*! \brief The cfd_globals are a set of static methods, intended as global functions for CFD in the WE-UQ programs.
+ *
+ *  These utility functions include error popups
+ */
+
+class cfd_globals
 {
+public:
+    /*! \brief cfd_globals is a static class. The constructor should never be used.
+     */
+    cfd_globals();
 
-}
+    /*! \brief This will display an informational popup and kill the program.
+     *
+     *  \param message This is the content of the message displayed in the popup.
+     *  \param header This short text appears in the header of the popup. The default is: "Critical Error"
+     *
+     *  After construction, use show() or exec() to display the window.
+     */
+    [[ noreturn ]] static void displayFatalPopup(QString message, QString header = "Critical Error");
 
-SCtrBoolDataWidget::~SCtrBoolDataWidget()
-{
-    if (theCheckBox != nullptr) theCheckBox->deleteLater();
-    if (label_varName != nullptr) label_varName->deleteLater();
-}
+    static void displayPopup(QString message, QString header = "Error");
 
-QString SCtrBoolDataWidget::shownValue()
-{
-    if (theCheckBox->isChecked())
-    {
-        return "true";
-    }
-    return "false";
-}
+private:
+};
 
-void SCtrBoolDataWidget::initUI()
-{
-    QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-
-    theCheckBox = new QCheckBox(this);
-    label_varName = new QLabel(getTypeInfo().displayName, this);
-
-    layout->addWidget(label_varName, 3);
-    layout->addWidget(theCheckBox, 4);
-
-    this->setLayout(layout);
-
-    QObject::connect(theCheckBox, SIGNAL(stateChanged(int)),
-                     this, SLOT(changeMadeToUnderlyingDataWidget()));
-}
-
-void SCtrBoolDataWidget::setComponetsEnabled(bool newSetting)
-{
-    theCheckBox->setEnabled(newSetting);
-}
-
-void SCtrBoolDataWidget::setShownValue(QString newValue)
-{
-    if (newValue.toLower() == "true")
-    {
-        theCheckBox->setChecked(true);
-        return;
-    }
-    theCheckBox->setChecked(false);
-}
-
+#endif // CFD_GLOBALS_H

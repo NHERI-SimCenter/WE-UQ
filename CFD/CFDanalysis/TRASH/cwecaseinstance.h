@@ -74,7 +74,6 @@ enum class InternalCaseState {OFFLINE, INVALID, ERROR, DEFUNCT,
                              DOWNLOAD};
 
 
-#if 1
 class CWEcaseInstance : public QObject
 {
     Q_OBJECT
@@ -126,12 +125,12 @@ private:
 
     void emitNewState(InternalCaseState newState);
     bool caseDataLoaded();
-    bool caseDataInvalid();
-    void computeCaseType();
+    // bool caseDataInvalid();
+    // void computeCaseType();
 
     bool stageStatesEqual(QMap<QString, StageState> * list1, QMap<QString, StageState> * list2);
     bool updateStageStatesIfNew(QMap<QString, StageState> * newStageStates);
-    //bool recomputeStageStates();
+    bool recomputeStageStates();
     void computeParamList();
 
     QByteArray produceJSONparams(QMap<QString, QString> paramList);
@@ -152,7 +151,7 @@ private:
     //void state_Download_recursiveOpDone(RequestState invokeStatus);
     void state_Param_Save_taskDone(RequestState invokeStatus);
 
-    //void computeIdleState();
+    void computeIdleState();
 
     bool defunct = false;
     bool interlockHasFileChange = false;
@@ -174,6 +173,5 @@ private:
     QString exitFileName = ".exit";
     bool triedParamFile = false;
 };
-#endif
 
 #endif // CFDCASEINSTANCE_H

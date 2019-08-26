@@ -32,60 +32,68 @@
 
 // Contributors:
 
-#include "sctrbooldatawidget.h"
+#ifndef CWE_STAGESTATUSTAB_H
+#define CWE_STAGESTATUSTAB_H
 
-//#include "cwe_globals.h"
+#include <QFrame>
 
-SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
-    SCtrMasterDataWidget(parent)
-{
+#include <QMouseEvent>
 
+class CWE_GroupsWidget;
+
+namespace Ui {
+class CWE_StageStatusTab;
 }
 
-SCtrBoolDataWidget::~SCtrBoolDataWidget()
+class CWE_StageStatusTab : public QFrame
 {
-    if (theCheckBox != nullptr) theCheckBox->deleteLater();
-    if (label_varName != nullptr) label_varName->deleteLater();
-}
+    Q_OBJECT
 
-QString SCtrBoolDataWidget::shownValue()
-{
-    if (theCheckBox->isChecked())
-    {
-        return "true";
-    }
-    return "false";
-}
+public:
+    explicit CWE_StageStatusTab(QString stageKey, QString stageName, QWidget *parent = 0);
+    ~CWE_StageStatusTab();
+    void setCorrespondingPanel(CWE_GroupsWidget * newPanel);
 
-void SCtrBoolDataWidget::initUI()
-{
-    QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    void setStatus(QString);
+    void setText(QString);
+    void setName(const QString s);
+    //void setIndex(int idx) {m_index = idx;};
+    QString name() {return m_name;};
+    QString text() {return m_text;};
+    QString status() {return m_status;};
+    //int index() {return m_index;};
+    bool tabIsActive();
+    void setActive(bool b=true);
+    void setInActive(bool b=true);
+    void linkWidget(CWE_GroupsWidget *ptr);
+    CWE_GroupsWidget * groupWidget() { return myPanel; };
+    QString getStageKey() { return stageKey; }
+    bool isStage(QString key) { return (stageKey == key);}
+    CWE_GroupsWidget *getGroupsWidget() { return myPanel; }
 
-    theCheckBox = new QCheckBox(this);
-    label_varName = new QLabel(getTypeInfo().displayName, this);
+signals:
+    void btn_pressed(CWE_GroupsWidget *);
+    void btn_released(CWE_GroupsWidget *);
+    void btn_activated(CWE_StageStatusTab *);
 
-    layout->addWidget(label_varName, 3);
-    layout->addWidget(theCheckBox, 4);
+private slots:
 
-    this->setLayout(layout);
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
-    QObject::connect(theCheckBox, SIGNAL(stateChanged(int)),
-                     this, SLOT(changeMadeToUnderlyingDataWidget()));
-}
+private:
+    Ui::CWE_StageStatusTab *ui;
+    //void paintEvent(QPaintEvent*);
 
-void SCtrBoolDataWidget::setComponetsEnabled(bool newSetting)
-{
-    theCheckBox->setEnabled(newSetting);
-}
+    CWE_GroupsWidget * myPanel = NULL;
 
-void SCtrBoolDataWidget::setShownValue(QString newValue)
-{
-    if (newValue.toLower() == "true")
-    {
-        theCheckBox->setChecked(true);
-        return;
-    }
-    theCheckBox->setChecked(false);
-}
+    QString m_text;
+    QString stageKey = "UNKNOWN";
+    QString m_status = "unknown";
+    QString m_name = "label text";
+    //int m_index = -1;
+    bool m_active;
+};
 
+#endif // CWE_STAGESTATUSTAB_H

@@ -32,60 +32,73 @@
 
 // Contributors:
 
-#include "sctrbooldatawidget.h"
+#ifndef CWE_PARAMETERS_H
+#define CWE_PARAMETERS_H
 
-//#include "cwe_globals.h"
+#include <QFrame>
+#include <QJsonObject>
 
-SCtrBoolDataWidget::SCtrBoolDataWidget(QWidget *parent):
-    SCtrMasterDataWidget(parent)
-{
+#include "SimCenter_widgets/sctrstates.h"
+#include <SimCenterAppWidget.h>
 
+#include <RandomVariablesContainer.h>
+
+class CFDcaseInstance;
+
+class CWE_MainWindow;
+enum class CaseState;
+enum class CaseCommand { ROLLBACK, RUN, CANCEL };
+
+namespace Ui {
+class CWE_Parameters;
 }
 
-SCtrBoolDataWidget::~SCtrBoolDataWidget()
+class CWE_Parameters : public QFrame
 {
-    if (theCheckBox != nullptr) theCheckBox->deleteLater();
-    if (label_varName != nullptr) label_varName->deleteLater();
-}
+    Q_OBJECT
 
-QString SCtrBoolDataWidget::shownValue()
-{
-    if (theCheckBox->isChecked())
-    {
-        return "true";
-    }
-    return "false";
-}
+public:
+    explicit CWE_Parameters(QWidget *parent = 0);
+    ~CWE_Parameters();
 
-void SCtrBoolDataWidget::initUI()
-{
-    QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+    bool outputAppDataToJSON(QJsonObject &rvObject);
+    bool inputAppDataFromJSON(QJsonObject &rvObject);
+    //bool copyFiles(QString &dirName);
 
-    theCheckBox = new QCheckBox(this);
-    label_varName = new QLabel(getTypeInfo().displayName, this);
+    void resetViewInfo();
 
-    layout->addWidget(label_varName, 3);
-    layout->addWidget(theCheckBox, 4);
+    void performCaseCommand(QString stage, CaseCommand toEnact);
+    void setSaveAllButtonDisabled(bool newSetting);
+    void setSaveAllButtonEnabled(bool newSetting);
+    void newCaseGiven(CFDcaseInstance * newCase);
 
-    this->setLayout(layout);
+private slots:
+    //void on_pbtn_saveAllParameters_clicked();
 
-    QObject::connect(theCheckBox, SIGNAL(stateChanged(int)),
-                     this, SLOT(changeMadeToUnderlyingDataWidget()));
-}
+    //void newCaseGiven();
+    void newCaseState(CaseState newState);
 
-void SCtrBoolDataWidget::setComponetsEnabled(bool newSetting)
-{
-    theCheckBox->setEnabled(newSetting);
-}
+private:
+    void setButtonsAccordingToStage();
+    void setVisibleAccordingToStage();
+    void createUnderlyingParamWidgets();
+    CFDcaseInstance * getCurrentCase() { return currentCase; }
 
-void SCtrBoolDataWidget::setShownValue(QString newValue)
-{
-    if (newValue.toLower() == "true")
-    {
-        theCheckBox->setChecked(true);
-        return;
-    }
-    theCheckBox->setChecked(false);
-}
+    void refreshParameterMap(void);
+    void refreshDisplay(void);
 
+    Ui::CWE_Parameters *ui;
+    bool paramWidgetsExist = false;
+
+    CFDcaseInstance * currentCase = nullptr;
+
+    QMap<QString, double> theParameters;
+    bool hasParameters = false;
+
+    RandomVariablesContainer *theRandomVariablesContainer;
+
+};
+
+#endif // CWE_PARAMETERS_H
