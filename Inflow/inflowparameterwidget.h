@@ -137,7 +137,7 @@ private:  /* variables */
 
     QMap<QString, double> theParameters;
 
-    /* from th etemplate */
+    /* from the template */
 
     QString fileName;         // filename
     QString applicationName;  // application name

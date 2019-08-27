@@ -85,14 +85,16 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("LowRiseTPU"));
     eventSelection->addItem(tr("Stochastic Wind"));
     eventSelection->addItem(tr("CFD - Beginner"));
+    eventSelection->addItem(tr("CFD - Guided"));
     eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
+    eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
-    theSelectionLayout->addWidget(eventSelection);
-    theSelectionLayout->addStretch();
+    theSelectionLayout->addWidget(eventSelection,1);
+    theSelectionLayout->addStretch(2);
     layout->addLayout(theSelectionLayout);
 
     //
@@ -115,6 +117,9 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     CFDBeginnerEventWidget = new CWE(theRandomVariablesContainer);
     theStackedWidget->addWidget(CFDBeginnerEventWidget);
+
+    CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);
+    theStackedWidget->addWidget(CFDTemplateEventWidget);
 
     CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
@@ -179,11 +184,13 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 2;
     } else if (type == QString("CWE")) {
-      index = 3;
+        index = 3;
+    } else if (type == QString("CFD - Guided")) {
+        index = 4;
     } else if (type == QString("CFD - Expert")) {
-      index = 4;
+        index = 5;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-      index = 5;
+        index = 6;
     }
     else {
         return false;
@@ -228,13 +235,18 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = CFDBeginnerEventWidget;
     }
 
-    else if(arg1 == "CFD - Expert") {
+    else if(arg1 == "CFD - Guided") {
         theStackedWidget->setCurrentIndex(4);
+        theCurrentEvent = CFDTemplateEventWidget;
+    }
+
+    else if(arg1 == "CFD - Expert") {
+        theStackedWidget->setCurrentIndex(5);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
     else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(4);
+        theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theExistingEvents;
     }
 

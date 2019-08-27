@@ -10,5 +10,7 @@
         <file>Resources/DEDM/wImage3.png</file>
         <file>Resources/DEDM/wImage4.png</file>
         <file>Resources/TInF/sourceFileInfo.html</file>
+        <file>Resources/CWE/upload3D.json</file>
+        <file>Resources/docs/textAboutWEUQ.html</file>
     </qresource>
 </RCC>

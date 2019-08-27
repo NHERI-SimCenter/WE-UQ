@@ -8,7 +8,7 @@
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    inflowWidget = new InflowParameterWidget(theRandomVariableIW, true);
+    inflowWidget    = new InflowParameterWidget(theRandomVariableIW, true);
 
     initializeUI();
 
