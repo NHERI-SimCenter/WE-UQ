@@ -44,6 +44,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVector>
 #include <CFD/UI/CFDExpertWidget.h>
+#include <CFD/UI/CFDTemplateWidget.h>
 #include <RemoteService.h>
 
 class QComboBox;
@@ -82,6 +83,7 @@ private:
    SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
    SimCenterAppWidget *CFDBeginnerEventWidget;
+   SimCenterAppWidget *CFDTemplateEventWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };

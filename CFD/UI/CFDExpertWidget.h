@@ -2,7 +2,7 @@
 #define CFDEXPERTWIDGET_H
 
 #include <SimCenterAppWidget.h>
-#include  <RandomVariablesContainer.h>
+#include <RandomVariablesContainer.h>
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>

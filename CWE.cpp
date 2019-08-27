@@ -52,7 +52,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "CustomizedItemModel.h"
 #include "RandomVariablesContainer.h"
-
+#include "GeneralInformationWidget.h"
+#include "CFD/UI/GeometryHelper.h"
+#include "QDir"
+#include <QDebug>
 
 CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
@@ -177,14 +180,38 @@ CWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSe
         theStackedWidget->setCurrentIndex(1);
 }
 
+double CWE::toMilliMeters(QString lengthUnit) const
+{
+    static std::map<QString,double> conversionMap
+    {
+        {"m", 1000.0},
+        {"cm", 10.0},
+        {"mm", 1.0},
+        {"in", 25.4},
+        {"ft", 304.8}
+    };
+
+    auto iter = conversionMap.find(lengthUnit);
+    if(conversionMap.end() != iter)
+        return iter->second;
+
+    qDebug() << "Failed to parse length unit: " << lengthUnit  << "!!!";
+    return 1.0;
+
+}
+
 
 bool
 CWE::outputToJSON(QJsonObject &jsonObject) {
 
+    //Output basic info
+    jsonObject["EventClassification"] = "Wind";
+    jsonObject["type"] = "CWE";
+    jsonObject["start"] = 0.01;
+
     //
     // get each of the main widgets to output themselves
     //
-
     QJsonObject jsonObjMesh;
     meshParameters->outputToJSON(jsonObjMesh);
     jsonObject["mesh"] = jsonObjMesh;
@@ -232,7 +259,7 @@ CWE::outputAppDataToJSON(QJsonObject &jsonObject) {
     //
 
     jsonObject["EventClassification"]="Wind";
-    jsonObject["Application"] = "CWE";
+    jsonObject["Application"] = "CFDEvent";
     QJsonObject dataObj;
     jsonObject["ApplicationData"] = dataObj;
 
@@ -241,7 +268,32 @@ CWE::outputAppDataToJSON(QJsonObject &jsonObject) {
 
 bool
 CWE::copyFiles(QString &dirName){
-    return true;
+    auto generalInfo = GeneralInformationWidget::getInstance();
+
+    //Read the dimensions from general information
+    auto height = generalInfo->getHeight();
+    double width, length, area = 0.0;
+
+    generalInfo->getBuildingDimensions(width, length, area);
+
+    auto lengthUnit = generalInfo->getLengthUnit();
+
+    auto toMM = toMilliMeters(lengthUnit);
+
+    auto bldgObjFile = QDir(dirName).filePath("building.obj");
+    auto result = GeometryHelper::ExportBuildingObjFile(bldgObjFile,
+                                                        length * toMM,
+                                                        width * toMM,
+                                                        height * toMM);
+
+
+
+    return result;
+}
+
+bool CWE::supportsLocalRun()
+{
+    return false;
 }
 
 bool
