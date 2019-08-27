@@ -65,11 +65,12 @@ public:
     explicit CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~CWE();
 
-    bool outputToJSON(QJsonObject &rvObject);
-    bool inputFromJSON(QJsonObject &rvObject);
-    bool outputAppDataToJSON(QJsonObject &rvObject);
-    bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &dirName);
+    bool outputToJSON(QJsonObject &rvObject) override;
+    bool inputFromJSON(QJsonObject &rvObject) override;
+    bool outputAppDataToJSON(QJsonObject &rvObject) override;
+    bool inputAppDataFromJSON(QJsonObject &rvObject) override;
+    bool copyFiles(QString &dirName) override;
+    bool supportsLocalRun() override;
 
 signals:
 
@@ -88,7 +89,9 @@ private:
    SimCenterWidget  *currentWidget;
    QJsonObject *jsonObjOrig;
    
-   QStackedWidget *theStackedWidget;   
+   QStackedWidget *theStackedWidget;
+
+    double toMilliMeters(QString lengthUnit) const;
 };
 
 #endif // CWE_H

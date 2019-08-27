@@ -1,7 +1,6 @@
-# OpenFoam wrapper for DesignSafe
+# NHERI SimCenter WE-UQ Backend v 1.1.0
 
 set -x
-WRAPPERDIR=$( cd "$( dirname "$0" )" && pwd )
 
 ${AGAVE_JOB_CALLBACK_RUNNING}
 
@@ -9,12 +8,92 @@ ${AGAVE_JOB_CALLBACK_RUNNING}
 cd "${inputDirectory}"
 pwd
 ls -al
-env
 
 # unzip template dir
 unzip templatedir.zip
 rm templatedir.zip
 cd ..
+
+#Unzip utils
+cd utils
+unzip '*.zip'
+rm *.zip
+cd ..
+
+#Add utils to PATH
+export PATH=$PATH:$PWD/utils
+chmod +x utils/*
+
+#Unzip OpenFOAM Extensions
+cd OpenFOAMExtensions
+unzip '*.zip'
+rm *.zip
+cd ..
+
+#Add OpenFOAM Extensions folder to libraries loading path
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/OpenFOAMExtensions
+
+#Set the BIM file path to use it for 
+export BIM=${inputDirectory}/templatedir/dakota.json
+
+echo "Extracting EVENT app using jq"
+#Extracting the first event app
+EVENTAPP=$(jq -r .Events[0].type $BIM)
+echo "Event application detected is $EVENTAPP"
+
+
+#CWE has some special handling 
+if [ $EVENTAPP == "CWE" ]
+then
+	echo "CWE will be used to generate Event"
+
+	#First, We will run the mesh stage
+	#we need to the meshing parameters and 
+	#generate the .caseParams file for the meshing stage
+	echo "Generating Mesh..."
+	mkdir mesh
+	cp ${inputDirectory}/templatedir/building.obj mesh
+	
+	jq '{type:"upload3D" , vars:.Events[0].mesh}' $BIM > mesh/.caseParams
+	export TASKSTAGE=mesh
+	export PARENTDIR=$PWD/mesh
+	export EXTRAFILE=$PWD/mesh/building.obj
+	chmod +x cwe.sh
+	cd mesh
+	../cwe.sh
+	cd ..
+
+	echo "Running Simulation..."
+	#Running the simulation stage
+	mkdir sim
+	#Extracting the simulation parameters
+	jq '{type:"upload3D" , vars:.Events[0].sim}' $BIM > sim/.caseParams
+	export TASKSTAGE=sim
+	export PARENTDIR=$PWD/sim
+	cd sim
+	#TODO: We need to modify the input to extract the forces!!!
+	../cwe.sh
+	cd ..
+	
+	# Add Building Forces to OpenFOAM post-processing
+	ls -la
+	echo "Getting event from OpenFOAM..."
+	python GetOpenFOAMEvent.py -c sim -b ${inputDirectory}/templatedir/dakota.json
+	
+	echo "OpenFOAM EVENT will be copied to templatedir"
+	cp -f EVENT.json ${inputDirectory}/templatedir/EVENT.json
+	cp -f EVENT.json ${inputDirectory}/templatedir/evt.j
+	
+	# compress the OpenFOAM case
+	cp sim/*.log .
+	cp mesh/*.log .
+	tar zcBf mesh.tar.gz mesh
+	tar zcBf sim.tar.gz sim
+
+	rm -fr sim
+	rm -fr mesh
+
+fi
 
 OpenFOAMCase=${OpenFOAMCase}
 if [ -z "$OpenFOAMCase" ]
@@ -31,10 +110,9 @@ else
 	[ -d "${inputDirectory}/templatedir/system" ] && cp -rf ${inputDirectory}/templatedir/system ${OpenFOAMCase}
 	[ -d "${inputDirectory}/templatedir/0" ] && cp -rf ${inputDirectory}/templatedir/0 ${OpenFOAMCase}
 
-	#Copy libturbulentInflow OpenFOAM library to the user library path
-	ls -la
+	#Adding current directory to library loading path
+	#to load OpenFOAM extensions (e.g. tubulent inflow)
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD
-	echo $LD_LIBRARY_PATH
 	
 	# Add Building Forces to OpenFOAM post-processing
 	ls -la
@@ -49,7 +127,7 @@ else
 	ibrun ${OpenFOAMSolver} > ${OpenFOAMSolver}.log
 	cd ..
 
-	# Add Building Forces to OpenFOAM post-processing
+	# Get Building Forces from OpenFOAM post-processing
 	ls -la
 	echo "Getting event from OpenFOAM..."
 	python GetOpenFOAMEvent.py -c ${OpenFOAMCase} -b ${inputDirectory}/templatedir/dakota.json
@@ -58,6 +136,7 @@ else
 	cp -f EVENT.json ${inputDirectory}/templatedir/EVENT.json
 	cp -f EVENT.json ${inputDirectory}/templatedir/evt.j
 	
+	# compress the OpenFOAM case
 	cp ${OpenFOAMCase}/*.log .
 	tar zcBf ${OpenFOAMCase}.tar.gz ${OpenFOAMCase}
 	rm -fr ${OpenFOAMCase}

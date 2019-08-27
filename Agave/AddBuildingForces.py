@@ -34,7 +34,7 @@ def findFunctionsDictionary(controlDictLines):
     return [False, controlDictLines.count]
 
 
-def writeForceDictionary(controlDictLines, lineIndex, floorsCount):
+def writeForceDictionary(controlDictLines, lineIndex, floorsCount, patches):
     """
     This method will write the force dictionary
     """
@@ -48,7 +48,7 @@ def writeForceDictionary(controlDictLines, lineIndex, floorsCount):
         "libs": '("libforces.so")',
         "writeControl": "timeStep",
         "writeInterval": 1,
-        "patches": "(building)",
+        "patches": "({})".format(patches),
         "rho": "rhoInf",
         "log": "true",
         "rhoInf": 1,
@@ -75,8 +75,10 @@ def writeForceDictionary(controlDictLines, lineIndex, floorsCount):
         controlDictLines.insert(lineIndex, "\t\t\t" + key + "\t" + str(value)+ ";\n")
         lineIndex += 1
 
-def AddBuildingsForces(caseDir, floorsCount):
-    #First, we need to validate the case directory structure
+def AddBuildingsForces(caseDir, floorsCount, patches):
+    """
+    First, we need to validate the case directory structure
+    """
     if not validateCaseDirectoryStructure(caseDir):
         print("Invalid OpenFOAM Case Directory!")
         sys.exit(-1)
@@ -96,7 +98,7 @@ def AddBuildingsForces(caseDir, floorsCount):
 
 
     #Now we can add the building forces
-    writeForceDictionary(controlDictLines, lineIndex, floorsCount)
+    writeForceDictionary(controlDictLines, lineIndex, floorsCount, patches)
 
     #Writing updated controlDict
     with open(controlDictPath, 'w') as controlDict:
@@ -114,6 +116,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--case', help="OpenFOAM case directory", required=True)
     parser.add_argument('-f', '--floors', help= "Number of Floors", type=int, required=False)
     parser.add_argument('-b', '--bim', help= "path to BIM file", required=False)
+    parser.add_argument('-p', '--patches', help= "Patches used for extracting forces on building", required=False)
 
     #Parsing arguments
     arguments, unknowns = parser.parse_known_args()
@@ -121,5 +124,9 @@ if __name__ == "__main__":
     if not floors:
         floors = GetFloorsCount(arguments.bim)
 
+    patches = arguments.patches
+    if not patches:
+        patches = "building"
+
     #Add building forces to post-processing
-    AddBuildingsForces(arguments.case, floors)
+    AddBuildingsForces(arguments.case, floors, patches)

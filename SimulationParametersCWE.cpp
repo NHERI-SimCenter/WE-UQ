@@ -128,7 +128,9 @@ void SimulationParametersCWE::clear(void)
 bool
 SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
-  //jsonObject["EventClassification"]="Wind";
+    jsonObject["deltaT"] = dT->text();
+    jsonObject["endTime"] = duration->text();
+
     
     return true;
 }
