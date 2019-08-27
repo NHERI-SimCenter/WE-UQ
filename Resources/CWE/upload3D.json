@@ -12,30 +12,6 @@
             "app_input":"geoFile",
             "groups":[
                 {
-                    "displayName":"Building Geometry",
-                    "internalName":"geometry",
-                    "vars":[
-                        {
-                            "displayName":"Select Geometry File",
-                            "internalName":"geoChoose",
-                            "type":"choose",
-                            "default":"cwe_cube.json",
-                            "options":{
-                                "cwe_cube.json": "10x10x10m cube",
-                                "cwe_cone.json": "10x10x10m cone",
-                                "uploaded": "Uploaded File"
-                            }
-                        },
-                        {
-                            "displayName":"Uploaded File",
-                            "internalName":"geoFile",
-                            "type":"file",
-                            "showCondition":"$geoChoose=uploaded"
-                        }
-                    ],
-                    "image":"placeholderIcon.png"
-                },
-                {
                     "displayName":"Mesh Density",
                     "internalName":"mesh_density",
                     "vars":[
