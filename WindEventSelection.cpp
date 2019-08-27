@@ -277,7 +277,9 @@ WindEventSelection::inputAppDataFromJSON(QJsonObject &jsonObject)
 
     if (theCurrentEvent != 0 && !theEvent.isEmpty()) {
         return theCurrentEvent->inputAppDataFromJSON(theEvent);
-   }
+    }
+
+    return false;
 }
 
 bool

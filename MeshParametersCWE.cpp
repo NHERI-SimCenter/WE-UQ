@@ -177,7 +177,7 @@ void MeshParametersCWE::clear(void)
 bool
 MeshParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
-  //jsonObject["EventClassification"]="Wind";
+    jsonObject["geoFile"] = "building.obj";
     
     return true;
 }
