@@ -184,13 +184,13 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 2;
     } else if (type == QString("CWE")) {
-      index = 3;
+        index = 3;
     } else if (type == QString("CFD - Guided")) {
-        index = 2;
+        index = 4;
     } else if (type == QString("CFD - Expert")) {
-      index = 4;
+        index = 5;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-      index = 5;
+        index = 6;
     }
     else {
         return false;
@@ -236,17 +236,17 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     }
 
     else if(arg1 == "CFD - Guided") {
-        theStackedWidget->setCurrentIndex(2);
-        theCurrentEvent = CFDExpertEventWidget;
+        theStackedWidget->setCurrentIndex(4);
+        theCurrentEvent = CFDTemplateEventWidget;
     }
 
     else if(arg1 == "CFD - Expert") {
-        theStackedWidget->setCurrentIndex(3);
+        theStackedWidget->setCurrentIndex(5);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
     else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(4);
+        theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theExistingEvents;
     }
 
