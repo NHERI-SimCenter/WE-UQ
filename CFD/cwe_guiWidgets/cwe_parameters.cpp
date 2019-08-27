@@ -346,34 +346,34 @@ bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
 
     rvObject["EventClassification"]="Wind";
 
-    foreach (QString key, theParameters.keys())
+    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+
+    bool ret = false;
+
+    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
     {
-        rvObject[key] = theParameters.value(key);
+        CWE_GroupsWidget * gw = itr.value();
+        ret = gw->outputToJSON(rvObject);
     }
 
-    return true;
+    qDebug() << rvObject;  // PETER and FRANK CHECK THIS !
+
+    return ret;
 }
 
 bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
 {
-    // initialize theParameters to reflect all properties
-    refreshParameterMap();
+    QMap<QString, CWE_GroupsWidget * >::iterator itr;
 
-    // update theParameters using information from the JSON file
-    foreach (QString key, theParameters.keys())
+    bool ret = false;
+
+    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
     {
-        if (rvObject.contains(key)) {
-          QJsonValue theValue = rvObject[key];
-          theParameters[key] = theValue.toDouble();
-        }
-        else
-          return false;
+        CWE_GroupsWidget * gw = itr.value();
+        ret = gw->inputFromJSON(rvObject);
     }
 
-    // update parameter values
-    refreshDisplay();
-
-    return true;
+    return ret;
 }
 
 bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
@@ -382,9 +382,7 @@ bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
     rvObject["Application"] = "CFD Guided";
     QJsonObject dataObj;
 
-
     rvObject["ApplicationData"] = dataObj;
-    return true;
 
     return true;
 }

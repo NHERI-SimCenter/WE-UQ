@@ -75,6 +75,9 @@ public:
 
     bool hasViewCode(QString);        // return true if object contains a matching view code OR has view code "all"
 
+    virtual const QJsonValue getJsonValue();
+    virtual bool setValueFromJson(QJsonValue &Jval);
+
 signals:
     void valueEdited();
     void controller_activated(QString); // emitted by controller variable
@@ -95,6 +98,9 @@ private:
     QString savedValue;
     SimCenterViewState m_ViewState;
     QStringList m_ViewCodes;
+
+protected:
+    QJsonValue m_Jval;
 };
 
 #endif // SCTRDATAWIDGET_H

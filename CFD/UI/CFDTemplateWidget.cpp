@@ -3,14 +3,12 @@
 #include <QComboBox>
 #include <QDir>
 #include <QStandardPaths>
-//#include "RemoteCaseSelector.h"
 #include <cwe_guiWidgets/cwe_parameters.h>
 #include <CFDanalysisType.h>
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    // parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
     parameterWidget = new CWE_Parameters(this);
 
     initializeUI();

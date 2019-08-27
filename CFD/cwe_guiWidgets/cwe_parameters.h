@@ -39,6 +39,7 @@
 #include <QJsonObject>
 
 #include "SimCenter_widgets/sctrstates.h"
+#include "cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h"
 #include <SimCenterAppWidget.h>
 
 #include <RandomVariablesContainer.h>
@@ -98,6 +99,8 @@ private:
     bool hasParameters = false;
 
     RandomVariablesContainer *theRandomVariablesContainer;
+
+    QMap<QString, CWE_GroupsWidget * > theGroups;
 
 };
 

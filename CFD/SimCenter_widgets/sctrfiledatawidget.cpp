@@ -47,7 +47,6 @@ SCtrFileDataWidget::SCtrFileDataWidget(QWidget *parent):
 
 SCtrFileDataWidget::~SCtrFileDataWidget()
 {
-//    if (myFileTree != nullptr) myFileTree->deleteLater();
     if (selectedFile != nullptr) selectedFile->deleteLater();
     if (explainText != nullptr) explainText->deleteLater();
     if (label_varName != nullptr) label_varName->deleteLater();
@@ -120,3 +119,4 @@ void SCtrFileDataWidget::setShownValue(QString newValue)
     selectedFile->setText(newValue);
     //myFileTree->clearSelection();
 }
+

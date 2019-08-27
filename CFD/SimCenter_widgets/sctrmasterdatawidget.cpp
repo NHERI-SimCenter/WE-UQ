@@ -55,6 +55,8 @@ SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
     m_obj.precision = "";
     m_obj.sign = "";
     m_obj.options.clear();
+
+    m_Jval = QJsonValue();
 }
 
 SCtrMasterDataWidget::~SCtrMasterDataWidget(){}
@@ -159,4 +161,16 @@ bool SCtrMasterDataWidget::hasViewCode(QString s)
     if (m_obj.visibility.contains("all")) return true;
     if (m_obj.visibility.contains(s)) return true;
     return false;
+}
+
+const QJsonValue SCtrMasterDataWidget::getJsonValue()
+{
+    m_Jval = this->shownValue();
+    return m_Jval;
+}
+
+bool SCtrMasterDataWidget::setValueFromJson(QJsonValue &Jval)
+{
+    m_Jval = Jval;
+    this->setShownValue(Jval.toString());
 }
