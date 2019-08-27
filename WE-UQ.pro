@@ -42,6 +42,7 @@ SOURCES += main.cpp \
     CFD/CFDanalysis/CFDanalysisType.cpp \
     CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     CFD/cfd_globals.cpp \
@@ -58,6 +59,10 @@ SOURCES += main.cpp \
     EDP_WindSelection.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
+    CWE.cpp \
+    MeshParametersCWE.cpp \
+    SimulationParametersCWE.cpp \
+    LowRiseTPU.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
     CFD/Analysis/filemetadata.cpp \
@@ -76,6 +81,7 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrstates.h \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
+    CFD/UI/GeometryHelper.h \
     CFD/UI/RemoteCaseSelector.h \
     CFD/cfd_globals.h \
     CFD/cwe_guiWidgets/cwe_parameters.h \
@@ -91,6 +97,10 @@ HEADERS  += \
     StandardWindEDP.h \
     EDP_WindSelection.h \
     DEDM_HRP.h \
+    CWE.h \
+    MeshParametersCWE.h \
+    SimulationParametersCWE.h \
+    LowRiseTPU.h \
     StochasticWindModel/include/WittigSinha.h \
     StochasticWindModel/include/StochasticWindInput.h \
     CFD/Analysis/filemetadata.h \
