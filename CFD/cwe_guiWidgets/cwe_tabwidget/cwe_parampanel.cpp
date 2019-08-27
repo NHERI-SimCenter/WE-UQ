@@ -156,8 +156,6 @@ void CWE_ParamPanel::addParameterConfig(QList<VARIABLE_TYPE> &groupVars, CFDanal
 
 void CWE_ParamPanel::on_controller_activated(QString s)
 {
-    qDebug() << "ControllerState: " << s;
-
     QMapIterator<QString, SCtrMasterDataWidget *> variablesIter(*variableWidgets);
 
     while (variablesIter.hasNext())
