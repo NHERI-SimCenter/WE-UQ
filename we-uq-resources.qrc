@@ -9,6 +9,9 @@
         <file>Resources/DEDM/wImage2.png</file>
         <file>Resources/DEDM/wImage3.png</file>
         <file>Resources/DEDM/wImage4.png</file>
+        <file>Resources/LowRise/lowriseTPU.png</file>
+        <file>Resources/LowRise/lowriseFlat.png</file>
+        <file>Resources/LowRise/lowriseGable.png</file>
         <file>Resources/TInF/sourceFileInfo.html</file>
     </qresource>
 </RCC>
