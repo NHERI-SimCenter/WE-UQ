@@ -44,6 +44,7 @@
 
 class CWE_StageStatusTab;
 class CWE_ParamTab;
+class CWE_ParamPanel;
 class SCtrMasterDataWidget;
 enum class SimCenterViewState;
 enum class StageState;
@@ -75,7 +76,8 @@ private:
     SimCenterViewState m_viewState;
     QJsonObject m_obj;
 
-    CWE_StageStatusTab * myTab;
+    CWE_StageStatusTab * myTab = nullptr;;
+    CWE_ParamPanel * panel = nullptr;
 
     QMap<QString, SCtrMasterDataWidget *> *quickParameterPtr;
 };

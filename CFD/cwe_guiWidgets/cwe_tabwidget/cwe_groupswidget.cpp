@@ -66,10 +66,14 @@ void CWE_GroupsWidget::setViewState(SimCenterViewState state)
 {
     m_viewState = state;
 
+    /*
     for (auto itr = quickParameterPtr->cbegin(); itr != quickParameterPtr->cend(); itr++)
     {
         (*itr)->setViewState(state);
     }
+    */
+
+    if (panel != nullptr)  { panel->setViewState(state); }
 }
 
 void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType)
@@ -82,7 +86,7 @@ void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType
         QString groupName = myType->getGroupName(groupInternalName);
 
         QScrollArea *scrollArea = new QScrollArea(this);
-        CWE_ParamPanel *panel = new CWE_ParamPanel(this);
+        panel = new CWE_ParamPanel(this);
         scrollArea->setWidgetResizable(true);
         scrollArea->setWidget(panel);
 

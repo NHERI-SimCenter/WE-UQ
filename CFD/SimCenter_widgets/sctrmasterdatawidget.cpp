@@ -44,6 +44,10 @@ SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
 {
     m_ViewState = SimCenterViewState::hidden;
 
+    m_obj.isController = false;
+    m_obj.visibility.clear();
+    m_obj.visibility.append("all");
+
     m_obj.displayName = "";
     m_obj.type = "unknown";
     m_obj.defaultValue = "error in configuration file";
@@ -148,4 +152,11 @@ void SCtrMasterDataWidget::changeMadeToUnderlyingDataWidget()
 bool SCtrMasterDataWidget::shownValueIsValid()
 {
     return true;
+}
+
+bool SCtrMasterDataWidget::hasViewCode(QString s)
+{
+    if (m_obj.visibility.contains("all")) return true;
+    if (m_obj.visibility.contains(s)) return true;
+    return false;
 }

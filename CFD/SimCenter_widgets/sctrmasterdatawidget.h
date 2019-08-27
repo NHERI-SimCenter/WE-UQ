@@ -63,34 +63,38 @@ public:
     void setDataType(VARIABLE_TYPE &);
     VARIABLE_TYPE getTypeInfo();
 
-    void setValue(QString newValue); //Sets both saved and shown value to newValue
+    void setValue(QString newValue);  //Sets both saved and shown value to newValue
     virtual QString shownValue() = 0; //Return string of raw value now shown in widget
-    virtual QString savableValue(); //Return parsed string guaranteed to be valid, from shown value as best it can
+    virtual QString savableValue();   //Return parsed string guaranteed to be valid, from shown value as best it can
 
-    void saveShownValue(); //Sets saved value to shown value if shown value is valid
-    void revertShownValue(); //Reverts shown value to saved value
+    void saveShownValue();            //Sets saved value to shown value if shown value is valid
+    void revertShownValue();          //Reverts shown value to saved value
 
-    bool isValueChanged(); //Return true if value shown in widget differs from set, saved value
-    bool hasValidNewValue(); //Return true if above is true AND, now value is valid
+    bool isValueChanged();            //Return true if value shown in widget differs from set, saved value
+    bool hasValidNewValue();          //Return true if above is true AND, now value is valid
+
+    bool hasViewCode(QString);        // return true if object contains a matching view code OR has view code "all"
 
 signals:
     void valueEdited();
+    void controller_activated(QString); // emitted by controller variable
 
 private slots:
     void changeMadeToUnderlyingDataWidget();
 
 private:
-    virtual void initUI() = 0; //Called once, creates ui widgets
+    virtual void initUI() = 0;          //Called once, creates ui widgets
     virtual void setComponetsEnabled(bool newSetting) = 0; //Set enabled/disabled for widgets as applicable
 
     virtual void setShownValue(QString newValue) = 0; //Put the new value into the displayed widget
-    virtual bool shownValueIsValid(); //Return true if raw value now shown in widget is valid
+    virtual bool shownValueIsValid();   //Return true if raw value now shown in widget is valid
 
     VARIABLE_TYPE m_obj;
 
     bool doingManualUpdate = false;
     QString savedValue;
     SimCenterViewState m_ViewState;
+    QStringList m_ViewCodes;
 };
 
 #endif // SCTRDATAWIDGET_H

@@ -40,6 +40,7 @@
 //#include <QJsonArray>
 #include <QMap>
 #include <QLayout>
+#include <QString>
 
 #include "SimCenter_widgets/sctrstates.h"
 #include "CFDanalysis/CFDanalysisType.h"
@@ -61,13 +62,18 @@ public:
 
     void setViewState(SimCenterViewState);
     SimCenterViewState getViewState();
-    void addVariable(QString varName, VARIABLE_TYPE &theVariable);
+    SCtrMasterDataWidget *  addVariable(QString varName, VARIABLE_TYPE &theVariable);
     void addParameterConfig(QList<VARIABLE_TYPE>  &groupVars, CFDanalysisType *myType);
     QMap<QString, SCtrMasterDataWidget *> getParameterWidgetMap();
+
+public slots:
+    void on_controller_activated(QString s);
 
 private:
     SimCenterViewState m_viewState;
     QMap<QString, SCtrMasterDataWidget *> *variableWidgets;
+
+    SCtrMasterDataWidget * theControllerObject = nullptr;
 };
 
 #endif // CWE_PARAMPANEL_H

@@ -39,6 +39,8 @@
 
 #include "cwe_parampanel.h"
 
+#include <QObject>
+
 #include "SimCenter_widgets/sctrstddatawidget.h"
 #include "SimCenter_widgets/sctrbooldatawidget.h"
 #include "SimCenter_widgets/sctrfiledatawidget.h"
@@ -81,7 +83,7 @@ SimCenterViewState CWE_ParamPanel::getViewState()
     return m_viewState;
 }
 
-void CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
+SCtrMasterDataWidget * CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
 {
     SCtrMasterDataWidget *theVar = NULL;
 
@@ -111,12 +113,14 @@ void CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYPE &theVariable)
         /* add an error message */
         cfd_globals::displayPopup(QString("Variable %1 of unknown type %2.\nVariable ignored.").arg(varName).arg(theVariable.type), "Warning");
         theVar->deleteLater();
-        return;
+        return nullptr;
     }
 
     theVar->setDataType(theVariable);
 
     variableWidgets->insert(varName, theVar);
+
+    return theVar;
 }
 
 void CWE_ParamPanel::addParameterConfig(QList<VARIABLE_TYPE> &groupVars, CFDanalysisType *myType)
@@ -126,20 +130,47 @@ void CWE_ParamPanel::addParameterConfig(QList<VARIABLE_TYPE> &groupVars, CFDanal
     layout = new QVBoxLayout();
     this->setLayout(layout);
 
+    bool hasController = false;
+
     foreach (VARIABLE_TYPE theVariable, groupVars)
     {
-        QString varName= theVariable.name;
-        this->addVariable(varName, theVariable);
+        QString varName = theVariable.name;
+        SCtrMasterDataWidget * theVarObject = this->addVariable(varName, theVariable);
+
+        if (theVariable.isController && theVarObject != nullptr)
+        {
+            hasController = true;
+            theControllerObject = theVarObject;
+        }
+    }
+
+    if (hasController)
+    {
+        QObject::connect(theControllerObject, SIGNAL(controller_activated(QString)), this, SLOT(on_controller_activated(QString)));
+        QString s = theControllerObject->shownValue();
+        this->on_controller_activated(s);
     }
 
     layout->addStretch(1);
 }
 
+void CWE_ParamPanel::on_controller_activated(QString s)
+{
+    qDebug() << "ControllerState: " << s;
+
+    QMapIterator<QString, SCtrMasterDataWidget *> variablesIter(*variableWidgets);
+
+    while (variablesIter.hasNext())
+    {
+        variablesIter.next();
+        SCtrMasterDataWidget * varObj = variablesIter.value();
+        varObj->setVisible( varObj->hasViewCode(s) );
+    }
+}
 
 QMap<QString, SCtrMasterDataWidget *> CWE_ParamPanel::getParameterWidgetMap()
 {
     QMap<QString, SCtrMasterDataWidget *> panelMap;
-
     QMapIterator<QString, SCtrMasterDataWidget *> variablesIter(*variableWidgets);
 
     while (variablesIter.hasNext())
