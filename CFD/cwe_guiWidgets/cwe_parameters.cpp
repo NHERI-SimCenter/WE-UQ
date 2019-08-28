@@ -342,41 +342,11 @@ bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
     //refreshParameterMap();
 
     return ui->theTabWidget->outputToJSON(rvObject);
-
-    /*
-    QMap<QString, CWE_TabWidget * >::iterator itr;
-
-    bool ret = false;
-
-    for (itr = theStages.begin(); itr != theStages.end(); ++itr)
-    {
-        CWE_TabWidget * tab = itr.value();
-        ret = tab->outputToJSON(rvObject);
-    }
-
-    qDebug() << rvObject;  // PETER and FRANK CHECK THIS !
-
-    return ret;
-    */
 }
 
 bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
 {
     return ui->theTabWidget->inputFromJSON(rvObject);
-
-    /*
-    QMap<QString, CWE_TabWidget * >::iterator itr;
-
-    bool ret = false;
-
-    for (itr = theStages.begin(); itr != theStages.end(); ++itr)
-    {
-        CWE_TabWidget * tab = itr.value();
-        ret = tab->inputFromJSON(rvObject);
-    }
-
-    return ret;
-    */
 }
 
 bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)

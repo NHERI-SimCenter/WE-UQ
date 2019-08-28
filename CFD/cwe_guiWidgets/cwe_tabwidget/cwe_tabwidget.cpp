@@ -338,7 +338,10 @@ bool CWE_TabWidget::inputFromJSON(QJsonObject &rvObject)
         QString internalStageName = itr.value()->getStageKey();
         CWE_GroupsWidget * gw = itr.value()->groupWidget();
 
-        ret = gw->inputFromJSON(rvObject);
+        QJsonObject stageData;
+        ret = gw->inputFromJSON(stageData);
+
+        rvObject.insert(internalStageName, stageData);
     }
 
     return ret;
