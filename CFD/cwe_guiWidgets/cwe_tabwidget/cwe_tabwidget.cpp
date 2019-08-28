@@ -309,35 +309,35 @@ void CWE_TabWidget::on_tabActivated(CWE_StageStatusTab *activeTabWidget)
 
 bool CWE_TabWidget::outputToJSON(QJsonObject &rvObject)
 {
-    // just need to send the class type here.. type needed in object in case user screws up
-    rvObject["type"]="CFD-Guided";
-
-    rvObject["EventClassification"]="Wind";
-
-    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+    QMap<QString, CWE_StageStatusTab * >::iterator itr;
 
     bool ret = false;
 
-    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    for (itr = stageTabList->begin(); itr != stageTabList->end(); ++itr)
     {
-        CWE_GroupsWidget * gw = itr.value();
-        ret = gw->outputToJSON(rvObject);
-    }
+        QString internalStageName = itr.value()->getStageKey();
+        CWE_GroupsWidget * gw = itr.value()->groupWidget();
 
-    qDebug() << rvObject;  // PETER and FRANK CHECK THIS !
+        QJsonObject stageData;
+        ret = gw->outputToJSON(stageData);
+
+        rvObject.insert(internalStageName, stageData);
+    }
 
     return ret;
 }
 
 bool CWE_TabWidget::inputFromJSON(QJsonObject &rvObject)
 {
-    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+    QMap<QString, CWE_StageStatusTab * >::iterator itr;
 
     bool ret = false;
 
-    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    for (itr = stageTabList->begin(); itr != stageTabList->end(); ++itr)
     {
-        CWE_GroupsWidget * gw = itr.value();
+        QString internalStageName = itr.value()->getStageKey();
+        CWE_GroupsWidget * gw = itr.value()->groupWidget();
+
         ret = gw->inputFromJSON(rvObject);
     }
 

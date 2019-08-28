@@ -100,7 +100,7 @@ private:
 
     RandomVariablesContainer *theRandomVariablesContainer;
 
-    QMap<QString, CWE_TabWidget * > theStages;
+    //QMap<QString, CWE_TabWidget * > theStages;
 
 };
 

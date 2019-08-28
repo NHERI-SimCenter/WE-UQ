@@ -175,18 +175,19 @@ int CWE_GroupsWidget::collectParamData(QMap<QString, QString> &currentParameters
 
 bool CWE_GroupsWidget::outputToJSON(QJsonObject &rvObject)
 {
-    QJsonObject * groupJson = new QJsonObject();
+    //QJsonObject * groupJson = new QJsonObject();
 
     QMap<QString, SCtrMasterDataWidget * >::iterator itr;
 
     for (itr = quickParameterPtr->begin(); itr != quickParameterPtr->end(); ++itr)
     {
         QJsonValue value = (itr.value())->getJsonValue();
-        groupJson->insert(itr.key(), value);
+        //groupJson->insert(itr.key(), value);
+        rvObject.insert(itr.key(), value);
     }
 
-    QString key = m_obj.value("internalName").toString();
-    rvObject.insert(key, *groupJson);
+    //QString key = m_obj.value("internalName").toString();
+    //rvObject.insert(key, *groupJson);
 
     return true;
 }

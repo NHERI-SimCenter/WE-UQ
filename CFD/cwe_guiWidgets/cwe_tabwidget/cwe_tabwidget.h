@@ -103,7 +103,6 @@ private:
     QMap<QString, SimCenterButtonMode> buttonModeList;
 
     QMap<QString, CWE_StageStatusTab *> *stageTabList;
-    QMap<QString, CWE_GroupsWidget * > theGroups;
 };
 
 #endif // CWE_TABWIDGET_H
