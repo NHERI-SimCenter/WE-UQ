@@ -47,29 +47,17 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 }
 
 bool CFDTemplateWidget::outputToJSON(QJsonObject &eventObject)
-{
-    parameterWidget->outputToJSON(eventObject);
-    //eventObject["OpenFOAMCase"] = caseEditBox->text();
-    //eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
-    //eventObject["start"] = startTimeBox->value();
-
+{ 
     eventObject["EventClassification"]="Wind";
     eventObject["type"] = "CFD - Guided";
+
+    parameterWidget->outputToJSON(eventObject);
 
     return true;
 }
 
 bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
 {
-    //if(eventObject.contains("OpenFOAMCase"))
-    //    caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
-
-    //if(eventObject.contains("OpenFOAMSolver"))
-    //    solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
-
-    //if(eventObject.contains("start"))
-    //    this->startTimeBox->setValue(eventObject["start"].toDouble());
-
     parameterWidget->inputFromJSON(eventObject);
 
     return true;
@@ -77,9 +65,6 @@ bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
 
 bool CFDTemplateWidget::copyFiles(QString &path)
 {
-    //if (inflowCheckBox->isChecked())
-    //    return inflowWidget->copyFiles(path);
-
     return true;
 }
 

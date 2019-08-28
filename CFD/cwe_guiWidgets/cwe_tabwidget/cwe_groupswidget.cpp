@@ -175,43 +175,30 @@ int CWE_GroupsWidget::collectParamData(QMap<QString, QString> &currentParameters
 
 bool CWE_GroupsWidget::outputToJSON(QJsonObject &rvObject)
 {
-    //QJsonObject * groupJson = new QJsonObject();
-
     QMap<QString, SCtrMasterDataWidget * >::iterator itr;
 
     for (itr = quickParameterPtr->begin(); itr != quickParameterPtr->end(); ++itr)
     {
         QJsonValue value = (itr.value())->getJsonValue();
-        //groupJson->insert(itr.key(), value);
         rvObject.insert(itr.key(), value);
     }
-
-    //QString key = m_obj.value("internalName").toString();
-    //rvObject.insert(key, *groupJson);
 
     return true;
 }
 
 bool CWE_GroupsWidget::inputFromJSON(QJsonObject &rvObject)
 {
-    QString key = m_obj.value("internalName").toString();
-
-    QJsonObject groupJson = rvObject.value(key).toObject();
-
     QMap<QString, SCtrMasterDataWidget * >::iterator itr;
 
-    // update theParameters using information from the JSON file
     for (itr = quickParameterPtr->begin(); itr != quickParameterPtr->end(); ++itr)
     {
-        QString key = itr.key();
-        QJsonValue value = (itr.value())->getJsonValue();
+        QString varName = itr.key();
 
-        if (rvObject.contains(key)) {
-            QJsonValue theValue = rvObject[key];
-            (quickParameterPtr->value(key))->setValueFromJson(theValue);
+        if (rvObject.contains(varName))
+        {
+            QJsonValue theValue = rvObject.value(varName);
+            (itr.value())->setValueFromJson( theValue );
         }
-        else
-            return false;
     }
 
     return true;
