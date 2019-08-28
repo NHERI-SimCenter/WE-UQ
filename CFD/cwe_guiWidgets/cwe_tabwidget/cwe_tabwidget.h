@@ -65,6 +65,9 @@ public:
     void setController(CWE_Parameters * newController);
     void resetView();
 
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+
     void setTabStage(StageState newState, QString stageName);
 
     void setButtonMode(SimCenterButtonMode);
@@ -100,6 +103,7 @@ private:
     QMap<QString, SimCenterButtonMode> buttonModeList;
 
     QMap<QString, CWE_StageStatusTab *> *stageTabList;
+    QMap<QString, CWE_GroupsWidget * > theGroups;
 };
 
 #endif // CWE_TABWIDGET_H

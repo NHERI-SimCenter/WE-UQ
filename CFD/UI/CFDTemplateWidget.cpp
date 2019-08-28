@@ -39,8 +39,8 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     jsonObject["EventClassification"]="Wind";
     jsonObject["Application"] = "CFDEvent";
     QJsonObject dataObj;
-    dataObj["OpenFOAMCase"] = caseEditBox->text();
-    dataObj["OpenFOAMSolver"] = solverComboBox->currentText();
+    //dataObj["OpenFOAMCase"] = caseEditBox->text();
+    //dataObj["OpenFOAMSolver"] = solverComboBox->currentText();
 
     jsonObject["ApplicationData"] = dataObj;
     return true;
@@ -49,23 +49,26 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool CFDTemplateWidget::outputToJSON(QJsonObject &eventObject)
 {
     parameterWidget->outputToJSON(eventObject);
-    eventObject["OpenFOAMCase"] = caseEditBox->text();
-    eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+    //eventObject["OpenFOAMCase"] = caseEditBox->text();
+    //eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+    //eventObject["start"] = startTimeBox->value();
+
+    eventObject["EventClassification"]="Wind";
     eventObject["type"] = "CFD - Guided";
-    eventObject["start"] = startTimeBox->value();
+
     return true;
 }
 
 bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
 {
-    if(eventObject.contains("OpenFOAMCase"))
-        caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
+    //if(eventObject.contains("OpenFOAMCase"))
+    //    caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
 
-    if(eventObject.contains("OpenFOAMSolver"))
-        solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
+    //if(eventObject.contains("OpenFOAMSolver"))
+    //    solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
 
-    if(eventObject.contains("start"))
-        this->startTimeBox->setValue(eventObject["start"].toDouble());
+    //if(eventObject.contains("start"))
+    //    this->startTimeBox->setValue(eventObject["start"].toDouble());
 
     parameterWidget->inputFromJSON(eventObject);
 

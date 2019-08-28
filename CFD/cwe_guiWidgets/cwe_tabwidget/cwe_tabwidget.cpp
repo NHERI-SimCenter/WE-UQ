@@ -201,6 +201,8 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
         CWE_GroupsWidget *groupWidget = new CWE_GroupsWidget(this);
         ui->stagePanels->addWidget(groupWidget);
 
+        //theGroups.insert(stageName, groupWidget);
+
         /* link tab and groupWidget */
         tab->linkWidget(groupWidget);
         groupWidget->linkWidget(tab);
@@ -303,4 +305,41 @@ void CWE_TabWidget::on_tabActivated(CWE_StageStatusTab *activeTabWidget)
     }
     activeTabWidget->setActive();
     enactButtonSetting();
+}
+
+bool CWE_TabWidget::outputToJSON(QJsonObject &rvObject)
+{
+    // just need to send the class type here.. type needed in object in case user screws up
+    rvObject["type"]="CFD-Guided";
+
+    rvObject["EventClassification"]="Wind";
+
+    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+
+    bool ret = false;
+
+    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    {
+        CWE_GroupsWidget * gw = itr.value();
+        ret = gw->outputToJSON(rvObject);
+    }
+
+    qDebug() << rvObject;  // PETER and FRANK CHECK THIS !
+
+    return ret;
+}
+
+bool CWE_TabWidget::inputFromJSON(QJsonObject &rvObject)
+{
+    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+
+    bool ret = false;
+
+    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    {
+        CWE_GroupsWidget * gw = itr.value();
+        ret = gw->inputFromJSON(rvObject);
+    }
+
+    return ret;
 }

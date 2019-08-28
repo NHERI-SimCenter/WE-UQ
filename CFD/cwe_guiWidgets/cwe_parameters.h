@@ -39,7 +39,7 @@
 #include <QJsonObject>
 
 #include "SimCenter_widgets/sctrstates.h"
-#include "cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h"
+#include "cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h"
 #include <SimCenterAppWidget.h>
 
 #include <RandomVariablesContainer.h>
@@ -100,7 +100,7 @@ private:
 
     RandomVariablesContainer *theRandomVariablesContainer;
 
-    QMap<QString, CWE_GroupsWidget * > theGroups;
+    QMap<QString, CWE_TabWidget * > theStages;
 
 };
 

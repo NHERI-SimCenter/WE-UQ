@@ -339,21 +339,16 @@ void CWE_Parameters::refreshDisplay(void)
 
 bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
 {
-    refreshParameterMap();
+    //refreshParameterMap();
 
-    // just need to send the class type here.. type needed in object in case user screws up
-    rvObject["type"]="CFD-Guided";
-
-    rvObject["EventClassification"]="Wind";
-
-    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+    QMap<QString, CWE_TabWidget * >::iterator itr;
 
     bool ret = false;
 
-    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    for (itr = theStages.begin(); itr != theStages.end(); ++itr)
     {
-        CWE_GroupsWidget * gw = itr.value();
-        ret = gw->outputToJSON(rvObject);
+        CWE_TabWidget * tab = itr.value();
+        ret = tab->outputToJSON(rvObject);
     }
 
     qDebug() << rvObject;  // PETER and FRANK CHECK THIS !
@@ -363,14 +358,14 @@ bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
 
 bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
 {
-    QMap<QString, CWE_GroupsWidget * >::iterator itr;
+    QMap<QString, CWE_TabWidget * >::iterator itr;
 
     bool ret = false;
 
-    for (itr = theGroups.begin(); itr != theGroups.end(); ++itr)
+    for (itr = theStages.begin(); itr != theStages.end(); ++itr)
     {
-        CWE_GroupsWidget * gw = itr.value();
-        ret = gw->inputFromJSON(rvObject);
+        CWE_TabWidget * tab = itr.value();
+        ret = tab->inputFromJSON(rvObject);
     }
 
     return ret;
