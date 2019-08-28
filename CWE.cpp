@@ -56,6 +56,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "CFD/UI/GeometryHelper.h"
 #include "QDir"
 #include <QDebug>
+#include <QDoubleSpinBox>
 
 CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
@@ -73,93 +74,43 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     // create layout to hold tree view and stackedwidget
     //
 
-    QHBoxLayout *horizontalLayout = new QHBoxLayout();
-    this->setLayout(horizontalLayout);
+    auto layout = new QGridLayout();
+    this->setLayout(layout);
 
-    //
-    // create a TreeView widget & provide items for each widget to be displayed & add to layout
-    //
-    QVBoxLayout *treeviewLayout = new QVBoxLayout();
+    //Building Forces
+    auto buildingForcesGroup = new QGroupBox("Building Forces");
+    auto buildingForcesLayout = new QGridLayout();
+    QLabel *forceLabel = new QLabel("Force Calculation", this);
+    QComboBox* forceComboBox = new QComboBox();
+    forceComboBox->addItem("Binning with uniform floor heights");
+    buildingForcesLayout->addWidget(forceComboBox, 0, 1);
+    buildingForcesLayout->addWidget(forceLabel, 0, 0);
+    forceComboBox->setToolTip(tr("Method used for calculating the forces on the building model"));
 
-    treeView = new QTreeView();
-    standardModel = new CustomizedItemModel; //QStandardItemModel ;
-    QStandardItem *rootNode = standardModel->invisibleRootItem();
+    QLabel *startTimeLabel = new QLabel("Start time", this);
+    buildingForcesLayout->addWidget(startTimeLabel, 1, 0);
+    startTimeBox = new QDoubleSpinBox(this);
+    buildingForcesLayout->addWidget(startTimeBox, 1, 1);
+    startTimeBox->setDecimals(3);
+    startTimeBox->setSingleStep(0.001);
+    startTimeBox->setMinimum(0);
+    startTimeBox->setValue(0.01);
+    startTimeBox->setToolTip(tr("The time in the OpenFOAM simulation when the building force event starts. Forces before that time are ignored."));
 
-    QStandardItem *meshItem = new QStandardItem("Mesh Properties");
-    QStandardItem *simItem = new QStandardItem("Simulation Properties");
+    buildingForcesLayout->setColumnStretch(1, 1);
+    buildingForcesGroup->setLayout(buildingForcesLayout);
 
-    //building up the hierarchy of the model
-    rootNode->appendRow(meshItem);
-    rootNode->appendRow(simItem);
-
-    infoItemIdx = meshItem->index();
-
-    //register the model
-    treeView->setModel(standardModel);
-    treeView->expandAll();
-    treeView->setHeaderHidden(true);
-    treeView->setMinimumWidth(100);
-    treeView->setMaximumWidth(100);
-    treeView->setMinimumWidth(100);
-
-    treeView->setEditTriggers(QTreeView::EditTrigger::NoEditTriggers);//Disable Edit for the TreeView
-
-    treeView->setWordWrap(true);
-
-    //
-    // customize the apperance of the menu on the left
-    //
-
-    treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
-    treeView->setObjectName("treeViewOnTheLeft");
-    treeView->setIndentation(0);
-
-    /*
-    QFile file(":/styles/menuBar.qss");
-    if(file.open(QFile::ReadOnly)) {
-        treeView->setStyleSheet(file.readAll());
-        file.close();
-    }
-    else
-        qDebug() << "Open Style File Failed!";
-    */
-
-    treeView->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    //treeView->setMaximumHeight(300);
-
-    //
-    // set up so that a slection change triggers the selectionChanged slot
-    //
-
-    QItemSelectionModel *selectionModel= treeView->selectionModel();
-    connect(selectionModel,
-            SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-            this,
-            SLOT(selectionChangedSlot(const QItemSelection &, const QItemSelection &)));
-
-    // add the TreeView widget to the layout
-    treeviewLayout->addWidget(treeView);
-    treeviewLayout->addStretch();
-
-    //horizontalLayout->addWidget(treeView);
-    horizontalLayout->addLayout(treeviewLayout);
-
-    //
-    // create the staked widget, and add to it the widgets to be displayed, and add the stacked widget itself to layout
-    //
-
-    theStackedWidget = new QStackedWidget();
-    theStackedWidget->addWidget(meshParameters);
-    theStackedWidget->addWidget(simulationParameters);
 
     // add stacked widget to layout
-    horizontalLayout->addWidget(theStackedWidget);
-    horizontalLayout->addStretch();
+    layout->addWidget(meshParameters, 0, 0);
+    layout->addWidget(simulationParameters, 1, 0);
+    layout->addWidget(buildingForcesGroup, 2, 0);
+    layout->setRowStretch(3, 1);
+    layout->setColumnStretch(1, 1);
 
-    // set current selection to GI
-    treeView->setCurrentIndex( infoItemIdx );
-    infoItemIdx = meshItem->index();
-}
+    this->setLayout(layout);
+
+    }
 
 CWE::~CWE()
 {
@@ -167,18 +118,6 @@ CWE::~CWE()
 }
 
 
-void
-CWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, const QItemSelection &/*oldSelection*/) {
-
-    //get the text of the selected item
-    const QModelIndex index = treeView->selectionModel()->currentIndex();
-    QString selectedText = index.data(Qt::DisplayRole).toString();
-
-    if (selectedText == "Mesh Properties")
-        theStackedWidget->setCurrentIndex(0);
-    if (selectedText == "Simulation Properties")
-        theStackedWidget->setCurrentIndex(1);
-}
 
 double CWE::toMilliMeters(QString lengthUnit) const
 {
@@ -207,7 +146,7 @@ CWE::outputToJSON(QJsonObject &jsonObject) {
     //Output basic info
     jsonObject["EventClassification"] = "Wind";
     jsonObject["type"] = "CWE";
-    jsonObject["start"] = 0.01;
+    jsonObject["start"] = startTimeBox->value();
 
     //
     // get each of the main widgets to output themselves

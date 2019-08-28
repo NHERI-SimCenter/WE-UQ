@@ -51,21 +51,20 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
     : SimCenterWidget(parent)
 {
-  QHBoxLayout *layout = new QHBoxLayout();
-  QTabWidget *tabbedWidget = new QTabWidget();
+  auto layout = new QGridLayout();
   
   // control
-  QWidget *control = new QWidget();
+  QWidget *control = new QGroupBox("Simulation Control");
   duration= new QLineEdit("1.0");
   dT= new QLineEdit("0.1");
   inflowVelocity= new QLineEdit("1.0");
   kinematicViscosity= new QLineEdit("1.48e-05");
 
   QGridLayout *controlLayout=new QGridLayout();
-  controlLayout->addWidget(new QLabel("Simulation Duration"),0,0);
+  controlLayout->addWidget(new QLabel("Duration"),0,0);
   controlLayout->addWidget(duration,0,1);
   controlLayout->addWidget(new QLabel("s"),0,2);
-  controlLayout->addWidget(new QLabel("Simulation Time Step"),1,0);
+  controlLayout->addWidget(new QLabel("Time Step"),1,0);
   controlLayout->addWidget(dT,1,1);
   controlLayout->addWidget(new QLabel("s"),1,2);
   controlLayout->addWidget(new QLabel("Inflow Velocity"),2,0);
@@ -73,42 +72,46 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   controlLayout->addWidget(new QLabel("m/s"),2,2);
   controlLayout->addWidget(new QLabel("Kinematic Viscosity"),3,0);
   controlLayout->addWidget(kinematicViscosity,3,1);
-  controlLayout->addWidget(new QLabel("m^2/s"),3,2);
+  controlLayout->addWidget(new QLabel("m<sup>2</sup>/s"),3,2);
   controlLayout->setRowStretch(4,1);
   control->setLayout(controlLayout);
 
   // advanced
-  QWidget *advanced = new QWidget();
+  QWidget *advanced = new QGroupBox("Advanced");
   turbulanceModel = new QComboBox();
-  turbulanceModel->addItem(tr("Smagorinsky Turbulance Model (LES)"));
-  turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"));
-  turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"));
-  turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"));
-  turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"));
-  turbulanceModel->addItem(tr("Laminar Flow Model"));
+  turbulanceModel->addItem(tr("Smagorinsky Turbulence Model (LES)"), "Smagorinsky");
+  turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"), "SpalartAllmaras");
+  turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"), "SpalartAllmarasDDES");
+  turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"), "dynOneEqEddy");
+  turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"), "kEpsilon");
+  turbulanceModel->addItem(tr("Laminar Flow Model"), "laminar");
 
   pisoCorrectors = new QLineEdit("1");
-  numOrthogonalCorrectors = new QLineEdit("0");
-  turbulanceIntensity = new QLineEdit("0.1");
+  nonOrthogonalCorrectors = new QLineEdit("0");
+  turbulenceIntensity = new QLineEdit("0.1");
     
   QGridLayout *advancedLayout=new QGridLayout();
-  advancedLayout->addWidget(new QLabel("Turbulance"),0,0);
+  advancedLayout->addWidget(new QLabel("Turbulence"),0,0);
   advancedLayout->addWidget(turbulanceModel,0,1);
   advancedLayout->addWidget(new QLabel("Number of Piso Correctors"),1,0);
   advancedLayout->addWidget(pisoCorrectors,1,1);
   advancedLayout->addWidget(new QLabel("Number of non-orthogonal Correctors"),2,0);
-  advancedLayout->addWidget(numOrthogonalCorrectors,2,1);
-  advancedLayout->addWidget(new QLabel("Turbulance Intensity"),3,0);
-  advancedLayout->addWidget(turbulanceIntensity,3,1);
+  advancedLayout->addWidget(nonOrthogonalCorrectors,2,1);
+
+  advancedLayout->addWidget(new QLabel("Turbulence Intensity"),3,0);
+  advancedLayout->addWidget(turbulenceIntensity,3,1);
   advancedLayout->setRowStretch(4,1);
   advanced->setLayout(advancedLayout);
 
   
-  tabbedWidget->addTab(control,tr("Simulation Control"));
-  tabbedWidget->addTab(advanced,tr("Advances"));
+  layout->addWidget(control, 0, 0);
+  layout->addWidget(advanced, 0, 1);
+  layout->setRowStretch(1, 1);
+  layout->setColumnStretch(2, 1);
 
-  layout->addWidget(tabbedWidget);
   this->setLayout(layout);
+
+  setupConnections();
 }
 
 
@@ -123,13 +126,38 @@ void SimulationParametersCWE::clear(void)
 
 }
 
+void SimulationParametersCWE::setupConnections()
+{
+    //Turbulent intensity is not used for laminar flow
+    connect(turbulanceModel, &QComboBox::currentTextChanged, this, [this]()
+    {
+        if(0 == this->turbulanceModel->currentData().toString()
+                .compare("laminar", Qt::CaseInsensitive))
+            this->turbulenceIntensity->setDisabled(true);
+        else
+            this->turbulenceIntensity->setEnabled(true);
+    });
+
+}
+
 
 
 bool
 SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
-    jsonObject["deltaT"] = dT->text();
-    jsonObject["endTime"] = duration->text();
+    //Simulation Control
+    jsonObject["deltaT"] = dT->text();//Simulation Time Step
+    jsonObject["endTime"] = duration->text();//Simulation Duration
+    jsonObject["velocity"] = inflowVelocity->text();//Inflow Velocity
+    jsonObject["nu"] = kinematicViscosity->text();//Kinematic Viscosity
+
+    //Advanced
+    jsonObject["turbModel"] = turbulanceModel->currentData().toString();//Turbulence Model
+    jsonObject["pisoCorrectors"] = pisoCorrectors->text();//Number of PISO Correctors,
+    jsonObject["pisoNonOrthCorrect"] = nonOrthogonalCorrectors->text();//Number of non-orthogonal Correctors,
+
+    if(0 != turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
+        jsonObject["turbintensity"] = turbulenceIntensity->text();//Turbulence Intensity
 
     
     return true;
