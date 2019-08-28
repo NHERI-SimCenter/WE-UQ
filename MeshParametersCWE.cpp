@@ -55,12 +55,12 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   
   //Mesh Parameters Widget
   QWidget* domainSizeWidget = new QGroupBox("Domain Size");
-  domainLengthInlet= new QLineEdit("8");
-  domainLengthOutlet= new QLineEdit("20");
-  domainLengthYpos= new QLineEdit("8");
-  domainLengthYneg= new QLineEdit("8");
-  domainLengthZpos= new QLineEdit("8");
-  domainLengthZneg= new QLineEdit("0");
+  domainLengthInlet= new QLineEdit("8.0");
+  domainLengthOutlet= new QLineEdit("20.0");
+  domainLengthYpos= new QLineEdit("8.0");
+  domainLengthYneg= new QLineEdit("8.0");
+  domainLengthZpos= new QLineEdit("8.0");
+  domainLengthZneg= new QLineEdit("0.0");
 
   QGridLayout *domainSizeLayout=new QGridLayout();
   domainSizeLayout->addWidget(new QLabel("Inlet Length (-X)"),0,0);
@@ -173,12 +173,18 @@ void MeshParametersCWE::clear(void)
 
 }
 
-
+void MeshParametersCWE::setComboBoxByData(QComboBox &comboBox, const QVariant &data)
+{
+    int index = comboBox.findData(data);
+    if(index >= 0)
+        comboBox.setCurrentIndex(index);
+}
 
 bool
 MeshParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
     //Geometry file
+    jsonObject["geoChoose"] = "uploaded";
     jsonObject["geoFile"] = "building.obj";
 
     //Mesh Parameters set by user
@@ -213,14 +219,26 @@ MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
     
-    /*
-    if (jsonObject.contains("checkedPlan")) {
-      QJsonValue theValue = jsonObject["checkedPlan"];
-      int id = theValue.toInt();
-      thePlanGroup->button(id)->setChecked(true);
-    } else
-      return false;
-    */
+    //Domain Length
+    domainLengthInlet->setText(jsonObject["inPad"].toString());//Domain Length (Inlet)
+    domainLengthOutlet->setText(jsonObject["outPad"].toString());//Domain Length (Outlet)
+    domainLengthYneg->setText(jsonObject["lowYPad"].toString());//Domain Length (-Y)
+    domainLengthYpos->setText(jsonObject["highYPad"].toString());//Domain Length (+Y)
+    domainLengthZneg->setText(jsonObject["lowZPad"].toString());//Domain Length (-Z)
+    domainLengthZpos->setText(jsonObject["highZPad"].toString());//Domain Length (+Z)
+
+    //Mesh Size
+    gridSizeBluffBody->setText(jsonObject["meshDensity"].toString());//Grid Size (on the bluff body)
+    gridSizeOuterBoundary->setText(jsonObject["meshDensityFar"].toString());//Grid Size (on the outer bound)
+
+    //Subdomains
+    numSubdomains->setCurrentText(jsonObject["innerDomains"].toString());//Number of Subdomains
+
+    //Boundary Conditions
+    setComboBoxByData(*boundaryConditionYneg, jsonObject["lowYPlane"].toVariant());//Boundary Condition (Y-)
+    setComboBoxByData(*boundaryConditionYpos, jsonObject["highYPlane"].toVariant());//Boundary Condition (Y+)
+    setComboBoxByData(*boundaryConditionZneg, jsonObject["lowZPlane"].toVariant());//Boundary Condition (Z-)
+    setComboBoxByData(*boundaryConditionZpos, jsonObject["highZPlane"].toVariant());//Boundary Condition (Z+)
 
     return true;
 }

@@ -159,7 +159,6 @@ CWE::outputToJSON(QJsonObject &jsonObject) {
     simulationParameters->outputToJSON(jsonObjSimulation);
     jsonObject["sim"] = jsonObjSimulation;
 
-
     return true;
 }
 
@@ -173,6 +172,8 @@ CWE::clear(void)
 bool
 CWE::inputFromJSON(QJsonObject &jsonObject)
 {
+    startTimeBox->setValue(jsonObject["start"].toDouble());
+
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
         meshParameters->inputFromJSON(jsonObjMesh);

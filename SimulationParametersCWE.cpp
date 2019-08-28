@@ -167,16 +167,21 @@ SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
 bool
 SimulationParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 {
-    this->clear();
-    
-    /*
-    if (jsonObject.contains("checkedPlan")) {
-      QJsonValue theValue = jsonObject["checkedPlan"];
-      int id = theValue.toInt();
-      thePlanGroup->button(id)->setChecked(true);
-    } else
-      return false;
-    */
+    //Simulation Control
+    dT->setText(jsonObject["deltaT"].toString());//Simulation Time Step
+    duration->setText(jsonObject["endTime"].toString());//Simulation Duration
+    inflowVelocity->setText(jsonObject["velocity"].toString());//Inflow Velocity
+    kinematicViscosity->setText(jsonObject["nu"].toString());//Kinematic Viscosity
+
+    //Advanced
+    int index = turbulanceModel->findData(jsonObject["turbModel"].toVariant());
+    if(index >= 0)
+        turbulanceModel->setCurrentIndex(index);//Turbulence Model
+    pisoCorrectors->setText(jsonObject["pisoCorrectors"].toString());//Number of PISO Correctors,
+    nonOrthogonalCorrectors->setText(jsonObject["pisoNonOrthCorrect"].toString());//Number of non-orthogonal Correctors,
+
+    if(jsonObject.contains("turbintensity"))
+        turbulenceIntensity->setText(jsonObject["turbintensity"].toString());//Turbulence Intensity
 
     return true;
 }
