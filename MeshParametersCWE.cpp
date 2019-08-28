@@ -52,6 +52,7 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
     : SimCenterWidget(parent)
 {
   auto layout = new QGridLayout();
+  layout->setMargin(0);
   
   //Mesh Parameters Widget
   QWidget* domainSizeWidget = new QGroupBox("Domain Size");
@@ -61,6 +62,17 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   domainLengthYneg= new QLineEdit("8.0");
   domainLengthZpos= new QLineEdit("8.0");
   domainLengthZneg= new QLineEdit("0.0");
+
+  //Setting validator
+  auto positiveDoubleValidator = new QDoubleValidator(this);
+  positiveDoubleValidator->setBottom(0.0);
+  positiveDoubleValidator->setDecimals(3);
+  domainLengthInlet->setValidator(positiveDoubleValidator);
+  domainLengthOutlet->setValidator(positiveDoubleValidator);
+  domainLengthYpos->setValidator(positiveDoubleValidator);
+  domainLengthYneg->setValidator(positiveDoubleValidator);
+  domainLengthZpos->setValidator(positiveDoubleValidator);
+  domainLengthZneg->setValidator(positiveDoubleValidator);
 
   QGridLayout *domainSizeLayout=new QGridLayout();
   domainSizeLayout->addWidget(new QLabel("Inlet Length (-X)"),0,0);
@@ -85,6 +97,9 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
 
   gridSizeBluffBody= new QLineEdit("3");
   gridSizeOuterBoundary= new QLineEdit("10");
+
+  gridSizeBluffBody->setValidator(positiveDoubleValidator);
+  gridSizeOuterBoundary->setValidator(positiveDoubleValidator);
 
   meshSizeLayout->addWidget(new QLabel("Building"),0,0);
   meshSizeLayout->addWidget(gridSizeBluffBody,0,1);

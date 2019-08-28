@@ -52,13 +52,27 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
     : SimCenterWidget(parent)
 {
   auto layout = new QGridLayout();
-  
+  layout->setMargin(0);
+
   // control
   QWidget *control = new QGroupBox("Simulation Control");
   duration= new QLineEdit("1.0");
   dT= new QLineEdit("0.1");
   inflowVelocity= new QLineEdit("1.0");
   kinematicViscosity= new QLineEdit("1.48e-05");
+
+  //Setting validators
+  auto positiveDoubleValidator = new QDoubleValidator(this);
+  positiveDoubleValidator->setBottom(0.0);
+  positiveDoubleValidator->setDecimals(3);
+  duration->setValidator(positiveDoubleValidator);
+  inflowVelocity->setValidator(positiveDoubleValidator);
+
+  auto smallDoubleValidator = new QDoubleValidator(this);
+  smallDoubleValidator->setBottom(0.0);
+  smallDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
+  dT->setValidator(smallDoubleValidator);
+  kinematicViscosity->setValidator(smallDoubleValidator);
 
   QGridLayout *controlLayout=new QGridLayout();
   controlLayout->addWidget(new QLabel("Duration"),0,0);
@@ -89,6 +103,13 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   pisoCorrectors = new QLineEdit("1");
   nonOrthogonalCorrectors = new QLineEdit("0");
   turbulenceIntensity = new QLineEdit("0.1");
+
+  //validators
+  turbulenceIntensity->setValidator(positiveDoubleValidator);
+  auto positiveIntValidator = new QIntValidator(this);
+  positiveIntValidator->setBottom(0);
+  pisoCorrectors->setValidator(positiveIntValidator);
+  nonOrthogonalCorrectors->setValidator(positiveIntValidator);
     
   QGridLayout *advancedLayout=new QGridLayout();
   advancedLayout->addWidget(new QLabel("Turbulence"),0,0);
@@ -106,8 +127,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   
   layout->addWidget(control, 0, 0);
   layout->addWidget(advanced, 0, 1);
-  layout->setRowStretch(1, 1);
-  layout->setColumnStretch(2, 1);
+
 
   this->setLayout(layout);
 
