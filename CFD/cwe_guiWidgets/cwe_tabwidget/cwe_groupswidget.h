@@ -44,6 +44,7 @@
 
 class CWE_StageStatusTab;
 class CWE_ParamTab;
+class CWE_ParamPanel;
 class SCtrMasterDataWidget;
 enum class SimCenterViewState;
 enum class StageState;
@@ -54,6 +55,9 @@ public:
     CWE_GroupsWidget(QWidget *parent = NULL);
     ~CWE_GroupsWidget();
     void setCorrespondingTab(CWE_StageStatusTab * newTab);
+
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
 
     void setViewState(SimCenterViewState);  // set the view state
     void addVSpacer(const QString &key, const QString &label);
@@ -75,7 +79,8 @@ private:
     SimCenterViewState m_viewState;
     QJsonObject m_obj;
 
-    CWE_StageStatusTab * myTab;
+    CWE_StageStatusTab * myTab = nullptr;;
+    CWE_ParamPanel * panel = nullptr;
 
     QMap<QString, SCtrMasterDataWidget *> *quickParameterPtr;
 };

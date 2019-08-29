@@ -3,14 +3,12 @@
 #include <QComboBox>
 #include <QDir>
 #include <QStandardPaths>
-//#include "RemoteCaseSelector.h"
 #include <cwe_guiWidgets/cwe_parameters.h>
 #include <CFDanalysisType.h>
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
-    // parameterWidget = new CWE_Parameters(theRandomVariableIW, true);
     parameterWidget = new CWE_Parameters(this);
 
     initializeUI();
@@ -41,34 +39,25 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     jsonObject["EventClassification"]="Wind";
     jsonObject["Application"] = "CFDEvent";
     QJsonObject dataObj;
-    dataObj["OpenFOAMCase"] = caseEditBox->text();
-    dataObj["OpenFOAMSolver"] = solverComboBox->currentText();
+    //dataObj["OpenFOAMCase"] = caseEditBox->text();
+    //dataObj["OpenFOAMSolver"] = solverComboBox->currentText();
 
     jsonObject["ApplicationData"] = dataObj;
     return true;
 }
 
 bool CFDTemplateWidget::outputToJSON(QJsonObject &eventObject)
-{
-    parameterWidget->outputToJSON(eventObject);
-    eventObject["OpenFOAMCase"] = caseEditBox->text();
-    eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+{ 
+    eventObject["EventClassification"]="Wind";
     eventObject["type"] = "CFD - Guided";
-    eventObject["start"] = startTimeBox->value();
+
+    parameterWidget->outputToJSON(eventObject);
+
     return true;
 }
 
 bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
 {
-    if(eventObject.contains("OpenFOAMCase"))
-        caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
-
-    if(eventObject.contains("OpenFOAMSolver"))
-        solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
-
-    if(eventObject.contains("start"))
-        this->startTimeBox->setValue(eventObject["start"].toDouble());
-
     parameterWidget->inputFromJSON(eventObject);
 
     return true;
@@ -76,9 +65,6 @@ bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
 
 bool CFDTemplateWidget::copyFiles(QString &path)
 {
-    //if (inflowCheckBox->isChecked())
-    //    return inflowWidget->copyFiles(path);
-
     return true;
 }
 

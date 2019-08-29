@@ -44,6 +44,10 @@ SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
 {
     m_ViewState = SimCenterViewState::hidden;
 
+    m_obj.isController = false;
+    m_obj.visibility.clear();
+    m_obj.visibility.append("all");
+
     m_obj.displayName = "";
     m_obj.type = "unknown";
     m_obj.defaultValue = "error in configuration file";
@@ -51,6 +55,8 @@ SCtrMasterDataWidget::SCtrMasterDataWidget(QWidget *parent) :
     m_obj.precision = "";
     m_obj.sign = "";
     m_obj.options.clear();
+
+    m_Jval = QJsonValue();
 }
 
 SCtrMasterDataWidget::~SCtrMasterDataWidget(){}
@@ -148,4 +154,23 @@ void SCtrMasterDataWidget::changeMadeToUnderlyingDataWidget()
 bool SCtrMasterDataWidget::shownValueIsValid()
 {
     return true;
+}
+
+bool SCtrMasterDataWidget::hasViewCode(QString s)
+{
+    if (m_obj.visibility.contains("all")) return true;
+    if (m_obj.visibility.contains(s)) return true;
+    return false;
+}
+
+const QJsonValue SCtrMasterDataWidget::getJsonValue()
+{
+    m_Jval = this->shownValue();
+    return m_Jval;
+}
+
+bool SCtrMasterDataWidget::setValueFromJson(QJsonValue &Jval)
+{
+    m_Jval = Jval;
+    this->setShownValue(Jval.toString());
 }

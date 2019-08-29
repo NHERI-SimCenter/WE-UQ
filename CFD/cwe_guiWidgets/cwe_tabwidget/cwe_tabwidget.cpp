@@ -201,6 +201,8 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
         CWE_GroupsWidget *groupWidget = new CWE_GroupsWidget(this);
         ui->stagePanels->addWidget(groupWidget);
 
+        //theGroups.insert(stageName, groupWidget);
+
         /* link tab and groupWidget */
         tab->linkWidget(groupWidget);
         groupWidget->linkWidget(tab);
@@ -303,4 +305,44 @@ void CWE_TabWidget::on_tabActivated(CWE_StageStatusTab *activeTabWidget)
     }
     activeTabWidget->setActive();
     enactButtonSetting();
+}
+
+bool CWE_TabWidget::outputToJSON(QJsonObject &rvObject)
+{
+    QMap<QString, CWE_StageStatusTab * >::iterator itr;
+
+    bool ret = false;
+
+    for (itr = stageTabList->begin(); itr != stageTabList->end(); ++itr)
+    {
+        QString internalStageName = itr.value()->getStageKey();
+        CWE_GroupsWidget * gw = itr.value()->groupWidget();
+
+        QJsonObject stageData;
+        ret = gw->outputToJSON(stageData);
+
+        rvObject.insert(internalStageName, stageData);
+    }
+
+    return ret;
+}
+
+bool CWE_TabWidget::inputFromJSON(QJsonObject &rvObject)
+{
+    QMap<QString, CWE_StageStatusTab * >::iterator itr;
+
+    bool ret = false;
+
+    for (itr = stageTabList->begin(); itr != stageTabList->end(); ++itr)
+    {
+        QString internalStageName = itr.value()->getStageKey();
+        CWE_GroupsWidget * gw = itr.value()->groupWidget();
+
+        QJsonObject stageData;
+        ret = gw->inputFromJSON(stageData);
+
+        rvObject.insert(internalStageName, stageData);
+    }
+
+    return ret;
 }

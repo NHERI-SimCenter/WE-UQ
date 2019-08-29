@@ -12,30 +12,6 @@
             "app_input":"geoFile",
             "groups":[
                 {
-                    "displayName":"Building Geometry",
-                    "internalName":"geometry",
-                    "vars":[
-                        {
-                            "displayName":"Select Geometry File",
-                            "internalName":"geoChoose",
-                            "type":"choose",
-                            "default":"cwe_cube.json",
-                            "options":{
-                                "cwe_cube.json": "10x10x10m cube",
-                                "cwe_cone.json": "10x10x10m cone",
-                                "uploaded": "Uploaded File"
-                            }
-                        },
-                        {
-                            "displayName":"Uploaded File",
-                            "internalName":"geoFile",
-                            "type":"file",
-                            "showCondition":"$geoChoose=uploaded"
-                        }
-                    ],
-                    "image":"placeholderIcon.png"
-                },
-                {
                     "displayName":"Mesh Density",
                     "internalName":"mesh_density",
                     "vars":[
@@ -121,6 +97,7 @@
                             "displayName":"Number of Subdomains",
                             "internalName":"innerDomains",
                             "type":"choose",
+                            "controller": true,
                             "default":"0",
                             "options":{
                                 "0":"0",
@@ -137,7 +114,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 1 Length (Outlet)",
@@ -147,7 +125,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 1 Length (Y-)",
@@ -157,7 +136,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 1 Length (Y+)",
@@ -167,7 +147,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 1 Length (Z-)",
@@ -177,7 +158,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 1 Length (Z+)",
@@ -187,7 +169,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "1", "2", "3" ]
                         },
                         {
                             "displayName":"Grid Size (Edge of Subdomain 2)",
@@ -197,7 +180,8 @@
                             "unit":"m",
                             "precision":"2",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=1"
+                            "showCondition":"$innerDomains>=1",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Inlet)",
@@ -207,7 +191,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Outlet)",
@@ -217,7 +202,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Y-)",
@@ -227,7 +213,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Y+)",
@@ -237,7 +224,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Z-)",
@@ -247,7 +235,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Subdomain 2 Length (Z+)",
@@ -257,7 +246,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "2", "3" ]
                         },
                         {
                             "displayName":"Grid Size (Edge of Subdomain 2)",
@@ -267,7 +257,8 @@
                             "unit":"m",
                             "precision":"2",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=2"
+                            "showCondition":"$innerDomains>=2",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Inlet)",
@@ -277,7 +268,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Outlet)",
@@ -287,7 +279,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Y-)",
@@ -297,7 +290,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Y+)",
@@ -307,7 +301,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Z-)",
@@ -317,7 +312,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Subdomain 3 Length (Z+)",
@@ -327,7 +323,8 @@
                             "unit":"times max size of object",
                             "precision":"1",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         },
                         {
                             "displayName":"Grid Size (Edge of Subdomain 3)",
@@ -337,7 +334,8 @@
                             "unit":"m",
                             "precision":"2",
                             "sign":"+",
-                            "showCondition":"$innerDomains>=3"
+                            "showCondition":"$innerDomains>=3",
+                            "visibility": [ "3" ]
                         }
                     ]
                 },

@@ -130,8 +130,6 @@ QStringList CFDanalysisType::getStageGroups(QString stage)
         list.append(item.toObject().value("internalName").toString());
     }
 
-    qDebug() << list;
-
     return list;
 }
 
@@ -212,11 +210,13 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfo(QString name)
 {
     VARIABLE_TYPE res;
 
-    res.name = name;
-    res.unit = "";
-    res.precision = "";
-    res.sign = "";
-    res.options = QList<KEY_VAL_PAIR>();
+    res.name         = name;
+    res.isController = false;
+    res.visibility.clear();
+    res.unit         = "";
+    res.precision    = "";
+    res.sign         = "";
+    res.options      = QList<KEY_VAL_PAIR>();
 
     QJsonObject obj = myConfiguration.object();
     QJsonObject vals = obj["vars"].toObject();
@@ -231,6 +231,21 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfo(QString name)
         if (item.contains("unit"))        { res.unit = item.value("unit").toString(); }
         if (item.contains("precision"))   { res.precision = item.value("precision").toString(); }
         if (item.contains("sign"))        { res.sign = item.value("sign").toString(); }
+        if (item.contains("controller") && res.type == "choose")
+        {
+            res.isController = item.value("controller").toBool();
+        }
+        if (item.contains("visibility"))
+        {
+            QJsonArray visOps = item.value("visibility").toArray();
+            foreach (auto option, visOps)
+            {
+                res.visibility.append( option.toString() );
+            }
+        }
+        else {
+            res.visibility.append("all");
+        }
         if (item.contains("options"))
         {
             QList<KEY_VAL_PAIR> allOptions;
@@ -262,6 +277,8 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfoFromJson(QJsonObject &item)
     VARIABLE_TYPE res;
 
     res.name          = "not_specified_variable";
+    res.isController  = false;
+    res.visibility.clear();
     res.displayName   = "none";
     res.type          = "text";
     res.defaultValue  = QString("missing definition");
@@ -277,6 +294,21 @@ VARIABLE_TYPE CFDanalysisType::getVariableInfoFromJson(QJsonObject &item)
     if (item.contains("unit"))         { res.unit = item.value("unit").toString(); }
     if (item.contains("precision"))    { res.precision = item.value("precision").toString(); }
     if (item.contains("sign"))         { res.sign = item.value("sign").toString(); }
+    if (item.contains("controller") && res.type == "choose")
+    {
+        res.isController = item.value("controller").toBool();
+    }
+    if (item.contains("visibility"))
+    {
+        QJsonArray visOps = item.value("visibility").toArray();
+        foreach (auto option, visOps)
+        {
+            res.visibility.append( option.toString() );
+        }
+    }
+    else {
+        res.visibility.append("all");
+    }
     if (item.contains("options"))
     {
         QList<KEY_VAL_PAIR> allOptions;

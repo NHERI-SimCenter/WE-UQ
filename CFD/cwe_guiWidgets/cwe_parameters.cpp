@@ -339,41 +339,14 @@ void CWE_Parameters::refreshDisplay(void)
 
 bool CWE_Parameters::outputToJSON(QJsonObject &rvObject)
 {
-    refreshParameterMap();
+    //refreshParameterMap();
 
-    // just need to send the class type here.. type needed in object in case user screws up
-    rvObject["type"]="CFD-Guided";
-
-    rvObject["EventClassification"]="Wind";
-
-    foreach (QString key, theParameters.keys())
-    {
-        rvObject[key] = theParameters.value(key);
-    }
-
-    return true;
+    return ui->theTabWidget->outputToJSON(rvObject);
 }
 
 bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
 {
-    // initialize theParameters to reflect all properties
-    refreshParameterMap();
-
-    // update theParameters using information from the JSON file
-    foreach (QString key, theParameters.keys())
-    {
-        if (rvObject.contains(key)) {
-          QJsonValue theValue = rvObject[key];
-          theParameters[key] = theValue.toDouble();
-        }
-        else
-          return false;
-    }
-
-    // update parameter values
-    refreshDisplay();
-
-    return true;
+    return ui->theTabWidget->inputFromJSON(rvObject);
 }
 
 bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
@@ -382,9 +355,7 @@ bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
     rvObject["Application"] = "CFD Guided";
     QJsonObject dataObj;
 
-
     rvObject["ApplicationData"] = dataObj;
-    return true;
 
     return true;
 }
