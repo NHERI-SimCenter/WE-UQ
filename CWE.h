@@ -62,8 +62,8 @@ class CWE : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~CWE();
+    explicit CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
+    ~CWE() override;
 
     bool outputToJSON(QJsonObject &rvObject) override;
     bool inputFromJSON(QJsonObject &rvObject) override;
@@ -76,20 +76,13 @@ signals:
 
 public slots:
    void clear(void);
-   void selectionChangedSlot(const QItemSelection &, const QItemSelection &);
 
 private:
    SimCenterWidget *meshParameters;
    SimCenterWidget *simulationParameters;
-
-   QTreeView *treeView;
-   QStandardItemModel *standardModel;
-   QStandardItem *rootNode;
-   QModelIndex infoItemIdx;
-   SimCenterWidget  *currentWidget;
+   QDoubleSpinBox* startTimeBox;
    QJsonObject *jsonObjOrig;
    
-   QStackedWidget *theStackedWidget;
 
     double toMilliMeters(QString lengthUnit) const;
 };

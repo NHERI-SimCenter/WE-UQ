@@ -6,6 +6,8 @@
 
 QT       += core gui charts concurrent network
 
+CONFIG += c++11
+
 TARGET = WE_UQ
 TEMPLATE = app
 
