@@ -43,13 +43,13 @@ signals:
 public slots:
 
 private:
-    QLineEdit* caseEditBox;
-    QComboBox* solverComboBox;
+    //QLineEdit* caseEditBox;
+    //QComboBox* solverComboBox;
     RemoteService* remoteService;
     CWE_Parameters * parameterWidget;
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
-    QDoubleSpinBox* startTimeBox;
+    //QDoubleSpinBox* startTimeBox;
 
     void initializeUI();
     void setupConnections();

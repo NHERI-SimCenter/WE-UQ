@@ -48,6 +48,12 @@ public:
 
     virtual QString shownValue();
 
+signals:
+    void controller_activated(QString);  // emitted by controller variable
+
+private slots:
+    void on_controller_activated(QString);
+
 private:
     virtual void initUI();
     virtual void setComponetsEnabled(bool newSetting);

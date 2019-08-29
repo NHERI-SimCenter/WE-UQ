@@ -31,6 +31,7 @@
 
 // Contributors:
 // Renamed, modifed by Peter Sempolinski
+// Modifed by Peter Mackenzie-Helnwein
 
 #ifndef CFDANALYSISTYPE_H
 #define CFDANALYSISTYPE_H
@@ -55,6 +56,7 @@ struct KEY_VAL_PAIR {
 
 struct VARIABLE_TYPE {
     QString name;
+    bool isController;
     QString displayName;
     QString type;
     QString defaultValue;
@@ -62,6 +64,7 @@ struct VARIABLE_TYPE {
     QString precision;
     QString sign;
     QList<KEY_VAL_PAIR> options;
+    QStringList visibility;
 };
 
 

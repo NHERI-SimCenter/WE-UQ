@@ -57,7 +57,7 @@ then
 	jq '{type:"upload3D" , vars:.Events[0].mesh}' $BIM > mesh/.caseParams
 	export TASKSTAGE=mesh
 	export PARENTDIR=$PWD/mesh
-	export EXTRAFILE=$PWD/mesh/building.obj
+	export EXTRAFILE=/mesh/building.obj
 	chmod +x cwe.sh
 	cd mesh
 	../cwe.sh

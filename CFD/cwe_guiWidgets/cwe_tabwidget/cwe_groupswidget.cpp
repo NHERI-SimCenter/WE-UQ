@@ -66,10 +66,14 @@ void CWE_GroupsWidget::setViewState(SimCenterViewState state)
 {
     m_viewState = state;
 
+    /*
     for (auto itr = quickParameterPtr->cbegin(); itr != quickParameterPtr->cend(); itr++)
     {
         (*itr)->setViewState(state);
     }
+    */
+
+    if (panel != nullptr)  { panel->setViewState(state); }
 }
 
 void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType)
@@ -82,7 +86,7 @@ void CWE_GroupsWidget::setParameterConfig(QString stage, CFDanalysisType *myType
         QString groupName = myType->getGroupName(groupInternalName);
 
         QScrollArea *scrollArea = new QScrollArea(this);
-        CWE_ParamPanel *panel = new CWE_ParamPanel(this);
+        panel = new CWE_ParamPanel(this);
         scrollArea->setWidgetResizable(true);
         scrollArea->setWidget(panel);
 
@@ -167,5 +171,36 @@ int CWE_GroupsWidget::collectParamData(QMap<QString, QString> &currentParameters
     }
 
     return count;
+}
+
+bool CWE_GroupsWidget::outputToJSON(QJsonObject &rvObject)
+{
+    QMap<QString, SCtrMasterDataWidget * >::iterator itr;
+
+    for (itr = quickParameterPtr->begin(); itr != quickParameterPtr->end(); ++itr)
+    {
+        QJsonValue value = (itr.value())->getJsonValue();
+        rvObject.insert(itr.key(), value);
+    }
+
+    return true;
+}
+
+bool CWE_GroupsWidget::inputFromJSON(QJsonObject &rvObject)
+{
+    QMap<QString, SCtrMasterDataWidget * >::iterator itr;
+
+    for (itr = quickParameterPtr->begin(); itr != quickParameterPtr->end(); ++itr)
+    {
+        QString varName = itr.key();
+
+        if (rvObject.contains(varName))
+        {
+            QJsonValue theValue = rvObject.value(varName);
+            (itr.value())->setValueFromJson( theValue );
+        }
+    }
+
+    return true;
 }
 

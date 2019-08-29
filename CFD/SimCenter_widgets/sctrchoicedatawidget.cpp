@@ -39,7 +39,6 @@
 SCtrChoiceDataWidget::SCtrChoiceDataWidget(QWidget *parent):
     SCtrMasterDataWidget(parent)
 {
-
 }
 
 SCtrChoiceDataWidget::~SCtrChoiceDataWidget()
@@ -99,6 +98,14 @@ void SCtrChoiceDataWidget::initUI()
 
     QObject::connect(theComboBox, SIGNAL(currentIndexChanged(int)),
                      this, SLOT(changeMadeToUnderlyingDataWidget()));
+
+    QObject::connect(theComboBox, SIGNAL(currentTextChanged(QString)),
+                     this, SLOT(on_controller_activated(QString)));
+}
+
+void SCtrChoiceDataWidget::on_controller_activated(QString s)
+{
+    emit controller_activated(s);
 }
 
 void SCtrChoiceDataWidget::setComponetsEnabled(bool newSetting)
