@@ -85,6 +85,8 @@ private:
    QComboBox *boundaryConditionYneg;
    QComboBox *boundaryConditionZpos;
    QComboBox *boundaryConditionZneg;
+
+   void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
 };
 
 #endif // MeshParametersCWE_H

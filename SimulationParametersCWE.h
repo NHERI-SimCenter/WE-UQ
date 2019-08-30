@@ -78,8 +78,9 @@ private:
    QLineEdit *kinematicViscosity;
    QComboBox *turbulanceModel;
    QLineEdit *pisoCorrectors;
-   QLineEdit *numOrthogonalCorrectors;
-   QLineEdit *turbulanceIntensity;
+   QLineEdit *nonOrthogonalCorrectors;
+   QLineEdit *turbulenceIntensity;
+   void setupConnections();
 };
 
 #endif // SimulationParametersCWE_H
