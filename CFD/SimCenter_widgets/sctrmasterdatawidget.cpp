@@ -173,4 +173,5 @@ bool SCtrMasterDataWidget::setValueFromJson(QJsonValue &Jval)
 {
     m_Jval = Jval;
     this->setShownValue(Jval.toString());
+    return true;
 }
