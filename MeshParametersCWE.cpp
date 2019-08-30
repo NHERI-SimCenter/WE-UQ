@@ -305,8 +305,23 @@ MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
     //Subdomains
     int index = numSubdomains->findData(jsonObject["innerDomains"].toString().toInt());
     if(index >=0 )
+    {
         numSubdomains->setCurrentIndex(index);//Number of Subdomains
+        int nSubdomains = numSubdomains->currentData().toInt();
+        QVector<Subdomain> subdomains(nSubdomains);
 
+        for (int i = 0; i < nSubdomains; i++)
+        {
+            subdomains[i].inlet = jsonObject["inPadDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (Inlet)
+            subdomains[i].outlet = jsonObject["outPadDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (Outlet)
+            subdomains[i].outward = jsonObject["lowYDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (-Y)
+            subdomains[i].inward = jsonObject["highYDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (+Y)
+            subdomains[i].bottom = jsonObject["lowZDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (-Z)
+            subdomains[i].top = jsonObject["highZDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (+Z)
+            subdomains[i].meshSize = jsonObject["meshDensityDom" + QString::number(i+1)].toString().toDouble();//Subdomain outer mesh size
+        }
+        subdomainsModel->setSubdomains(subdomains);
+    }
     //Boundary Conditions
     setComboBoxByData(*boundaryConditionYneg, jsonObject["lowYPlane"].toVariant());//Boundary Condition (Y-)
     setComboBoxByData(*boundaryConditionYpos, jsonObject["highYPlane"].toVariant());//Boundary Condition (Y+)

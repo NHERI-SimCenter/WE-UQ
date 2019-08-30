@@ -40,7 +40,7 @@ QVariant SubdomainsModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QVector<Subdomain> SubdomainsModel::getSubdomains()
+QVector<Subdomain> SubdomainsModel::getSubdomains() const
 {
     return subdomains;
 }
@@ -149,7 +149,14 @@ void SubdomainsModel::setSubdomains(int n,
     this->endResetModel();
 }
 
-double SubdomainsModel::interpolate(double start, double end, double factor)
+void SubdomainsModel::setSubdomains(const QVector<Subdomain> &subdomains)
+{
+    this->beginResetModel();
+    this->subdomains = subdomains;
+    this->endResetModel();
+}
+
+double SubdomainsModel::interpolate(double start, double end, double factor) const
 {
     return start + (end - start) * factor;
 }
