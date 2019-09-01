@@ -178,9 +178,9 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     QGridLayout *windLayout = new QGridLayout();
 
     QLabel *labelSpeed = new QLabel("Mean Wind Velocity at Building Top");
-    windSpeed = new QLineEdit("100.0");
+    windSpeed = new QLineEdit("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
-    QLabel *speedUnit = new QLabel("mph");
+    QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
     windLayout->setColumnStretch(1,1);
     // windLayout->addStretch(0,1);
