@@ -61,6 +61,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 
+#include <SimCenterPreferences.h>
+
 //#include <InputWidgetParameters.h>
 
 LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
@@ -144,9 +146,9 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QGridLayout *windLayout = new QGridLayout();
 
     QLabel *labelSpeed = new QLabel("Wind Speed");
-    windSpeed = new QLineEdit("100.0");
+    windSpeed = new QLineEdit("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
-    QLabel *speedUnit = new QLabel("mph");
+    QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
     windLayout->setColumnStretch(1,1);
     windLayout->addWidget(windSpeed,0,2);
@@ -322,12 +324,18 @@ LowRiseTPU::outputAppDataToJSON(QJsonObject &jsonObject) {
 bool
 LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
+
     return true;
 }
 
 
  bool
  LowRiseTPU::copyFiles(QString &destDir) {
-    return true;
+
+     QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("createEvent") + QDir::separator()
+             + QString("LowRiseTPU") + QDir::separator() + QString("LowRiseTPU.py");
+
+     return this->copyFile(name1, destDir);
  }
 
