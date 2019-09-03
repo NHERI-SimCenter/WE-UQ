@@ -60,6 +60,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
+#include <LineEditRV.h>
+
+#include <SimCenterPreferences.h>
+#include <GeneralInformationWidget.h>
 
 //#include <InputWidgetParameters.h>
 
@@ -144,9 +148,10 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QGridLayout *windLayout = new QGridLayout();
 
     QLabel *labelSpeed = new QLabel("Wind Speed");
-    windSpeed = new QLineEdit("100.0");
+    windSpeed = new LineEditRV(theRandomVariableIW);
+    windSpeed->setText("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
-    QLabel *speedUnit = new QLabel("mph");
+    QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
     windLayout->setColumnStretch(1,1);
     windLayout->addWidget(windSpeed,0,2);
@@ -175,6 +180,20 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     connect(roofType,SIGNAL(currentIndexChanged(int)), this, SLOT(onRoofTypeChanged(int)));
     this->setLayout(layout);
 
+    //
+    // get GeneralInfo
+    // connnect some signals and slots to capture building dimensions changing to update selections
+    // set initial selections
+    //
+
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    connect(theGI,SIGNAL(buildingDimensionsChanged(double,double,double)), this, SLOT(onBuildingDimensionChanged(double,double,double)));
+    connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
+
+    height=theGI->getHeight();
+    double area;
+    theGI->getBuildingDimensions(breadth, depth, area);
+    this->onBuildingDimensionChanged(breadth, depth, area);
 }
 
 
@@ -221,11 +240,6 @@ LowRiseTPU::onRoofTypeChanged(int roofSelection) {
     qDebug() << "ADDED NEW";
 }
 
-void
-LowRiseTPU::onBuildingDimensionChanged(void) {
-
-}
-
 void LowRiseTPU::clear(void)
 {
 
@@ -246,7 +260,8 @@ LowRiseTPU::outputToJSON(QJsonObject &jsonObject)
     jsonObject["pitch"]= pitch->currentText();
     jsonObject["incidenceAngle"] = incidenceAngle->value();
 
-    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+    //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+   windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
 
     return true;
 }
@@ -287,9 +302,12 @@ LowRiseTPU::inputFromJSON(QJsonObject &jsonObject)
 
     
     if (jsonObject.contains("windSpeed")) {
+      /*
       QJsonValue theValue = jsonObject["windSpeed"];
       double speed = theValue.toDouble();
       windSpeed->setText(QString::number(speed));
+      */
+      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
     } else
       return false;
 
@@ -322,12 +340,53 @@ LowRiseTPU::outputAppDataToJSON(QJsonObject &jsonObject) {
 bool
 LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
+
     return true;
 }
 
 
  bool
  LowRiseTPU::copyFiles(QString &destDir) {
-    return true;
+
+     QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("createEvent") + QDir::separator()
+             + QString("LowRiseTPU") + QDir::separator() + QString("LowRiseTPU.py");
+
+     return this->copyFile(name1, destDir);
  }
 
+ void
+ LowRiseTPU::onBuildingDimensionChanged(double w, double d, double area){
+     breadth = w;
+     depth = d;
+     double ratioHtoB = height/breadth;
+     if (ratioHtoB < .375) {
+         heightBreadth->setCurrentIndex(0);
+     } else if (ratioHtoB < .675) {
+         heightBreadth->setCurrentIndex(1);
+     } else if (ratioHtoB < .875) {
+         heightBreadth->setCurrentIndex(2);
+     } else
+         heightBreadth->setCurrentIndex(3);
+
+     double ratioDtoB = depth/breadth;
+     if (ratioDtoB < 1.25)
+          depthBreadth->setCurrentIndex(0);
+     else if (ratioDtoB < 2.0)
+         depthBreadth->setCurrentIndex(1);
+     else
+         depthBreadth->setCurrentIndex(2);
+ }
+ void
+ LowRiseTPU::onNumFloorsOrHeightChanged(int numFloor, double h){
+     height = h;
+     double ratioHtoB = height/breadth;
+     if (ratioHtoB < .375) {
+         heightBreadth->setCurrentIndex(0);
+     } else if (ratioHtoB < .675) {
+         heightBreadth->setCurrentIndex(1);
+     } else if (ratioHtoB < .875) {
+         heightBreadth->setCurrentIndex(2);
+     } else
+         heightBreadth->setCurrentIndex(3);
+ }
