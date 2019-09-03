@@ -49,6 +49,7 @@ class QGridLayout;
 class QVBoxLayout;
 class QSpinBox;
 class QLineEdit;
+class LineEditRV;
 class QGroupBox;
 class QPushButton;
 
@@ -76,13 +77,13 @@ private:
    QVBoxLayout *layout;
    QWidget     *femSpecific;
    
-   QComboBox *roofType;
-   QComboBox *heightBreadth;
-   QComboBox *depthBreadth;    
-   QComboBox *pitch;    
-   QSpinBox  *incidenceAngle;    
+   QComboBox   *roofType;
+   QComboBox   *heightBreadth;
+   QComboBox   *depthBreadth;    
+   QComboBox   *pitch;    
+   QSpinBox    *incidenceAngle;    
    QPushButton *theBuildingButton;
-   QLineEdit *windSpeed;
+   LineEditRV  *windSpeed;
 
    QGroupBox* windTunnelGeometryBox;
    QGridLayout *windTunnelGeometryLayout;

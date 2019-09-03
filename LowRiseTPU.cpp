@@ -60,6 +60,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
+#include <LineEditRV.h>
 
 #include <SimCenterPreferences.h>
 
@@ -146,7 +147,8 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QGridLayout *windLayout = new QGridLayout();
 
     QLabel *labelSpeed = new QLabel("Wind Speed");
-    windSpeed = new QLineEdit("50.0");
+    windSpeed = new LineEditRV(theRandomVariableIW);
+    windSpeed->setText("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
     QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
@@ -248,7 +250,8 @@ LowRiseTPU::outputToJSON(QJsonObject &jsonObject)
     jsonObject["pitch"]= pitch->currentText();
     jsonObject["incidenceAngle"] = incidenceAngle->value();
 
-    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+    //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+   windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
 
     return true;
 }
@@ -289,9 +292,12 @@ LowRiseTPU::inputFromJSON(QJsonObject &jsonObject)
 
     
     if (jsonObject.contains("windSpeed")) {
+      /*
       QJsonValue theValue = jsonObject["windSpeed"];
       double speed = theValue.toDouble();
       windSpeed->setText(QString::number(speed));
+      */
+      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
     } else
       return false;
 
