@@ -48,6 +48,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "RandomVariablesContainer.h"
 #include <QHBoxLayout>
 
+#include <QHeaderView>
+#include <QSizePolicy>
+
 MeshParametersCWE::MeshParametersCWE(QWidget *parent)
     : SimCenterWidget(parent)
 {
@@ -111,25 +114,6 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   meshSizeLayout->setRowStretch(2,1);
   meshSizeWidget->setLayout(meshSizeLayout);
 
-  // subdomain
-  QWidget *subdomain = new QGroupBox("Subdomains");
-  numSubdomains = new QComboBox();
-  numSubdomains->addItem(tr("0"));
-  numSubdomains->addItem(tr("1"));
-  numSubdomains->addItem(tr("2"));
-  numSubdomains->addItem(tr("3"));
-
-  /* ******* i prefer look of QGridLayout .. though code is shorter!
-  QFormLayout *subdomainLayout = new QFormLayout();
-  subdomainLayout->addRow(tr("Number of Subdomains"),numSubdomains);
-  subdomainLayout->setAlignment(Qt::AlignLeft);
-  ****************************************************************/
-  QGridLayout *subdomainLayout = new QGridLayout();
-  subdomainLayout->addWidget(new QLabel("Number of Subdomains"), 0, 0);
-  subdomainLayout->addWidget(numSubdomains, 0, 1);
-  subdomainLayout->setRowStretch(1,1);
-  subdomain->setLayout(subdomainLayout);
-
   // boundary
   QWidget *boundaries = new QGroupBox("Boundary Conditions");
 
@@ -165,6 +149,37 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   boundariesLayout->setRowStretch(4,1);
   boundaries->setLayout(boundariesLayout);
 
+  // subdomain
+  QWidget *subdomain = new QGroupBox("Subdomains");
+  numSubdomains = new QComboBox();
+  numSubdomains->addItem(tr("No subdomains"), 0);
+  numSubdomains->addItem(tr("1 subomain"), 1);
+  numSubdomains->addItem(tr("2 subdomains"), 2);
+  numSubdomains->addItem(tr("3 subdomains"), 3);
+
+  //Subdomains
+  subdomainsTable = new QTableView();
+  subdomainsModel = new SubdomainsModel(0, this);
+  subdomainsTable->setModel(subdomainsModel);
+  subdomainsTable->setEditTriggers(QAbstractItemView::AnyKeyPressed);
+  subdomainsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
+  subdomainsTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
+  subdomainsTable->setMaximumHeight(120);
+  subdomainsTable->setHidden(true);
+
+  /* ******* i prefer look of QGridLayout .. though code is shorter!
+  QFormLayout *subdomainLayout = new QFormLayout();
+  subdomainLayout->addRow(tr("Number of Subdomains"),numSubdomains);
+  subdomainLayout->setAlignment(Qt::AlignLeft);
+  ****************************************************************/
+  QGridLayout *subdomainLayout = new QGridLayout();
+  subdomainLayout->addWidget(new QLabel("Number of Subdomains"), 0, 0);
+  subdomainLayout->addWidget(numSubdomains, 0, 1);
+  subdomainLayout->addWidget(subdomainsTable, 1, 0, 1, 2);
+
+  subdomainLayout->setRowStretch(2,1);
+  subdomain->setLayout(subdomainLayout);
+
   layout->addWidget(domainSizeWidget, 0, 0);
   layout->addWidget(meshSizeWidget, 0, 1);
   layout->addWidget(boundaries, 0, 2);
@@ -174,6 +189,8 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   layout->setColumnStretch(3, 1);
 
   this->setLayout(layout);
+
+  setupConnection();
 }
 
 
@@ -195,6 +212,32 @@ void MeshParametersCWE::setComboBoxByData(QComboBox &comboBox, const QVariant &d
         comboBox.setCurrentIndex(index);
 }
 
+void MeshParametersCWE::setupConnection()
+{
+    connect(numSubdomains, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int index)
+    {
+        int nSubdomains = this->numSubdomains->currentData().toInt();
+        subdomainsModel->setSubdomains(nSubdomains,
+                                       domainLengthInlet->text().toDouble(),
+                                       domainLengthOutlet->text().toDouble(),
+                                       domainLengthYneg->text().toDouble(),
+                                       domainLengthYpos->text().toDouble(),
+                                       domainLengthZneg->text().toDouble(),
+                                       domainLengthZpos->text().toDouble(),
+                                       gridSizeBluffBody->text().toDouble(),
+                                       gridSizeOuterBoundary->text().toDouble());
+
+        if (nSubdomains > 0)
+        {
+            subdomainsTable->setHidden(false);
+            subdomainsTable->setMaximumHeight(30 + 30 * nSubdomains);
+        }
+        else if (nSubdomains == 0)
+            subdomainsTable->setHidden(true);
+
+    });
+}
+
 bool
 MeshParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
@@ -212,12 +255,25 @@ MeshParametersCWE::outputToJSON(QJsonObject &jsonObject)
     jsonObject["lowZPad"] = domainLengthZneg->text();//Domain Length (-Z)
     jsonObject["highZPad"] = domainLengthZpos->text();//Domain Length (+Z)
 
+    auto subdomains = subdomainsModel->getSubdomains();
+
+    for (int i = 0; i < subdomains.count(); i++)
+    {
+        jsonObject["inPadDom" + QString::number(i+1)] = QString::number(subdomains[i].inlet);//Subdomain Length (Inlet)
+        jsonObject["outPadDom" + QString::number(i+1)] = QString::number(subdomains[i].outlet);//Subdomain Length (Outlet)
+        jsonObject["lowYDom" + QString::number(i+1)] = QString::number(subdomains[i].outward);//Subdomain Length (-Y)
+        jsonObject["highYDom" + QString::number(i+1)] = QString::number(subdomains[i].inward);//Subdomain Length (+Y)
+        jsonObject["lowZDom" + QString::number(i+1)] = QString::number(subdomains[i].bottom);//Subdomain Length (-Z)
+        jsonObject["highZDom" + QString::number(i+1)] = QString::number(subdomains[i].top);//Subdomain Length (+Z)
+        jsonObject["meshDensityDom" + QString::number(i+1)] = QString::number(subdomains[i].meshSize);//Subdomain outer mesh size
+    }
+
     //Mesh Size
     jsonObject["meshDensity"] = gridSizeBluffBody->text();//Grid Size (on the bluff body)
     jsonObject["meshDensityFar"] = gridSizeOuterBoundary->text();//Grid Size (on the outer bound)
 
     //Subdomains
-    jsonObject["innerDomains"] = numSubdomains->currentText();//Number of Subdomains
+    jsonObject["innerDomains"] = QString::number(numSubdomains->currentData().toInt());//Number of Subdomains
 
     //Boundary Conditions
     jsonObject["lowYPlane"] = boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
@@ -247,8 +303,25 @@ MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
     gridSizeOuterBoundary->setText(jsonObject["meshDensityFar"].toString());//Grid Size (on the outer bound)
 
     //Subdomains
-    numSubdomains->setCurrentText(jsonObject["innerDomains"].toString());//Number of Subdomains
+    int index = numSubdomains->findData(jsonObject["innerDomains"].toString().toInt());
+    if(index >=0 )
+    {
+        numSubdomains->setCurrentIndex(index);//Number of Subdomains
+        int nSubdomains = numSubdomains->currentData().toInt();
+        QVector<Subdomain> subdomains(nSubdomains);
 
+        for (int i = 0; i < nSubdomains; i++)
+        {
+            subdomains[i].inlet = jsonObject["inPadDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (Inlet)
+            subdomains[i].outlet = jsonObject["outPadDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (Outlet)
+            subdomains[i].outward = jsonObject["lowYDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (-Y)
+            subdomains[i].inward = jsonObject["highYDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (+Y)
+            subdomains[i].bottom = jsonObject["lowZDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (-Z)
+            subdomains[i].top = jsonObject["highZDom" + QString::number(i+1)].toString().toDouble();//Subdomain Length (+Z)
+            subdomains[i].meshSize = jsonObject["meshDensityDom" + QString::number(i+1)].toString().toDouble();//Subdomain outer mesh size
+        }
+        subdomainsModel->setSubdomains(subdomains);
+    }
     //Boundary Conditions
     setComboBoxByData(*boundaryConditionYneg, jsonObject["lowYPlane"].toVariant());//Boundary Condition (Y-)
     setComboBoxByData(*boundaryConditionYpos, jsonObject["highYPlane"].toVariant());//Boundary Condition (Y+)

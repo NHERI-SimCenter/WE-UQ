@@ -46,6 +46,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
+#include <QTableView>
+#include <CFD/UI/SubdomainsModel.h>
+
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -85,8 +88,11 @@ private:
    QComboBox *boundaryConditionYneg;
    QComboBox *boundaryConditionZpos;
    QComboBox *boundaryConditionZneg;
+   SubdomainsModel* subdomainsModel;
+   QTableView* subdomainsTable;
 
    void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
+   void setupConnection();
 };
 
 #endif // MeshParametersCWE_H
