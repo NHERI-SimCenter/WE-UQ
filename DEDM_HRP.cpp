@@ -56,6 +56,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QButtonGroup>
 
 //#include <InputWidgetParameters.h>
+#include <GeneralInformationWidget.h>
 
 DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
@@ -256,11 +257,26 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     connect(the1x1RadioButton, SIGNAL(toggled(bool)), this, SLOT(oneByOneToggled(bool)));
     this->setLayout(layout);
 
+    //
+    // get GeneralInfo
+    // connnect some signals and slots to capture building dimensions changing to update selections
+    // set initial selections
+    //
+
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    connect(theGI,SIGNAL(buildingDimensionsChanged(double,double,double)), this, SLOT(onBuildingDimensionChanged(double,double,double)));
+    connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
+
+    height=theGI->getHeight();
+    double area;
+    theGI->getBuildingDimensions(breadth, depth, area);
+    if (height != 0 && depth != 0 && breadth != 0)
+     this->onBuildingDimensionChanged(breadth, depth, area);
 }
 
 void
 DEDM_HRP::oneByOneToggled(bool toggle) {
-    qDebug() << "toggled" << toggle;
+
     if (toggle == true) {
         h1Radio->setEnabled(true);
     } else {
@@ -374,3 +390,66 @@ DEDM_HRP::inputAppDataFromJSON(QJsonObject &jsonObject) {
     return true;
  }
 
+ void
+DEDM_HRP::onBuildingDimensionChanged(double w, double d, double area){
+     breadth = w;
+     depth = d;
+
+     if (breadth == 0.0)
+         return;
+
+     double ratioBtoD = breadth/depth;
+     if (ratioBtoD < 1.5) {
+        thePlanGroup->button(1)->setChecked(true);
+     } else if (ratioBtoD < 2.5) {
+        thePlanGroup->button(2)->setChecked(true);
+     } else
+        thePlanGroup->button(3)->setChecked(true);
+
+     double ratioHtoD = height/depth;
+     if (ratioHtoD < 1.5) {
+
+          // if ratio < 1.5, height group may also depend on BtoD ratio
+         if (ratioBtoD > 1.5)
+             theHeightGroup->button(2)->setChecked(true);
+         else
+             theHeightGroup->button(1)->setChecked(true);
+
+     } else if (ratioHtoD < 2.5) {
+         theHeightGroup->button(2)->setChecked(true);
+     } else if (ratioHtoD < 3.5) {
+         theHeightGroup->button(3)->setChecked(true);
+     } else if (ratioHtoD < 4.5) {
+         theHeightGroup->button(4)->setChecked(true);
+     } else
+         theHeightGroup->button(5)->setChecked(true);
+ }
+
+void
+DEDM_HRP::onNumFloorsOrHeightChanged(int numFloor, double h){
+
+     height = h;
+     if (breadth == 0.0)
+         return;
+
+     double ratioBtoD = breadth/depth;
+     double ratioHtoD = height/breadth;
+
+     if (ratioHtoD < 1.5) {
+
+         // if ratio < 1.5, height group may also depend on BtoD ratio
+         if (ratioBtoD > 1.5)
+             theHeightGroup->button(2)->setChecked(true);
+         else
+             theHeightGroup->button(1)->setChecked(true);
+
+     } else if (ratioHtoD < 2.5) {
+         theHeightGroup->button(2)->setChecked(true);
+     } else if (ratioHtoD < 3.5) {
+        theHeightGroup->button(3)->setChecked(true);
+     } else if (ratioHtoD < 4.5) {
+       theHeightGroup->button(4)->setChecked(true);
+     } else
+        theHeightGroup->button(5)->setChecked(true);
+
+ }

@@ -70,10 +70,16 @@ signals:
 
 public slots:
    void clear(void);
-   void onBuildingDimensionChanged(void);
+   void onBuildingDimensionChanged(double width, double depth, double area);
+   void onNumFloorsOrHeightChanged(int numFloor, double height);
+
    void onRoofTypeChanged(int type);
 
 private:
+   double breadth;
+   double depth;
+   double height;
+
    QVBoxLayout *layout;
    QWidget     *femSpecific;
    
