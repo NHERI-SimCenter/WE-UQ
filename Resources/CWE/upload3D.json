@@ -552,6 +552,38 @@
                     "file":"VTK.zip"
                 }
             ]
+        },
+        {
+            "displayName":"Results",
+            "internalName":"post",
+            "app":"cwe-unknown",
+            "groups":[
+                {
+                    "displayName":"Post Processing Control",
+                    "internalName":"post_control",
+                    "vars":[
+                        {
+                            "displayName":"Event definition type",
+                            "internalName":"type",
+                            "type":"choose",
+                            "default":"guided",
+                            "options":{
+                                "CWE":"CFD - Guided"
+                            }
+                        },
+                        {
+                            "displayName":"Time delay before  which load is applied",
+                            "internalName":"start",
+                            "type":"std",
+                            "unit":"s",
+                            "default":"0.10",
+                            "precision":"double",
+                            "sign":"+0"
+                        }
+                    ]
+                }
+            ],
+            "results":[ ]
         }
     ]
 }

@@ -43,6 +43,9 @@ signals:
 public slots:
 
 private:
+
+    double toMilliMeters(QString lengthUnit) const;
+
     //QLineEdit* caseEditBox;
     //QComboBox* solverComboBox;
     RemoteService* remoteService;

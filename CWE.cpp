@@ -226,8 +226,6 @@ CWE::copyFiles(QString &dirName){
                                                         width * toMM,
                                                         height * toMM);
 
-
-
     return result;
 }
 
