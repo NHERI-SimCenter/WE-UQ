@@ -49,6 +49,7 @@ class QGridLayout;
 class QVBoxLayout;
 class QSpinBox;
 class QLineEdit;
+class LineEditRV;
 class QGroupBox;
 class QPushButton;
 
@@ -69,20 +70,26 @@ signals:
 
 public slots:
    void clear(void);
-   void onBuildingDimensionChanged(void);
+   void onBuildingDimensionChanged(double width, double depth, double area);
+   void onNumFloorsOrHeightChanged(int numFloor, double height);
+
    void onRoofTypeChanged(int type);
 
 private:
+   double breadth;
+   double depth;
+   double height;
+
    QVBoxLayout *layout;
    QWidget     *femSpecific;
    
-   QComboBox *roofType;
-   QComboBox *heightBreadth;
-   QComboBox *depthBreadth;    
-   QComboBox *pitch;    
-   QSpinBox  *incidenceAngle;    
+   QComboBox   *roofType;
+   QComboBox   *heightBreadth;
+   QComboBox   *depthBreadth;    
+   QComboBox   *pitch;    
+   QSpinBox    *incidenceAngle;    
    QPushButton *theBuildingButton;
-   QLineEdit *windSpeed;
+   LineEditRV  *windSpeed;
 
    QGroupBox* windTunnelGeometryBox;
    QGridLayout *windTunnelGeometryLayout;

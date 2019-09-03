@@ -47,6 +47,7 @@ SOURCES += main.cpp \
     CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
+    CFD/UI/SubdomainsModel.cpp \
     CFD/cfd_globals.cpp \
     CFD/cwe_guiWidgets/cwe_parameters.cpp \
     CFD/cwe_guiWidgets/cwe_state_label.cpp \
@@ -85,6 +86,7 @@ HEADERS  += \
     CFD/UI/CFDExpertWidget.h \
     CFD/UI/GeometryHelper.h \
     CFD/UI/RemoteCaseSelector.h \
+    CFD/UI/SubdomainsModel.h \
     CFD/cfd_globals.h \
     CFD/cwe_guiWidgets/cwe_parameters.h \
     CFD/cwe_guiWidgets/cwe_state_label.h \

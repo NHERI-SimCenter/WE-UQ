@@ -72,12 +72,19 @@ public slots:
    void clear(void);
    void oneByOneToggled(bool);
 
+   void onBuildingDimensionChanged(double width, double depth, double area);
+   void onNumFloorsOrHeightChanged(int numFloor, double height);
+
 private:
+
+   double breadth;
+   double depth;
+   double height;
 
    QRadioButton *h1Radio;
    QRadioButton *h2Radio;
-    QVBoxLayout *layout;
-    QWidget     *femSpecific;
+   QVBoxLayout *layout;
+   QWidget     *femSpecific;
 
     QLineEdit *windSpeed;
     QComboBox *windDuration;
