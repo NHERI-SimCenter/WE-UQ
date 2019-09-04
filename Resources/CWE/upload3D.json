@@ -564,16 +564,16 @@
                     "vars":[
                         {
                             "displayName":"Event definition type",
-                            "internalName":"type",
+                            "internalName":"forceType",
                             "type":"choose",
                             "default":"guided",
                             "options":{
-                                "CWE":"CFD - Guided"
+                                "binnedForces":"Forces collected per floor (bins)"
                             }
                         },
                         {
                             "displayName":"Time delay before  which load is applied",
-                            "internalName":"start",
+                            "internalName":"forceStartTime",
                             "type":"std",
                             "unit":"s",
                             "default":"0.10",

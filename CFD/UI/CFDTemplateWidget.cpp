@@ -52,7 +52,7 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool CFDTemplateWidget::outputToJSON(QJsonObject &eventObject)
 { 
     eventObject["EventClassification"]="Wind";
-    //eventObject["type"] = "CFD - Guided";
+    eventObject["type"] = "CWE";
 
     parameterWidget->outputToJSON(eventObject);
 

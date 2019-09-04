@@ -214,7 +214,7 @@ void MeshParametersCWE::setComboBoxByData(QComboBox &comboBox, const QVariant &d
 
 void MeshParametersCWE::setupConnection()
 {
-    connect(numSubdomains, qOverload<int>(&QComboBox::currentIndexChanged), this, [this](int index)
+    connect(numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
     {
         int nSubdomains = this->numSubdomains->currentData().toInt();
         subdomainsModel->setSubdomains(nSubdomains,
