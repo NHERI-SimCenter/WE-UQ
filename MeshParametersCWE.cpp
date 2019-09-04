@@ -185,8 +185,6 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   layout->addWidget(boundaries, 0, 2);
   layout->addWidget(subdomain, 1, 0, 1, 3);
 
-  layout->setRowStretch(2, 1);
-  layout->setColumnStretch(3, 1);
 
   this->setLayout(layout);
 
