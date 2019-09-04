@@ -31,6 +31,7 @@ rm *.zip
 cd ..
 
 #Add OpenFOAM Extensions folder to libraries loading path
+#to load OpenFOAM extensions (e.g. tubulent inflow)
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/OpenFOAMExtensions
 
 #Set the BIM file path to use it for 
@@ -43,7 +44,7 @@ echo "Event application detected is $EVENTAPP"
 
 
 #CWE has some special handling 
-if [ $EVENTAPP == "CWE" ]
+if [[ $EVENTAPP == "CWE" ]]
 then
 	echo "CWE will be used to generate Event"
 
@@ -96,7 +97,7 @@ then
 fi
 
 OpenFOAMCase=${OpenFOAMCase}
-if [ -z "$OpenFOAMCase" ]
+if [[ -z "$OpenFOAMCase" ]]
 then
 	echo "OpenFOAM will be skipped"
 
@@ -110,19 +111,32 @@ else
 	[ -d "${inputDirectory}/templatedir/system" ] && cp -rf ${inputDirectory}/templatedir/system ${OpenFOAMCase}
 	[ -d "${inputDirectory}/templatedir/0" ] && cp -rf ${inputDirectory}/templatedir/0 ${OpenFOAMCase}
 
-	#Adding current directory to library loading path
-	#to load OpenFOAM extensions (e.g. tubulent inflow)
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD
-	
 	# Add Building Forces to OpenFOAM post-processing
 	ls -la
 	echo "Add Building Forces to OpenFOAM post-processing..."
-	python AddBuildingForces.py -c ${OpenFOAMCase} -b ${inputDirectory}/templatedir/dakota.json
+	patches=$(jq -r .Events[0].patches $BIM)
+	python AddBuildingForces.py -c ${OpenFOAMCase} -b ${inputDirectory}/templatedir/dakota.json -p $patches
 
 	# cd to the input directory and run the application with the runtime
 	#values passed in from the job request
+	meshing=$(jq -r .Events[0].meshing $BIM)
+
 	cd ${OpenFOAMCase}
-	blockMesh > blockMesh.log
+
+	if [[ $meshing == "User" ]]
+	then
+		echo 'User provided mesh, meshing skipped.'
+	elif [[ $meshing == "blockMesh" ]]
+	then
+		blockMesh > blockMesh.log
+	elif [[ $meshing == "snappyHexMesh" ]]
+	then
+		blockMesh > blockMesh.log
+		snappyHexMesh > snappyHexMesh.log
+	else
+		echo 'Unknown meshing: $meshing' 
+	fi
+
 	decomposePar > decomposePar.log
 	ibrun ${OpenFOAMSolver} > ${OpenFOAMSolver}.log
 	cd ..
