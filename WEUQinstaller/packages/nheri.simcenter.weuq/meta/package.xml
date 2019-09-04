@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>WE-UQ App</DisplayName>
+    <Description>Wind Engineering with Uncertainty Quantification Tool</Description>
+    <Version>1.0-Alpha-1</Version>
+    <ReleaseDate>2019-09-04</ReleaseDate>
+    <Licenses>
+        <License name="BSD License Agreement" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+    <Script>installWEUQ.qs</Script>
+</Package>

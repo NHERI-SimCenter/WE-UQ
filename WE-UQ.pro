@@ -8,7 +8,7 @@ QT       += core gui charts concurrent network
 
 CONFIG += c++11
 
-TARGET = WE_UQ
+TARGET = WE-UQ
 TEMPLATE = app
 
 macos:LIBS += /usr/lib/libcurl.dylib
