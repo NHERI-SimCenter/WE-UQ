@@ -6,6 +6,9 @@
 #include <cwe_guiWidgets/cwe_parameters.h>
 #include <CFDanalysisType.h>
 
+#include "GeneralInformationWidget.h"
+#include "CFD/UI/GeometryHelper.h"
+
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
@@ -49,7 +52,7 @@ bool CFDTemplateWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool CFDTemplateWidget::outputToJSON(QJsonObject &eventObject)
 { 
     eventObject["EventClassification"]="Wind";
-    eventObject["type"] = "CFD - Guided";
+    eventObject["type"] = "CWE";
 
     parameterWidget->outputToJSON(eventObject);
 
@@ -63,9 +66,48 @@ bool CFDTemplateWidget::inputFromJSON(QJsonObject &eventObject)
     return true;
 }
 
-bool CFDTemplateWidget::copyFiles(QString &path)
+double CFDTemplateWidget::toMilliMeters(QString lengthUnit) const
 {
-    return true;
+    static std::map<QString,double> conversionMap
+    {
+        {"m", 1000.0},
+        {"cm", 10.0},
+        {"mm", 1.0},
+        {"in", 25.4},
+        {"ft", 304.8}
+    };
+
+    auto iter = conversionMap.find(lengthUnit);
+    if(conversionMap.end() != iter)
+        return iter->second;
+
+    qDebug() << "Failed to parse length unit: " << lengthUnit  << "!!!";
+    return 1.0;
+
+}
+
+
+bool CFDTemplateWidget::copyFiles(QString &dirName)
+{
+    auto generalInfo = GeneralInformationWidget::getInstance();
+
+    //Read the dimensions from general information
+    auto height = generalInfo->getHeight();
+    double width, length, area = 0.0;
+
+    generalInfo->getBuildingDimensions(width, length, area);
+
+    auto lengthUnit = generalInfo->getLengthUnit();
+
+    auto toMM = toMilliMeters(lengthUnit);
+
+    auto bldgObjFile = QDir(dirName).filePath("building.obj");
+    auto result = GeometryHelper::ExportBuildingObjFile(bldgObjFile,
+                                                        length * toMM,
+                                                        width * toMM,
+                                                        height * toMM);
+
+    return result;
 }
 
 bool CFDTemplateWidget::supportsLocalRun()

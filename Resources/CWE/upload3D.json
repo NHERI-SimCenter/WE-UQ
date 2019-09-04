@@ -552,6 +552,38 @@
                     "file":"VTK.zip"
                 }
             ]
+        },
+        {
+            "displayName":"Results",
+            "internalName":"post",
+            "app":"cwe-unknown",
+            "groups":[
+                {
+                    "displayName":"Post Processing Control",
+                    "internalName":"post_control",
+                    "vars":[
+                        {
+                            "displayName":"Event definition type",
+                            "internalName":"forceType",
+                            "type":"choose",
+                            "default":"guided",
+                            "options":{
+                                "binnedForces":"Forces collected per floor (bins)"
+                            }
+                        },
+                        {
+                            "displayName":"Time delay before  which load is applied",
+                            "internalName":"forceStartTime",
+                            "type":"std",
+                            "unit":"s",
+                            "default":"0.10",
+                            "precision":"double",
+                            "sign":"+0"
+                        }
+                    ]
+                }
+            ],
+            "results":[ ]
         }
     ]
 }
