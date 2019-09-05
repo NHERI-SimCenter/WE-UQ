@@ -23,6 +23,7 @@ signals:
 
 public slots:
     void selectButtonPushed();
+    void selectPatchesPushed();
 
 private:
     QLineEdit* caseEditBox;
@@ -33,9 +34,13 @@ private:
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
     QDoubleSpinBox* startTimeBox;
+    QLineEdit* patchesEditBox;
+    QPushButton* selectPatchesButton;
+    QComboBox* meshingComboBox;
 
     QString originalUFilePath;
     QString originalControlDictPath;
+    QStringList patchesList;
 
 
     void downloadRemoteCaseFiles();
@@ -43,6 +48,11 @@ private:
     QStringList getRemoteFilesPaths();
     void initializeUI();
     void setupConnections();
+    void parseBoundaryPatches(QString uFilePath);
+    void processBuildingPatches();
+    bool validateSelectedPatches();
+    void autoSelectPatches();
+
 };
 
 #endif // CFDEXPERTWIDGET_H
