@@ -60,6 +60,16 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
     if(eventObject.contains("start"))
         this->startTimeBox->setValue(eventObject["start"].toDouble());
 
+    if(eventObject.contains("patches"))
+        this->patchesEditBox->setText(eventObject["patches"].toString());
+
+    if(eventObject.contains("meshing"))
+    {
+        int index = meshingComboBox->findData(eventObject["meshing"].toString());
+        if(index >= 0)
+            this->meshingComboBox->setCurrentIndex(index);
+    }
+
     inflowWidget->inputFromJSON(eventObject);
 
     return true;
@@ -69,7 +79,25 @@ bool CFDExpertWidget::copyFiles(QString &path)
 {
     if (inflowCheckBox->isChecked())
     {
-        //TODO: copy files
+        QDir targetDir(path);
+
+        QDir constantDir(targetDir.filePath(""));
+        targetDir.mkpath("0");
+        targetDir.mkpath("system");
+
+        auto newUPath = targetDir.filePath("0/U");
+
+        if(QFile::exists(newUPath))
+            QFile::remove(newUPath);
+
+
+        QFile::copy(originalUFilePath, newUPath);
+
+        auto newControlDictPath = targetDir.absoluteFilePath("system/controlDict");
+        if(QFile::exists(newControlDictPath))
+            QFile::remove(newControlDictPath);
+
+        QFile::copy(originalControlDictPath, newControlDictPath);
 
         return inflowWidget->copyFiles(path);
     }
