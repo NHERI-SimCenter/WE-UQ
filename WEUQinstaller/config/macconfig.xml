@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>WE-UQ App</Name>
+    <Name>SimCenter Apps WE-UQ</Name>
     <Version>2.0</Version>
     <Title>SimCenter WE-UQ Installer</Title>
     <Publisher>NHERI SimCenter</Publisher>
@@ -8,7 +8,7 @@
     <InstallerApplicationIcon>NHERI-WEUQ-Icon</InstallerApplicationIcon>
     <InstallerWindowIcon>NHERI-WEUQ-Icon</InstallerWindowIcon>
     <Logo>NHERI-WEUQ-Icon.png</Logo>
-    <Background>SimCenterInstallerLogo.png</Background>
+    <Background>WEUQInstallerLogo.png</Background>
     <StartMenuDir>SimCenter Apps</StartMenuDir>
     <TargetDir>@HomeDir@/Applications/SimCenterWEUQ</TargetDir>
 </Installer>

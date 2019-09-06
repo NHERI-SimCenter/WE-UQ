@@ -134,6 +134,23 @@ FORMS    += \
 #    schema.qrc
 
 DISTFILES += \
+    WEUQinstaller/InstallScripts/README.txt \
+    WEUQinstaller/InstallScripts/makeInstallPackageWEUQ-with-QWT.sh \
+    WEUQinstaller/InstallScripts/makeInstallPackageWEUQ.sh \
+    WEUQinstaller/config/NHERI-WEuq-Icon.icns \
+    WEUQinstaller/config/NHERI-WEuq-Icon.png \
+    WEUQinstaller/config/WEUQInstallerLogo.png \
+    WEUQinstaller/config/macconfig.xml \
+    WEUQinstaller/config/nheri_weuq_icon.ico \
+    WEUQinstaller/config/watermark.png \
+    WEUQinstaller/config/winconfig.xml \
+    WEUQinstaller/packages/nheri.simcenter.python/data/python.fake \
+    WEUQinstaller/packages/nheri.simcenter.python/meta/installPython.qs \
+    WEUQinstaller/packages/nheri.simcenter.python/meta/license.txt \
+    WEUQinstaller/packages/nheri.simcenter.python/meta/package.xml \
+    WEUQinstaller/packages/nheri.simcenter.weuq/meta/installWEUQ.qs \
+    WEUQinstaller/packages/nheri.simcenter.weuq/meta/license.txt \
+    WEUQinstaller/packages/nheri.simcenter.weuq/meta/package.xml \
     wImage2.gif \
     wImage3.gif \
     wImage4.gif \
