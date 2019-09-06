@@ -10,5 +10,5 @@
     <Logo>NHERI-WEUQ-Icon.png</Logo>
     <Background>WEUQInstallerLogo.png</Background>
     <StartMenuDir>SimCenter Apps</StartMenuDir>
-    <TargetDir>@HomeDir@/Applications/SimCenterWEUQ</TargetDir>
+    <TargetDir>@HomeDir@/Applications/SimCenterTools</TargetDir>
 </Installer>

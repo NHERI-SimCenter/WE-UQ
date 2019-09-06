@@ -3,11 +3,11 @@
     <DisplayName>Python 3.7.4</DisplayName>
     <Description>A python distribution configured for the needs of the SimCenter Apps
     requirements.
+    ***
     If you skip this package, you need  to provide your own python installation,
     install the required packages  as listed in the tool's documentation, and update the tool's
     Preferences accordingly to point to your installation.
-    Using this provided package allows
-    you to skip those configuration steps.
+    ***
     </Description>
     <Version>3.7.4</Version>
     <ReleaseDate>2019-09-06</ReleaseDate>

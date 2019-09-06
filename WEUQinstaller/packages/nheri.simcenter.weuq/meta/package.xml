@@ -5,7 +5,7 @@
     <Version>2.0-Alpha-1</Version>
     <ReleaseDate>2019-09-04</ReleaseDate>
     <Licenses>
-        <License name="BSD License Agreement" file="license.txt" />
+        <License name="SimCenter WE-UQ License Agreement" file="license.txt" />
     </Licenses>
     <Default>true</Default>
     <Script>installWEUQ.qs</Script>
