@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>SimCenter Apps WE-UQ</Name>
+    <Version>2.0</Version>
+    <Title>SimCenter WE-UQ Installer</Title>
+    <Publisher>NHERI SimCenter</Publisher>
+    <ProductUrl>https://simcenter.designsafe-ci.org/research-tools/we-uq/</ProductUrl>
+    <InstallerApplicationIcon>NHERI-WEUQ-Icon</InstallerApplicationIcon>
+    <InstallerWindowIcon>NHERI-WEUQ-Icon</InstallerWindowIcon>
+    <Logo>NHERI-WEUQ-Icon.png</Logo>
+    <Background>WEUQInstallerLogo.png</Background>
+    <StartMenuDir>SimCenter Apps</StartMenuDir>
+    <TargetDir>@HomeDir@/Applications/SimCenterTools</TargetDir>
+</Installer>
