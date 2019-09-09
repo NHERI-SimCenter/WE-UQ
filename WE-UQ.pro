@@ -46,6 +46,7 @@ SOURCES += main.cpp \
     CFD/UI/CFDExpertWidget.cpp \
     CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
+    CFD/UI/PatchesSelector.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     CFD/UI/SubdomainsModel.cpp \
     CFD/cfd_globals.cpp \
@@ -85,6 +86,7 @@ HEADERS  += \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
     CFD/UI/GeometryHelper.h \
+    CFD/UI/PatchesSelector.h \
     CFD/UI/RemoteCaseSelector.h \
     CFD/UI/SubdomainsModel.h \
     CFD/cfd_globals.h \

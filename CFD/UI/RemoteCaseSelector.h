@@ -20,6 +20,7 @@ public slots:
     void directoryClicked(const QModelIndex& index);
     void onStorageChanged(const QString& storageName);
     void onSelectButtonClicked();
+    QString getSelectedCase();
 
 private:
     RemoteService* agaveService;
@@ -28,6 +29,8 @@ private:
     QString currentPath;
     QComboBox* storageComboBox;
     QPushButton* selectButton;
+
+    QString selectedCase;
 
     void setupConnections();
     void listDirectories(QJsonArray directories);
