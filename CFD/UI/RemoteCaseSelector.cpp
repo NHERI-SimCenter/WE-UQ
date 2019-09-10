@@ -69,14 +69,18 @@ void RemoteCaseSelector::onStorageChanged(const QString &storageName)
 
 void RemoteCaseSelector::onSelectButtonClicked()
 {
-    QString uri = currentPath;
+    selectedCase = currentPath;
     if(currentPath.startsWith("system/"))
-        uri = "agave://" + uri.remove("system/");
+        selectedCase = "agave://" + selectedCase.remove("system/");
     else
-        uri = "agave://designsafe.storage.default" + uri;
+        selectedCase = "agave://designsafe.storage.default" + selectedCase;
 
-    emit caseSelected(uri);
-    this->hide();
+    this->accept();
+}
+
+QString RemoteCaseSelector::getSelectedCase()
+{
+    return selectedCase;
 }
 
 void RemoteCaseSelector::setupConnections()
