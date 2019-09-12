@@ -116,7 +116,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theUQ_Method = new InputWidgetSampling();
     theEDP = new EDP_WindSelection(theRVs);
 
-    theResults = new DakotaResultsSampling();
+    theResults = new DakotaResultsSampling(theRVs);
     localApp = new LocalApplication("femUQ.py");
     remoteApp = new RemoteApplication("femUQ.py", theService);
     theJobManager = new RemoteJobManager(theService);
@@ -430,7 +430,7 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
  void
  WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
 
-      theResults->processResults(dakotaOut, dakotaTab, inputFile);
+      theResults->processResults(dakotaOut, dakotaTab);
       theRunWidget->hide();
       treeView->setCurrentIndex(infoItemIdx);
       theStackedWidget->setCurrentIndex(6);

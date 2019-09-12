@@ -32,7 +32,7 @@ win32 {
     }
 }
 
-include(../EE-UQ/CommonWorkflow.pri)
+include(../SimCenterCommon/Workflow/Workflow.pri)
 include(../SimCenterCommon/Common/Common.pri)
 include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
 include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
