@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts concurrent network
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
 CONFIG += c++11
 
@@ -44,6 +44,8 @@ SOURCES += main.cpp \
     CFD/CFDanalysis/CFDanalysisType.cpp \
     CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/CWE3DView.cpp \
+    CFD/UI/Edged3DBox.cpp \
     CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
     CFD/UI/PatchesSelector.cpp \
@@ -85,6 +87,8 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrstates.h \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
+    CFD/UI/CWE3DView.h \
+    CFD/UI/Edged3DBox.h \
     CFD/UI/GeometryHelper.h \
     CFD/UI/PatchesSelector.h \
     CFD/UI/RemoteCaseSelector.h \

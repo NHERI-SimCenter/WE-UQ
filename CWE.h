@@ -46,6 +46,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
+#include <QVector3D>
+#include "MeshParametersCWE.h"
+#include <CFD/UI/CWE3DView.h>
+
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -76,15 +80,18 @@ signals:
 
 public slots:
    void clear(void);
+   void update3DView();
 
 private:
-   SimCenterWidget *meshParameters;
+   MeshParametersCWE *meshParameters;
    SimCenterWidget *simulationParameters;
    QDoubleSpinBox* startTimeBox;
    QJsonObject *jsonObjOrig;
-   
+   CWE3DView* graphicsWidget;
 
     double toMilliMeters(QString lengthUnit) const;
+    void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter);
+    void setupConnections();
 };
 
 #endif // CWE_H
