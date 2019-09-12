@@ -76,7 +76,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <InputWidgetBIM.h>
 #include <InputWidgetUQ.h>
 
-#include <EDP_WindSelection.h>
+#include <WindEDP_Selection.h>
 
 #include "CustomizedItemModel.h"
 
@@ -114,7 +114,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theEvent = new WindEventSelection(theRVs, theService);
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
     theUQ_Method = new InputWidgetSampling();
-    theEDP = new EDP_WindSelection(theRVs);
+    theEDP = new WindEDP_Selection(theRVs);
 
     theResults = new DakotaResultsSampling(theRVs);
     localApp = new LocalApplication("femUQ.py");

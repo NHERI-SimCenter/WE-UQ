@@ -60,7 +60,7 @@ SOURCES += main.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEventSelection.cpp \
-    EDP_WindSelection.cpp \
+    WindEDP_Selection.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
     CWE.cpp \
@@ -101,7 +101,7 @@ HEADERS  += \
     RunWidget.h \
     WindEventSelection.h \
     StandardWindEDP.h \
-    EDP_WindSelection.h \
+    WindEDP_Selection.h \
     DEDM_HRP.h \
     CWE.h \
     MeshParametersCWE.h \

@@ -70,7 +70,7 @@ class RemoteService;
 class RemoteJobManager;
 class QNetworkAccessManager;
 class QNetworkReply;
-class EDP_WindSelection;
+class WindEDP_Selection;
 
 class WorkflowAppWE : public WorkflowAppWidget
 {
@@ -119,7 +119,7 @@ private:
     InputWidgetSampling *theUQ_Method;
     WindEventSelection *theEvent;
     InputWidgetOpenSeesAnalysis *theAnalysis;
-    EDP_WindSelection *theEDP;
+    WindEDP_Selection *theEDP;
     DakotaResults *theResults;
 
     // other widgets appearing in UI
