@@ -47,7 +47,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QStackedWidget>
 #include <QFile>
 
-#include "MeshParametersCWE.h"
 #include "SimulationParametersCWE.h"
 
 #include "CustomizedItemModel.h"
@@ -57,6 +56,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "QDir"
 #include <QDebug>
 #include <QDoubleSpinBox>
+
 
 CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
@@ -101,16 +101,23 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     buildingForcesGroup->setLayout(buildingForcesLayout);
 
 
+    //3D View
+    graphicsWidget = new CWE3DView(this);
+
     // add stacked widget to layout
     layout->addWidget(meshParameters, 0, 0);
     layout->addWidget(simulationParameters, 1, 0);
     layout->addWidget(buildingForcesGroup, 2, 0);
+
+    layout->addWidget(graphicsWidget, 0, 1, 4, 1);
     layout->setRowStretch(3, 1);
     layout->setColumnStretch(1, 1);
 
+
     this->setLayout(layout);
 
-    }
+    setupConnections();
+}
 
 CWE::~CWE()
 {
@@ -137,6 +144,45 @@ double CWE::toMilliMeters(QString lengthUnit) const
     qDebug() << "Failed to parse length unit: " << lengthUnit  << "!!!";
     return 1.0;
 
+}
+
+void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter)
+{
+    auto generalInfo = GeneralInformationWidget::getInstance();
+
+    //Read the dimensions from general information
+    auto height = generalInfo->getHeight();
+    double width, length, area = 0.0;
+
+    generalInfo->getBuildingDimensions(width, length, area);
+
+    auto lengthUnit = generalInfo->getLengthUnit();
+
+    auto toM = toMilliMeters(lengthUnit)/1000.0;
+
+    buildingSize.setX(static_cast<float>(length * toM));
+    buildingSize.setY(static_cast<float>(height * toM));
+    buildingSize.setZ(static_cast<float>(width * toM));
+
+    auto multipliers = meshParameters->getDomainMultipliers();
+    domainSize.setX(multipliers.x() * static_cast<float>(length * toM));
+    domainSize.setY(multipliers.y() * static_cast<float>(height * toM));
+    domainSize.setZ(multipliers.z() * static_cast<float>(width * toM));
+
+    auto centerMultipliers = meshParameters->getDomainCenterMultipliers();
+
+    domainCenter.setX(centerMultipliers.x() * static_cast<float>(length * toM));
+    domainCenter.setY(centerMultipliers.y() * static_cast<float>(height * toM));
+    domainCenter.setZ(centerMultipliers.z() * static_cast<float>(width * toM));}
+
+void CWE::setupConnections()
+{
+    connect(meshParameters, &MeshParametersCWE::meshChanged, this, &CWE::update3DView);
+
+    auto generalInfo = GeneralInformationWidget::getInstance();
+
+    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &CWE::update3DView);
+    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &CWE::update3DView);
 }
 
 
@@ -167,6 +213,16 @@ void
 CWE::clear(void)
 {
 
+}
+
+void CWE::update3DView()
+{
+    QVector3D buildingSize;
+    QVector3D domainSize;
+    QVector3D domainCenter;
+
+    get3DViewParameters(buildingSize, domainSize, domainCenter);
+    graphicsWidget->setView(buildingSize, domainSize, domainCenter);
 }
 
 bool

@@ -48,7 +48,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVector>
 #include <QTableView>
 #include <CFD/UI/SubdomainsModel.h>
-
+#include <QVector3D>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -68,8 +68,11 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
+    QVector3D getDomainMultipliers();
+    QVector3D getDomainCenterMultipliers();
 
 signals:
+    void meshChanged();
 
 public slots:
    void clear(void);
