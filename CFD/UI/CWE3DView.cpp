@@ -62,6 +62,8 @@ void CWE3DView::setup3DView()
 
     addInletText(rootEntity);
 
+    axes = new Graphics3DAxes(rootEntity, this);
+
     graphicsWindow->setRootEntity(rootEntity);
 }
 

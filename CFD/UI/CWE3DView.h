@@ -7,6 +7,7 @@
 #include <QVector3D>
 #include <Qt3DCore/QTransform>
 #include "Edged3DBox.h"
+#include "Graphics3DAxes.h"
 
 class CWE3DView : public QFrame
 {
@@ -24,6 +25,7 @@ private:
     Edged3DBox* buildingBox;
     Edged3DBox* domainBox;
     Qt3DCore::QTransform* inletTextTransform;
+    Graphics3DAxes* axes;
 
     void setup3DView();
     void addBuildingView(Qt3DCore::QEntity* rootEntity);
