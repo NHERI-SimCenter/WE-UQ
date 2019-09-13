@@ -14,8 +14,9 @@
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DRender/QDirectionalLight>
+#include <Qt3DExtras/QText2DEntity>
 
-CWE3DView::CWE3DView(QWidget *parent) : QWidget(parent)
+CWE3DView::CWE3DView(QWidget *parent) : QFrame(parent)
 {
     auto layout = new QHBoxLayout(this);
 
@@ -25,10 +26,14 @@ CWE3DView::CWE3DView(QWidget *parent) : QWidget(parent)
     auto container = QWidget::createWindowContainer(graphicsWindow, this);
     layout->addWidget(container);
 
+    layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
-    this->setStyleSheet("QWidget{border:2px solid black}");
 
     this->setup3DView();
+
+    //Add frame border
+    this->setLineWidth(2);
+    this->setFrameShape(QFrame::Box);
 }
 
 void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter)
@@ -38,6 +43,9 @@ void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D 
 
     domainBox->setSize(domainSize);
     domainBox->setTranslation(domainCenter);
+
+
+    inletTextTransform->setTranslation(QVector3D(domainCenter.x()-domainSize.x()/2.0f, domainSize.y()/2.0f-10.0f, -15.0f));
 }
 
 void CWE3DView::setup3DView()
@@ -52,6 +60,8 @@ void CWE3DView::setup3DView()
 
     setLights(rootEntity);
 
+    addInletText(rootEntity);
+
     graphicsWindow->setRootEntity(rootEntity);
 }
 
@@ -59,13 +69,26 @@ void CWE3DView::addBuildingView(Qt3DCore::QEntity* rootEntity)
 {
     buildingBox = new Edged3DBox(rootEntity);
     buildingBox->setColor(QColor(0,0,100));
-
 }
 
 void CWE3DView::addDomainView(Qt3DCore::QEntity* rootEntity)
 {
     domainBox = new Edged3DBox(rootEntity);
     domainBox->setColor(QColor(0,255,255));
+}
+
+void CWE3DView::addInletText(Qt3DCore::QEntity* rootEntity)
+{
+    auto inletText = new Qt3DExtras::QText2DEntity(rootEntity);
+    inletText->setFont(QFont("monospace"));
+    inletText->setHeight(20);
+    inletText->setWidth(50);
+    inletText->setText("Inlet");
+    inletText->setColor(Qt::yellow);
+    inletTextTransform = new Qt3DCore::QTransform(inletText);
+    inletTextTransform->setRotation(QQuaternion::fromAxisAndAngle({ 0, 1, 0 }, -90.0f));
+
+    inletText->addComponent(inletTextTransform);
 }
 
 void CWE3DView::setCamera(Qt3DCore::QEntity *rootEntity)

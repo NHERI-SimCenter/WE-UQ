@@ -1,14 +1,14 @@
 #ifndef CWE3DVIEW_H
 #define CWE3DVIEW_H
 
-#include <QWidget>
+#include <QFrame>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QCuboidMesh>
 #include <QVector3D>
 #include <Qt3DCore/QTransform>
 #include "Edged3DBox.h"
 
-class CWE3DView : public QWidget
+class CWE3DView : public QFrame
 {
     Q_OBJECT
 public:
@@ -23,10 +23,12 @@ private:
     Qt3DExtras::Qt3DWindow* graphicsWindow;
     Edged3DBox* buildingBox;
     Edged3DBox* domainBox;
+    Qt3DCore::QTransform* inletTextTransform;
 
     void setup3DView();
     void addBuildingView(Qt3DCore::QEntity* rootEntity);
     void addDomainView(Qt3DCore::QEntity* rootEntity);
+    void addInletText(Qt3DCore::QEntity* rootEntity);
     void setCamera(Qt3DCore::QEntity* rootEntity);
     void setLights(Qt3DCore::QEntity* rootEntity);
 
