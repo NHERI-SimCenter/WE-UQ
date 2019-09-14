@@ -48,6 +48,7 @@ SOURCES += main.cpp \
     CFD/UI/Edged3DBox.cpp \
     CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
+    CFD/UI/Graphics3DAxes.cpp \
     CFD/UI/PatchesSelector.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     CFD/UI/SubdomainsModel.cpp \
@@ -90,6 +91,7 @@ HEADERS  += \
     CFD/UI/CWE3DView.h \
     CFD/UI/Edged3DBox.h \
     CFD/UI/GeometryHelper.h \
+    CFD/UI/Graphics3DAxes.h \
     CFD/UI/PatchesSelector.h \
     CFD/UI/RemoteCaseSelector.h \
     CFD/UI/SubdomainsModel.h \
