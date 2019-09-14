@@ -109,6 +109,8 @@ void InflowParameterWidget::selectSourceLocation(void)
 
 void InflowParameterWidget::setDefaultParameters()
 {
+    this->on_modelSelectionCBX_currentIndexChanged(0);
+
     theParameters.clear();
 
     /* for use in inflowProperties file */
@@ -117,7 +119,7 @@ void InflowParameterWidget::setDefaultParameters()
 
     theParameters["vel0"] = 1.0;
     theParameters["refAngleU"] = 0.0;
-    theParameters["refDistU"] = 0.0;
+    theParameters["refDistU"] = 1.0;
     theParameters["alphaU"] = 0.0;
 
     theParameters["refAnglePHI"] = 0.0;
@@ -127,24 +129,24 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["alpha1"] = 0.0;
     theParameters["alpha2"] = 0.0;
 
-    theParameters["phi00"] = 0.1;
+    theParameters["phi00"] = 0.05;
     theParameters["phi10"] = 0.0;
     theParameters["phi20"] = 0.0;
-    theParameters["phi11"] = 0.1;
+    theParameters["phi11"] = 0.05;
     theParameters["phi21"] = 0.0;
-    theParameters["phi22"] = 0.1;
+    theParameters["phi22"] = 0.05;
 
     theParameters["Lu0"] = 1.0;
-    theParameters["Lu10"] = 0.0;
-    theParameters["Lu20"] = 0.0;
+    theParameters["Lu10"] = 1.0;
+    theParameters["Lu20"] = 1.0;
 
     theParameters["Lv0"] = 1.0;
-    theParameters["Lv10"] = 0.0;
-    theParameters["Lv20"] = 0.0;
+    theParameters["Lv10"] = 1.0;
+    theParameters["Lv20"] = 1.0;
 
     theParameters["Lw0"] = 1.0;
-    theParameters["Lw10"] = 0.0;
-    theParameters["Lw20"] = 0.0;
+    theParameters["Lw10"] = 1.0;
+    theParameters["Lw20"] = 1.0;
 
     theParameters["LuAlpha"] = 0.0;
     theParameters["LvAlpha"] = 0.0;
@@ -154,9 +156,9 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["LvRefAngle"] = 0.0;
     theParameters["LwRefAngle"] = 0.0;
 
-    theParameters["LuRefDist"] = 0.0;
-    theParameters["LvRefDist"] = 0.0;
-    theParameters["LwRefDist"] = 0.0;
+    theParameters["LuRefDist"] = 1.0;
+    theParameters["LvRefDist"] = 1.0;
+    theParameters["LwRefDist"] = 1.0;
 
     /* for use in U file */
 
@@ -170,7 +172,7 @@ void InflowParameterWidget::setDefaultParameters()
     theParameters["eddyDensity"] = 0.0;
 
     theParameters["intersection0"] = 0.0;
-    theParameters["intersection1"] = 1.0;
+    theParameters["intersection1"] = 0.0;
     theParameters["intersection2"] = 0.0;
     theParameters["yOffset"] = 0.0;
     theParameters["zOffset"] = 0.0;
