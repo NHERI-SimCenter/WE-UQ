@@ -52,6 +52,7 @@ class RandomVariablesContainer;
 class QButtonGroup;
 class QComboBox;
 class QRadioButton;
+class LineEditRV;
 
 class DEDM_HRP : public SimCenterAppWidget
 {
@@ -86,7 +87,7 @@ private:
    QVBoxLayout *layout;
    QWidget     *femSpecific;
 
-    QLineEdit *windSpeed;
+    LineEditRV *windSpeed;
     QComboBox *windDuration;
     QSpinBox *incidenceAngle;    
     QButtonGroup *thePlanGroup;
