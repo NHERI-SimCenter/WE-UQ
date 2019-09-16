@@ -110,8 +110,10 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     theRVs = new RandomVariablesContainer();
     theGI = GeneralInformationWidget::getInstance();
+
     theSIM = new SIM_Selection(theRVs);
     theEvent = new WindEventSelection(theRVs, theService);
+
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
     theUQ_Method = new InputWidgetSampling();
     theEDP = new WindEDP_Selection(theRVs);
@@ -340,6 +342,10 @@ WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, con
     const QModelIndex index = treeView->selectionModel()->currentIndex();
     QString selectedText = index.data(Qt::DisplayRole).toString();
 
+    // fmk - need to add the hide, repaint and show as Qt3D apps casung issues
+    theStackedWidget->currentWidget()->hide();
+    theStackedWidget->repaint();
+
     if (selectedText == "GI")
         theStackedWidget->setCurrentIndex(0);
     if (selectedText == "SIM")
@@ -356,6 +362,10 @@ WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, con
     //   theStackedWidget->setCurrentIndex(5);
     else if (selectedText == "RES")
         theStackedWidget->setCurrentIndex(6);
+
+    qDebug() << "AppSElection: DONE; " << theStackedWidget->currentIndex();
+
+    theStackedWidget->currentWidget()->show();
 }
 
 
