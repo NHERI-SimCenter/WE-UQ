@@ -81,15 +81,21 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     label->setText(QString("Loading Type"));
     eventSelection = new QComboBox();
 
+    eventSelection->addItem(tr("Stochastic Wind"));
+    eventSelection->addItem(tr("CFD - Basic"));
+    //    eventSelection->addItem(tr("CFD - Guided"));
+    eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("LowRiseTPU"));
-    eventSelection->addItem(tr("Stochastic Wind"));
-    eventSelection->addItem(tr("CFD - Beginner"));
-    eventSelection->addItem(tr("CFD - Guided"));
-    eventSelection->addItem(tr("CFD - Expert"));
+    //    eventSelection->addItem(tr("Wind Tunnel Data"));
     eventSelection->addItem(tr("Existing"));
 
-    eventSelection->setItemData(1, "A Wind Selection using VortexWinds DEDM_HRP website", Qt::ToolTipRole);
+    eventSelection->setItemData(1, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
+    eventSelection->setItemData(2, "Guided OpenFOAM Simulation", Qt::ToolTipRole);
+    eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
+    eventSelection->setItemData(4, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
+    eventSelection->setItemData(5, "Forces using TPU Wind TUnnel Datasets", Qt::ToolTipRole);
+    eventSelection->setItemData(6, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
@@ -106,30 +112,30 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     // create the individual load widgets & add to stacked widget
     //
 
-    theDEDM_HRP_Widget = new DEDM_HRP(theRandomVariablesContainer);
-    theStackedWidget->addWidget(theDEDM_HRP_Widget);
-
-    theLowRiseTPU_Widget = new LowRiseTPU(theRandomVariablesContainer);
-    theStackedWidget->addWidget(theLowRiseTPU_Widget);
-
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
     CFDBeginnerEventWidget = new CWE(theRandomVariablesContainer);
     theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
-    CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);
-    theStackedWidget->addWidget(CFDTemplateEventWidget);
+    //CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);
+    //theStackedWidget->addWidget(CFDTemplateEventWidget);
 
     CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
     theStackedWidget->addWidget(CFDExpertEventWidget);
+
+    theDEDM_HRP_Widget = new DEDM_HRP(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theDEDM_HRP_Widget);
+
+    theLowRiseTPU_Widget = new LowRiseTPU(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theLowRiseTPU_Widget);
 
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
-    theCurrentEvent=theDEDM_HRP_Widget;
+    theCurrentEvent=theStochasticModel;
 
     connect(eventSelection,SIGNAL(currentIndexChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 }
@@ -178,19 +184,19 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     qDebug() << "TYPE: " << type;
 
     if (type == QString("DEDM_HRP")) {
-        index = 0;
-    } else if (type.contains(QString("LowRiseTPU"))) {
-        index = 1;
-    } else if (type.contains(QString("StochasticWindInput"))) {
-        index = 2;
-    } else if (type == QString("CWE")) {
         index = 3;
-    } else if (type == QString("CFD - Guided")) {
+    } else if (type.contains(QString("LowRiseTPU"))) {
         index = 4;
+    } else if (type.contains(QString("StochasticWindInput"))) {
+        index = 0;
+    } else if (type == QString("CWE")) {
+        index = 1;
+	//    } else if (type == QString("CFD - Guided")) {
+	//        index = 2;
     } else if (type == QString("CFD - Expert")) {
-        index = 5;
+        index = 2;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-        index = 6;
+        index = 5;
     }
     else {
         return false;
@@ -216,37 +222,37 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     //
 
     if (arg1 == "DEDM_HRP") {
-        theStackedWidget->setCurrentIndex(0);
+        theStackedWidget->setCurrentIndex(3);
         theCurrentEvent = theDEDM_HRP_Widget;
     }
 
     else if (arg1 == "LowRiseTPU") {
-        theStackedWidget->setCurrentIndex(1);
+        theStackedWidget->setCurrentIndex(4);
         theCurrentEvent = theLowRiseTPU_Widget;
     }
 
     else if (arg1 == "Stochastic Wind") {
-        theStackedWidget->setCurrentIndex(2);
+        theStackedWidget->setCurrentIndex(0);
         theCurrentEvent = theStochasticModel;
     }
 
-    else if ((arg1 == "CFD - Beginner") || (arg1 == "CWE")) {
-        theStackedWidget->setCurrentIndex(3);
+    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE")) {
+        theStackedWidget->setCurrentIndex(1);
         theCurrentEvent = CFDBeginnerEventWidget;
     }
-
+    /*
     else if(arg1 == "CFD - Guided") {
         theStackedWidget->setCurrentIndex(4);
         theCurrentEvent = CFDTemplateEventWidget;
     }
-
+    */
     else if(arg1 == "CFD - Expert") {
-        theStackedWidget->setCurrentIndex(5);
+        theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = CFDExpertEventWidget;
     }
 
     else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(6);
+        theStackedWidget->setCurrentIndex(5);
         theCurrentEvent = theExistingEvents;
     }
 
