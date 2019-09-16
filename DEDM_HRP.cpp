@@ -54,6 +54,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RandomVariablesContainer.h>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <LineEditRV.h>
 
 //#include <InputWidgetParameters.h>
 #include <GeneralInformationWidget.h>
@@ -178,9 +179,11 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     layout->addWidget(windSpeedBox);
     QGridLayout *windLayout = new QGridLayout();
 
-    QLabel *labelSpeed = new QLabel("Mean Wind Velocity at Building Top");
-    windSpeed = new QLineEdit("50.0");
+    QLabel *labelSpeed = new QLabel("Wind Speed");
+    windSpeed = new LineEditRV(theRandomVariableIW);
+    windSpeed->setText("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
+
     QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
     windLayout->setColumnStretch(1,1);
@@ -312,7 +315,8 @@ DEDM_HRP::outputToJSON(QJsonObject &jsonObject)
     jsonObject["checkedPlan"]= thePlanGroup->checkedId();
     jsonObject["checkedHeight"]=theHeightGroup->checkedId();
     jsonObject["checkedExposure"]=theExposureGroup->checkedId();
-    jsonObject["windSpeed"]=windSpeed->text().toDouble();
+    //jsonObject["windSpeed"]=windSpeed->text().toDouble();
+    windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
     jsonObject["incidenceAngle"] = incidenceAngle->value();
     
     return true;
@@ -346,9 +350,12 @@ DEDM_HRP::inputFromJSON(QJsonObject &jsonObject)
       return false;
     
     if (jsonObject.contains("windSpeed")) {
+      /*
       QJsonValue theValue = jsonObject["windSpeed"];
       double speed = theValue.toDouble();
       windSpeed->setText(QString::number(speed));
+      */
+      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
     } else
       return false;
 

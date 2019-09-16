@@ -1,5 +1,5 @@
-#ifndef DEDM_HRP_H
-#define DEDM_HRP_H
+#ifndef WIND_SELECTION_H
+#define WIND_SELECTION_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,61 +41,44 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
-#include <QComboBox>
-#include <QSpinBox>
 #include <QGroupBox>
-#include <QVBoxLayout>
 #include <QVector>
-
-class InputWidgetParameters;
-class RandomVariablesContainer;
-class QButtonGroup;
 class QComboBox;
-class QRadioButton;
-class LineEditRV;
+class QStackedWidget;
+class UserDefinedApplication;
+class RockOutcrop;
 
-class DEDM_HRP : public SimCenterAppWidget
+class RandomVariablesContainer;
+
+class WindEDP_Selection : public  SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~DEDM_HRP();
+    explicit WindEDP_Selection(RandomVariablesContainer *, QWidget *parent = 0);
+    ~WindEDP_Selection();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &dirName);
+    bool copyFiles(QString &destName);
+
+    void clear(void);
 
 signals:
 
 public slots:
-   void clear(void);
-   void oneByOneToggled(bool);
-
-   void onBuildingDimensionChanged(double width, double depth, double area);
-   void onNumFloorsOrHeightChanged(int numFloor, double height);
+   void edpSelectionChanged(const QString &arg1);
 
 private:
+   QComboBox   *edpSelection;
+   QStackedWidget *theStackedWidget;
+   SimCenterAppWidget *theCurrentEDP;
 
-   double breadth;
-   double depth;
-   double height;
+   SimCenterAppWidget *theStandardWindEDPs;
+   SimCenterAppWidget *theUserDefinedEDPs;
 
-   QRadioButton *h1Radio;
-   QRadioButton *h2Radio;
-   QVBoxLayout *layout;
-   QWidget     *femSpecific;
-
-    LineEditRV *windSpeed;
-    QComboBox *windDuration;
-    QSpinBox *incidenceAngle;    
-    QButtonGroup *thePlanGroup;
-    QButtonGroup *theHeightGroup;
-    QButtonGroup *theExposureGroup;
-
-    RandomVariablesContainer *theRandomVariablesContainer;
-    QStringList varNamesAndValues;
+   RandomVariablesContainer *theRandomVariablesContainer;
 };
 
-#endif // DEDM_HRP_H
+#endif // WIND_SELECTION_H
