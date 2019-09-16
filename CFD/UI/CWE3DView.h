@@ -14,6 +14,7 @@ class CWE3DView : public QFrame
     Q_OBJECT
 public:
     explicit CWE3DView(QWidget *parent = nullptr);
+    ~CWE3DView();
     void setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter);
 
 signals:

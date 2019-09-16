@@ -67,6 +67,15 @@ void CWE3DView::setup3DView()
     graphicsWindow->setRootEntity(rootEntity);
 }
 
+
+
+CWE3DView::~CWE3DView()
+{
+    qDebug() << "CWE3DView - destructor";
+
+    graphicsWindow->setRootEntity(NULL);
+}
+
 void CWE3DView::addBuildingView(Qt3DCore::QEntity* rootEntity)
 {
     buildingBox = new Edged3DBox(rootEntity);
