@@ -168,6 +168,20 @@ int main(int argc, char *argv[])
 
     w.show();
 
+
+    QFile file(":/styleCommon/common_experimental.qss");
+    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
+
+    if(file.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
+      QString styleSheet = QLatin1String(file.readAll());
+      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
+
+      a.setStyleSheet(styleSheet+styleSheetEEUQ);
+      file.close();
+      fileEEUQ.close();
+    }
+
+
     /*
     theInputApp->setStyleSheet("QComboBox {background: #E0E0E0;} \
                                QGroupBox {font-weight: bold;}\
@@ -175,7 +189,7 @@ int main(int argc, char *argv[])
                                QTabWidget::pane {background-color: #ECECEC; border: 1px solid rgb(244, 244, 244);}");
     */
 
-    a.setStyleSheet(openStyleFiles());
+    //a.setStyleSheet(openStyleFiles());
 
     int res = a.exec();
 
