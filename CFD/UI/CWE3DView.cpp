@@ -107,8 +107,8 @@ void CWE3DView::setCamera(Qt3DCore::QEntity *rootEntity)
 {
     Qt3DRender::QCamera *camera = graphicsWindow->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(120, 150, 300));
-    camera->setViewCenter(QVector3D(60, 0, 0));
+    camera->setPosition(QVector3D(-250, 150, 200));
+    camera->setViewCenter(QVector3D(20, 0, 0));
 
     // For camera controls
     auto camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
