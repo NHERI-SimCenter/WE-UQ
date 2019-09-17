@@ -17,6 +17,7 @@ public:
     void setColor(QColor color);
     void setSize(QVector3D size);
     void setTranslation(QVector3D translation);
+    void setGrid(int n, int m);
 
 signals:
 
@@ -29,8 +30,14 @@ private:
     Qt3DExtras::QCuboidMesh* mesh;
     Qt3DCore::QTransform* transform;
     Qt3DCore::QTransform* edgeTransform;
+    Qt3DCore::QTransform* gridPointsTransform;
+    Qt3DRender::QAttribute* gridPointsVerticesAttribute;
+    Qt3DRender::QGeometryRenderer* gridPointsRenderer;
 
     void setup3DEdges();
+    void setupGrid();
+
+    QVector<float> getGridVertices(int n, int m);
 };
 
 #endif // EDGED3DBOX_H

@@ -70,6 +70,8 @@ public:
     bool copyFiles(QString &dirName);
     QVector3D getDomainMultipliers();
     QVector3D getDomainCenterMultipliers();
+    double getBuildingGridSize();
+    double getDomainGridSize();
 
 signals:
     void meshChanged();

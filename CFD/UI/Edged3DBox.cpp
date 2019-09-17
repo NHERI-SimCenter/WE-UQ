@@ -1,7 +1,9 @@
 #include "Edged3DBox.h"
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QPointSize>
 
 Edged3DBox::Edged3DBox(Qt3DCore::QEntity* rootEntity, QObject *parent) : QObject(parent)
 {
@@ -17,6 +19,7 @@ Edged3DBox::Edged3DBox(Qt3DCore::QEntity* rootEntity, QObject *parent) : QObject
     cuboidEntity->addComponent(material);
 
     setup3DEdges();
+    setupGrid();
 }
 
 void Edged3DBox::setColor(QColor color)
@@ -30,12 +33,32 @@ void Edged3DBox::setSize(QVector3D size)
 {
     transform->setScale3D(size);
     edgeTransform->setScale3D(size);
+    gridPointsTransform->setScale3D(size);
 }
 
 void Edged3DBox::setTranslation(QVector3D translation)
 {
     transform->setTranslation(translation);
     edgeTransform->setTranslation(translation);
+    gridPointsTransform->setTranslation(translation);
+}
+
+void Edged3DBox::setGrid(int n, int m)
+{
+    if (n <= 0 || m <= 0)
+        return;
+
+    auto coords = getGridVertices(n, m);
+
+    QByteArray coordsBytes(reinterpret_cast<const char *>(coords.data()),
+                           static_cast<int>(sizeof (float)) * coords.size());
+
+    auto coordsBuffer = gridPointsVerticesAttribute->buffer();
+    coordsBuffer->setData(coordsBytes);
+
+    gridPointsVerticesAttribute->setCount(static_cast<uint>((n-1) * (m-1)));
+
+    gridPointsRenderer->setVertexCount((n-1) * (m-1));
 }
 
 void Edged3DBox::setup3DEdges()
@@ -108,4 +131,79 @@ void Edged3DBox::setup3DEdges()
     edgeEntity->addComponent(edgeMaterial);
     edgeEntity->addComponent(edgeTransform);
 
+}
+
+void Edged3DBox::setupGrid()
+{
+    Qt3DCore::QEntity* gridPointsEntity = new Qt3DCore::QEntity(rootEntity);
+
+    auto coordsBuffer = new Qt3DRender::QBuffer();
+
+    auto coords = getGridVertices(2, 2);
+
+    QByteArray coordsBytes(reinterpret_cast<const char *>(coords.data()),
+                           static_cast<int>(sizeof (float)) * coords.size());
+
+    coordsBuffer->setData(coordsBytes);
+
+    gridPointsVerticesAttribute = new Qt3DRender::QAttribute(
+                coordsBuffer,
+                Qt3DRender::QAttribute::defaultPositionAttributeName(),
+                Qt3DRender::QAttribute::Float,
+                3,
+                1,
+                0,
+                3 * sizeof (float));
+
+    auto gridPointsGeometry = new Qt3DRender::QGeometry();
+    gridPointsGeometry->addAttribute(gridPointsVerticesAttribute);
+
+    gridPointsRenderer = new Qt3DRender::QGeometryRenderer();
+    gridPointsRenderer->setGeometry(gridPointsGeometry);
+    gridPointsRenderer->setFirstVertex(0);
+    gridPointsRenderer->setVertexCount(1);
+    gridPointsRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Points);
+
+    auto gridPointsMaterial = new Qt3DExtras::QPhongAlphaMaterial(gridPointsEntity);
+    gridPointsMaterial->setAmbient(QColor(125.0, 125.0, 125.0));
+    gridPointsMaterial->setSpecular(QColor(125.0, 125.0, 125.0));
+    gridPointsMaterial->setDiffuse(QColor(125.0, 125.0, 125.0));
+
+    auto effect = gridPointsMaterial->effect();
+    for (auto technique : effect->techniques()) {
+        for (auto renderPass : technique->renderPasses()) {
+            auto pointSize = new Qt3DRender::QPointSize();
+            pointSize->setSizeMode(Qt3DRender::QPointSize::SizeMode::Fixed);
+            pointSize->setValue(4.0f);
+            renderPass->addRenderState(pointSize);
+        }
+    }
+
+    gridPointsTransform = new Qt3DCore::QTransform(gridPointsEntity);
+
+    gridPointsEntity->addComponent(gridPointsRenderer);
+    gridPointsEntity->addComponent(gridPointsMaterial);
+    gridPointsEntity->addComponent(gridPointsTransform);
+}
+
+QVector<float> Edged3DBox::getGridVertices(int n, int m)
+{
+    QVector<float> coords;
+
+    coords.reserve((n-1) * (m-1) * 3);
+
+    float stepx = 1.0f/n;
+    float stepy = 1.0f/m;
+
+    for(int i = 1; i < n; i++)
+    {
+        for(int j = 1; j < m; j++)
+        {
+            coords.push_back(i * stepx - 0.5f);
+            coords.push_back(0.5f);
+            coords.push_back(j * stepy - 0.5f);
+        }
+    }
+
+    return coords;
 }

@@ -47,6 +47,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <QVector3D>
+#include <QPoint>
 #include "MeshParametersCWE.h"
 #include <CFD/UI/CWE3DView.h>
 
@@ -90,7 +91,8 @@ private:
    CWE3DView* graphicsWidget;
 
     double toMilliMeters(QString lengthUnit) const;
-    void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter);
+    void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter,
+                             QPoint& buildingGrid, QPoint& domainGrid);
     void setupConnections();
 };
 
