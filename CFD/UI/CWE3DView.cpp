@@ -36,14 +36,15 @@ CWE3DView::CWE3DView(QWidget *parent) : QFrame(parent)
     this->setFrameShape(QFrame::Box);
 }
 
-void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter)
+void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter, QPoint buildingGrid, QPoint domainGrid)
 {
     buildingBox->setSize(buildingSize);
     buildingBox->setTranslation(QVector3D(0.0f, buildingSize.y()/2.0f, 0.0f));
+    buildingBox->setGrid(buildingGrid.x(), buildingGrid.y());
 
     domainBox->setSize(domainSize);
     domainBox->setTranslation(domainCenter);
-
+    domainBox->setGrid(domainGrid.x(), domainGrid.y());
 
     inletTextTransform->setTranslation(QVector3D(domainCenter.x()-domainSize.x()/2.0f, domainSize.y()/2.0f-10.0f, -15.0f));
 }
@@ -62,7 +63,7 @@ void CWE3DView::setup3DView()
 
     addInletText(rootEntity);
 
-    axes = new Graphics3DAxes(rootEntity, this);
+    axes = new Graphics3DAxes(rootEntity);
 
     graphicsWindow->setRootEntity(rootEntity);
 }
@@ -106,8 +107,8 @@ void CWE3DView::setCamera(Qt3DCore::QEntity *rootEntity)
 {
     Qt3DRender::QCamera *camera = graphicsWindow->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(120, 150, 300));
-    camera->setViewCenter(QVector3D(60, 0, 0));
+    camera->setPosition(QVector3D(-250, 150, 200));
+    camera->setViewCenter(QVector3D(20, 0, 0));
 
     // For camera controls
     auto camController = new Qt3DExtras::QOrbitCameraController(rootEntity);

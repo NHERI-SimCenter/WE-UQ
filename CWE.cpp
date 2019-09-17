@@ -56,7 +56,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "QDir"
 #include <QDebug>
 #include <QDoubleSpinBox>
-
+#include <math.h>
 
 CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
@@ -146,7 +146,7 @@ double CWE::toMilliMeters(QString lengthUnit) const
 
 }
 
-void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter)
+void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter, QPoint& buildingGrid, QPoint& domainGrid)
 {
     auto generalInfo = GeneralInformationWidget::getInstance();
 
@@ -166,14 +166,23 @@ void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QV
 
     auto multipliers = meshParameters->getDomainMultipliers();
     domainSize.setX(multipliers.x() * static_cast<float>(length * toM));
-    domainSize.setY(multipliers.y() * static_cast<float>(height * toM));
-    domainSize.setZ(multipliers.z() * static_cast<float>(width * toM));
+    domainSize.setY(multipliers.z() * static_cast<float>(height * toM));
+    domainSize.setZ(multipliers.y() * static_cast<float>(width * toM));
 
     auto centerMultipliers = meshParameters->getDomainCenterMultipliers();
 
     domainCenter.setX(centerMultipliers.x() * static_cast<float>(length * toM));
-    domainCenter.setY(centerMultipliers.y() * static_cast<float>(height * toM));
-    domainCenter.setZ(centerMultipliers.z() * static_cast<float>(width * toM));}
+    domainCenter.setY(centerMultipliers.z() * static_cast<float>(height * toM));
+    domainCenter.setZ(centerMultipliers.y() * static_cast<float>(width * toM));
+
+    auto domainGridSize = static_cast<float>(meshParameters->getDomainGridSize());
+    domainGrid.setX(static_cast<int>(round(domainSize.x()/domainGridSize)));
+    domainGrid.setY(static_cast<int>(round(domainSize.z()/domainGridSize)));
+
+    auto buildingGridSize = static_cast<float>(meshParameters->getBuildingGridSize());
+    buildingGrid.setX(static_cast<int>(round(buildingSize.x()/buildingGridSize)));
+    buildingGrid.setY(static_cast<int>(round(buildingSize.z()/buildingGridSize)));
+}
 
 void CWE::setupConnections()
 {
@@ -220,9 +229,11 @@ void CWE::update3DView()
     QVector3D buildingSize;
     QVector3D domainSize;
     QVector3D domainCenter;
+    QPoint buildingGrid;
+    QPoint domainGrid;
 
-    get3DViewParameters(buildingSize, domainSize, domainCenter);
-    graphicsWidget->setView(buildingSize, domainSize, domainCenter);
+    get3DViewParameters(buildingSize, domainSize, domainCenter, buildingGrid, domainGrid);
+    graphicsWidget->setView(buildingSize, domainSize, domainCenter, buildingGrid, domainGrid);
 }
 
 bool

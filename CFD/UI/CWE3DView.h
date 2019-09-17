@@ -8,6 +8,7 @@
 #include <Qt3DCore/QTransform>
 #include "Edged3DBox.h"
 #include "Graphics3DAxes.h"
+#include <QPoint>
 
 class CWE3DView : public QFrame
 {
@@ -15,7 +16,7 @@ class CWE3DView : public QFrame
 public:
     explicit CWE3DView(QWidget *parent = nullptr);
     ~CWE3DView();
-    void setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter);
+    void setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter, QPoint buildingGrid, QPoint domainGrid);
 
 signals:
 
