@@ -363,8 +363,6 @@ WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, con
     else if (selectedText == "RES")
         theStackedWidget->setCurrentIndex(6);
 
-    qDebug() << "AppSElection: DONE; " << theStackedWidget->currentIndex();
-
     theStackedWidget->currentWidget()->show();
 }
 
