@@ -352,7 +352,13 @@ LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
              + QString("createEvent") + QDir::separator()
              + QString("LowRiseTPU") + QDir::separator() + QString("LowRiseTPU.py");
 
-     return this->copyFile(name1, destDir);
+     bool result = this->copyFile(name1, destDir);
+     if (result == false) {
+         QString errorMessage; errorMessage = "LowRiseTPU - failed to copy file: " + name1 + "to: " + destDir;
+         emit sendFatalMessage(errorMessage);
+         qDebug() << errorMessage;
+     }
+     return result;
  }
 
  void
