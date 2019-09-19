@@ -162,6 +162,7 @@ void StochasticWindInput::modelSelectionChanged(const QString& model) {
     if (stochasticModel != NULL) {
       parametersLayout->replaceWidget(stochasticModel, nextModel);
       delete stochasticModel;
+      stochasticModel = nextModel;
     }
   }
 }
