@@ -527,8 +527,8 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         return false;
 
     if (jsonObject.contains("UQ_Method")) {
-        QJsonObject jsonObjUQInformation = jsonObject["UQ"].toObject();
-        theEvent->inputFromJSON(jsonObjUQInformation);
+        QJsonObject jsonObjUQInformation = jsonObject["UQ_Method"].toObject();
+        theUQ_Method->inputFromJSON(jsonObjUQInformation);
     } else
         return false;
 
