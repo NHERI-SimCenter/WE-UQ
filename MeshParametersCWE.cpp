@@ -234,6 +234,46 @@ void MeshParametersCWE::setupConnection()
             subdomainsTable->setHidden(true);
 
     });
+
+    connect(domainLengthInlet, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(domainLengthOutlet, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(domainLengthYneg, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(domainLengthYpos, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(domainLengthZneg, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(domainLengthZpos, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(gridSizeBluffBody, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
+
+    connect(gridSizeOuterBoundary, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        emit meshChanged();
+    });
 }
 
 bool
@@ -332,6 +372,38 @@ MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 
  bool
  MeshParametersCWE::copyFiles(QString &destDir) {
-   return true;
+     return true;
+ }
+
+ QVector3D MeshParametersCWE::getDomainMultipliers()
+ {
+     QVector3D domainMultipliers;
+
+     domainMultipliers.setX(domainLengthInlet->text().toFloat() + domainLengthOutlet->text().toFloat() + 1.0f);
+     domainMultipliers.setY(domainLengthYneg->text().toFloat() + domainLengthYpos->text().toFloat() + 1.0f);
+     domainMultipliers.setZ(domainLengthZneg->text().toFloat() + domainLengthZpos->text().toFloat() + 1.0f);
+
+     return domainMultipliers;
+ }
+
+ QVector3D MeshParametersCWE::getDomainCenterMultipliers()
+ {
+     QVector3D domainCenterMultipliers;
+
+     domainCenterMultipliers.setX((-domainLengthInlet->text().toFloat() + domainLengthOutlet->text().toFloat())/2.0f);
+     domainCenterMultipliers.setY((-domainLengthYneg->text().toFloat() + domainLengthYpos->text().toFloat())/2.0f);
+     domainCenterMultipliers.setZ((-domainLengthZneg->text().toFloat() + domainLengthZpos->text().toFloat() + 1.0f)/2.0f);
+
+     return domainCenterMultipliers;
+ }
+
+ double MeshParametersCWE::getBuildingGridSize()
+ {
+     return gridSizeBluffBody->text().toDouble();
+ }
+
+ double MeshParametersCWE::getDomainGridSize()
+ {
+     return gridSizeOuterBoundary->text().toDouble();
  }
 

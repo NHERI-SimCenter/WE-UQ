@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts concurrent network
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
 CONFIG += c++11
 
@@ -32,7 +32,7 @@ win32 {
     }
 }
 
-include(../EE-UQ/CommonWorkflow.pri)
+include(../SimCenterCommon/Workflow/Workflow.pri)
 include(../SimCenterCommon/Common/Common.pri)
 include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
 include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
@@ -44,8 +44,11 @@ SOURCES += main.cpp \
     CFD/CFDanalysis/CFDanalysisType.cpp \
     CFD/CFDanalysis/CFDcaseInstance.cpp \
     CFD/UI/CFDExpertWidget.cpp \
+    CFD/UI/CWE3DView.cpp \
+    CFD/UI/Edged3DBox.cpp \
     CFD/UI/GeometryHelper.cpp \
     CFD/UI/CFDTemplateWidget.cpp \
+    CFD/UI/Graphics3DAxes.cpp \
     CFD/UI/PatchesSelector.cpp \
     CFD/UI/RemoteCaseSelector.cpp \
     CFD/UI/SubdomainsModel.cpp \
@@ -60,7 +63,7 @@ SOURCES += main.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEventSelection.cpp \
-    EDP_WindSelection.cpp \
+    WindEDP_Selection.cpp \
     StandardWindEDP.cpp \
     DEDM_HRP.cpp \
     CWE.cpp \
@@ -85,7 +88,10 @@ HEADERS  += \
     CFD/SimCenter_widgets/sctrstates.h \
     CFD/UI/CFDTemplateWidget.h \
     CFD/UI/CFDExpertWidget.h \
+    CFD/UI/CWE3DView.h \
+    CFD/UI/Edged3DBox.h \
     CFD/UI/GeometryHelper.h \
+    CFD/UI/Graphics3DAxes.h \
     CFD/UI/PatchesSelector.h \
     CFD/UI/RemoteCaseSelector.h \
     CFD/UI/SubdomainsModel.h \
@@ -101,7 +107,7 @@ HEADERS  += \
     RunWidget.h \
     WindEventSelection.h \
     StandardWindEDP.h \
-    EDP_WindSelection.h \
+    WindEDP_Selection.h \
     DEDM_HRP.h \
     CWE.h \
     MeshParametersCWE.h \
@@ -120,7 +126,6 @@ HEADERS  += \
 
 
 RESOURCES += \
-    ../EE-UQ/images.qrc \
     images.qrc \
     we-uq-resources.qrc
 

@@ -112,7 +112,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   nonOrthogonalCorrectors->setValidator(positiveIntValidator);
     
   QGridLayout *advancedLayout=new QGridLayout();
-  advancedLayout->addWidget(new QLabel("Turbulence"),0,0);
+  advancedLayout->addWidget(new QLabel("Turbulence Model"),0,0);
   advancedLayout->addWidget(turbulanceModel,0,1);
   advancedLayout->addWidget(new QLabel("Number of Piso Correctors"),1,0);
   advancedLayout->addWidget(pisoCorrectors,1,1);
