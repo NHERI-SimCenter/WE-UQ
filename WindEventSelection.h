@@ -84,6 +84,7 @@ private:
    SimCenterAppWidget *CFDExpertEventWidget;
    SimCenterAppWidget *CFDBeginnerEventWidget;
    SimCenterAppWidget *CFDTemplateEventWidget;
+   SimCenterAppWidget *theWindTunnelExperiment;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };
