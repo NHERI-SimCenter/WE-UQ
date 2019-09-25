@@ -98,7 +98,7 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QLabel *labelRoofType = new QLabel("Roof Type");
     roofType = new QComboBox;
     roofType->addItem("Flat");
-    roofType->addItem("Gable");
+    //roofType->addItem("Gable");
 
     QLabel *labelHeightBreadth = new QLabel("Height/Breadth");
     heightBreadth = new QComboBox;
