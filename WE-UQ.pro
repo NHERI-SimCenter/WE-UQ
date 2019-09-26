@@ -6,6 +6,7 @@
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
+CONFIG += debug_and_release
 CONFIG += c++11
 
 TARGET = WE-UQ
@@ -70,6 +71,7 @@ SOURCES += main.cpp \
     MeshParametersCWE.cpp \
     SimulationParametersCWE.cpp \
     LowRiseTPU.cpp \
+    WindTunnelExperiment.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
     CFD/Analysis/filemetadata.cpp \
@@ -106,6 +108,7 @@ HEADERS  += \
     WorkflowAppWE.h \
     RunWidget.h \
     WindEventSelection.h \
+    WindTunnelExperiment.h \
     StandardWindEDP.h \
     WindEDP_Selection.h \
     DEDM_HRP.h \
@@ -126,8 +129,11 @@ HEADERS  += \
 
 
 RESOURCES += \
-    images.qrc \
-    we-uq-resources.qrc
+    ../EE-UQ/styles.qrc \
+    images.qrc
+
+#    ../EE-UQ/images.qrc \
+#    we-uq-resources.qrc
 
 #FORMS    += mainwindow.ui
 FORMS    += \

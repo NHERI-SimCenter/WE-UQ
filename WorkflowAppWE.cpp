@@ -111,7 +111,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theRVs = new RandomVariablesContainer();
     theGI = GeneralInformationWidget::getInstance();
 
-    theSIM = new SIM_Selection(theRVs);
+    theSIM = new SIM_Selection(theRVs, true);
     theEvent = new WindEventSelection(theRVs, theService);
 
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
@@ -363,8 +363,6 @@ WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, con
     else if (selectedText == "RES")
         theStackedWidget->setCurrentIndex(6);
 
-    qDebug() << "AppSElection: DONE; " << theStackedWidget->currentIndex();
-
     theStackedWidget->currentWidget()->show();
 }
 
@@ -529,8 +527,8 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         return false;
 
     if (jsonObject.contains("UQ_Method")) {
-        QJsonObject jsonObjUQInformation = jsonObject["UQ"].toObject();
-        theEvent->inputFromJSON(jsonObjUQInformation);
+        QJsonObject jsonObjUQInformation = jsonObject["UQ_Method"].toObject();
+        theUQ_Method->inputFromJSON(jsonObjUQInformation);
     } else
         return false;
 
