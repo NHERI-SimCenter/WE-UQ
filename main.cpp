@@ -168,20 +168,40 @@ int main(int argc, char *argv[])
 
     w.show();
 
+#ifdef Q_OS_WIN
+    QFile file(":/styleCommon/stylesheetWIN.qss");
+#endif
 
-    QFile file(":/styleCommon/common_experimental.qss");
-    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
+#ifdef Q_OS_MACOS
+    QFile file(":/styleCommon/stylesheetMAC.qss");
+#endif
 
-    if(file.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
-      QString styleSheet = QLatin1String(file.readAll());
-      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
+#ifdef Q_OS_LINUX
+    QFile file(":/styleCommon/stylesheetMAC.qss");
+#endif
 
-      a.setStyleSheet(styleSheet+styleSheetEEUQ);
+
+    if(file.open(QFile::ReadOnly)) {
+      a.setStyleSheet(file.readAll());
       file.close();
-      fileEEUQ.close();
+    } else {
+      qDebug() << "could not open stylesheet";
     }
 
+/*
+    QFile fileCommon(":/styleCommon/common_experimental.qss");
+    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
 
+    if(fileCommon.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
+      QString styleSheet = QLatin1String(fileCommon.readAll());
+      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
+
+      //      a.setStyleSheet(styleSheet+styleSheetEEUQ);
+      a.setStyleSheet(styleSheet);
+      fileCommon.close();
+      fileEEUQ.close();
+    }
+*/
     /*
     theInputApp->setStyleSheet("QComboBox {background: #E0E0E0;} \
                                QGroupBox {font-weight: bold;}\
