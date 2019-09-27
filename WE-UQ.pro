@@ -24,6 +24,7 @@ INCLUDEPATH += CFD/UI
 INCLUDEPATH += CFD/Analysis
 INCLUDEPATH += CFD/CFDAnalysis
 INCLUDEPATH += CFD/SimCenter_widgets
+DEFINES += _GRAPHICS_Qt3D
 
 win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
