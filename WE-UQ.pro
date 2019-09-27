@@ -14,8 +14,15 @@ TEMPLATE = app
 
 macos:LIBS += /usr/lib/libcurl.dylib
 win32:INCLUDEPATH += "c:\Users\SimCenter\libCurl-7.59.0\include"
-win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
+#win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
 linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
+
+win32:INCLUDEPATH += "../curl-7.59/include"
+win32:LIBS += "../curl-7.59/lib/libcurl_a.lib"
+win32:DEFINES +=  CURL_STATICLIB
+
+win32:INCLUDEPATH += "../jansson/include"
+win32:LIBS += "../jansson/lib/jansson.lib"
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow

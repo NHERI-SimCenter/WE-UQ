@@ -248,6 +248,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
     treeView->setObjectName("treeViewOnTheLeft");
     treeView->setIndentation(0);
+    /*
     QFile file(":/styles/menuBar.qss");
     if(file.open(QFile::ReadOnly)) {
         treeView->setStyleSheet(file.readAll());
@@ -255,7 +256,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     }
     else
         qDebug() << "Open Style File Failed!";
-
+*/
 
     //
     // set up so that a slection change triggers the selectionChanged slot

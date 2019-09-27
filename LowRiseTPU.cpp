@@ -79,8 +79,8 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QPushButton *theLogo = new QPushButton("");
     QPixmap pixmap(":/Resources/LowRise/lowriseTPU.png");
     theLogo->setIcon(pixmap);
-    theLogo->setIconSize(pixmap.rect().size());
-    theLogo->setFixedSize(pixmap.rect().size());
+    theLogo->setIconSize(pixmap.rect().size()*.5);
+    theLogo->setFixedSize(pixmap.rect().size()*.5);
     width = pixmap.rect().size().width();
 
     QGroupBox* windTunnelGeometryBox = new QGroupBox("Wind Tunnel Building Geometry", this);
@@ -91,8 +91,8 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QPixmap pixmapFlat(":/Resources/LowRise/lowriseFlat.png");
 
     theBuildingButton->setIcon(pixmapFlat);
-    theBuildingButton->setIconSize(pixmapFlat.rect().size());
-    theBuildingButton->setFixedSize(pixmapFlat.rect().size());
+    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.5);
+    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.5);
     windTunnelGeometryLayout->addWidget(theBuildingButton,0,0,5,1,Qt::AlignVCenter);
 
     QLabel *labelRoofType = new QLabel("Roof Type");
