@@ -8,7 +8,7 @@
 #include <QDoubleSpinBox>
 #include <CFD/cwe_guiWidgets/cwe_parameters.h>
 #include <CFD/CFDanalysis/CFDcaseInstance.h>
-#include <CFD/CFDanalysis/CFDanalysisType.h>
+#include <CFDanalysisType.h>
 #include <CFD/SimCenter_widgets/sctrstates.h>
 
 class QJsonObject;
