@@ -16,6 +16,7 @@
 #include <GoogleAnalytics.h>
 #include <QStandardPaths>
 #include <QDir>
+#include <SimCenterPreferences.h>
 
  // customMessgaeOutput code from web:
  // https://stackoverflow.com/questions/4954140/how-to-redirect-qdebug-qwarning-qcritical-etc-output
@@ -120,7 +121,8 @@ int main(int argc, char *argv[])
     QString version("Version 2.0.0");
     w.setVersion(version);
 
-    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jaiwei Wan, & Dae Kun Kwon. (2019, July 9). NHERI-SimCenter/WE-UQ: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3274228");
+    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jiawei Wan, & Dae Kun Kwon. (2019, September 30). NHERI-SimCenter/WE-UQ: Version 2.0.0 (Version v2.0.0). Zenodo. http://doi.org/10.5281/zenodo.3464692");
+
     w.setCite(citeText);
 
     QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE_UQ/");
