@@ -100,14 +100,14 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     roofType->addItem("Flat");
     //roofType->addItem("Gable");
 
-    QLabel *labelHeightBreadth = new QLabel("Height/Breadth");
+    QLabel *labelHeightBreadth = new QLabel("Height/Width");
     heightBreadth = new QComboBox;
     heightBreadth->addItem("1:4");
     heightBreadth->addItem("2:4");
     heightBreadth->addItem("3:4");
     heightBreadth->addItem("4:4");
 
-    QLabel *labelDepthBreadth = new QLabel("Depth/Breadth");
+    QLabel *labelDepthBreadth = new QLabel("Depth/Width");
     depthBreadth = new QComboBox;
     depthBreadth->addItem("2:2");
     depthBreadth->addItem("3:2");
@@ -121,7 +121,7 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QLabel *angleUnit = new QLabel("degrees");
     incidenceAngle = new QSpinBox;
     incidenceAngle->setRange(0, 90);
-    incidenceAngle->setSingleStep(5);
+    incidenceAngle->setSingleStep(15);
 
     windTunnelGeometryLayout->addWidget(labelRoofType,0,1);
     windTunnelGeometryLayout->addWidget(roofType,0,3);
