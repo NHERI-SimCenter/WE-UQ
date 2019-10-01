@@ -349,7 +349,7 @@ LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
  LowRiseTPU::copyFiles(QString &destDir) {
 
      QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("createEvent") + QDir::separator()
+             + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
              + QString("LowRiseTPU") + QDir::separator() + QString("LowRiseTPU.py");
 
      bool result = this->copyFile(name1, destDir);
