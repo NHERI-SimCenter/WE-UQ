@@ -46,7 +46,7 @@ void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D 
     domainBox->setTranslation(domainCenter);
     domainBox->setGrid(domainGrid.x(), domainGrid.y());
 
-    inletTextTransform->setTranslation(QVector3D(domainCenter.x()-domainSize.x()/2.0f, domainSize.y()/2.0f-10.0f, -15.0f));
+    inletTextTransform->setTranslation(QVector3D(domainCenter.x()-domainSize.x()/2.0f, domainCenter.y()-10.0f, -15.0f));
 }
 
 void CWE3DView::setup3DView()

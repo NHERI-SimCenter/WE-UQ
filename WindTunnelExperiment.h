@@ -1,5 +1,5 @@
-#ifndef WIND_EVENT_SELECTION_H
-#define WIND_EVENT_SELECTION_H
+#ifndef WIND_TUNNEL_EXPERIMENT_H
+#define WIND_TUNNEL_EXPERIMENT_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,52 +41,44 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <SimCenterAppWidget.h>
 
-#include <QGroupBox>
-#include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <CFD/UI/CFDTemplateWidget.h>
-#include <RemoteService.h>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
-
+class InputWidgetParameters;
 class RandomVariablesContainer;
+class QComboBox;
+class QGridLayout;
+class QVBoxLayout;
+class QSpinBox;
+class QLineEdit;
+class LineEditRV;
+class QGroupBox;
+class QPushButton;
 
-class WindEventSelection : public  SimCenterAppWidget
+class WindTunnelExperiment : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEventSelection(RandomVariablesContainer *, RemoteService* remoteService, QWidget *parent = 0);
-    ~WindEventSelection();
+    explicit WindTunnelExperiment(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~WindTunnelExperiment();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
-    bool supportsLocalRun() override;
+    bool copyFiles(QString &dirName);
 
- signals:
+signals:
 
 public slots:
-   void eventSelectionChanged(const QString &arg1);
+   void clear(void);
+   void chooseFileName(void);
 
 private:
-   QComboBox   *eventSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEvent;
-
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
-   SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
-   SimCenterAppWidget *CFDExpertEventWidget;
-   SimCenterAppWidget *CFDBeginnerEventWidget;
-   SimCenterAppWidget *CFDTemplateEventWidget;
-   SimCenterAppWidget *theWindTunnelExperiment;
-
+   QComboBox   *shape;
+   LineEditRV  *windSpeed;
+   QLineEdit   *filename;
+   
    RandomVariablesContainer *theRandomVariablesContainer;
+   QStringList varNamesAndValues;
 };
 
-#endif // WIND_EVENT_SELECTION_H
+#endif // WIND_TUNNEL_EXPERIMENT_H

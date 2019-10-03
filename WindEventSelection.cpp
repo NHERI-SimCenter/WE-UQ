@@ -61,6 +61,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <ExistingSimCenterEvents.h>
 #include <DEDM_HRP.h>
 #include <LowRiseTPU.h>
+#include <WindTunnelExperiment.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
 #include <Inflow/inflowparameterwidget.h>
 
@@ -87,14 +88,15 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("DEDM_HRP"));
     eventSelection->addItem(tr("LowRiseTPU"));
-    //    eventSelection->addItem(tr("Wind Tunnel Data"));
+    eventSelection->addItem(tr("Wind Tunnel Experiment"));
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(1, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
     eventSelection->setItemData(2, "Guided OpenFOAM Simulation", Qt::ToolTipRole);
     eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
     eventSelection->setItemData(4, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
-    eventSelection->setItemData(5, "Forces using TPU Wind TUnnel Datasets", Qt::ToolTipRole);
+    eventSelection->setItemData(5, "Forces using TPU Wind Tunnel Datasets", Qt::ToolTipRole);
+    eventSelection->setItemData(5, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
     eventSelection->setItemData(6, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -129,6 +131,9 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theLowRiseTPU_Widget = new LowRiseTPU(theRandomVariablesContainer);
     theStackedWidget->addWidget(theLowRiseTPU_Widget);
+
+    theWindTunnelExperiment = new WindTunnelExperiment(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theWindTunnelExperiment);
 
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
@@ -187,6 +192,8 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 3;
     } else if (type.contains(QString("LowRiseTPU"))) {
         index = 4;
+    } else if (type.contains(QString("WindTunnelExperiment"))) {
+        index = 5;
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 0;
     } else if (type == QString("CWE")) {
@@ -196,7 +203,7 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     } else if (type == QString("CFD - Expert")) {
         index = 2;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-        index = 5;
+        index = 6;
     }
     else {
         return false;
@@ -251,8 +258,13 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = CFDExpertEventWidget;
     }
 
-    else if(arg1 == "Existing") {
+    else if(arg1 == "Wind Tunnel Experiment") {
         theStackedWidget->setCurrentIndex(5);
+        theCurrentEvent = theWindTunnelExperiment;
+    }
+
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theExistingEvents;
     }
 

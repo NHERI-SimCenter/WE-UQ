@@ -6,6 +6,7 @@
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
+CONFIG += debug_and_release
 CONFIG += c++11
 
 TARGET = WE-UQ
@@ -13,16 +14,24 @@ TEMPLATE = app
 
 macos:LIBS += /usr/lib/libcurl.dylib
 win32:INCLUDEPATH += "c:\Users\SimCenter\libCurl-7.59.0\include"
-win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
+#win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
 linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
+
+win32:INCLUDEPATH += "../curl-7.59/include"
+win32:LIBS += "../curl-7.59/lib/libcurl_a.lib"
+win32:DEFINES +=  CURL_STATICLIB
+
+win32:INCLUDEPATH += "../jansson/include"
+win32:LIBS += "../jansson/lib/jansson.lib"
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
 INCLUDEPATH += CFD
 INCLUDEPATH += CFD/UI
 INCLUDEPATH += CFD/Analysis
-INCLUDEPATH += CFD/CFDAnalysis
+INCLUDEPATH += CFD/CFDanalysis
 INCLUDEPATH += CFD/SimCenter_widgets
+DEFINES += _GRAPHICS_Qt3D
 
 win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
@@ -70,6 +79,7 @@ SOURCES += main.cpp \
     MeshParametersCWE.cpp \
     SimulationParametersCWE.cpp \
     LowRiseTPU.cpp \
+    WindTunnelExperiment.cpp \
     StochasticWindModel/src/WittigSinha.cpp \
     StochasticWindModel/src/StochasticWindInput.cpp \
     CFD/Analysis/filemetadata.cpp \
@@ -106,6 +116,7 @@ HEADERS  += \
     WorkflowAppWE.h \
     RunWidget.h \
     WindEventSelection.h \
+    WindTunnelExperiment.h \
     StandardWindEDP.h \
     WindEDP_Selection.h \
     DEDM_HRP.h \
@@ -126,8 +137,11 @@ HEADERS  += \
 
 
 RESOURCES += \
-    images.qrc \
-    we-uq-resources.qrc
+    ../EE-UQ/styles.qrc \
+    images.qrc
+
+#    ../EE-UQ/images.qrc \
+#    we-uq-resources.qrc
 
 #FORMS    += mainwindow.ui
 FORMS    += \

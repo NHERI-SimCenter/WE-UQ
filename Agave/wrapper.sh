@@ -138,7 +138,7 @@ else
 	fi
 
 	decomposePar > decomposePar.log
-	ibrun ${OpenFOAMSolver} > ${OpenFOAMSolver}.log
+	ibrun ${OpenFOAMSolver} -parallel > ${OpenFOAMSolver}.log
 	cd ..
 
 	# Get Building Forces from OpenFOAM post-processing

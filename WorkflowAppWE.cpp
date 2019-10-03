@@ -111,7 +111,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theRVs = new RandomVariablesContainer();
     theGI = GeneralInformationWidget::getInstance();
 
-    theSIM = new SIM_Selection(theRVs);
+    theSIM = new SIM_Selection(theRVs, true);
     theEvent = new WindEventSelection(theRVs, theService);
 
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
@@ -248,6 +248,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     treeView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff ); // hide the horizontal scroll bar
     treeView->setObjectName("treeViewOnTheLeft");
     treeView->setIndentation(0);
+    /*
     QFile file(":/styles/menuBar.qss");
     if(file.open(QFile::ReadOnly)) {
         treeView->setStyleSheet(file.readAll());
@@ -255,7 +256,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     }
     else
         qDebug() << "Open Style File Failed!";
-
+*/
 
     //
     // set up so that a slection change triggers the selectionChanged slot
@@ -362,8 +363,6 @@ WorkflowAppWE::selectionChangedSlot(const QItemSelection & /*newSelection*/, con
     //   theStackedWidget->setCurrentIndex(5);
     else if (selectedText == "RES")
         theStackedWidget->setCurrentIndex(6);
-
-    qDebug() << "AppSElection: DONE; " << theStackedWidget->currentIndex();
 
     theStackedWidget->currentWidget()->show();
 }
@@ -529,8 +528,8 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         return false;
 
     if (jsonObject.contains("UQ_Method")) {
-        QJsonObject jsonObjUQInformation = jsonObject["UQ"].toObject();
-        theEvent->inputFromJSON(jsonObjUQInformation);
+        QJsonObject jsonObjUQInformation = jsonObject["UQ_Method"].toObject();
+        theUQ_Method->inputFromJSON(jsonObjUQInformation);
     } else
         return false;
 

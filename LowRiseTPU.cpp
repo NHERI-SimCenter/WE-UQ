@@ -79,8 +79,8 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QPushButton *theLogo = new QPushButton("");
     QPixmap pixmap(":/Resources/LowRise/lowriseTPU.png");
     theLogo->setIcon(pixmap);
-    theLogo->setIconSize(pixmap.rect().size());
-    theLogo->setFixedSize(pixmap.rect().size());
+    theLogo->setIconSize(pixmap.rect().size()*.5);
+    theLogo->setFixedSize(pixmap.rect().size()*.5);
     width = pixmap.rect().size().width();
 
     QGroupBox* windTunnelGeometryBox = new QGroupBox("Wind Tunnel Building Geometry", this);
@@ -91,23 +91,23 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QPixmap pixmapFlat(":/Resources/LowRise/lowriseFlat.png");
 
     theBuildingButton->setIcon(pixmapFlat);
-    theBuildingButton->setIconSize(pixmapFlat.rect().size());
-    theBuildingButton->setFixedSize(pixmapFlat.rect().size());
+    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.5);
+    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.5);
     windTunnelGeometryLayout->addWidget(theBuildingButton,0,0,5,1,Qt::AlignVCenter);
 
     QLabel *labelRoofType = new QLabel("Roof Type");
     roofType = new QComboBox;
     roofType->addItem("Flat");
-    roofType->addItem("Gable");
+    //roofType->addItem("Gable");
 
-    QLabel *labelHeightBreadth = new QLabel("Height/Breadth");
+    QLabel *labelHeightBreadth = new QLabel("Height/Width");
     heightBreadth = new QComboBox;
     heightBreadth->addItem("1:4");
     heightBreadth->addItem("2:4");
     heightBreadth->addItem("3:4");
     heightBreadth->addItem("4:4");
 
-    QLabel *labelDepthBreadth = new QLabel("Depth/Breadth");
+    QLabel *labelDepthBreadth = new QLabel("Depth/Width");
     depthBreadth = new QComboBox;
     depthBreadth->addItem("2:2");
     depthBreadth->addItem("3:2");
@@ -121,7 +121,7 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     QLabel *angleUnit = new QLabel("degrees");
     incidenceAngle = new QSpinBox;
     incidenceAngle->setRange(0, 90);
-    incidenceAngle->setSingleStep(5);
+    incidenceAngle->setSingleStep(15);
 
     windTunnelGeometryLayout->addWidget(labelRoofType,0,1);
     windTunnelGeometryLayout->addWidget(roofType,0,3);
@@ -349,10 +349,16 @@ LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
  LowRiseTPU::copyFiles(QString &destDir) {
 
      QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("createEvent") + QDir::separator()
+             + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
              + QString("LowRiseTPU") + QDir::separator() + QString("LowRiseTPU.py");
 
-     return this->copyFile(name1, destDir);
+     bool result = this->copyFile(name1, destDir);
+     if (result == false) {
+         QString errorMessage; errorMessage = "LowRiseTPU - failed to copy file: " + name1 + "to: " + destDir;
+         emit sendFatalMessage(errorMessage);
+         qDebug() << errorMessage;
+     }
+     return result;
  }
 
  void

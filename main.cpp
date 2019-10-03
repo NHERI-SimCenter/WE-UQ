@@ -14,12 +14,15 @@
 #include <QTime>
 #include <QTextStream>
 #include <GoogleAnalytics.h>
+#include <QStandardPaths>
+#include <QDir>
+#include <SimCenterPreferences.h>
 
  // customMessgaeOutput code from web:
  // https://stackoverflow.com/questions/4954140/how-to-redirect-qdebug-qwarning-qcritical-etc-output
 
-const QString logFilePath = "debug.log";
-bool logToFile = false;
+static QString logFilePath;
+static bool logToFile = false;
 
 void customMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -47,53 +50,17 @@ void customMessageOutput(QtMsgType type, const QMessageLogContext &context, cons
         abort();
 }
 
-QString openStyleFiles()
-{
-    QString ret;
-    QFile mainStyleFile(":/Resources/styleSheets/WEUQStyles.qss");
-
-#ifdef Q_OS_WIN
-    QFile appendedStyle(":/Resources/styleSheets/WEUQWin.qss");
-#endif
-
-#ifdef Q_OS_MACOS
-    QFile appendedStyle(":/Resources/styleSheets/WEUQMac.qss");
-#endif
-
-#ifdef Q_OS_LINUX
-    QFile appendedStyle(":/Resources/styleSheets/WEUQLinux.qss");
-#endif
-
-    if (!mainStyleFile.open(QFile::ReadOnly))
-    {
-        return ret;
-    }
-
-    if (!appendedStyle.open(QFile::ReadOnly))
-    {
-        return ret;
-    }
-
-    ret = ret.append(mainStyleFile.readAll());
-    ret = ret.append(appendedStyle.readAll());
-
-    mainStyleFile.close();
-    appendedStyle.close();
-
-    return ret;
-}
-
 
 int main(int argc, char *argv[])
 {
 
     //
-    //Setting Core Application Name, Organization, Version and Google Analytics Tracking Id
+    // Setting Core Application Name, Organization, Version and Google Analytics Tracking Id
     //
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("1.0.0");
+    QCoreApplication::setApplicationVersion("2.0.0");
     // turn off while developing  GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
@@ -102,8 +69,13 @@ int main(int argc, char *argv[])
     // set up logging of output messages for user debugging
     //
 
+    logFilePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)
+            + QDir::separator() + QCoreApplication::applicationName()
+            + QDir::separator() + QString("debug.log");
+
+
     // remove old log file
-    QFile debugFile("debug.log");
+    QFile debugFile(logFilePath);
     debugFile.remove();
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
@@ -113,7 +85,11 @@ int main(int argc, char *argv[])
 
     qInstallMessageHandler(customMessageOutput);
 
-    // window scaling for mac
+    qDebug() << "logFile: " << logFilePath;
+
+    //
+    // window scaling
+    //
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QApplication a(argc, argv);
@@ -132,6 +108,7 @@ int main(int argc, char *argv[])
     //
     // create the main window
     //
+
     WorkflowAppWidget *theInputApp = new WorkflowAppWE(theRemoteService);
     MainWindowWorkflowApp w(QString("WE-UQ: Wind Engineering with Uncertainty Quantification"),theInputApp, theRemoteService);
 
@@ -141,10 +118,11 @@ int main(int argc, char *argv[])
     aboutTXT.close();
     w.setAbout(textAboutWE);
 
-    QString version("Version 1.0.0");
+    QString version("Version 2.0.0");
     w.setVersion(version);
 
-    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jaiwei Wan, & Dae Kun Kwon. (2019, July 9). NHERI-SimCenter/WE-UQ: Release v1.0.0 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3274228");
+    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jiawei Wan, & Dae Kun Kwon. (2019, September 30). NHERI-SimCenter/WE-UQ: Version 2.0.0 (Version v2.0.0). Zenodo. http://doi.org/10.5281/zenodo.3464692");
+
     w.setCite(citeText);
 
     QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE_UQ/");
@@ -163,25 +141,45 @@ int main(int argc, char *argv[])
     thread->start();
 
     //
-    // show the main window & start the event loop
+  // show the main window, set styles & start the event loop
     //
 
     w.show();
 
+#ifdef Q_OS_WIN
+    QFile file(":/styleCommon/stylesheetWIN.qss");
+#endif
 
-    QFile file(":/styleCommon/common_experimental.qss");
-    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
+#ifdef Q_OS_MACOS
+    QFile file(":/styleCommon/stylesheetMAC.qss");
+#endif
 
-    if(file.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
-      QString styleSheet = QLatin1String(file.readAll());
-      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
+#ifdef Q_OS_LINUX
+    QFile file(":/styleCommon/stylesheetMAC.qss");
+#endif
 
-      a.setStyleSheet(styleSheet+styleSheetEEUQ);
+
+    if(file.open(QFile::ReadOnly)) {
+      a.setStyleSheet(file.readAll());
       file.close();
-      fileEEUQ.close();
+    } else {
+      qDebug() << "could not open stylesheet";
     }
 
+/*
+    QFile fileCommon(":/styleCommon/common_experimental.qss");
+    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
 
+    if(fileCommon.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
+      QString styleSheet = QLatin1String(fileCommon.readAll());
+      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
+
+      //      a.setStyleSheet(styleSheet+styleSheetEEUQ);
+      a.setStyleSheet(styleSheet);
+      fileCommon.close();
+      fileEEUQ.close();
+    }
+*/
     /*
     theInputApp->setStyleSheet("QComboBox {background: #E0E0E0;} \
                                QGroupBox {font-weight: bold;}\
