@@ -421,16 +421,11 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
    // NOTE: Events treated differently, due to array nature of objects
     theEvent->outputToJSON(jsonObjectTop);
     theEvent->outputAppDataToJSON(apps);
-
-
-
-
     theRunWidget->outputToJSON(jsonObjectTop);
 
     jsonObjectTop["Applications"]=apps;
 
     //theRunLocalWidget->outputToJSON(jsonObjectTop);
-
 
     return true;
 }
