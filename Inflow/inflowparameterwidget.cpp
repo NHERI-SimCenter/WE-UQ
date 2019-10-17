@@ -762,7 +762,7 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
         out << endl;
 
 
-        out << "// turbulent intensity (symmTensorField)" << endl;
+        out << "// turbulence intensity (symmTensorField)" << endl;
         out << "IDict" << endl;
         out << "{" << endl;
         out << "    referenceValue         ("
