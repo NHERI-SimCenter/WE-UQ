@@ -2,7 +2,7 @@
 
 # WE-UQ
 
-![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)](https://doi.org/10.5281/zenodo.3464692)
+![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)]
 
 ### Wind Engineering with Uncertainty Quantification ###
 
@@ -24,11 +24,11 @@ Place the SimCenterCommon Repo in the same directory that you placed the WE-UQ r
 
 ##### 3. Install Qt: https://www.qt.io/
 
-Qt is free for open source develoeprs. Download it and start the Qt Creator application. From Qt creator open the WE-UQ.pro file and select build to build it.
+Qt is free for open source developers. Download it and start the Qt Creator application. From Qt Creator open the WE-UQ.pro file located in the directory the WE-UQ repo was downloaded into and select build to build it. For detailed instructions on using Qt, browse their website.
 
 #### 4. To run locally you will need to install and build the SimCenterBackendApplications Repo https://github.com/NHERI-SimCenter/SimCenterBackendApplications
 
-This is a series of applications, C++, C and Python. Follow the build instructions on SimCenterBackendApplications githib page.
+SimCenterBackendApplications contains a number of applications written in C++, C and Python. Follow the build instructions on SimCenterBackendApplications githib page to build them. Once built inside the WE-UQ applicationss preferences set the applications directory entry to point to the applications folder that the build process creates.
 
 ### Acknowledgement
 
