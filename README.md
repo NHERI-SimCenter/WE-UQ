@@ -26,9 +26,9 @@ Place the SimCenterCommon Repo in the same directory that you placed the WE-UQ r
 
 Qt is free for open source develoeprs. Download it and start the Qt Creator application. From Qt creator open the WE-UQ.pro file and select build to build it.
 
-#### 4. To run locally you will need to install and build the SimCenterBackend Repo https://github.com/NHERI-SimCenter/SimCenterBackendApplications
+#### 4. To run locally you will need to install and build the SimCenterBackendApplications Repo https://github.com/NHERI-SimCenter/SimCenterBackendApplications
 
-This is a series of applications, C++, C and Python. Follow the build instructions on githib page.
+This is a series of applications, C++, C and Python. Follow the build instructions on SimCenterBackendApplications githib page.
 
 ### Acknowledgement
 
