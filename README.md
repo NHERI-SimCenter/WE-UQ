@@ -2,7 +2,7 @@
 
 # WE-UQ
 
-![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)]
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)](https://doi.org/10.5281/zenodo.3464692)
 
 ### Wind Engineering with Uncertainty Quantification ###
 
