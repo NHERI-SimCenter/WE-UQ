@@ -28,7 +28,7 @@ Qt is free for open source developers. Download it and start the Qt Creator appl
 
 #### 4. To run locally you will need to install and build the SimCenterBackendApplications Repo https://github.com/NHERI-SimCenter/SimCenterBackendApplications
 
-SimCenterBackendApplications contains a number of applications written in C++, C and Python. Follow the build instructions on SimCenterBackendApplications githib page to build them. Once built inside the WE-UQ applicationss preferences set the applications directory entry to point to the applications folder that the build process creates.
+SimCenterBackendApplications contains a number of applications written in C++, C and Python. Follow the build instructions on the SimCenterBackendApplications githib page to build them. Once built inside the WE-UQ applicationss preferences set the applications directory entry to point to the applications folder that the build process creates.
 
 ### Acknowledgement
 
