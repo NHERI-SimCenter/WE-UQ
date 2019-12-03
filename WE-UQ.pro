@@ -6,7 +6,7 @@
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
-CONFIG += debug_and_release
+#CONFIG += debug_and_release
 CONFIG += c++11
 
 TARGET = WE-UQ
