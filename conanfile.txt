@@ -1,5 +1,5 @@
 [requires]
-SimCenterCommonQt/0.0.1@elhaddad/testing 
+SimCenterCommonQt/0.0.1@simcenter/testing 
 
 [generators]
 qmake
