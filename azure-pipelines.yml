@@ -46,8 +46,8 @@ steps:
     pip install wheel
     pip install conan --upgrade
     conan user
-    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter
+    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     conan remote list
   displayName: Conan Installation
   failOnStderr: false
