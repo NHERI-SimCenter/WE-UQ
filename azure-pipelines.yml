@@ -54,13 +54,14 @@ steps:
 
 - script: |
     conan install qt/5.9.8@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv --build missing
+    activate
   displayName: Install Qt
   failOnStderr: false
 
 - script: |
     git clone --branch conan https://github.com/el7addad/WE-UQ.git
     cd WE-UQ
-    conan install .
+    conan install . --build missing
     mkdir build
     cd build
     qmake ..
