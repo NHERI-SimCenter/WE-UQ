@@ -1,0 +1,67 @@
+# Ant
+# Build your Java projects and run tests with Apache Ant.
+# Add steps that save build artifacts and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+- release*
+- conan
+
+pr:
+- master
+
+strategy:
+  matrix:
+    linux:
+      imageName: "ubuntu-18.04"
+      CONAN_GCC_VERSIONS: 7
+      CONAN_CLANG_VERSIONS: ""
+    macHighSierra:
+      imageName: "macos-10.13"
+      CONAN_APPLE_CLANG_VERSIONS: 10.0
+    macMojave:
+      imageName: "macos-10.14"
+      CONAN_APPLE_CLANG_VERSIONS: 11.0
+    windows:
+      imageName: "vs2017-win2016"
+      CONAN_VISUAL_VERSIONS: 15
+      CONAN_VISUAL_RUNTIMES: MD,MDd
+
+  maxParallel: 4
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+# Use Python version
+- task: UsePythonVersion@0
+  displayName: Switch to Python 3.7
+  inputs:
+    versionSpec: '3.7' 
+    addToPath: true 
+    architecture: 'x64'
+
+- script: |
+    pip install wheel
+    pip install conan --upgrade
+    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+    conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter 
+  displayName: Conan Installation
+  failOnStderr: false
+
+- script: |
+    git clone --branch conan https://github.com/el7addad/WE-UQ.git
+    cd WE-UQ
+    conan install
+    mkdir build
+    cd build
+    qmake ..
+  displayName: QMake WE-UQ
+  failOnStderr: false
+
+- script: |
+    make
+    nmake
+  displayName: Build WE-UQ
+  failOnStderr: false
