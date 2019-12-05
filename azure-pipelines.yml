@@ -58,7 +58,7 @@ steps:
 - script: |
     git clone --branch conan https://github.com/el7addad/WE-UQ.git
     cd WE-UQ
-    conan install
+    conan install .
     mkdir build
     cd build
     qmake ..
