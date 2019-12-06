@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QThread>
 #include <QObject>
+#include <QDebug>
 
 #include <AgaveCurl.h>
 #include <WorkflowAppWE.h>
