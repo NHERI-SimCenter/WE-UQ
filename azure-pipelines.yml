@@ -54,7 +54,7 @@ steps:
 
 - script: |
     conan install qt/5.9.8@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv --build missing
-    activate
+    activate_run
   displayName: Install Qt
   failOnStderr: false
 
