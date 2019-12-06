@@ -50,12 +50,12 @@ steps:
     conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     conan remote list
   displayName: Conan Installation
-  failOnStderr: false
+
 
 - script: |
     conan install qt/5.9.8@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv --build missing
   displayName: Install Qt
-  failOnStderr: false
+
 
 - script: |
     conan install . --build missing
@@ -67,7 +67,7 @@ steps:
     make
   condition: or(eq( variables['Agent.OS'], 'Linux' ), eq( variables['Agent.OS'], 'Darwin' ))
   displayName: Build WE-UQ on Linux or MacOS
-  failOnStderr: false
+
 
 - script: |
     conan install . --build missing
@@ -76,14 +76,9 @@ steps:
     conan install qt/5.9.8@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv
     activate_run
     qmake ../WE-UQ-conan.pro
-  condition: eq( variables['Agent.OS'], 'Windows_NT' )
-  displayName: QMake WE-UQ on Windows
-  failOnStderr: false
-
-- script: |
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-    nmake /?
-    nmake release
+    nmake
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Build WE-UQ on Windows
-  failOnStderr: false
+
+
