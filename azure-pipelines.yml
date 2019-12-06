@@ -76,9 +76,9 @@ steps:
     mkdir build
     cd build
     conan install qt/5.9.8@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv
-    activate_run
+    call activate_run.bat    
+    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
     qmake ../WE-UQ-conan.pro
-    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
     nmake
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Build WE-UQ on Windows
