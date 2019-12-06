@@ -87,8 +87,6 @@ int main(int argc, char *argv[])
     debugFile.remove();
   QApplication a(argc, argv);
   Q_INIT_RESOURCE(images1);
-  Q_INIT_RESOURCE(images);
-  Q_INIT_RESOURCE(styles);
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 
@@ -103,8 +101,6 @@ int main(int argc, char *argv[])
     // window scaling
     //
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
-    QApplication a(argc, argv);
 
     //
     // create a remote interface

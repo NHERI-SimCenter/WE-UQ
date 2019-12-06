@@ -118,13 +118,6 @@ HEADERS  += \
     CFD/Analysis/remotejobdata.h
 
 
-RESOURCES += \
-    ../EE-UQ/styles.qrc \
-    images.qrc
-
-#    ../EE-UQ/images.qrc \
-#    we-uq-resources.qrc
-
 #FORMS    += mainwindow.ui
 FORMS    += \
     CFD/cwe_guiWidgets/cwe_parameters.ui \
