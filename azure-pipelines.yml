@@ -69,7 +69,7 @@ steps:
   failOnStderr: false
 
 - script: |
-    make
+    C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat x64
     nmake
   displayName: Build WE-UQ
   failOnStderr: false
