@@ -46,7 +46,7 @@ steps:
     pip install wheel
     pip install conan --upgrade
     conan user
-    conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter
+    conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter --insert 0
     conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
     conan remote list
   displayName: Conan Installation
@@ -69,7 +69,7 @@ steps:
   failOnStderr: false
 
 - script: |
-    C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat x64
+    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
     nmake
   displayName: Build WE-UQ
   failOnStderr: false
