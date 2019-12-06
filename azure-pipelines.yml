@@ -57,7 +57,7 @@ steps:
   displayName: Install Qt
   failOnStderr: false
 
-  - script: |
+- script: |
     conan install . --build missing
     mkdir build
     cd build
