@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
-#include "CWE.h"
+#include "BasicCFD.h"
 #include <QJsonObject>
 #include <QDebug>
 #include <QHBoxLayout>
@@ -58,7 +58,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDoubleSpinBox>
 #include <math.h>
 
-CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
 {
   // note: not keeping pointer to the random variables in this clsss
@@ -119,14 +119,14 @@ CWE::CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     setupConnections();
 }
 
-CWE::~CWE()
+BasicCFD::~BasicCFD()
 {
 
 }
 
 
 
-double CWE::toMilliMeters(QString lengthUnit) const
+double BasicCFD::toMilliMeters(QString lengthUnit) const
 {
     static std::map<QString,double> conversionMap
     {
@@ -146,7 +146,7 @@ double CWE::toMilliMeters(QString lengthUnit) const
 
 }
 
-void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter, QPoint& buildingGrid, QPoint& domainGrid)
+void BasicCFD::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter, QPoint& buildingGrid, QPoint& domainGrid)
 {
     auto generalInfo = GeneralInformationWidget::getInstance();
 
@@ -184,23 +184,23 @@ void CWE::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QV
     buildingGrid.setY(static_cast<int>(round(buildingSize.z()/buildingGridSize)));
 }
 
-void CWE::setupConnections()
+void BasicCFD::setupConnections()
 {
-    connect(meshParameters, &MeshParametersCWE::meshChanged, this, &CWE::update3DView);
+    connect(meshParameters, &MeshParametersCWE::meshChanged, this, &BasicCFD::update3DView);
 
     auto generalInfo = GeneralInformationWidget::getInstance();
 
-    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &CWE::update3DView);
-    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &CWE::update3DView);
+    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &BasicCFD::update3DView);
+    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &BasicCFD::update3DView);
 }
 
 
 bool
-CWE::outputToJSON(QJsonObject &jsonObject) {
+BasicCFD::outputToJSON(QJsonObject &jsonObject) {
 
     //Output basic info
     jsonObject["EventClassification"] = "Wind";
-    jsonObject["type"] = "CWE";
+    jsonObject["type"] = "BasicCFD";
     jsonObject["start"] = startTimeBox->value();
 
     //
@@ -219,12 +219,12 @@ CWE::outputToJSON(QJsonObject &jsonObject) {
 
 
 void
-CWE::clear(void)
+BasicCFD::clear(void)
 {
 
 }
 
-void CWE::update3DView()
+void BasicCFD::update3DView()
 {
     QVector3D buildingSize;
     QVector3D domainSize;
@@ -237,7 +237,7 @@ void CWE::update3DView()
 }
 
 bool
-CWE::inputFromJSON(QJsonObject &jsonObject)
+BasicCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     startTimeBox->setValue(jsonObject["start"].toDouble());
 
@@ -258,7 +258,7 @@ CWE::inputFromJSON(QJsonObject &jsonObject)
 
 
 bool
-CWE::outputAppDataToJSON(QJsonObject &jsonObject) {
+BasicCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     //
     // per API, need to add name of application to be called in AppLication
@@ -274,7 +274,7 @@ CWE::outputAppDataToJSON(QJsonObject &jsonObject) {
 }
 
 bool
-CWE::copyFiles(QString &dirName){
+BasicCFD::copyFiles(QString &dirName){
     auto generalInfo = GeneralInformationWidget::getInstance();
 
     //Read the dimensions from general information
@@ -296,13 +296,13 @@ CWE::copyFiles(QString &dirName){
     return result;
 }
 
-bool CWE::supportsLocalRun()
+bool BasicCFD::supportsLocalRun()
 {
     return false;
 }
 
 bool
-CWE::inputAppDataFromJSON(QJsonObject &jsonObject) {
+BasicCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
     return true;
 }

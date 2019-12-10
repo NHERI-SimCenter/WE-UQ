@@ -66,7 +66,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <Inflow/inflowparameterwidget.h>
 
 #include <UserDefinedApplication.h>
-#include <CWE.h>
+#include <BasicCFD.h>
 
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
@@ -92,7 +92,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(1, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
-    eventSelection->setItemData(2, "Guided OpenFOAM Simulation", Qt::ToolTipRole);
+    eventSelection->setItemData(2, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
     eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
     eventSelection->setItemData(4, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
     eventSelection->setItemData(5, "Forces using TPU Wind Tunnel Datasets", Qt::ToolTipRole);
@@ -117,7 +117,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-    CFDBeginnerEventWidget = new CWE(theRandomVariablesContainer);
+    CFDBeginnerEventWidget = new BasicCFD(theRandomVariablesContainer);
     theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
     //CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);
@@ -196,10 +196,8 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 5;
     } else if (type.contains(QString("StochasticWindInput"))) {
         index = 0;
-    } else if (type == QString("CWE")) {
+    } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
         index = 1;
-	//    } else if (type == QString("CFD - Guided")) {
-	//        index = 2;
     } else if (type == QString("CFD - Expert")) {
         index = 2;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
@@ -223,6 +221,7 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 
 void WindEventSelection::eventSelectionChanged(const QString &arg1)
 {
+    qDebug() << arg1;
     //
     // switch stacked widgets depending on text
     // note type output in json and name in pull down are not the same and hence the ||
@@ -243,7 +242,7 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theStochasticModel;
     }
 
-    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE")) {
+    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE") || (arg1 == "BasicCFD")) {
         theStackedWidget->setCurrentIndex(1);
         theCurrentEvent = CFDBeginnerEventWidget;
     }
@@ -271,6 +270,9 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     else {
         qDebug() << "ERROR .. WindEventSelection selection .. type unknown: " << arg1;
     }
+
+    // this is needed for some reason if Basic was last selected item!
+    eventSelection->repaint();
 }
 
 bool

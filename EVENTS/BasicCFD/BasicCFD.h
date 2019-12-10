@@ -1,5 +1,5 @@
-#ifndef CWE_H
-#define CWE_H
+#ifndef BASIC_CFD_H
+#define BASIC_CFD_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -63,12 +63,12 @@ class QStandardItem;
 class QStackedWidget;
 class QItemSelection;
 
-class CWE : public SimCenterAppWidget
+class BasicCFD : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit CWE(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
-    ~CWE() override;
+    explicit BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
+    ~BasicCFD() override;
 
     bool outputToJSON(QJsonObject &rvObject) override;
     bool inputFromJSON(QJsonObject &rvObject) override;
@@ -96,4 +96,4 @@ private:
     void setupConnections();
 };
 
-#endif // CWE_H
+#endif // BASIC_CFD_H
