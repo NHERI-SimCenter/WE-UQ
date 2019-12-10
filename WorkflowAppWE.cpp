@@ -64,7 +64,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "GeneralInformationWidget.h"
 #include <SIM_Selection.h>
 #include <RandomVariablesContainer.h>
-#include <InputWidgetSampling.h>
+#include <UQ_EngineSelection.h>
 #include <InputWidgetOpenSeesAnalysis.h>
 #include <QDir>
 #include <QFile>
@@ -115,7 +115,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theEvent = new WindEventSelection(theRVs, theService);
 
     theAnalysis = new InputWidgetOpenSeesAnalysis(theRVs);
-    theUQ_Method = new InputWidgetSampling();
+    theUQ_Selection = new UQ_EngineSelection(theRVs);
     theEDP = new WindEDP_Selection(theRVs);
 
     theResults = new DakotaResultsSampling(theRVs);
@@ -187,7 +187,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     // some of above widgets are inside some tabbed widgets
     //
 
-    theUQ = new InputWidgetUQ(theUQ_Method,theRVs);
+    theUQ = new InputWidgetUQ(theUQ_Selection,theRVs);
 
     //
     //
@@ -282,7 +282,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theStackedWidget->addWidget(theAnalysis);
     theStackedWidget->addWidget(theUQ);
     theStackedWidget->addWidget(theEDP);
-    // theStackedWidget->addWidget(theUQ_Method);
+    // theStackedWidget->addWidget(theUQ_Selection);
     theStackedWidget->addWidget(theResults);
 
     // add stacked widget to layout
@@ -401,13 +401,18 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     theEDP->outputAppDataToJSON(appsEDP);
     apps["EDP"]=appsEDP;
 
-    QJsonObject jsonObjectUQ;
-    theUQ_Method->outputToJSON(jsonObjectUQ);
-    jsonObjectTop["UQ_Method"] = jsonObjectUQ;
+    // QJsonObject jsonObjectUQ;
+    // theUQ_Selection->outputToJSON(jsonObjectUQ);
+    // jsonObjectTop["UQ_Method"] = jsonObjectUQ;
 
-    QJsonObject appsUQ;
-    theUQ_Method->outputAppDataToJSON(appsUQ);
-    apps["UQ"]=appsUQ;
+    theUQ_Selection->outputToJSON(jsonObjectTop);
+
+
+    //    QJsonObject appsUQ;
+    //    theUQ_Selection->outputAppDataToJSON(appsUQ);
+    //    apps["UQ"]=appsUQ;
+
+    theUQ_Selection->outputAppDataToJSON(apps);
 
     QJsonObject jsonObjectAna;
     theAnalysis->outputToJSON(jsonObjectAna);
@@ -433,6 +438,11 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
 
  void
  WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
+
+       theStackedWidget->removeWidget(theResults);
+       delete theResults;
+       theResults=theUQ_Selection->getResults();
+       theStackedWidget->addWidget(theResults);
 
       theResults->processResults(dakotaOut, dakotaTab);
       theRunWidget->hide();
@@ -485,11 +495,17 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
             return false;
 
 
+	/*
         if (theApplicationObject.contains("UQ")) {
             QJsonObject theObject = theApplicationObject["UQ"].toObject();
-            theUQ_Method->inputAppDataFromJSON(theObject);
+            theUQ_Selection->inputAppDataFromJSON(theObject);
         } else
             return false;
+
+	*/
+
+        if (theUQ_Selection->inputAppDataFromJSON(theApplicationObject) == false)
+            emit errorMessage("EE_UQ: failed to read UQ application");
 
         if (theApplicationObject.contains("Simulation")) {
             QJsonObject theObject = theApplicationObject["Simulation"].toObject();
@@ -522,12 +538,16 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     } else
         return false;
 
+    /*
     if (jsonObject.contains("UQ_Method")) {
         QJsonObject jsonObjUQInformation = jsonObject["UQ_Method"].toObject();
-        theUQ_Method->inputFromJSON(jsonObjUQInformation);
+        theUQ_Selection->inputFromJSON(jsonObjUQInformation);
     } else
         return false;
+    */
 
+    if (theUQ_Selection->inputFromJSON(jsonObject) == false)
+        emit errorMessage("EE_UQ: failed to read UQ Method data");
 
     return true;
 }
@@ -621,7 +641,7 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     theSIM->copyFiles(templateDirectory);
     theEvent->copyFiles(templateDirectory);
     theAnalysis->copyFiles(templateDirectory);
-    theUQ_Method->copyFiles(templateDirectory);
+    theUQ_Selection->copyFiles(templateDirectory);
     theEDP->copyFiles(templateDirectory);
 
     //
@@ -729,5 +749,5 @@ WorkflowAppWE::loadFile(const QString fileName){
 
 int
 WorkflowAppWE::getMaxNumParallelTasks() {
-    return theUQ_Method->getNumParallelTasks();
+    return theUQ_Selection->getNumParallelTasks();
 }
