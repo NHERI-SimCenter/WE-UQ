@@ -55,7 +55,7 @@ steps:
 
 
 - script: |
-    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv --build missing
+    conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv --build missing
   displayName: Install Qt
 
 
@@ -63,7 +63,7 @@ steps:
     conan install . --build missing
     mkdir build
     cd build
-    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv
+    conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
     source activate_run.sh
     qmake ../WE-UQ-conan.pro
     make
@@ -75,7 +75,7 @@ steps:
     conan install . --build missing
     mkdir build
     cd build
-    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -g virtualrunenv
+    conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
     call activate_run.bat    
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
     qmake ../WE-UQ-conan.pro
@@ -84,3 +84,21 @@ steps:
   displayName: Build WE-UQ on Windows
 
 
+- script: |
+    macdeployqt WE_UQ.app
+    zip -r WE-UQ_Mac.zip WE_UQ.app
+  condition: eq( variables['Agent.OS'], 'Darwin' )
+  displayName: Deploy Qt App on Mac
+
+- script: |
+    mkdir WE-UQ
+    copy .\release\WE_UQ.exe WE-UQ
+    windeployqt WE-UQ\WE_UQ.exe
+    powershell Compress-Archive -Path WE-UQ -DestinationPath WE-UQ_Windows_Download.zip
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: Deploy Qt App on Windows
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: ./build/*.zip
+    displayName: Publish WE-UQ Artifacts
