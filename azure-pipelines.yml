@@ -65,8 +65,8 @@ steps:
     cd build
     conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
     source activate_run.sh
-    qmake ../WE-UQ-conan.pro
-    make
+    qmake ../WE-UQ-conan.pro "CONFIG+=Release"
+    make Release
   condition: or(eq( variables['Agent.OS'], 'Linux' ), eq( variables['Agent.OS'], 'Darwin' ))
   displayName: Build WE-UQ on Linux or MacOS
 
@@ -78,19 +78,25 @@ steps:
     conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
     call activate_run.bat    
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-    qmake ../WE-UQ-conan.pro
-    nmake
+    qmake ../WE-UQ-conan.pro "CONFIG+=Release"
+    nmake Release
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Build WE-UQ on Windows
 
 
 - script: |
+    cd build
+    conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
+    source activate_run.sh
     macdeployqt WE_UQ.app
     zip -r WE-UQ_Mac.zip WE_UQ.app
   condition: eq( variables['Agent.OS'], 'Darwin' )
   displayName: Deploy Qt App on Mac
 
 - script: |
+    cd build
+    conan install qt/5.12.6@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -o qt:multiconfiguration=True -g virtualrunenv
+    call activate_run.bat
     mkdir WE-UQ
     copy .\release\WE_UQ.exe WE-UQ
     windeployqt WE-UQ\WE_UQ.exe
