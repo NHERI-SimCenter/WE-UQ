@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+#Run Conan to install dependencies
+system(cd $$OUT_PWD && conan install $$PWD --build missing)
 
 CONFIG += conan_basic_setup
 include($$OUT_PWD/conanbuildinfo.pri)

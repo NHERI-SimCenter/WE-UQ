@@ -62,7 +62,6 @@ steps:
 - script: |
     mkdir build
     cd build
-    conan install .. --build missing
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     source activate_run.sh
     qmake ../WE-UQ-conan.pro "CONFIG+=Release"
@@ -74,7 +73,6 @@ steps:
 - script: |
     mkdir build
     cd build
-    conan install .. --build missing
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     call activate_run.bat    
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
@@ -90,6 +88,9 @@ steps:
     source activate_run.sh
     macdeployqt WE_UQ.app
     zip -r WE-UQ_Mac.zip WE_UQ.app
+    mkdir Package
+    mv WE-UQ_MAC.zip Package
+    mv WE_UQ.app Package/WE_UQ.app
   condition: eq( variables['Agent.OS'], 'Darwin' )
   displayName: Deploy Qt App on Mac
 
@@ -97,16 +98,22 @@ steps:
     cd build
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     call activate_run.bat
-    mkdir WE-UQ
-    copy .\release\WE_UQ.exe WE-UQ
-    copy .\release\applications WE-UQ
-    windeployqt WE-UQ\WE_UQ.exe
-    powershell Compress-Archive -Path WE-UQ -DestinationPath WE-UQ_Windows_Download.zip
+    mkdir Package\WE-UQ\applications
+    copy .\release\WE_UQ.exe Package\WE-UQ
+    xcopy /E /C .\release\applications Package\WE-UQ\applications
+    windeployqt Package\WE-UQ\WE_UQ.exe
+    powershell Compress-Archive -Path Package\WE-UQ -DestinationPath Package\WE-UQ_Windows_Download.zip
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Deploy Qt App on Windows
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: './build'
-    patterns: '**/*.zip'
+    targetPath: './build/Package'
     displayName: Publish WE-UQ Artifacts
+  condition: or(eq( variables['Agent.OS'], 'Windows_NT' ), eq( variables['Agent.OS'], 'Darwin' ))
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: './build/Package'
+    artifactName: WE-UQ
+  condition: or(eq( variables['Agent.OS'], 'Windows_NT' ), eq( variables['Agent.OS'], 'Darwin' ))

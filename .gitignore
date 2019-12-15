@@ -64,3 +64,6 @@ extractEDP
 WE-UQ.pro.user.4.9-pre1
 
 WE-UQ.pro.user.4.10-pre1
+
+# Build folder
+build/*
