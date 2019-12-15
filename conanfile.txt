@@ -1,8 +1,0 @@
-[requires]
-SimCenterCommonQt/0.0.2@simcenter/testing 
-
-[options]
-SimCenterCommonQt:MDOFwithQt3D=True
-
-[generators]
-qmake
