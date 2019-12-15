@@ -4,8 +4,9 @@
 #
 #-------------------------------------------------
 
+
 CONFIG += conan_basic_setup
-include($$PWD/conanbuildinfo.pri)
+include($$OUT_PWD/conanbuildinfo.pri)
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 

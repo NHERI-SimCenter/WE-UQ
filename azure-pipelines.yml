@@ -60,9 +60,9 @@ steps:
 
 
 - script: |
-    conan install . --build missing
     mkdir build
     cd build
+    conan install .. --build missing
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     source activate_run.sh
     qmake ../WE-UQ-conan.pro "CONFIG+=Release"
@@ -72,9 +72,9 @@ steps:
 
 
 - script: |
-    conan install . --build missing
     mkdir build
     cd build
+    conan install .. --build missing
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     call activate_run.bat    
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
@@ -99,6 +99,7 @@ steps:
     call activate_run.bat
     mkdir WE-UQ
     copy .\release\WE_UQ.exe WE-UQ
+    copy .\release\applications WE-UQ
     windeployqt WE-UQ\WE_UQ.exe
     powershell Compress-Archive -Path WE-UQ -DestinationPath WE-UQ_Windows_Download.zip
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
