@@ -4,11 +4,7 @@
 #
 #-------------------------------------------------
 
-#Run Conan to install dependencies
-system(cd $$OUT_PWD && conan install $$PWD --build missing)
-
-CONFIG += conan_basic_setup
-include($$OUT_PWD/conanbuildinfo.pri)
+include($$PWD/ConanHelper.pri)
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
@@ -33,104 +29,20 @@ win32 {
     }
 }
 
+include(./WindEvents.pri)
 
 SOURCES += main.cpp \
-    CFD/CFDanalysis/CFDanalysisType.cpp \
-    CFD/CFDanalysis/CFDcaseInstance.cpp \
-    CFD/UI/CFDExpertWidget.cpp \
-    CFD/UI/CWE3DView.cpp \
-    CFD/UI/Edged3DBox.cpp \
-    CFD/UI/GeometryHelper.cpp \
-    CFD/UI/CFDTemplateWidget.cpp \
-    CFD/UI/Graphics3DAxes.cpp \
-    CFD/UI/PatchesSelector.cpp \
-    CFD/UI/RemoteCaseSelector.cpp \
-    CFD/UI/SubdomainsModel.cpp \
-    CFD/cfd_globals.cpp \
-    CFD/cwe_guiWidgets/cwe_parameters.cpp \
-    CFD/cwe_guiWidgets/cwe_state_label.cpp \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.cpp \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
-    Inflow/inflowparameterwidget.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
-    WindEventSelection.cpp \
     WindEDP_Selection.cpp \
-    StandardWindEDP.cpp \
-    DEDM_HRP.cpp \
-    CWE.cpp \
-    MeshParametersCWE.cpp \
-    SimulationParametersCWE.cpp \
-    LowRiseTPU.cpp \
-    WindTunnelExperiment.cpp \
-    StochasticWindModel/src/WittigSinha.cpp \
-    StochasticWindModel/src/StochasticWindInput.cpp \
-    CFD/Analysis/filemetadata.cpp \
-    CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
-    CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
-    CFD/SimCenter_widgets/sctrfiledatawidget.cpp \
-    CFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
-    CFD/SimCenter_widgets/sctrstddatawidget.cpp \
-    CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
-    CFD/Analysis/remotejobdata.cpp
-
+    StandardWindEDP.cpp
 
 HEADERS  += \
-    CFD/CFDanalysis/CFDanalysisType.h \
-    CFD/CFDanalysis/CFDcaseInstance.h \
-    CFD/SimCenter_widgets/sctrstates.h \
-    CFD/UI/CFDTemplateWidget.h \
-    CFD/UI/CFDExpertWidget.h \
-    CFD/UI/CWE3DView.h \
-    CFD/UI/Edged3DBox.h \
-    CFD/UI/GeometryHelper.h \
-    CFD/UI/Graphics3DAxes.h \
-    CFD/UI/PatchesSelector.h \
-    CFD/UI/RemoteCaseSelector.h \
-    CFD/UI/SubdomainsModel.h \
-    CFD/cfd_globals.h \
-    CFD/cwe_guiWidgets/cwe_parameters.h \
-    CFD/cwe_guiWidgets/cwe_state_label.h \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
-    Inflow/inflowparameterwidget.h \
     WorkflowAppWE.h \
     RunWidget.h \
-    WindEventSelection.h \
-    WindTunnelExperiment.h \
     StandardWindEDP.h \
-    WindEDP_Selection.h \
-    DEDM_HRP.h \
-    CWE.h \
-    MeshParametersCWE.h \
-    SimulationParametersCWE.h \
-    LowRiseTPU.h \
-    StochasticWindModel/include/WittigSinha.h \
-    StochasticWindModel/include/StochasticWindInput.h \
-    CFD/Analysis/filemetadata.h \
-    CFD/SimCenter_widgets/sctrbooldatawidget.h \
-    CFD/SimCenter_widgets/sctrchoicedatawidget.h \
-    CFD/SimCenter_widgets/sctrfiledatawidget.h \
-    CFD/SimCenter_widgets/sctrmasterdatawidget.h \
-    CFD/SimCenter_widgets/sctrstddatawidget.h \
-    CFD/SimCenter_widgets/sctrtextdatawidget.h \
-    CFD/Analysis/remotejobdata.h
+    WindEDP_Selection.h
 
-
-#FORMS    += mainwindow.ui
-FORMS    += \
-    CFD/cwe_guiWidgets/cwe_parameters.ui \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.ui \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \
-    CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.ui \
-    Inflow/inflowparameterwidget.ui
-
-#RESOURCES += \
-#    schema.qrc
 
 DISTFILES += \
     WEUQinstaller/InstallScripts/README.txt \
@@ -155,3 +67,5 @@ DISTFILES += \
     wImage4.gif \
     wImage1.png \
     wImage_DEDM_HRP_Logo
+
+OTHER_FILES += conanfile.py
