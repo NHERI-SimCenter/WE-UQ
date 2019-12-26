@@ -67,7 +67,7 @@ steps:
     cd build
     conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
     source activate_run.sh
-    qmake ../WE-UQ-conan.pro "CONFIG+=Release"
+    qmake ../WE-UQ.pro "CONFIG+=Release"
     make
   condition: or(eq( variables['Agent.OS'], 'Linux' ), eq( variables['Agent.OS'], 'Darwin' ))
   displayName: Build WE-UQ on Linux or MacOS
@@ -81,7 +81,7 @@ steps:
     conan install jom_installer/1.1.2@bincrafters/stable -g virtualrunenv
     call activate_run.bat
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-    qmake ../WE-UQ-conan.pro "CONFIG+=Release"
+    qmake ../WE-UQ.pro "CONFIG+=Release"
     jom
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Build WE-UQ on Windows
