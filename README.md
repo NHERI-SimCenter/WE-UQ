@@ -1,13 +1,14 @@
 
 
-# WE-UQ
+# WE-UQ 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)](https://doi.org/10.5281/zenodo.3464692)
 
 |Build OS|Windows|MacOS|Linux|
 |---|---|---|---|
-|Status|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=conan&jobName=Job&configuration=Job%20windows)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=conan)|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=conan&jobName=Job&configuration=Job%20macHighSierra)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=conan)|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=conan&jobName=Job&configuration=Job%20linux)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=conan)|
+|Status|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=master&jobName=Job&configuration=Job%20windows)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=master&jobName=Job&configuration=Job%20macHighSierra)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=master)|[![Build Status](https://el7addad.visualstudio.com/NHERI%20SimCenter/_apis/build/status/el7addad.WE-UQ?branchName=master&jobName=Job&configuration=Job%20linux)](https://el7addad.visualstudio.com/NHERI%20SimCenter/_build/latest?definitionId=4&branchName=master)|
 
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)](https://doi.org/10.5281/zenodo.3464692)
+
 
 ### Wind Engineering with Uncertainty Quantification ###
 
