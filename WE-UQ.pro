@@ -6,7 +6,7 @@
 
 include($$PWD/ConanHelper.pri)
 
-QT       += core gui charts concurrent network 3dcore 3drender 3dextras
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras printsupport
 
 TARGET = WE_UQ
 TEMPLATE = app

@@ -78,8 +78,12 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     //
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
-    QLabel *label = new QLabel();
-    label->setText(QString("Loading Type"));
+    //QLabel *label = new QLabel();
+    SectionTitle *label = new SectionTitle();
+    label->setMinimumWidth(200);
+    label->setText(QString("Load Generator"));
+
+
     eventSelection = new QComboBox();
 
     eventSelection->addItem(tr("Stochastic Wind"));
@@ -101,6 +105,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
+    QSpacerItem *spacer = new QSpacerItem(50,10);
+    theSelectionLayout->addItem(spacer);
     theSelectionLayout->addWidget(eventSelection,1);
     theSelectionLayout->addStretch(2);
     layout->addLayout(theSelectionLayout);
