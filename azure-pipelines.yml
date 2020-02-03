@@ -1,0 +1,124 @@
+# This pipeline builds WE-UQ and published the release artifacts
+
+trigger:
+- master
+- release*
+- conan
+
+pr:
+- master
+
+strategy:
+  matrix:
+    linux:
+      imageName: "ubuntu-18.04"
+      CONAN_GCC_VERSIONS: 7
+      CONAN_CLANG_VERSIONS: ""
+    macHighSierra:
+      imageName: "macos-10.13"
+      CONAN_APPLE_CLANG_VERSIONS: 10.0
+    macMojave:
+      imageName: "macos-10.14"
+      CONAN_APPLE_CLANG_VERSIONS: 11.0
+    windows:
+      imageName: "vs2017-win2016"
+      CONAN_VISUAL_VERSIONS: 15
+      CONAN_VISUAL_RUNTIMES: MD,MDd
+
+  maxParallel: 4
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+# Use Python version
+- task: UsePythonVersion@0
+  displayName: Switch to Python 3.7
+  inputs:
+    versionSpec: '3.7' 
+    addToPath: true 
+    architecture: 'x64'
+
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install --upgrade setuptools
+    pip install wheel
+    pip install conan --upgrade
+    conan user
+    conan remote add simcenter https://api.bintray.com/conan/nheri-simcenter/simcenter --insert 0
+    conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+    conan remote list
+  displayName: Conan Installation
+
+
+- script: |
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv --build missing
+  displayName: Install Qt
+
+
+- script: |
+    conan install mkl-static/2019.4@simcenter/stable --build
+  displayName: Install mkl-static Conan package(forcing build)
+
+
+- script: |
+    mkdir build
+    cd build
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
+    source activate_run.sh
+    qmake ../WE-UQ.pro "CONFIG+=Release"
+    make
+  condition: or(eq( variables['Agent.OS'], 'Linux' ), eq( variables['Agent.OS'], 'Darwin' ))
+  displayName: Build WE-UQ on Linux or MacOS
+
+
+- script: |
+    mkdir build
+    cd build
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
+    call activate_run.bat    
+    conan install jom_installer/1.1.2@bincrafters/stable -g virtualrunenv
+    call activate_run.bat
+    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+    qmake ../WE-UQ.pro "CONFIG+=Release"
+    jom
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: Build WE-UQ on Windows
+
+
+- script: |
+    cd build
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
+    source activate_run.sh
+    macdeployqt WE_UQ.app
+    zip -r WE-UQ_Mac.zip WE_UQ.app
+    mkdir Package
+    mv WE-UQ_MAC.zip Package
+    mv WE_UQ.app Package/WE_UQ.app
+  condition: eq( variables['Agent.OS'], 'Darwin' )
+  displayName: Deploy Qt App on Mac
+
+- script: |
+    cd build
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
+    call activate_run.bat
+    mkdir Package\WE-UQ\applications
+    copy .\release\WE_UQ.exe Package\WE-UQ
+    xcopy /E /C .\release\applications Package\WE-UQ\applications
+    windeployqt Package\WE-UQ\WE_UQ.exe
+    powershell Compress-Archive -Path Package\WE-UQ -DestinationPath Package\WE-UQ_Windows_Download.zip
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: Deploy Qt App on Windows
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: './build/Package'
+    displayName: Publish WE-UQ Artifacts
+  condition: or(eq( variables['Agent.OS'], 'Windows_NT' ), eq( variables['Agent.OS'], 'Darwin' ))
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: './build/Package'
+    artifactName: WE-UQ
+  condition: or(eq( variables['Agent.OS'], 'Windows_NT' ), eq( variables['Agent.OS'], 'Darwin' ))

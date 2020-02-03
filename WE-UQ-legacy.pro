@@ -4,13 +4,25 @@
 #
 #-------------------------------------------------
 
-include($$PWD/ConanHelper.pri)
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras
 
-QT       += core gui charts concurrent network 3dcore 3drender 3dextras printsupport
+#CONFIG += debug_and_release
+CONFIG += c++11
 
-TARGET = WE_UQ
+TARGET = WE-UQ
 TEMPLATE = app
 
+macos:LIBS += /usr/lib/libcurl.dylib
+win32:INCLUDEPATH += "c:\Users\SimCenter\libCurl-7.59.0\include"
+#win32:LIBS += C:\Users\SimCenter\libCurl-7.59.0/lib/libcurl.lib
+linux:LIBS += /usr/lib/x86_64-linux-gnu/libcurl.so
+
+win32:INCLUDEPATH += "../curl-7.59/include"
+win32:LIBS += "../curl-7.59/lib/libcurl_a.lib"
+win32:DEFINES +=  CURL_STATICLIB
+
+win32:INCLUDEPATH += "../jansson/include"
+win32:LIBS += "../jansson/lib/jansson.lib"
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
@@ -19,9 +31,9 @@ INCLUDEPATH += CFD/UI
 INCLUDEPATH += CFD/Analysis
 INCLUDEPATH += CFD/CFDanalysis
 INCLUDEPATH += CFD/SimCenter_widgets
+DEFINES += _GRAPHICS_Qt3D
 
 win32 {
-    LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
 } else {
     mac {
@@ -29,7 +41,14 @@ win32 {
     }
 }
 
+include(../SimCenterCommon/Workflow/Workflow.pri)
+include(../SimCenterCommon/Common/Common.pri)
+include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
+include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
 include(./WindEvents.pri)
+include(./MiniZip/MiniZip.pri)
+
+INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
     WorkflowAppWE.cpp \
@@ -43,6 +62,18 @@ HEADERS  += \
     StandardWindEDP.h \
     WindEDP_Selection.h
 
+RESOURCES += \
+    ../EE-UQ/styles.qrc \
+    images.qrc
+
+#    ../EE-UQ/images.qrc \
+#    we-uq-resources.qrc
+
+#FORMS    += mainwindow.ui
+
+
+#RESOURCES += \
+#    schema.qrc
 
 DISTFILES += \
     WEUQinstaller/InstallScripts/README.txt \
@@ -68,4 +99,3 @@ DISTFILES += \
     wImage1.png \
     wImage_DEDM_HRP_Logo
 
-OTHER_FILES += conanfile.py
