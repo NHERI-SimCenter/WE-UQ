@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts concurrent network 3dcore 3drender 3dextras
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras printsupport
 
 #CONFIG += debug_and_release
 CONFIG += c++11
