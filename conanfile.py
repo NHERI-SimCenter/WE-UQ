@@ -5,6 +5,8 @@ class WEUQ(ConanFile):
     generators = "qmake"
     requires = "SimCenterCommonQt/0.1.0@simcenter/testing", "SimCenterBackendApplications/1.1.0@simcenter/stable"
 
+    default_options = {"SimCenterCommonQt:MDOFwithQt3D": True}
+
     def configure(self):
         if self.settings.os == "Windows":
             self.options["libcurl"].with_winssl = True
