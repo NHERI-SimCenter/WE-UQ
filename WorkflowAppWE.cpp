@@ -396,7 +396,8 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         }
 
         if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false)
-            emit errorMessage("EE_UQ: failed to read FEM application"); {
+        if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false){
+            emit errorMessage("EE_UQ: failed to read FEM application");
             return false;
         }
 
