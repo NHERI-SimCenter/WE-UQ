@@ -3,7 +3,7 @@ from conans import ConanFile
 class WEUQ(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "qmake"
-    requires = "SimCenterCommonQt/0.1.0@simcenter/testing", "SimCenterBackendApplications/1.1.0@simcenter/stable"
+    requires = "SimCenterCommonQt/0.1.1@simcenter/testing", "SimCenterBackendApplications/1.1.0@simcenter/stable"
 
     default_options = {"SimCenterCommonQt:MDOFwithQt3D": True}
 
