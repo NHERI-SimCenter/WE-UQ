@@ -24,4 +24,5 @@ class WEUQ(ConanFile):
         self.copy("createSAM/*", dst=appsDestination, src="bin")
         self.copy("createEDP/*", dst=appsDestination, src="bin")
         self.copy("performSIMULATION/*", dst=appsDestination, src="bin")
+        self.copy("performUQ/*", dst=appsDestination, src="bin")
         self.copy("Workflow/*", dst=appsDestination, src="bin")
