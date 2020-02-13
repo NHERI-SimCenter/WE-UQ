@@ -16,8 +16,8 @@ CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, 
 
     setupConnections();
 
-    originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/U.orig";
-    originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "WE-UQ/controlDict.orig";
+    originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/U.orig";
+    originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/controlDict.orig";
 }
 
 bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
