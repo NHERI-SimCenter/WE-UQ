@@ -42,6 +42,8 @@ private:
     QString originalControlDictPath;
     QStringList patchesList;
 
+    bool shown;
+
 
     void downloadRemoteCaseFiles();
     void ensureUFileExists();
@@ -53,6 +55,10 @@ private:
     bool validateSelectedPatches();
     void autoSelectPatches();
 
+
+    // QWidget interface
+protected:
+    void showEvent(QShowEvent *event) override;
 };
 
 #endif // CFDEXPERTWIDGET_H

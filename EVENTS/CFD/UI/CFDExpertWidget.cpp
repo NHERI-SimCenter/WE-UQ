@@ -8,7 +8,7 @@
 #include <QDialog>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
-    : SimCenterAppWidget(parent), remoteService(remoteService)
+    : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
 {
     inflowWidget    = new InflowParameterWidget(theRandomVariableIW, true);
 
@@ -352,7 +352,7 @@ void CFDExpertWidget::setupConnections()
 
     connect(remoteService, &RemoteService::loginReturn, this, [this](bool loggedIn)
     {
-        if(loggedIn)
+        if(loggedIn && shown)
         {
             loginRequiredLabel->hide();
             this->setEnabled(true);
@@ -444,4 +444,11 @@ void CFDExpertWidget::autoSelectPatches()
     }
 
     patchesEditBox->setText(selectedPatches.join(','));
+}
+
+
+void CFDExpertWidget::showEvent(QShowEvent *event)
+{
+    if (!shown)
+        shown = true;
 }
