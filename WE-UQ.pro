@@ -71,4 +71,4 @@ DISTFILES += \
     wImage1.png \
     wImage_DEDM_HRP_Logo
 
-OTHER_FILES += conanfile.py
+OTHER_FILES += conanfile.py azure-pipelines.yml

@@ -8,16 +8,19 @@ trigger:
 pr:
 - master
 
+variables:
+- group: ConanVariables
+
 strategy:
   matrix:
     linux:
       imageName: "ubuntu-18.04"
       CONAN_GCC_VERSIONS: 7
       CONAN_CLANG_VERSIONS: ""
-    macHighSierra:
-      imageName: "macos-10.13"
-      CONAN_APPLE_CLANG_VERSIONS: 10.0
-    macMojave:
+    macOSXCatalina:
+      imageName: "macos-10.15"
+      CONAN_APPLE_CLANG_VERSIONS: 11.0
+    macOSXMojave:
       imageName: "macos-10.14"
       CONAN_APPLE_CLANG_VERSIONS: 11.0
     windows:
