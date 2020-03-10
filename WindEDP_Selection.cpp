@@ -198,6 +198,8 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
     if (theCurrentEDP != 0) {
         return theCurrentEDP->inputAppDataFromJSON(jsonObject);
     }
+
+    return false;
 }
 
 bool

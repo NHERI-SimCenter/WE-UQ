@@ -214,6 +214,7 @@ void MeshParametersCWE::setupConnection()
 {
     connect(numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
     {
+        Q_UNUSED(index);
         int nSubdomains = this->numSubdomains->currentData().toInt();
         subdomainsModel->setSubdomains(nSubdomains,
                                        domainLengthInlet->text().toDouble(),
@@ -237,41 +238,49 @@ void MeshParametersCWE::setupConnection()
 
     connect(domainLengthInlet, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(domainLengthOutlet, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(domainLengthYneg, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(domainLengthYpos, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(domainLengthZneg, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(domainLengthZpos, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(gridSizeBluffBody, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 
     connect(gridSizeOuterBoundary, &QLineEdit::textChanged, this, [this](const QString& text)
     {
+        Q_UNUSED(text);
         emit meshChanged();
     });
 }
@@ -372,6 +381,7 @@ MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 
  bool
  MeshParametersCWE::copyFiles(QString &destDir) {
+     Q_UNUSED(destDir);
      return true;
  }
 

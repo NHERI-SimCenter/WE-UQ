@@ -12,6 +12,7 @@
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
 {
+    Q_UNUSED(theRandomVariableIW);
     parameterWidget = new CWE_Parameters(this);
 
     initializeUI();

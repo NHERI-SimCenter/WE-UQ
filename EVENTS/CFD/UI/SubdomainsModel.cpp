@@ -11,11 +11,13 @@ SubdomainsModel::SubdomainsModel(int size, QObject *parent) : QAbstractTableMode
 
 int SubdomainsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return subdomains.count();
 }
 
 int SubdomainsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return 7;
 }
 

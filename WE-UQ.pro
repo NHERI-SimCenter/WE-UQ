@@ -8,6 +8,9 @@ include($$PWD/ConanHelper.pri)
 
 QT       += core gui charts concurrent network 3dcore 3drender 3dextras printsupport
 
+#Disable m64 flag on windows
+win32:QMAKE_CXXFLAGS -= -m64 #TODO: This seems to be cause by smelt Conan package
+
 TARGET = WE_UQ
 TEMPLATE = app
 

@@ -45,6 +45,7 @@
 CWE_Parameters::CWE_Parameters(QWidget *parent)
   : ui(new Ui::CWE_Parameters)
 {
+    Q_UNUSED(parent);
     ui->setupUi(this);
     ui->theTabWidget->setController(this);
 }
@@ -203,11 +204,13 @@ void CWE_Parameters::createUnderlyingParamWidgets()
 
 void CWE_Parameters::setSaveAllButtonDisabled(bool newSetting)
 {
+    Q_UNUSED(newSetting);
     //ui->pbtn_saveAllParameters->setDisabled(newSetting);
 }
 
 void CWE_Parameters::setSaveAllButtonEnabled(bool newSetting)
 {
+    Q_UNUSED(newSetting);
     //ui->pbtn_saveAllParameters->setEnabled(newSetting);
 }
 
@@ -351,6 +354,7 @@ bool CWE_Parameters::inputFromJSON(QJsonObject &rvObject)
 
 bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
 {
+    Q_UNUSED(rvObject);
     rvObject["EventClassification"]="Wind";
     rvObject["Application"] = "CFD Guided";
     QJsonObject dataObj;
@@ -362,5 +366,6 @@ bool CWE_Parameters::outputAppDataToJSON(QJsonObject &rvObject)
 
 bool CWE_Parameters::inputAppDataFromJSON(QJsonObject &rvObject)
 {
+    Q_UNUSED(rvObject);
     return true;
 }

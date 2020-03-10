@@ -186,7 +186,7 @@ WindTunnelExperiment::outputAppDataToJSON(QJsonObject &jsonObject) {
 bool
 WindTunnelExperiment::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
-
+    Q_UNUSED(jsonObject);
     return true;
 }
 

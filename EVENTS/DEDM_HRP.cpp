@@ -84,7 +84,6 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     theButton->setIconSize(pixmap1.rect().size());
     theButton->setFixedSize(pixmap1.rect().size());
 
-    QVBoxLayout *layout1 = new QVBoxLayout();
     QPushButton *the1x1Button = new QPushButton();
     QPixmap pixmap2(":/Resources/DEDM/wImage2.png");
     the1x1Button->setIcon(pixmap2);
@@ -92,7 +91,6 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     the1x1Button->setFixedSize(pixmap2.rect().size());
     QRadioButton *the1x1RadioButton = new QRadioButton();
 
-    QVBoxLayout *layout2 = new QVBoxLayout();
     QPushButton *the1x2Button = new QPushButton();
     QPixmap pixmap3(":/Resources/DEDM/wImage3.png");
     the1x2Button->setIcon(pixmap3);
@@ -100,7 +98,6 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     the1x2Button->setFixedSize(pixmap3.rect().size());
     QRadioButton *the1x2RadioButton = new QRadioButton();
 
-    QVBoxLayout *layout3 = new QVBoxLayout();
     QPushButton *the1x3Button = new QPushButton();
     QPixmap pixmap4(":/Resources/DEDM/wImage4.png");
     the1x3Button->setIcon(pixmap4);
@@ -387,18 +384,20 @@ DEDM_HRP::outputAppDataToJSON(QJsonObject &jsonObject) {
 }
 bool
 DEDM_HRP::inputAppDataFromJSON(QJsonObject &jsonObject) {
-
+    Q_UNUSED(jsonObject);
     return true;
 }
 
 
  bool
  DEDM_HRP::copyFiles(QString &destDir) {
-    return true;
+     Q_UNUSED(destDir);
+     return true;
  }
 
  void
 DEDM_HRP::onBuildingDimensionChanged(double w, double d, double area){
+     Q_UNUSED(area);
      breadth = w;
      depth = d;
 
@@ -434,7 +433,7 @@ DEDM_HRP::onBuildingDimensionChanged(double w, double d, double area){
 
 void
 DEDM_HRP::onNumFloorsOrHeightChanged(int numFloor, double h){
-
+    Q_UNUSED(numFloor);
      height = h;
      if (breadth == 0.0)
          return;

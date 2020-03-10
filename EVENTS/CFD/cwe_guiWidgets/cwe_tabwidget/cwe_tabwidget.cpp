@@ -261,6 +261,7 @@ QMap<QString, QString> CWE_TabWidget::collectParamData()
 
 QString CWE_TabWidget::getStateText(StageState theState)
 {
+    Q_UNUSED(theState);
     /*
     if (theState == StageState::DOWNLOADING)    { return "Downloading . . ."; }
     if (theState == StageState::ERROR)          { return "*** ERROR ***"; }

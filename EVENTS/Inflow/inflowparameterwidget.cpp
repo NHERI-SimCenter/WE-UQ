@@ -1135,6 +1135,7 @@ bool InflowParameterWidget::outputAppDataToJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 {
+    Q_UNUSED(rvObject);
     return true;
 }
 
