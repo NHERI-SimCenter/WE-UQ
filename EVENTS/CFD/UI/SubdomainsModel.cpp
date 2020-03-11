@@ -33,6 +33,7 @@ QVariant SubdomainsModel::data(const QModelIndex &index, int role) const
                case 4: return subdomains[index.row()].bottom;
                case 5: return subdomains[index.row()].top;
                case 6: return subdomains[index.row()].meshSize;
+               default: return QVariant();
            }
         case Qt::TextAlignmentRole:
             return Qt::AlignCenter;
