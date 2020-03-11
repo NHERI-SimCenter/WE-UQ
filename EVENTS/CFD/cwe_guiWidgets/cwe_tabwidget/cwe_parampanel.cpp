@@ -125,6 +125,7 @@ SCtrMasterDataWidget * CWE_ParamPanel::addVariable(QString varName, VARIABLE_TYP
 
 void CWE_ParamPanel::addParameterConfig(QList<VARIABLE_TYPE> &groupVars, CFDanalysisType *myType)
 {
+    Q_UNUSED(myType);
     QVBoxLayout *layout = (QVBoxLayout *)this->layout();
     if (layout != NULL) { delete layout; }
     layout = new QVBoxLayout();

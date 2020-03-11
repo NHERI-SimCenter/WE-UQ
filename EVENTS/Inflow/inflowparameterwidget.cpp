@@ -52,9 +52,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandomVariableIW, bool isRemote, QWidget *parent)
     : SimCenterAppWidget(parent),
-      theRandomVariablesContainer(theRandomVariableIW),
       ui(new Ui::InflowParameterWidget),
-      isRemote(isRemote)
+      isRemote(isRemote),
+      theRandomVariablesContainer(theRandomVariableIW)
 {
     ui->setupUi(this);
     ui->exportGroup->hide();
@@ -704,8 +704,8 @@ void InflowParameterWidget::setLocationAvailable(bool status, QDir &loc)
     }
     else {
         hasLocation = false;
-        oldLocation = QDir::homePath();
-        newLocation = QDir::homePath();
+        oldLocation.setPath(QDir::homePath());
+        newLocation.setPath(QDir::homePath());
     }
 }
 
@@ -1135,6 +1135,7 @@ bool InflowParameterWidget::outputAppDataToJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 {
+    Q_UNUSED(rvObject);
     return true;
 }
 

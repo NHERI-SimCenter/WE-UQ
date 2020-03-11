@@ -217,6 +217,7 @@ WorkflowAppWE::~WorkflowAppWE()
 
 void WorkflowAppWE::replyFinished(QNetworkReply *pReply)
 {
+    Q_UNUSED(pReply);
     return;
 }
 
@@ -307,6 +308,7 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
  void
  WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
 
+  Q_UNUSED(inputFile);
   //
   // get results widget fr currently selected UQ option
   //
@@ -321,7 +323,6 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
   // connect signals for results widget
   //
 
-  connect(theResults, SIGNAL(), this,SLOT(errorMessage(QString)));
   connect(theResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
   connect(theResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
 
@@ -331,7 +332,6 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
 
   QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
   if (oldResults != NULL) {
-    disconnect(oldResults, SIGNAL(), this,SLOT(errorMessage(QString)));
     disconnect(oldResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
     disconnect(oldResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
     delete oldResults;

@@ -44,7 +44,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QStandardItemModel>
 #include <QHBoxLayout>
-#include "MainWindow.h"
 #include <WorkflowAppWidget.h>
 
 class SimCenterComponentSelection;

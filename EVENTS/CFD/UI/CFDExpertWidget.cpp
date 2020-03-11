@@ -449,6 +449,7 @@ void CFDExpertWidget::autoSelectPatches()
 
 void CFDExpertWidget::showEvent(QShowEvent *event)
 {
+    Q_UNUSED(event);
     if (!shown)
         shown = true;
 }
