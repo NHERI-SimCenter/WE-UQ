@@ -147,7 +147,7 @@ steps:
 
 - task: PublishTestResults@2
   inputs:
-    testResultsFormat: 'xUnit'
+    testResultsFormat: 'JUnit'
     testResultsFiles: 'build/Release/TestResults.xml'
     testRunTitle: 'WE-UQ Workflow Tests'
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
