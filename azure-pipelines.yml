@@ -135,8 +135,9 @@ steps:
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
     qmake ../WE-UQTests.pro "CONFIG+=Release"
     jom
-    windeployqt WE_UQTests.exe
-    WE_UQTests.exe -xunitxml -o TestResults.xml
+    cd Release
+    windeployqt WE-UQTests.exe
+    WE-UQTests.exe -xunitxml -o TestResults.xml
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Run Tests on Windows
 

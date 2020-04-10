@@ -44,7 +44,7 @@ HEADERS  += \
 SOURCES +=  $$PWD/tests/workflowtests.cpp
 
 examples.files = example/*
-examples.path = $$OUT_PWD/example
+examples.path = $$OUT_PWD/$$BUILD_TYPE/example
 COPIES += examples
 
 OTHER_FILES += $$PWD/example/stochastic-example.json
