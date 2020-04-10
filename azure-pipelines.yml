@@ -137,13 +137,16 @@ steps:
     jom
     cd Release
     windeployqt WE-UQTests.exe
+    WE-UQTests.exe
     WE-UQTests.exe -xunitxml -o TestResults.xml
+    Dir
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Run Tests on Windows
 
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'xUnit'
-    testResultsFiles: '**/TestResults.xml'
+    testResultsFiles: 'build/Release/TestResults.xml'
     testRunTitle: 'WE-UQ Workflow Tests'
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
 
