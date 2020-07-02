@@ -1,5 +1,5 @@
-#ifndef INPUT_WIDGET_WE_UQ_H
-#define INPUT_WIDGET_WE_UQ_H
+#ifndef WORKFLOW_APP_WE_H
+#define WORKFLOW_APP_WE_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -41,10 +41,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QWidget>
 
-
-#include <QStandardItemModel>
-#include <QHBoxLayout>
-#include "MainWindow.h"
+//#include "MainWindow.h"
 #include <WorkflowAppWidget.h>
 
 class SimCenterComponentSelection;
@@ -54,7 +51,6 @@ class InputWidgetBIM;
 class InputWidgetUQ;
 class SIM_Selection;
 class UQ_EngineSelection;
-
 class FEM_Selection;
 class UQOptions;
 class ResultsWidget;
@@ -95,6 +91,7 @@ signals:
     void sendLoadFile(QString filename);
 
 public slots:  
+
     void setUpForApplicationRun(QString &, QString &);
     void processResults(QString dakotaOut, QString dakotaTab, QString inputFile);
 
@@ -111,25 +108,19 @@ private:
     RandomVariablesContainer *theRVs;
     SIM_Selection *theSIM;
     UQ_EngineSelection *theUQ_Selection;
-    WindEventSelection *theEvent;
+    WindEventSelection *theEventSelection;
     FEM_Selection *theAnalysisSelection;
-    WindEDP_Selection *theEDP;
+    WindEDP_Selection *theEDP_Selection;
     UQ_Results *theResults;
 
     // objects for running the workflow and obtaining results
     RunWidget *theRunWidget;
     Application *localApp;
     Application *remoteApp;
-    Application* currentApp;
     RemoteJobManager *theJobManager;
 
     QJsonObject *jsonObjOrig;
-
-    QStackedWidget *theStackedWidget;
     QNetworkAccessManager *manager;
-
-    static QUuid getUserId();
-    bool canRunLocally();
 };
 
-#endif // INPUT_WIDGET_WE_UQ_H
+#endif // WORKFLOW_APP_WE_H
