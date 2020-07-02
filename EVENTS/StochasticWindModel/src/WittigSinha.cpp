@@ -122,7 +122,7 @@ WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
 bool WittigSinha::outputAppDataToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["Application"] = "StochasticWindInput-WittigSinha1975";
+  jsonObject["Application"] = "StochasticWindWittigSinha";
   jsonObject["EventClassification"] = "Wind";
 
   // squirel in the application data selection text
@@ -139,7 +139,7 @@ bool WittigSinha::inputAppDataFromJSON(QJsonObject& jsonObject) {
 bool WittigSinha::outputToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["type"] = "StochasticWindInput-WittigSinha1975";
+  jsonObject["type"] = "StochasticWindWittigSinha";
   jsonObject["EventClassification"] = "Wind";
   dragCoefficient->outputToJSON(jsonObject, QString("dragCoefficient"));
   gustWindSpeed->outputToJSON(jsonObject, QString("gustSpeed"));

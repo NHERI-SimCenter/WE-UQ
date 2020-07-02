@@ -68,6 +68,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     layout = new QVBoxLayout();
 
+
     QPushButton *theLogo = new QPushButton("");
     QPixmap pixmap(":/Resources/DEDM/wImage_DEDM_HRP_Logo.png");
     theLogo->setIcon(pixmap);
@@ -84,7 +85,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     theButton->setIconSize(pixmap1.rect().size());
     theButton->setFixedSize(pixmap1.rect().size());
 
-    QVBoxLayout *layout1 = new QVBoxLayout();
+    //QVBoxLayout *layout1 = new QVBoxLayout();
     QPushButton *the1x1Button = new QPushButton();
     QPixmap pixmap2(":/Resources/DEDM/wImage2.png");
     the1x1Button->setIcon(pixmap2);
@@ -92,7 +93,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     the1x1Button->setFixedSize(pixmap2.rect().size());
     QRadioButton *the1x1RadioButton = new QRadioButton();
 
-    QVBoxLayout *layout2 = new QVBoxLayout();
+    //QVBoxLayout *layout2 = new QVBoxLayout();
     QPushButton *the1x2Button = new QPushButton();
     QPixmap pixmap3(":/Resources/DEDM/wImage3.png");
     the1x2Button->setIcon(pixmap3);
@@ -100,7 +101,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     the1x2Button->setFixedSize(pixmap3.rect().size());
     QRadioButton *the1x2RadioButton = new QRadioButton();
 
-    QVBoxLayout *layout3 = new QVBoxLayout();
+  //  QVBoxLayout *layout3 = new QVBoxLayout();
     QPushButton *the1x3Button = new QPushButton();
     QPixmap pixmap4(":/Resources/DEDM/wImage4.png");
     the1x3Button->setIcon(pixmap4);

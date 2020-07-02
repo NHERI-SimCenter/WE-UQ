@@ -131,7 +131,7 @@ bool StochasticWindInput::inputAppDataFromJSON(QJsonObject& jsonObject) {
 
   QString appName;
   appName = jsonObject.value("Application").toString();
-  if (appName == "StochasticWindInput-WittigSinha1975") {  
+  if (appName == "StochasticWindWittigSinha") {  
 
     this->modelSelectionChanged(QString("Wittig & Sinha (1975)"));
     stochasticModel->inputAppDataFromJSON(jsonObject); // no check for NULL as cannot be if i can write code!
@@ -153,9 +153,7 @@ void StochasticWindInput::modelSelectionChanged(const QString& model) {
   if (model == "Wittig & Sinha (1975)") {
     nextModel = new WittigSinha(rvInputWidget, this);
   } else {
-    qDebug() << "ERROR: In StochasticWindInput::modelSelectionChanged: "
-                "Unknown selection: "
-             << model << "\n";
+    qDebug() << "ERROR: StochasticWindInput::modelSelectionChanged: Unknown selection: " << model << "\n";
   }
   
   if (nextModel != NULL) {
