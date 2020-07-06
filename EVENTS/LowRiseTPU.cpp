@@ -139,7 +139,6 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     windTunnelGeometryLayout->addWidget(incidenceAngle, 4, 3);
     windTunnelGeometryLayout->addWidget(angleUnit, 4, 4);
 
-    QLabel *dummyLabel = new QLabel("");
     //windTunnelGeometryLayout->addWidget(dummyLabel,6,1);
 
     windTunnelGeometryBox->setLayout(windTunnelGeometryLayout);
@@ -341,7 +340,7 @@ LowRiseTPU::outputAppDataToJSON(QJsonObject &jsonObject) {
 bool
 LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
-
+    Q_UNUSED(jsonObject);
     return true;
 }
 
@@ -364,6 +363,7 @@ LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
  void
  LowRiseTPU::onBuildingDimensionChanged(double w, double d, double area){
+     Q_UNUSED(area);
      breadth = w;
      depth = d;
      double ratioHtoB = height/breadth;
@@ -386,6 +386,7 @@ LowRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
  }
  void
  LowRiseTPU::onNumFloorsOrHeightChanged(int numFloor, double h){
+     Q_UNUSED(numFloor);
      height = h;
      double ratioHtoB = height/breadth;
      if (ratioHtoB < .375) {

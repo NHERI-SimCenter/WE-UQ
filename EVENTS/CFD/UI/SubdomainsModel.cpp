@@ -11,11 +11,13 @@ SubdomainsModel::SubdomainsModel(int size, QObject *parent) : QAbstractTableMode
 
 int SubdomainsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return subdomains.count();
 }
 
 int SubdomainsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return 7;
 }
 
@@ -31,6 +33,7 @@ QVariant SubdomainsModel::data(const QModelIndex &index, int role) const
                case 4: return subdomains[index.row()].bottom;
                case 5: return subdomains[index.row()].top;
                case 6: return subdomains[index.row()].meshSize;
+               default: return QVariant();
            }
         case Qt::TextAlignmentRole:
             return Qt::AlignCenter;

@@ -61,6 +61,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
 {
+    Q_UNUSED(theRandomVariableIW);
   // note: not keeping pointer to the random variables in this clsss
 
   //
@@ -303,6 +304,6 @@ bool BasicCFD::supportsLocalRun()
 
 bool
 BasicCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
-
+    Q_UNUSED(jsonObject);
     return true;
 }

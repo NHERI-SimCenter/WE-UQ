@@ -225,6 +225,7 @@ WorkflowAppWE::~WorkflowAppWE()
 
 void WorkflowAppWE::replyFinished(QNetworkReply *pReply)
 {
+    Q_UNUSED(pReply);
     return;
 }
 
@@ -292,6 +293,7 @@ void
 WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
 
 
+  Q_UNUSED(inputFile);
   //
   // get results widget fr currently selected UQ option
   //
@@ -316,7 +318,8 @@ WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inpu
   QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
   if (oldResults != NULL) {
     disconnect(oldResults,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    disconnect(oldResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
+    disconnect(oldResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
+    //    disconnect(oldResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
     delete oldResults;
   }
 

@@ -209,6 +209,7 @@ SimulationParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 
  bool
  SimulationParametersCWE::copyFiles(QString &destDir) {
-   return true;
+     Q_UNUSED(destDir);
+     return true;
  }
 

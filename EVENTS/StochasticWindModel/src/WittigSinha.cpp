@@ -133,6 +133,7 @@ bool WittigSinha::outputAppDataToJSON(QJsonObject& jsonObject) {
 }
 
 bool WittigSinha::inputAppDataFromJSON(QJsonObject& jsonObject) {
+  Q_UNUSED(jsonObject);
   return true;
 }
 

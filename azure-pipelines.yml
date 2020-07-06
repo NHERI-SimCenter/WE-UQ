@@ -8,16 +8,19 @@ trigger:
 pr:
 - master
 
+variables:
+- group: ConanVariables
+
 strategy:
   matrix:
     linux:
       imageName: "ubuntu-18.04"
       CONAN_GCC_VERSIONS: 7
       CONAN_CLANG_VERSIONS: ""
-    macHighSierra:
-      imageName: "macos-10.13"
-      CONAN_APPLE_CLANG_VERSIONS: 10.0
-    macMojave:
+    macOSXCatalina:
+      imageName: "macos-10.15"
+      CONAN_APPLE_CLANG_VERSIONS: 11.0
+    macOSXMojave:
       imageName: "macos-10.14"
       CONAN_APPLE_CLANG_VERSIONS: 11.0
     windows:
@@ -122,3 +125,30 @@ steps:
     pathToPublish: './build/Package'
     artifactName: WE-UQ
   condition: or(eq( variables['Agent.OS'], 'Windows_NT' ), eq( variables['Agent.OS'], 'Darwin' ))
+
+- script: |
+    cd build
+    conan install qt/5.11.3@bincrafters/stable -o qt:qt3d=True -o qt:qtcharts=True -o qt:qttools=True -g virtualrunenv
+    call activate_run.bat
+    conan install jom_installer/1.1.2@bincrafters/stable -g virtualrunenv
+    call activate_run.bat
+    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+    qmake ../WE-UQTests.pro "CONFIG+=Release"
+    jom
+    cd Release
+    windeployqt WE-UQTests.exe
+    WE-UQTests.exe -h
+    WE-UQTests.exe -v2
+    WE-UQTests.exe -xunitxml -o TestResults.xml
+    type TestResults.xml
+    Dir
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+  displayName: Run Tests on Windows
+
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'build/Release/TestResults.xml'
+    testRunTitle: 'WE-UQ Workflow Tests'
+  condition: eq( variables['Agent.OS'], 'Windows_NT' )
+
