@@ -200,7 +200,7 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 4;
     } else if (type.contains(QString("WindTunnelExperiment"))) {
         index = 5;
-    } else if (type.contains(QString("StochasticWindInput"))) {
+    } else if (type.contains(QString("StochasticWind"))) {
         index = 0;
     } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
         index = 1;

@@ -68,6 +68,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     layout = new QVBoxLayout();
 
+
     QPushButton *theLogo = new QPushButton("");
     QPixmap pixmap(":/Resources/DEDM/wImage_DEDM_HRP_Logo.png");
     theLogo->setIcon(pixmap);
@@ -179,6 +180,7 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     QLabel *labelSpeed = new QLabel("Wind Speed");
     windSpeed = new LineEditRV(theRandomVariableIW);
     windSpeed->setText("50.0");
+     windSpeed->setToolTip("Mean Wind Speed at top of building in m/s");
     windSpeed->setAlignment(Qt::AlignRight);
 
     QLabel *speedUnit = new QLabel("m/s");

@@ -62,7 +62,7 @@ WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
   dragCoefficient->setText("1.5");
 
   gustWindSpeed = new LineEditRV(randomVariables);
-  gustWindSpeed->setText("95.0");
+  gustWindSpeed->setText("50.0");
 
   exposureCategory = new QComboBox();
   exposureCategory->addItem("B");
@@ -87,7 +87,7 @@ WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
   parameters->addRow(new QLabel(tr("Drag Coefficient")), dragCoefficient);
   parameters->addRow(new QLabel(tr("ASCE 7 Exposure Condition")), exposureCategory);
   parameters->addRow(new QLabel(tr("Gust Wind Speed (mph)")), gustWindSpeed);
-
+  gustWindSpeed->setToolTip("3 sec gust speed at height of 10m (33ft)");
   // Add description label
   modelDescription =
       new QLabel(tr("This model provides wind speed time histories using a "
@@ -122,7 +122,7 @@ WittigSinha::WittigSinha(RandomVariablesContainer* randomVariables,
 bool WittigSinha::outputAppDataToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["Application"] = "StochasticWindInput-WittigSinha1975";
+  jsonObject["Application"] = "StochasticWindWittigSinha";
   jsonObject["EventClassification"] = "Wind";
 
   // squirel in the application data selection text
@@ -140,7 +140,7 @@ bool WittigSinha::inputAppDataFromJSON(QJsonObject& jsonObject) {
 bool WittigSinha::outputToJSON(QJsonObject& jsonObject) {
   bool result = true;
 
-  jsonObject["type"] = "StochasticWindInput-WittigSinha1975";
+  jsonObject["type"] = "StochasticWindWittigSinha";
   jsonObject["EventClassification"] = "Wind";
   dragCoefficient->outputToJSON(jsonObject, QString("dragCoefficient"));
   gustWindSpeed->outputToJSON(jsonObject, QString("gustSpeed"));
