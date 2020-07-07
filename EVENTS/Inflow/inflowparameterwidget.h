@@ -82,8 +82,11 @@ public slots:
     void on_RemoteFilesChanged(QString uFilePath, QString controlDictPath);
 
 private slots:
+    void sendParameterMap(void);
     void on_RB_digitalFilter_clicked();
     void on_RB_syntheticEddie_clicked();
+    void on_RB_divergenceFree_clicked();
+    void on_RB_turbulentSpot_clicked();
     void on_PHI21_valueChanged(double arg1);
     void on_PHI31_valueChanged(double arg1);
     void on_PHI32_valueChanged(double arg1);
@@ -108,7 +111,7 @@ private:  /* methods */
     void clearBoundaryMap(void);
     bool readUfile(QString);
     bool readControlDict(QString);
-    QStringList getLine(void);
+    bool getLine(QStringList &);
     QMap<QString, QString> *readParameters(void);
 
 private:  /* variables */
