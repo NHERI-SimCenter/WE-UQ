@@ -96,13 +96,13 @@ StandardWindEDP::outputAppDataToJSON(QJsonObject &jsonObject) {
 bool
 StandardWindEDP::inputAppDataFromJSON(QJsonObject &jsonObject) {
     Q_UNUSED(jsonObject);
-    return 0;
+    return true;
 }
 
 
 bool
 StandardWindEDP::copyFiles(QString &dirName) {
     Q_UNUSED(dirName);
-    return 0;
+    return true;
 }
 
