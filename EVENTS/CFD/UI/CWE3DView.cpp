@@ -12,9 +12,9 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DExtras/QText2DEntity>
+#include <cmath>
 
 CWE3DView::CWE3DView(QWidget *parent) : QFrame(parent)
 {
@@ -47,6 +47,16 @@ void CWE3DView::setView(QVector3D buildingSize, QVector3D domainSize, QVector3D 
     domainBox->setGrid(domainGrid.x(), domainGrid.y());
 
     inletTextTransform->setTranslation(QVector3D(domainCenter.x()-domainSize.x()/2.0f, domainCenter.y()-10.0f, -15.0f));
+}
+
+void CWE3DView::resetZoom(QVector3D domainSize)
+{
+    double diagonal = sqrt(pow(domainSize.x(), 2) + pow(domainSize.y(), 2) + pow(domainSize.z(), 2));
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, diagonal * 3.0);
+    camera->setPosition(QVector3D(-domainSize.x(), domainSize.y()*1.5, domainSize.z()));
+    camController->setLinearSpeed(-diagonal/2.0f);
+    camController->setLookSpeed(-diagonal/2.0f);
+
 }
 
 void CWE3DView::setup3DView()
@@ -105,13 +115,13 @@ void CWE3DView::addInletText(Qt3DCore::QEntity* rootEntity)
 
 void CWE3DView::setCamera(Qt3DCore::QEntity *rootEntity)
 {
-    Qt3DRender::QCamera *camera = graphicsWindow->camera();
+    camera = graphicsWindow->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera->setPosition(QVector3D(-250, 150, 200));
     camera->setViewCenter(QVector3D(20, 0, 0));
 
     // For camera controls
-    auto camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
+    camController = new Qt3DExtras::QOrbitCameraController(rootEntity);
     camController->setLinearSpeed(-150.0f);
     camController->setLookSpeed(-150.0f);
 
