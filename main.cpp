@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("2.0.1");
+    QCoreApplication::setApplicationVersion("2.1.0");
     //    GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     aboutTXT.close();
     w.setAbout(textAboutWE);
 
-    QString version("Version 2.0.1");
+    QString version("Version 2.1.0");
     w.setVersion(version);
 
     QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jiawei Wan, & Dae Kun Kwon. (2019, September 30). NHERI-SimCenter/WE-UQ: Version 2.0.0 (Version v2.0.0). Zenodo. http://doi.org/10.5281/zenodo.3464692");
