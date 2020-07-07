@@ -172,11 +172,12 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
 
     //
-    // create layout to hold component selectio
+    // create layout to hold component selection
     //
 
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    horizontalLayout->setMargin(0);
     this->setLayout(horizontalLayout);
 
     //
