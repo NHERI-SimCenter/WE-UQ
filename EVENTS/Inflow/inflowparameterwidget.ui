@@ -41,6 +41,12 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>

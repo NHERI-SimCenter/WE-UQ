@@ -184,12 +184,17 @@ QStringList CFDExpertWidget::getRemoteFilesPaths()
 void CFDExpertWidget::initializeUI()
 {
     auto layout = new QGridLayout();
-    loginRequiredLabel = new QLabel(tr("Logging into DesignSafe is required to use CFD - Expert."));
+    layout->setMargin(0);
+    layout->setSpacing(6);
+
+    loginRequiredLabel = new QLabel(tr("Logging into DesignSafe is required to use CFD - Expert.\n"));
     layout->addWidget(loginRequiredLabel, 0, 0);
 
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
     QGridLayout *parametersLayout = new QGridLayout();
+    parametersLayout->setMargin(6);
+    parametersLayout->setSpacing(6);
 
     //QFormLayout* parametersLayout = new QFormLayout();
 
@@ -268,54 +273,21 @@ void CFDExpertWidget::initializeUI()
     CFDGroupBox->setLayout(parametersLayout);
 
 
-    /*
-
-
-
-    //CFDGroupBox->setMaximumWidth(1000);
-
-    QFormLayout* parametersLayout = new QFormLayout();
-
-    caseEditBox = new QLineEdit();
-    caseEditBox->setText("agave://designsafe.storage.community/SimCenter/Software/WE_UQ/Examples/SampleBuilding");
-    QHBoxLayout* caseLayout = new QHBoxLayout();
-    caseLayout->addWidget(caseEditBox);
-    caseEditBox->setToolTip(tr("OpenFOAM Remote Case Directory"));
-    QPushButton* caseSelectButton = new QPushButton(tr("Select"));
-    caseLayout->addWidget(caseSelectButton);
-
-    connect(caseSelectButton, &QPushButton::clicked, this, &CFDExpertWidget::selectButtonPushed);
-
-    parametersLayout->addRow("Case", caseLayout);
-
-    solverComboBox = new QComboBox();
-    solverComboBox->addItem("pisoFoam");
-    parametersLayout->addRow("Solver", solverComboBox);
-    solverComboBox->setToolTip(tr("OpenFOAM solver used in the analysis"));
-
-    QComboBox* forceComboBox = new QComboBox();
-    forceComboBox->addItem("Binning with uniform floor heights");
-    parametersLayout->addRow("Force Calculation", forceComboBox);
-    forceComboBox->setToolTip(tr("Method used for calculating the forces on the building model"));
-
-    QComboBox* meshingComboBox = new QComboBox();
-    meshingComboBox->addItem("blockMesh");
-    parametersLayout->addRow("Meshing", meshingComboBox);
-    meshingComboBox->setToolTip(tr("Method used for generating the mesh for the model"));
-
-    inflowCheckBox = new QCheckBox();
-    parametersLayout->addRow("Inflow conditions", inflowCheckBox);
-    inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
-
-    CFDGroupBox->setLayout(parametersLayout);
-
-    */
+    //inflowWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
 
     layout->addWidget(CFDGroupBox, 1, 0);
+    layout->addItem(new QSpacerItem(500,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 1,1);
     inflowWidget->setHidden(true);
-    layout->addWidget(inflowWidget, 2, 0);
 
+    QVBoxLayout *vbox = new QVBoxLayout();
+    vbox->addWidget(inflowWidget,10);
+    vbox->addItem(new QSpacerItem(0,500,QSizePolicy::Minimum,QSizePolicy::Expanding));
+
+    layout->addLayout(vbox, 2,0,1,2);
+
+    layout->setColumnStretch(0, 2);
     layout->setColumnStretch(1, 1);
+    layout->setRowStretch(1, 1);
     layout->setRowStretch(2, 1);
 
     this->setLayout(layout);
