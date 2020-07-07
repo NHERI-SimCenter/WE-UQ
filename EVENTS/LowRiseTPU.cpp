@@ -150,7 +150,7 @@ LowRiseTPU::LowRiseTPU(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     windSpeed = new LineEditRV(theRandomVariableIW);
     windSpeed->setText("50.0");
     windSpeed->setAlignment(Qt::AlignRight);
-    windSpeed->setToolTip("Mean Wind Speed at top of building in m/s");
+    windSpeed->setToolTip("Mean Wind Speed at 10m height in m/s");
     QLabel *speedUnit = new QLabel("m/s");
     windLayout->addWidget(labelSpeed,0,0);
     windLayout->setColumnStretch(1,1);
