@@ -303,7 +303,6 @@ void CFDExpertWidget::setupConnections()
         if(state)
         {
             inflowWidget->setHidden(false);
-            /* we already downloaded remote files when logging in ... do we need this next line? */
             downloadRemoteCaseFiles();
         }
         else
