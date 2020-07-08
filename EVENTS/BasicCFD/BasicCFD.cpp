@@ -187,12 +187,14 @@ void BasicCFD::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSiz
 
 void BasicCFD::setupConnections()
 {
-    connect(meshParameters, &MeshParametersCWE::meshChanged, this, &BasicCFD::update3DView);
+    connect(meshParameters, &MeshParametersCWE::meshChanged, this, [this](){
+        update3DView();
+    });
 
     auto generalInfo = GeneralInformationWidget::getInstance();
 
-    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &BasicCFD::update3DView);
-    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &BasicCFD::update3DView);
+    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &BasicCFD::update3DViewCentered);
+    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &BasicCFD::update3DViewCentered);
 }
 
 
@@ -225,7 +227,7 @@ BasicCFD::clear(void)
 
 }
 
-void BasicCFD::update3DView()
+void BasicCFD::update3DView(bool centered)
 {
     QVector3D buildingSize;
     QVector3D domainSize;
@@ -235,6 +237,14 @@ void BasicCFD::update3DView()
 
     get3DViewParameters(buildingSize, domainSize, domainCenter, buildingGrid, domainGrid);
     graphicsWidget->setView(buildingSize, domainSize, domainCenter, buildingGrid, domainGrid);
+
+    if(centered)
+        graphicsWidget->resetZoom(domainSize);
+}
+
+void BasicCFD::update3DViewCentered()
+{
+    update3DView(true);
 }
 
 bool
@@ -253,6 +263,8 @@ BasicCFD::inputFromJSON(QJsonObject &jsonObject)
         simulationParameters->inputFromJSON(jsonObjSimulation);
     } else
         return false;
+
+    update3DViewCentered();
 
     return true;
 }
