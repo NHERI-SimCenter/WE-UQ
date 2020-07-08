@@ -1,0 +1,236 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "UserDefinedEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "DEDM_HRP",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "OpenSeesInput",
+            "ApplicationData": {
+                "fileName": "SmallerBuilding.tcl",
+                "filePath": "{Current_Dir}/tallShearBuilding"
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ1",
+            "ApplicationData": {
+            }
+        }
+    },
+    "EDP": {
+        "EDP": [
+            {
+                "name": "Disp_31_1"
+            },
+            {
+                "name": "Disp_31_2"
+            },
+            {
+                "name": "RMSA_31_1"
+            },
+            {
+                "name": "RMSA_31_2"
+            },
+            {
+                "name": "Force_1_1"
+            },
+            {
+                "name": "Force_1_2"
+            },
+            {
+                "name": "Force_1_4"
+            },
+            {
+                "name": "Force_1_5"
+            }
+        ],
+        "fileNameAI": "recorder.tcl",
+        "fileNamePS": "postprocess.tcl",
+        "filePathAI": "{Current_Dir}/tallShearBuilding",
+        "filePathPS": "{Current_Dir}/tallShearBuilding",
+        "type": "UserDefinedEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "checkedExposure": 1,
+            "checkedHeight": 4,
+            "checkedPlan": 1,
+            "incidenceAngle": 0,
+            "type": "DEDM_HRP",
+            "windSpeed": "RV.meanWS"
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 30,
+        "height": 120,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 30,
+        "units": {
+            "force": "kN",
+            "length": "m",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 30
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Linear",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "dampingRatio": 0.02,
+        "dampingRatioModal": 0.02,
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 10,
+        "solver": "Umfpack"
+    },
+    "StructuralInformation": {
+        "centroidNodes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+        ],
+        "ndf": 6,
+        "ndm": 3,
+        "randomVar": [
+            {
+                "name": "k",
+                "value": "RV.k"
+            },
+            {
+                "name": "rho",
+                "value": "RV.rho"
+            }
+        ],
+        "responseNodes": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+        ],
+        "type": "OpenSeesInput"
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 100,
+            "seed": 513
+        },
+        "uqEngine": "Dakota",
+        "uqType": "Forward Propagation"
+    },
+    "localAppDir": "/Users/fmckenna/release/WE-UQ/build/WE_UQ.app/Contents/MacOS",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "mean": 1500000,
+            "name": "k",
+            "refCount": 1,
+            "stdDev": 150000,
+            "value": "RV.k",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "mean": 250,
+            "name": "rho",
+            "refCount": 1,
+            "stdDev": 20,
+            "value": "RV.rho",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "mean": 30,
+            "name": "meanWS",
+            "refCount": 1,
+            "stdDev": 4,
+            "value": "RV.meanWS",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "remoteAppWorkingDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "runType": "runningRemote",
+    "workingDir": "/Users/fmckenna/Documents/WE-UQ/RemoteWorkDir"
+}
