@@ -129,6 +129,7 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   boundaryConditionZneg = new QComboBox();
   boundaryConditionZneg->addItem(tr("Symmetry Plane"), "SYM_PLANE");
   boundaryConditionZneg->addItem(tr("Wall"), "WALL");
+  boundaryConditionZneg->setCurrentText("Wall");
 
   /************ REMOVING FOR LOOK AGAIN *************************
   QFormLayout *boundariesLayout = new QFormLayout();

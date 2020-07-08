@@ -81,7 +81,8 @@ signals:
 
 public slots:
    void clear(void);
-   void update3DView();
+   void update3DView(bool centered = false);
+   void update3DViewCentered();
 
 private:
    MeshParametersCWE *meshParameters;

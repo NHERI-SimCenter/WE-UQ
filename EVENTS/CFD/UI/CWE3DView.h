@@ -9,6 +9,7 @@
 #include "Edged3DBox.h"
 #include "Graphics3DAxes.h"
 #include <QPoint>
+#include <Qt3DExtras/QOrbitCameraController>
 
 class CWE3DView : public QFrame
 {
@@ -17,6 +18,7 @@ public:
     explicit CWE3DView(QWidget *parent = nullptr);
     ~CWE3DView();
     void setView(QVector3D buildingSize, QVector3D domainSize, QVector3D domainCenter, QPoint buildingGrid, QPoint domainGrid);
+    void resetZoom(QVector3D domainSize);
 
 signals:
 
@@ -28,6 +30,8 @@ private:
     Edged3DBox* domainBox;
     Qt3DCore::QTransform* inletTextTransform;
     Graphics3DAxes* axes;
+    Qt3DRender::QCamera *camera;
+    Qt3DExtras::QOrbitCameraController* camController;
 
     void setup3DView();
     void addBuildingView(Qt3DCore::QEntity* rootEntity);

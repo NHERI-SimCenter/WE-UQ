@@ -72,3 +72,5 @@ DISTFILES += \
     wImage_DEDM_HRP_Logo
 
 OTHER_FILES += conanfile.py azure-pipelines.yml
+
+RESOURCES += images.qrc
