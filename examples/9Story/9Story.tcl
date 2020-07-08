@@ -1,9 +1,8 @@
 #units kip, in
 
-# variable parameter
+# parameters
 pset w 2200.0
 pset k 1600.0
-
 
 # constants
 set g 386.1;  
@@ -11,11 +10,10 @@ set b 1800.
 set d 1800.
 set h 1440.
 set numStory 9
-set bW 20000.0;                   # building Weight
 
 # derived parameters
 set sH [expr $h/(1.*$numStory)];  # story Height
-set fM [expr $w/$g];             # floor translational mass
+set fM [expr $w/$g];              # floor translational mass
 set sM 1.0e-3;                    # floor rotational mass
 
 # build model
@@ -35,11 +33,12 @@ for {set i 1; set j 2} {$i <= $numStory} {incr i 1; incr j 1} {
     element elasticBeamColumn $i $i $j $A $E $G $J $I $I 1
 }
 
-set numEigen 3
-set lambda [eigen $numEigen]
-for {set i 0} {$i < $numEigen} {incr i 1} {
-    set omega [expr sqrt([lindex $lambda $i])]
-    set T [expr 2*3.14159/$omega]
-    puts "$i $T [expr 1/$T]"
-}
+#set numEigen 3
+#set lambda [eigen $numEigen]
+#for {set i 0} {$i < $numEigen} {incr i 1} {
+#    set omega [expr sqrt([lindex $lambda $i])]
+#    set T [expr 2*3.14159/$omega]
+#    puts "$i $T [expr 1/$T]"
+#}
+#wipeAnalysis
 
