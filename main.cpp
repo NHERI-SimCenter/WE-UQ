@@ -83,6 +83,13 @@ int main(int argc, char *argv[])
     // full path to debug.log file
     logFilePath = logFilePath + QDir::separator() + QString("debug.log");
 
+
+    //
+    // window scaling
+    //
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+
     // remove old log file
     QFile debugFile(logFilePath);
     debugFile.remove();
@@ -98,10 +105,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "logFile: " << logFilePath;
 
-    //
-    // window scaling
-    //
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
 
     //
     // create a remote interface
