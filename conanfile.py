@@ -4,7 +4,7 @@ class WEUQ(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "qmake"
     requires = "SimCenterCommonQt/0.1.6@simcenter/stable",\
-               "SimCenterBackendApplications/1.2.0@simcenter/stable"
+               "SimCenterBackendApplications/1.2.1@simcenter/stable"
 
 
 
