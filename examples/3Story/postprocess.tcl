@@ -16,8 +16,6 @@ while { [gets $forceIn data] >= 0 } {
 set resultFile [open results.out w]
 set results []
 
-# for each quanity in list of QoI passed
-
 foreach edp $listQoI {
     set splitEDP [split $edp "_"]	
     set response [lindex $splitEDP 0]
