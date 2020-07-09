@@ -4,7 +4,7 @@ class WEUQ(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "qmake"
     requires = "SimCenterCommonQt/0.1.6@simcenter/stable",\
-               "SimCenterBackendApplications/1.2.1@simcenter/stable"
+               "SimCenterBackendApplications/1.2.2@simcenter/stable"
 
 
 
@@ -23,7 +23,14 @@ class WEUQ(ConanFile):
             appsDestination = './WE_UQ.app/Contents/MacOS/applications'
 
 
-        self.copy("createEVENT/*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/*wind*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/*Wind*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/*CFD*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/*TPU*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/*DEDM*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/multipleSimCenter/*", dst=appsDestination, src="bin")
+        self.copy("createEVENT/SimCenterEvent/*", dst=appsDestination, src="bin")
+
         self.copy("createSAM/*", dst=appsDestination, src="bin")
         self.copy("createEDP/*", dst=appsDestination, src="bin")
         self.copy("performSIMULATION/*", dst=appsDestination, src="bin")
