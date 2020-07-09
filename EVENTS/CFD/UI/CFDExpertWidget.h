@@ -6,6 +6,7 @@
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
+#include <QSpinBox>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -37,6 +38,7 @@ private:
     QLineEdit* patchesEditBox;
     QPushButton* selectPatchesButton;
     QComboBox* meshingComboBox;
+    QSpinBox* processorsBox;
 
     QString originalUFilePath;
     QString originalControlDictPath;

@@ -157,12 +157,20 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     connect(remoteApp,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
     connect(remoteApp,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
 
-    connect(localApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
+    connect(localApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
+    {
+        currentApp = localApp;
+        setUpForApplicationRun(workingDir, subDir);
+    });
+
     connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     connect(localApp,SIGNAL(processResults(QString, QString, QString)), this, SLOT(processResults(QString, QString, QString)));
 
-    connect(remoteApp,SIGNAL(setupForRun(QString &,QString &)), this, SLOT(setUpForApplicationRun(QString &,QString &)));
-
+    connect(remoteApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
+    {
+        currentApp = remoteApp;
+        setUpForApplicationRun(workingDir, subDir);
+    });
     connect(theJobManager,SIGNAL(processResults(QString , QString, QString)), this, SLOT(processResults(QString, QString, QString)));
     connect(theJobManager,SIGNAL(loadFile(QString)), this, SLOT(loadFile(QString)));
 
@@ -228,6 +236,24 @@ void WorkflowAppWE::replyFinished(QNetworkReply *pReply)
 {
     Q_UNUSED(pReply);
     return;
+}
+
+bool WorkflowAppWE::canRunLocally()
+{
+    QList<SimCenterAppWidget*> apps({theEventSelection, theEDP_Selection, theSIM});
+
+    foreach(SimCenterAppWidget* app, apps)
+    {
+        if(!app->supportsLocalRun())
+        {
+            theRunWidget->close();
+            QMessageBox msgBox;
+            msgBox.setText("The current workflow cannot run locally, please run at DesignSafe instead.");
+            msgBox.exec();
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -552,6 +578,49 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     QJsonDocument doc(json);
     file.write(doc.toJson());
     file.close();
+    QJsonArray events = json["Applications"].toObject()["Events"].toArray();
+
+    bool hasCFDEvent = false;
+    QJsonObject eventAppData;
+    for (QJsonValueRef eventJson: events)
+    {
+        QString eventApp = eventJson.toObject()["Application"].toString();
+        if(0 == eventApp.compare("CFDEvent", Qt::CaseSensitivity::CaseInsensitive))
+        {
+            eventAppData = eventJson.toObject()["ApplicationData"].toObject();
+            hasCFDEvent = true;
+            break;
+        }
+    }
+
+    RemoteApplication* remoteApplication = static_cast<RemoteApplication*>(remoteApp);
+
+
+    if(currentApp == remoteApp)
+    {
+        remoteApplication->clearExtraInputs();
+        remoteApplication->clearExtraParameters();
+    }
+    else
+    {
+        if (!canRunLocally())
+            return;
+    }
+
+    if(hasCFDEvent)
+    {
+        //Adding extra job inputs for CFD
+        QMap<QString, QString> extraInputs;
+        if(eventAppData.contains("OpenFOAMCase"))
+            extraInputs.insert("OpenFOAMCase", eventAppData["OpenFOAMCase"].toString());
+        remoteApplication->setExtraInputs(extraInputs);
+
+        //Adding extra job parameters for CFD
+        QMap<QString, QString> extraParameters;
+        if(eventAppData.contains("OpenFOAMSolver"))
+            extraParameters.insert("OpenFOAMSolver", eventAppData["OpenFOAMSolver"].toString());
+        remoteApplication->setExtraParameters(extraParameters);
+    }
 
 
     statusMessage("SetUp Done .. Now starting application");
