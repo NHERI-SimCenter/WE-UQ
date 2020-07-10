@@ -266,7 +266,7 @@ void CFDExpertWidget::initializeUI()
     startTimeBox->setValue(0.01);
     startTimeBox->setToolTip(tr("The time in the OpenFOAM simulation when the building force event starts. Forces before that time are ignored."));
 
-    //Force Start Time
+    //Number of processors
     QLabel *processorsLabel = new QLabel("Processors", this);
     parametersLayout->addWidget(processorsLabel, 6, 0);
     processorsBox = new QSpinBox(this);

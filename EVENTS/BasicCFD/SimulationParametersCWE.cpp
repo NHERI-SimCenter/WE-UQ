@@ -74,6 +74,14 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   dT->setValidator(smallDoubleValidator);
   kinematicViscosity->setValidator(smallDoubleValidator);
 
+  //Number of processors
+  QLabel *processorsLabel = new QLabel("Processors", this);
+  processorsBox = new QSpinBox(this);
+  processorsBox->setMinimum(1);
+  processorsBox->setMaximum(1024);
+  processorsBox->setValue(16);
+  processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
+
   QGridLayout *controlLayout=new QGridLayout();
   controlLayout->addWidget(new QLabel("Duration"),0,0);
   controlLayout->addWidget(duration,0,1);
@@ -87,7 +95,9 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   controlLayout->addWidget(new QLabel("Kinematic Viscosity"),3,0);
   controlLayout->addWidget(kinematicViscosity,3,1);
   controlLayout->addWidget(new QLabel("m<sup>2</sup>/s"),3,2);
-  controlLayout->setRowStretch(4,1);
+  controlLayout->addWidget(processorsLabel, 4, 0);
+  controlLayout->addWidget(processorsBox, 4, 1);
+  controlLayout->setRowStretch(5,1);
   control->setLayout(controlLayout);
 
   // advanced
@@ -170,6 +180,7 @@ SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
     jsonObject["endTime"] = duration->text();//Simulation Duration
     jsonObject["velocity"] = inflowVelocity->text();//Inflow Velocity
     jsonObject["nu"] = kinematicViscosity->text();//Kinematic Viscosity
+    jsonObject["processors"] = processorsBox->text();
 
     //Advanced
     jsonObject["turbModel"] = turbulanceModel->currentData().toString();//Turbulence Model
@@ -202,6 +213,9 @@ SimulationParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 
     if(jsonObject.contains("turbintensity"))
         turbulenceIntensity->setText(jsonObject["turbintensity"].toString());//Turbulence Intensity
+
+    if(jsonObject.contains("processors"))
+        processorsBox->setValue(jsonObject["processors"].toInt());
 
     return true;
 }
