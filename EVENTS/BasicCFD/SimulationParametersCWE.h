@@ -80,6 +80,8 @@ private:
    QLineEdit *pisoCorrectors;
    QLineEdit *nonOrthogonalCorrectors;
    QLineEdit *turbulenceIntensity;
+   QSpinBox  *processorsBox;
+
    void setupConnections();
 };
 
