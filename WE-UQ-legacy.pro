@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui charts concurrent network 3dcore 3drender 3dextras
+QT       += core gui charts concurrent network 3dcore 3drender 3dextras printsupport
 
 #CONFIG += debug_and_release
 CONFIG += c++11
@@ -46,7 +46,7 @@ include(../SimCenterCommon/Common/Common.pri)
 include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
 include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
 include(./WindEvents.pri)
-include(./MiniZip/MiniZip.pri)
+# include(./MiniZip/MiniZip.pri)
 
 INCLUDEPATH += "./Component"
 
