@@ -120,10 +120,13 @@ private:
     RunWidget *theRunWidget;
     Application *localApp;
     Application *remoteApp;
+    Application* currentApp;
     RemoteJobManager *theJobManager;
 
     QJsonObject *jsonObjOrig;
     QNetworkAccessManager *manager;
+
+    bool canRunLocally();
 };
 
 #endif // WORKFLOW_APP_WE_H

@@ -42,6 +42,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["start"] = startTimeBox->value();
     eventObject["patches"] = patchesEditBox->text();
     eventObject["meshing"] = meshingComboBox->currentData().toString();
+    eventObject["processors"] = processorsBox->value();
 
     return true;
 }
@@ -69,6 +70,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
         if(index >= 0)
             this->meshingComboBox->setCurrentIndex(index);
     }
+
+    if(eventObject.contains("processors"))
+        this->processorsBox->setValue(eventObject["processors"].toInt());
 
     inflowWidget->inputFromJSON(eventObject);
 
@@ -262,11 +266,22 @@ void CFDExpertWidget::initializeUI()
     startTimeBox->setValue(0.01);
     startTimeBox->setToolTip(tr("The time in the OpenFOAM simulation when the building force event starts. Forces before that time are ignored."));
 
+    //Number of processors
+    QLabel *processorsLabel = new QLabel("Processors", this);
+    parametersLayout->addWidget(processorsLabel, 6, 0);
+    processorsBox = new QSpinBox(this);
+    parametersLayout->addWidget(processorsBox, 6, 1, 1, 2);
+    processorsBox->setMinimum(1);
+    processorsBox->setMaximum(1024);
+    processorsBox->setValue(16);
+    processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
+
+
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox,6,1);
-    parametersLayout->addWidget(inflowLabel, 6, 0);
+    parametersLayout->addWidget(inflowCheckBox, 7, 1);
+    parametersLayout->addWidget(inflowLabel, 7, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
     //parametersLayout->setMargin();
@@ -287,7 +302,7 @@ void CFDExpertWidget::initializeUI()
 
     layout->setColumnStretch(0, 2);
     layout->setColumnStretch(1, 1);
-    layout->setRowStretch(1, 1);
+    layout->setRowStretch(1, 0.2);
     layout->setRowStretch(2, 1);
 
     this->setLayout(layout);
