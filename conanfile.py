@@ -3,8 +3,10 @@ from conans import ConanFile
 class WEUQ(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "qmake"
-    requires = "SimCenterCommonQt/0.1.6@simcenter/stable",\
-               "SimCenterBackendApplications/1.2.2@simcenter/stable"
+    requires = "SimCenterCommonQt/0.1.8@simcenter/stable",\
+               "SimCenterBackendApplications/1.2.2@simcenter/stable",\
+               "opensees/3.2.2@simcenter/testing",\
+               "dakota/6.12.0@simcenter/testing"
 
 
 
@@ -36,3 +38,5 @@ class WEUQ(ConanFile):
         self.copy("performSIMULATION/*", dst=appsDestination, src="bin")
         self.copy("performUQ/*", dst=appsDestination, src="bin")
         self.copy("Workflow/*", dst=appsDestination, src="bin")
+        self.copy("*", dst="{}/opensees".format(appsDestination), src="opensees")
+        self.copy("*", dst="{}/dakota".format(appsDestination), src="dakota")
