@@ -8,8 +8,6 @@ class WEUQ(ConanFile):
                "opensees/3.2.2@simcenter/testing",\
                "dakota/6.12.0@simcenter/testing"
 
-
-
     default_options = {"SimCenterCommonQt:MDOFwithQt3D": True}
 
     def configure(self):
