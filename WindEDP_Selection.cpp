@@ -71,14 +71,15 @@ WindEDP_Selection::WindEDP_Selection(RandomVariablesContainer *theRandomVariable
     //
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
-    QLabel *label = new QLabel();
-    label->setText(QString("Engineering Demand Paramaters"));
+    SectionTitle *label = new SectionTitle();
+    label->setText(QString("Engineering Demand Paramaters Generator"));
+    label->setMinimumWidth(250);
     edpSelection = new QComboBox();
     edpSelection->addItem(tr("Standard Wind"));
     edpSelection->addItem(tr("User Defined"));
     edpSelection->setObjectName("EDPSelectionComboBox");
 
-    edpSelection->setItemData(1, "A Seismic event using Seismic Hazard Analysis and Record Selection/Scaling", Qt::ToolTipRole);
+    //    edpSelection->setItemData(1, "A Seismic event using Seismic Hazard Analysis and Record Selection/Scaling", Qt::ToolTipRole);
 
     theSelectionLayout->addWidget(label);
     theSelectionLayout->addWidget(edpSelection);
@@ -101,6 +102,7 @@ WindEDP_Selection::WindEDP_Selection(RandomVariablesContainer *theRandomVariable
     theStackedWidget->addWidget(theUserDefinedEDPs);
 
     layout->addWidget(theStackedWidget);
+    layout->setMargin(0);
     this->setLayout(layout);
     theCurrentEDP=theStandardWindEDPs;
 

@@ -137,11 +137,7 @@ steps:
     jom
     cd Release
     windeployqt WE-UQTests.exe
-    WE-UQTests.exe -h
-    WE-UQTests.exe -v2
     WE-UQTests.exe -xunitxml -o TestResults.xml
-    type TestResults.xml
-    Dir
   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   displayName: Run Tests on Windows
 

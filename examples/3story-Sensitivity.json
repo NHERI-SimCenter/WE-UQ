@@ -1,0 +1,161 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "UserDefinedEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "LowRiseTPU",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "OpenSeesInput",
+            "ApplicationData": {
+                "fileName": "3Story.tcl",
+                "filePath": "{Current_Dir}/3Story"
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ1",
+            "ApplicationData": {
+            }
+        }
+    },
+    "EDP": {
+        "EDP": [
+            {
+                "name": "Disp_4_1"
+            }
+        ],
+        "fileNameAI": "recorder.tcl",
+        "fileNamePS": "postprocess.tcl",
+        "filePathAI": "{Current_Dir}/3Story",
+        "filePathPS": "{Current_Dir}/3Story",
+        "type": "UserDefinedEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "depthBreadth": "3:2",
+            "heightBreadth": "2:4",
+            "incidenceAngle": 0,
+            "pitch": "0.0",
+            "roofType": "Flat",
+            "type": "LowRiseTPU",
+            "windSpeed": "RV.meanWS"
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 2160,
+        "height": 468,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 3,
+        "units": {
+            "force": "kips",
+            "length": "in",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 1440
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "dampingRatio": 0.02,
+        "dampingRatioModal": 0.02,
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 6,
+        "solver": "Umfpack"
+    },
+    "StructuralInformation": {
+        "centroidNodes": [
+            1,
+            2,
+            3,
+            4
+        ],
+        "ndf": 6,
+        "ndm": 3,
+        "randomVar": [
+            {
+                "name": "storyK",
+                "value": "RV.storyK"
+            },
+            {
+                "name": "bldgW",
+                "value": "RV.bldgW"
+            }
+        ],
+        "responseNodes": [
+            1,
+            2,
+            3,
+            4
+        ],
+        "type": "OpenSeesInput"
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 100,
+            "seed": 453
+        },
+        "uqEngine": "Dakota",
+        "uqType": "Sensitivity Analysis"
+    },
+    "localAppDir": "/Users/fmckenna/release/WE-UQ/build/WE_UQ.app/Contents/MacOS",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "mean": 20,
+            "name": "meanWS",
+            "refCount": 2,
+            "stdDev": 2,
+            "value": "RV.meanWS",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "mean": 400,
+            "name": "storyK",
+            "refCount": 1,
+            "stdDev": 40,
+            "value": "RV.storyK",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "mean": 100,
+            "name": "dummy",
+            "refCount": 0,
+            "stdDev": 10,
+            "value": "RV.dummy",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/Users/fmckenna/release/WE-UQ/build/WE_UQ.app/Contents/MacOS",
+    "runType": "runningLocal",
+    "workingDir": "/Users/fmckenna/Documents/WE-UQ/LocalWorkDir"
+}

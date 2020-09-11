@@ -72,6 +72,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
 {
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
 
     //
     // the selection part

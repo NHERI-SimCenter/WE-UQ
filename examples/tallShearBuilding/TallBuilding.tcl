@@ -1,8 +1,9 @@
 #units kN, m
 
 pset k 2.6e6
-set g   9.81;  # m/s
-set rho 250.;  #kg/m^3
+pset rho 250.;  #kg/m^3
+
+set g 9.81;  # m/s
 set b 40.
 set d 40.
 set h 200.
