@@ -132,9 +132,10 @@ int main(int argc, char *argv[])
     aboutTXT.close();
     w.setAbout(textAboutWE);
     */
-    QString aboutTitle = "About the SimCenter WE-UQ Application"; // this is the title displayed in the on About dialog
+
+    QString aboutTitle = "About this SimCenter WE-UQApplication"; // this is the title displayed in the on About dialog
     QString aboutSource = ":/Resources/docs/textAboutWEUQ.html";  // this is an HTML file stored under resources
-    w.setAbout(aboutTitle, aboutSource);
+    w.setAbout(aboutTitle,aboutSource);
 
     QString version("Version 2.1.0");
     w.setVersion(version);
