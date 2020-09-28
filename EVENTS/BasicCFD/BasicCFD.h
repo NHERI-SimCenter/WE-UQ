@@ -91,6 +91,7 @@ private:
    QDoubleSpinBox* startTimeBox;
    QJsonObject *jsonObjOrig;
    CWE3DView* graphicsWidget;
+   QComboBox* forceComboBox;
    UserModeShapes* couplingGroup;
 
     double toMilliMeters(QString lengthUnit) const;

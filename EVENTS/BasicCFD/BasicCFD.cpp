@@ -84,7 +84,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     auto buildingForcesGroup = new QGroupBox("Building Forces");
     auto buildingForcesLayout = new QGridLayout();
     QLabel *forceLabel = new QLabel("Force Calculation", this);
-    QComboBox* forceComboBox = new QComboBox();
+    forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     buildingForcesLayout->addWidget(forceComboBox, 0, 1);
     buildingForcesLayout->addWidget(forceLabel, 0, 0);
@@ -92,6 +92,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     QLabel *startTimeLabel = new QLabel("Start time", this);
     buildingForcesLayout->addWidget(startTimeLabel, 1, 0);
+    buildingForcesLayout->setMargin(6);
     startTimeBox = new QDoubleSpinBox(this);
     buildingForcesLayout->addWidget(startTimeBox, 1, 1);
     startTimeBox->setDecimals(3);
@@ -209,7 +210,9 @@ BasicCFD::outputToJSON(QJsonObject &eventObject) {
     //Output basic info
     eventObject["EventClassification"] = "Wind";
     eventObject["type"] = "BasicCFD";
+    eventObject["forceCalculationMethod"] = forceComboBox->currentText();
     eventObject["start"] = startTimeBox->value();
+    eventObject["userModesFile"] = couplingGroup->fileName();
 
     //
     // get each of the main widgets to output themselves
@@ -222,7 +225,6 @@ BasicCFD::outputToJSON(QJsonObject &eventObject) {
     simulationParameters->outputToJSON(jsonObjSimulation);
     eventObject["sim"] = jsonObjSimulation;
 
-    eventObject["userModesFile"] = couplingGroup->fileName();
 
     return true;
 }
@@ -259,6 +261,12 @@ BasicCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     startTimeBox->setValue(jsonObject["start"].toDouble());
 
+    if(jsonObject.contains("forceCalculationMethod")) {
+        this->forceComboBox->setCurrentText(jsonObject["forceCalculationMethod"].toString());
+    } else {
+        this->forceComboBox->setCurrentIndex(0);
+    }
+
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
         meshParameters->inputFromJSON(jsonObjMesh);
@@ -274,9 +282,9 @@ BasicCFD::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("userModesFile")) {
         QString filename = jsonObject["userModesFile"].toString();
         couplingGroup->setFileName(filename);
-    } else
-
+    } else {
         couplingGroup->setFileName(tr(""));
+    }
 
     update3DViewCentered();
 

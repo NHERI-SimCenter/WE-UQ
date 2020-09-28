@@ -40,6 +40,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
     eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
     eventObject["type"] = "CFD - Expert";
+    eventObject["forceCalculationMethod"] = forceComboBox->currentText();
     eventObject["start"] = startTimeBox->value();
     eventObject["patches"] = patchesEditBox->text();
     eventObject["meshing"] = meshingComboBox->currentData().toString();
@@ -62,6 +63,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
     if(eventObject.contains("start"))
         this->startTimeBox->setValue(eventObject["start"].toDouble());
+
+    if(eventObject.contains("forceCalculationMethod"))
+        this->forceComboBox->setCurrentText(eventObject["forceCalculationMethod"].toString());
 
     if(eventObject.contains("patches"))
         this->patchesEditBox->setText(eventObject["patches"].toString());
@@ -242,7 +246,7 @@ void CFDExpertWidget::initializeUI()
 
     //Force Calculation
     QLabel *forceLabel = new QLabel("Force Calculation", this);
-    QComboBox* forceComboBox = new QComboBox();
+    forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     //parametersLayout->addRow("Force Calculation     ", forceComboBox);
     parametersLayout->addWidget(forceComboBox, 3, 1, 1, 2);

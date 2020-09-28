@@ -33,6 +33,7 @@ private:
     RemoteService* remoteService;
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
+    QComboBox* forceComboBox;
     UserModeShapes* couplingGroup;
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
