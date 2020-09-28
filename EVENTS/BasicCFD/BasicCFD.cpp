@@ -104,7 +104,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     buildingForcesGroup->setLayout(buildingForcesLayout);
 
     //Coupling mode shapes
-    auto modeShapeGroup = new UserModeShapes();
+    couplingGroup = new UserModeShapes(this);
 
     //3D View
     graphicsWidget = new CWE3DView(this);
@@ -113,7 +113,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     layout->addWidget(meshParameters, 0, 0);
     layout->addWidget(simulationParameters, 1, 0);
     layout->addWidget(buildingForcesGroup, 2, 0);
-    layout->addWidget(modeShapeGroup, 3, 0);
+    layout->addWidget(couplingGroup, 3, 0);
 
     layout->addWidget(graphicsWidget, 0, 1, 4, 1);
     layout->setRowStretch(3, 1);
@@ -204,23 +204,25 @@ void BasicCFD::setupConnections()
 
 
 bool
-BasicCFD::outputToJSON(QJsonObject &jsonObject) {
+BasicCFD::outputToJSON(QJsonObject &eventObject) {
 
     //Output basic info
-    jsonObject["EventClassification"] = "Wind";
-    jsonObject["type"] = "BasicCFD";
-    jsonObject["start"] = startTimeBox->value();
+    eventObject["EventClassification"] = "Wind";
+    eventObject["type"] = "BasicCFD";
+    eventObject["start"] = startTimeBox->value();
 
     //
     // get each of the main widgets to output themselves
     //
     QJsonObject jsonObjMesh;
     meshParameters->outputToJSON(jsonObjMesh);
-    jsonObject["mesh"] = jsonObjMesh;
+    eventObject["mesh"] = jsonObjMesh;
 
     QJsonObject jsonObjSimulation;
     simulationParameters->outputToJSON(jsonObjSimulation);
-    jsonObject["sim"] = jsonObjSimulation;
+    eventObject["sim"] = jsonObjSimulation;
+
+    eventObject["userModesFile"] = couplingGroup->fileName();
 
     return true;
 }
@@ -268,6 +270,13 @@ BasicCFD::inputFromJSON(QJsonObject &jsonObject)
         simulationParameters->inputFromJSON(jsonObjSimulation);
     } else
         return false;
+
+    if (jsonObject.contains("userModesFile")) {
+        QString filename = jsonObject["userModesFile"].toString();
+        couplingGroup->setFileName(filename);
+    } else
+
+        couplingGroup->setFileName(tr(""));
 
     update3DViewCentered();
 

@@ -14,6 +14,9 @@ class UserModeShapes : public QFrame
 public:
     explicit UserModeShapes(QWidget *parent = nullptr);
     ~UserModeShapes();
+    bool isChecked();
+    QString fileName();
+    void setFileName(const QString &filename);
 
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);

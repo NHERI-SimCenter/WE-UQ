@@ -44,6 +44,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["patches"] = patchesEditBox->text();
     eventObject["meshing"] = meshingComboBox->currentData().toString();
     eventObject["processors"] = processorsBox->value();
+    eventObject["userModesFile"] = couplingGroup->fileName();
 
     return true;
 }
@@ -74,6 +75,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
     if(eventObject.contains("processors"))
         this->processorsBox->setValue(eventObject["processors"].toInt());
+
+    if(eventObject.contains("userModesFile"))
+        this->couplingGroup->setFileName(eventObject["userModesFile"].toString());
 
     inflowWidget->inputFromJSON(eventObject);
 
