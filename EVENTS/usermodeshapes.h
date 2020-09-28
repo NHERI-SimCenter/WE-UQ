@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::UserModeShapes *ui;
+
+    QList<QVector<double > *> mode_shapes;
 };
 
 #endif // USERMODESHAPES_H

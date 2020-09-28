@@ -56,6 +56,7 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
 {
   auto layout = new QGridLayout();
   layout->setMargin(0);
+  layout->setSpacing(6);
   
   //Mesh Parameters Widget
   QWidget* domainSizeWidget = new QGroupBox("Domain Size");
@@ -78,6 +79,9 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   domainLengthZneg->setValidator(positiveDoubleValidator);
 
   QGridLayout *domainSizeLayout=new QGridLayout();
+  domainSizeLayout->setMargin(6);
+  domainSizeLayout->setSpacing(6);
+
   domainSizeLayout->addWidget(new QLabel("Inlet Length (-X)"),0,0);
   domainSizeLayout->addWidget(domainLengthInlet,0,1);
   domainSizeLayout->addWidget(new QLabel("Outlet Length (+X)"),1,0);
@@ -97,6 +101,8 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   //Mesh Size
   QWidget* meshSizeWidget = new QGroupBox("Mesh Size");
   QGridLayout* meshSizeLayout = new QGridLayout();
+  meshSizeLayout->setMargin(6);
+  meshSizeLayout->setSpacing(6);
 
   gridSizeBluffBody= new QLineEdit("3");
   gridSizeOuterBoundary= new QLineEdit("10");
@@ -139,6 +145,9 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   boundariesLayout->addRow(tr("Boundary Condition (Z+)"),boundaryConditionZpos);
   *****************************************************************/
   QGridLayout *boundariesLayout = new QGridLayout();
+  boundariesLayout->setMargin(6);
+  boundariesLayout->setSpacing(6);
+
   boundariesLayout->addWidget(new QLabel("Outward (Y-)"),0,0);
   boundariesLayout->addWidget(boundaryConditionYneg, 0,1);
   boundariesLayout->addWidget(new QLabel("Inward (Y+)"),1,0);
@@ -174,6 +183,8 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   subdomainLayout->setAlignment(Qt::AlignLeft);
   ****************************************************************/
   QGridLayout *subdomainLayout = new QGridLayout();
+  subdomainLayout->setMargin(6);
+  subdomainLayout->setSpacing(6);
   subdomainLayout->addWidget(new QLabel("Number of Subdomains"), 0, 0);
   subdomainLayout->addWidget(numSubdomains, 0, 1);
   subdomainLayout->addWidget(subdomainsTable, 1, 0, 1, 2);

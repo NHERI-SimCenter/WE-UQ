@@ -54,7 +54,8 @@ SOURCES += \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrstddatawidget.cpp \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
-    $$PWD/EVENTS/CFD/Analysis/remotejobdata.cpp
+    $$PWD/EVENTS/CFD/Analysis/remotejobdata.cpp \
+    $$PWD/EVENTS/initialmodalinfo.cpp
 
 HEADERS  += \
     $$PWD/EVENTS/CFD/CFDanalysis/CFDanalysisType.h \
@@ -93,7 +94,8 @@ HEADERS  += \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrmasterdatawidget.h \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrstddatawidget.h \
     $$PWD/EVENTS/CFD/SimCenter_widgets/sctrtextdatawidget.h \
-    $$PWD/EVENTS/CFD/Analysis/remotejobdata.h
+    $$PWD/EVENTS/CFD/Analysis/remotejobdata.h \
+    $$PWD/EVENTS/initialmodalinfo.h
 
 FORMS    += \
     $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_parameters.ui \
@@ -101,4 +103,6 @@ FORMS    += \
     $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \
     $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.ui \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.ui
+
+QT += widgets
 

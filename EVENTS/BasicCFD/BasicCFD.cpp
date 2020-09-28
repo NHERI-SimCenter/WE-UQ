@@ -75,8 +75,9 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     // create layout to hold tree view and stackedwidget
     //
 
-    auto layout = new QGridLayout();
-    this->setLayout(layout);
+    auto layout = new QGridLayout(this);
+    layout->setMargin(0);
+    layout->setSpacing(6);
 
     //Building Forces
     auto buildingForcesGroup = new QGroupBox("Building Forces");
@@ -115,7 +116,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     layout->setColumnStretch(1, 1);
 
 
-    this->setLayout(layout);
+    //this->setLayout(layout);
 
     setupConnections();
 }
