@@ -6,6 +6,7 @@
 #include "RemoteCaseSelector.h"
 #include "PatchesSelector.h"
 #include <QDialog>
+#include <usermodeshapes.h>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -277,11 +278,16 @@ void CFDExpertWidget::initializeUI()
     processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
 
+    // use building coupling?
+    couplingGroup = new UserModeShapes();
+    parametersLayout->addWidget(couplingGroup, 7,0, 1,3);
+
+    // inflow parameters?
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox, 7, 1);
-    parametersLayout->addWidget(inflowLabel, 7, 0);
+    parametersLayout->addWidget(inflowCheckBox, 8, 1);
+    parametersLayout->addWidget(inflowLabel, 8, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
     //parametersLayout->setMargin();

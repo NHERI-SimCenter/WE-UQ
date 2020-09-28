@@ -7,6 +7,7 @@
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
 #include <QSpinBox>
+#include "usermodeshapes.h"
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -32,6 +33,7 @@ private:
     RemoteService* remoteService;
     InflowParameterWidget* inflowWidget;
     QCheckBox* inflowCheckBox;
+    UserModeShapes* couplingGroup;
     QPushButton* caseSelectButton;
     QLabel* loginRequiredLabel;
     QDoubleSpinBox* startTimeBox;
