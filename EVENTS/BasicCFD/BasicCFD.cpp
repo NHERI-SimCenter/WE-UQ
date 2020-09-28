@@ -57,6 +57,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDebug>
 #include <QDoubleSpinBox>
 #include <math.h>
+#include <usermodeshapes.h>
 
 BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
@@ -102,6 +103,8 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     buildingForcesLayout->setColumnStretch(1, 1);
     buildingForcesGroup->setLayout(buildingForcesLayout);
 
+    //Coupling mode shapes
+    auto modeShapeGroup = new UserModeShapes();
 
     //3D View
     graphicsWidget = new CWE3DView(this);
@@ -110,6 +113,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     layout->addWidget(meshParameters, 0, 0);
     layout->addWidget(simulationParameters, 1, 0);
     layout->addWidget(buildingForcesGroup, 2, 0);
+    layout->addWidget(modeShapeGroup, 3, 0);
 
     layout->addWidget(graphicsWidget, 0, 1, 4, 1);
     layout->setRowStretch(3, 1);
