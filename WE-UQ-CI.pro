@@ -31,10 +31,7 @@ win32 {
     ICON = icons/NHERI-WEuq-Icon.icns
     }
 }
-include(../SimCenterCommon/Common/Common.pri)
-include(../SimCenterCommon/Workflow/Workflow.pri)
-include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
-include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
+
 include(./WindEvents.pri)
 
 SOURCES += main.cpp \
