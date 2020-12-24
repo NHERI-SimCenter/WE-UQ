@@ -1,0 +1,5 @@
+SOURCE = \
+binforces/binforces.C \
+generalizedMotionState/generalizedMotionState.C \
+generalizedMotionState/generalizedMotionStateIO.C \
+threeDoFElasticBeamMotion/threeDoFElasticBeamMotion.C 

@@ -1,6 +1,10 @@
 #include "usermodeshapes.h"
 #include "ui_usermodeshapes.h"
 
+#include <QFileDialog>
+
+#include <QDebug>
+
 UserModeShapes::UserModeShapes(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::UserModeShapes)
@@ -48,6 +52,9 @@ void UserModeShapes::on_coupling_checkBox_stateChanged(int arg1)
 
 void UserModeShapes::on_browse_button_clicked()
 {
+    QString filename = QFileDialog::getOpenFileName(this,tr("open mode shape file"),QDir::homePath());
+
+    qDebug() << filename;
 
 }
 
