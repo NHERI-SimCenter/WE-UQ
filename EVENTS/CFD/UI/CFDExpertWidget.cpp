@@ -316,7 +316,8 @@ void CFDExpertWidget::initializeUI()
 
     layout->setColumnStretch(0, 2);
     layout->setColumnStretch(1, 1);
-    layout->setRowStretch(1, 0.2);
+    //layout->setRowStretch(1, 0.2);
+    layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
     this->setLayout(layout);
