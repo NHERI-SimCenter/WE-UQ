@@ -468,6 +468,7 @@ void CFDExpertWidget::on_couplingGroup_checked(bool checked)
     }
     else
     {
+        solverComboBox->setCurrentIndex(0);
         solverComboBox->setEnabled(true);
     }
 }
