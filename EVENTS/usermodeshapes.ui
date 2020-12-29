@@ -43,7 +43,7 @@
      <property name="title">
       <string>User-defined building mode shapes</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
       <property name="leftMargin">
        <number>6</number>
       </property>
@@ -80,7 +80,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2">
+        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,1">
          <property name="leftMargin">
           <number>6</number>
          </property>
