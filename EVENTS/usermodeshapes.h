@@ -25,6 +25,8 @@ private slots:
 
     void on_filename_returnPressed();
 
+    void on_btn_download_template_clicked();
+
 private:
     Ui::UserModeShapes *ui;
 

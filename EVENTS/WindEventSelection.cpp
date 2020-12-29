@@ -228,7 +228,8 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 
 void WindEventSelection::eventSelectionChanged(const QString &arg1)
 {
-    qDebug() << arg1;
+    // qDebug() << arg1;
+
     //
     // switch stacked widgets depending on text
     // note type output in json and name in pull down are not the same and hence the ||

@@ -1,0 +1,121 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Default entries defined to activate to the FSI module
+
+dynamicFvMesh   dynamicMotionSolverFvMesh;
+motionSolverLibs ("libfsiModule.so");
+
+// Inner Distance (to the center of the model) within which the mesh moves relatively motionless with the model
+innerDistance   1;
+
+// Inner Distance (to the center of the model) outside which the mesh stays static
+outerDistance   15;
+
+// Density of fluid        
+rhoInf          1;
+
+// Time schemes for structural motion (valid options include: Newmark, CrankNicolson and symplectic)
+solver
+{
+    type        Newmark;
+}
+
+// Boudnary patches linked with the beam
+patches (cylinder);
+
+// Origin (starting point) of the beam
+origin (0 0 0);
+
+// Direction (vector) of the beam
+direction (0 0 1);
+
+// Number of nodes (an integer larger than 2) on the beam
+nNode 11;
+
+// Number of modes (an integer no less than 1) considered
+nMode 2;
+
+// Frequency of all considered modes ()
+frequency 2(0.2 0.2);
+
+// Length of element segments (the number of elements should equal to $nNode minus 1)
+length 10(0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415);
+
+// Lumped mass (a list of three (or six)-component vectors for three (or six) DoF Beams)
+mass List<vector>
+11
+(
+(0.5 0.5 5)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(0.5 0.5 5)
+);
+
+// Damping ratios of the modes considered (a list of scalars)
+dampingRatio 2(0.005 0.005);
+
+// the first mode (a list of three (or six)-component vectors for three (or six) DoF Beams)
+mode1 List<vector>
+11
+(
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+);
+
+// the second mode (a list of three (or six)-component vectors for three (or six) DoF Beams)
+mode2 List<vector>
+11
+(
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+);
+
+// initial state of the generalized motion
+
+generalizedMotionState
+{
+    ubar 2(0.0 0.0);
+    vbar 2(0.0 0.0);
+    abar 2(0.0 0.0);
+}
+
+// ************************************************************************* //

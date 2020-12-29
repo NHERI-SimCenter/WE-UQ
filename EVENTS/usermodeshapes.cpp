@@ -1,7 +1,11 @@
 #include "usermodeshapes.h"
 #include "ui_usermodeshapes.h"
 
+#include <QFile>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QIODevice>
+#include <QTextStream>
 
 #include <QDebug>
 
@@ -61,4 +65,26 @@ void UserModeShapes::on_browse_button_clicked()
 void UserModeShapes::on_filename_returnPressed()
 {
 
+}
+
+void UserModeShapes::on_btn_download_template_clicked()
+{
+    QString suggested_path = QFileInfo(QDir::homePath(), tr("dynamicMeshDictTemplate")).absoluteFilePath();
+    QString filename = QFileDialog::getSaveFileName(this,tr("save template file"),suggested_path, QDir::homePath());
+
+    //qDebug() << "Selected target filename: " << filename;
+
+    if (!filename.isEmpty()) {
+        QFile outfile(filename);
+        if (outfile.exists())
+        {
+            qWarning("file already exists - operation aborted");
+            return;
+        }
+        QFile infile(":/Resources/CWE/Templates/dynamicMeshDict");
+        if (!infile.copy(filename))
+        {
+            qWarning("failure to save to file");
+        }
+    }
 }
