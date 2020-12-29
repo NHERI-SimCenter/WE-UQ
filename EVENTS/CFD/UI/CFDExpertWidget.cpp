@@ -227,6 +227,7 @@ void CFDExpertWidget::initializeUI()
     solverComboBox = new QComboBox(this);
     solverComboBox->addItem("pisoFoam");
     solverComboBox->addItem("icoFoam");
+    solverComboBox->addItem("pimpleFoam");
     QLabel *solverLabel = new QLabel("Solver", this);
    // parametersLayout->addRow("Solver", solverComboBox);
     parametersLayout->addWidget(solverLabel, 1, 0);
@@ -373,6 +374,8 @@ void CFDExpertWidget::setupConnections()
 
     connect(selectPatchesButton, &QPushButton::clicked, this, &CFDExpertWidget::selectPatchesPushed);
 
+    connect(couplingGroup, SIGNAL(couplingGroup_checked(bool)), this, SLOT(on_couplingGroup_checked(bool)));
+
 }
 
 void CFDExpertWidget::parseBoundaryPatches(QString uFilePath)
@@ -454,4 +457,17 @@ void CFDExpertWidget::showEvent(QShowEvent *event)
     Q_UNUSED(event);
     if (!shown)
         shown = true;
+}
+
+void CFDExpertWidget::on_couplingGroup_checked(bool checked)
+{
+    if (checked)
+    {
+        solverComboBox->setCurrentText(QString("pimpleFoam"));
+        solverComboBox->setEnabled(false);
+    }
+    else
+    {
+        solverComboBox->setEnabled(true);
+    }
 }

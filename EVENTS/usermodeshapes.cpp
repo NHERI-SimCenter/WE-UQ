@@ -53,6 +53,7 @@ void UserModeShapes::setFileName(const QString &filename)
 void UserModeShapes::on_coupling_checkBox_stateChanged(int arg1)
 {
     ui->modeShapeGroup->setEnabled(ui->coupling_checkBox->isChecked());
+    emit couplingGroup_checked(ui->coupling_checkBox->isChecked());
 }
 
 void UserModeShapes::on_browse_button_clicked()

@@ -18,6 +18,9 @@ public:
     QString fileName();
     void setFileName(const QString &filename);
 
+signals:
+    void couplingGroup_checked(bool checked);
+
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);
     void on_browse_button_clicked();

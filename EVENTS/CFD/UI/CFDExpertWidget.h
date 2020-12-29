@@ -26,6 +26,7 @@ signals:
 public slots:
     void selectButtonPushed();
     void selectPatchesPushed();
+    void on_couplingGroup_checked(bool checked);
 
 private:
     QLineEdit* caseEditBox;
