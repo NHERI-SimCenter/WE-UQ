@@ -14,6 +14,8 @@ win32:QMAKE_CXXFLAGS -= -m64 #TODO: This seems to be cause by smelt Conan packag
 TARGET = WE_UQ
 TEMPLATE = app
 
+DEFINES += _GRAPHICS_Qt3D
+
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow

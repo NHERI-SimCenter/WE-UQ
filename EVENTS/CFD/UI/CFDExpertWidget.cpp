@@ -6,6 +6,7 @@
 #include "RemoteCaseSelector.h"
 #include "PatchesSelector.h"
 #include <QDialog>
+#include <usermodeshapes.h>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -39,10 +40,12 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
     eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
     eventObject["type"] = "CFD - Expert";
+    eventObject["forceCalculationMethod"] = forceComboBox->currentText();
     eventObject["start"] = startTimeBox->value();
     eventObject["patches"] = patchesEditBox->text();
     eventObject["meshing"] = meshingComboBox->currentData().toString();
     eventObject["processors"] = processorsBox->value();
+    eventObject["userModesFile"] = couplingGroup->fileName();
 
     return true;
 }
@@ -61,6 +64,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
     if(eventObject.contains("start"))
         this->startTimeBox->setValue(eventObject["start"].toDouble());
 
+    if(eventObject.contains("forceCalculationMethod"))
+        this->forceComboBox->setCurrentText(eventObject["forceCalculationMethod"].toString());
+
     if(eventObject.contains("patches"))
         this->patchesEditBox->setText(eventObject["patches"].toString());
 
@@ -73,6 +79,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
     if(eventObject.contains("processors"))
         this->processorsBox->setValue(eventObject["processors"].toInt());
+
+    if(eventObject.contains("userModesFile"))
+        this->couplingGroup->setFileName(eventObject["userModesFile"].toString());
 
     inflowWidget->inputFromJSON(eventObject);
 
@@ -237,7 +246,7 @@ void CFDExpertWidget::initializeUI()
 
     //Force Calculation
     QLabel *forceLabel = new QLabel("Force Calculation", this);
-    QComboBox* forceComboBox = new QComboBox();
+    forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     //parametersLayout->addRow("Force Calculation     ", forceComboBox);
     parametersLayout->addWidget(forceComboBox, 3, 1, 1, 2);
@@ -277,11 +286,16 @@ void CFDExpertWidget::initializeUI()
     processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
 
+    // use building coupling?
+    couplingGroup = new UserModeShapes();
+    parametersLayout->addWidget(couplingGroup, 7,0, 1,3);
+
+    // inflow parameters?
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox, 7, 1);
-    parametersLayout->addWidget(inflowLabel, 7, 0);
+    parametersLayout->addWidget(inflowCheckBox, 8, 1);
+    parametersLayout->addWidget(inflowLabel, 8, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
     //parametersLayout->setMargin();
@@ -302,7 +316,8 @@ void CFDExpertWidget::initializeUI()
 
     layout->setColumnStretch(0, 2);
     layout->setColumnStretch(1, 1);
-    layout->setRowStretch(1, 0.2);
+    //layout->setRowStretch(1, 0.2);
+    layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
     this->setLayout(layout);

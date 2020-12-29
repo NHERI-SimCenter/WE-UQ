@@ -1,0 +1,8 @@
+binforces/binforces.C
+
+generalizedMotionState/generalizedMotionState.C
+generalizedMotionState/generalizedMotionStateIO.C
+
+threeDoFElasticBeamMotion/threeDoFElasticBeamMotion.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfsiModule

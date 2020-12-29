@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    pFinal
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+}
+
+//- Parameters regarding the FSI algorithm
+FSI
+{
+    //- Coupling mode selection (valid options are "weak" and "strong")
+    coupling        "weak";
+
+    //- Number of outer correction loops
+    nOuterCorrectors 1;
+}
+
+//- Parameters regarding the PISO algorithm
+PISO
+{
+    //- Number of PISO correction loops
+    nCorrectors     2;
+
+    //- Number of non-orthogonal correction loops
+    nNonOrthogonalCorrectors 0;
+}
+
+// ************************************************************************* //
