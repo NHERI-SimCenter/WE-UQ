@@ -20,14 +20,12 @@ public:
 
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);
-
     void on_browse_button_clicked();
-
-    void on_filename_returnPressed();
-
     void on_btn_download_template_clicked();
+    void on_filename_editingFinished();
 
 private:
+    bool validateFile(const QString &filename);
     Ui::UserModeShapes *ui;
 
     QList<QVector<double > *> mode_shapes;
