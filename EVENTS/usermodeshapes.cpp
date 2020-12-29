@@ -41,6 +41,7 @@ QString UserModeShapes::fileName()
 void UserModeShapes::setFileName(const QString &filename)
 {
     ui->filename->setText(filename);
+    this->validateFile(filename);
     ui->coupling_checkBox->setChecked(!filename.isEmpty());
     this->on_coupling_checkBox_stateChanged(-1);
 }
