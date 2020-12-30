@@ -677,58 +677,6 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
 
             out << "}" << Qt::endl;
             out << Qt::endl;
-
-            /*
-            out << "// turbulence length scale profile for u component" << Qt::endl;
-            out << "LuxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lu0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-            out << Qt::endl;
-
-            out << "// turbulence length scale profile for v component" << Qt::endl;
-            out << "LvxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lv0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-            out << Qt::endl;
-
-
-            out << "// turbulence length scale profile for w component" << Qt::endl;
-            out << "LwxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lw0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-             */
-
-            out << Qt::endl;
             out << Qt::endl;
             out << "// ************************************************************************* //" << Qt::endl;
 

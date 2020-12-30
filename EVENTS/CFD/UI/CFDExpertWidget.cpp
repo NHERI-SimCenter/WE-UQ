@@ -194,6 +194,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     else
     {
         // NEED COUPLING GROUP U FILE CHANGES
+        this->exportUFile(newFile);
     }
 
     //
@@ -226,6 +227,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     else
     {
         // NEED COUPLING GROUP controlDict FILE CHANGES
+        this->exportControlDictFile(origFile, newFile);
     }
 
     return true;
@@ -585,3 +587,182 @@ void CFDExpertWidget::on_couplingGroup_checked(bool checked)
         solverComboBox->setEnabled(true);
     }
 }
+
+void CFDExpertWidget::exportUFile(QString fileName)
+{
+    refreshParameterMap();
+
+    // get the boundary condition to generate
+    QString BCselected = ui->boundarySelection->currentText();
+
+    // file handle for the U file
+    QFile UFile(fileName);
+    UFile.open(QFile::WriteOnly);
+    QTextStream out(&UFile);
+
+    out << UFileHead;
+
+    foreach (QString key, boundaries.keys())
+    {
+        out << "    " << key << Qt::endl;
+        out << "    {" << Qt::endl;
+
+        if (key == BCselected)
+        {
+            QMap<QString, QString> theMap = *boundaries.value(key);
+
+            switch (int(theParameters.value("FilterMethod"))) {
+            case 0: /* digital filter */
+
+                out << "        type               turbulentDFMInlet;" << Qt::endl;
+                switch (int(theParameters.value("filterType"))) {
+                case 0:
+                    out << "        filterType         gaussian;" << Qt::endl;
+                    break;
+                case 1:
+                    out << "        filterType         exponential;" << Qt::endl;
+                    break;
+                default:
+                    out << "        filterType         exponential;" << Qt::endl;
+                }
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << Qt::endl;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 1:  /* synthetic eddy */
+
+                out << "        type               turbulentSEMInlet;" << Qt::endl;
+                switch (int(theParameters.value("eddyType"))) {
+                case 0:
+                    out << "        eddyType        gaussian;" << Qt::endl;
+                    break;
+                case 1:
+                    out << "        eddyType        tent;" << Qt::endl;
+                    break;
+                case 2:
+                    out << "        eddyType        step;" << Qt::endl;
+                    break;
+                default:
+                    out << "        eddyType        gaussian;" << Qt::endl;
+                }
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 2:  /* divergence-free synthetic eddy */
+
+                out << "        type               turbulentDFSEMInlet;" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 3:  /* digital spot */
+
+                out << "        type               turbulentATSMInlet;" << Qt::endl;
+
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            default:
+                qWarning() << "unknown turbulent inflow boundary conditions";
+            }
+
+            if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
+            {
+                out << "        calculateU         true;" << Qt::endl;
+                out << "        calculateL         true;" << Qt::endl;
+                out << "        calculateR         true;" << Qt::endl;
+            }
+
+            /* this was moved to the inflowProperties-file starting with version 1.1.0 *
+             *
+
+            out << "        intersection       ( "
+                << theParameters.value("intersection0") << " "
+                << theParameters.value("intersection1") << " "
+                << theParameters.value("intersection2") << " );" << Qt::endl;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << Qt::endl;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << Qt::endl;
+
+             *
+             */
+
+            if (theMap.contains("type"))         theMap.remove("type");
+            if (theMap.contains("filterType"))   theMap.remove("filterType");
+            if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
+            if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
+            if (theMap.contains("density"))      theMap.remove("density");
+            if (theMap.contains("eddyType"))     theMap.remove("eddyType");
+            if (theMap.contains("vortonType"))   theMap.remove("vortonType");
+            if (theMap.contains("periodicInY"))  theMap.remove("periodicInY");
+            if (theMap.contains("periodicInZ"))  theMap.remove("periodicInZ");
+            if (theMap.contains("cleanRestart")) theMap.remove("cleanRestart");
+
+            foreach (QString s, theMap.keys() )
+            {
+                out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
+            }
+        }
+        else {
+            foreach (QString s, (boundaries.value(key))->keys() )
+            {
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << Qt::endl;
+            }
+        }
+        out << "    }" << Qt::endl;
+        out << Qt::endl;
+    }
+
+    out << UFileTail;
+
+    UFile.close();
+}
+
+void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileName)
+{
+    // file handle for the controlDict file
+    QFile CDictIn(origFileName);
+    CDictIn.open(QFile::ReadOnly);
+    CDictContents = CDictIn.readAll();
+    CDictIn.close();
+
+    QFile CDict(fileName);
+    CDict.open(QFile::WriteOnly);
+    QTextStream out(&CDict);
+
+    QList<QByteArray> CDictList = CDictContents.split('\n');
+    foreach (QByteArray line, CDictList)
+    {
+        if (line.contains("application")) {
+            out << "libs" << Qt::endl;
+            out << "(" << Qt::endl;
+            out << "    \"libturbulentInflow.so\"" << Qt::endl;
+            out << ");" << Qt::endl;
+            out << Qt::endl;
+        }
+
+        out << line << Qt::endl;
+    }
+
+    CDict.close();
+}
+

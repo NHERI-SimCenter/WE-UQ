@@ -66,6 +66,9 @@ private:
     void autoSelectPatches();
     bool buildFiles(QString &dirName);
 
+    void exportUFile(QString);
+    void exportControlDictFile(QString, QString);
+
 
     // QWidget interface
 protected:

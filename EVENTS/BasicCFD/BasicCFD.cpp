@@ -140,7 +140,6 @@ BasicCFD::~BasicCFD()
 }
 
 
-
 double BasicCFD::toMilliMeters(QString lengthUnit) const
 {
     static std::map<QString,double> conversionMap
@@ -349,3 +348,4 @@ BasicCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
     Q_UNUSED(jsonObject);
     return true;
 }
+
