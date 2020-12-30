@@ -463,6 +463,8 @@ void InflowParameterWidget::setUniformTurbulent(void)
     ui->alpha31->hide();
     ui->alpha32->hide();
     ui->alpha33->hide();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
@@ -505,6 +507,8 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->alpha31->show();
     ui->alpha32->show();
     ui->alpha33->show();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::sendParameterMap(void)

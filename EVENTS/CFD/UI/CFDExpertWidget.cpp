@@ -477,6 +477,10 @@ void CFDExpertWidget::setupConnections()
         container->setFixedSize(container->minimumSizeHint());
     });
 
+    connect(inflowWidget, &InflowParameterWidget::rescaleRequested, this, [this](){
+        container->setFixedSize(container->minimumSizeHint());
+    });
+
     connect(remoteService, &RemoteService::downloadFilesReturn, this, [this](bool result, QObject* sender)
     {
         if(result && sender == this)
