@@ -80,7 +80,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0">
+        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0">
          <property name="leftMargin">
           <number>6</number>
          </property>
@@ -96,31 +96,24 @@
          <property name="verticalSpacing">
           <number>6</number>
          </property>
-         <item row="1" column="0" colspan="2">
-          <widget class="QLabel" name="template_label">
-           <property name="text">
-            <string>You may download this template file to start your user-provided input:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="upload_label">
-           <property name="text">
-            <string>upload user file:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
+         <item row="5" column="3">
           <widget class="QPushButton" name="browse_button">
            <property name="text">
             <string>browse</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1" colspan="2">
+         <item row="5" column="1" colspan="2">
           <widget class="QLineEdit" name="filename"/>
          </item>
-         <item row="3" column="0" colspan="4">
+         <item row="5" column="0">
+          <widget class="QLabel" name="upload_label">
+           <property name="text">
+            <string>upload user file:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0" colspan="4">
           <widget class="QFrame" name="infoFrame">
            <property name="frameShape">
             <enum>QFrame::Panel</enum>
@@ -174,17 +167,41 @@
            </layout>
           </widget>
          </item>
-         <item row="0" column="0" colspan="4">
-          <widget class="QLabel" name="info_label">
-           <property name="text">
-            <string>This version of WE-UQ requires a user-defined set of building mode shapes.  See documentation for details.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2" colspan="2">
+         <item row="4" column="2" colspan="2">
           <widget class="QPushButton" name="btn_download_template">
            <property name="text">
             <string>download template file</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="4">
+          <widget class="QLabel" name="info_label">
+           <property name="text">
+            <string>This version of WE-UQ requires a user-defined set of building mode shapes.  See the template file for details.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="FSI_boundary_selection"/>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QLabel" name="template_label">
+           <property name="text">
+            <string>You may download this template file to start your user-provided input:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="FSI_boundary_label">
+           <property name="text">
+            <string>FSI boundary name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="4">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>

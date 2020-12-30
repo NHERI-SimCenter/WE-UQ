@@ -7,6 +7,10 @@
 #include "PatchesSelector.h"
 #include <QDialog>
 #include <usermodeshapes.h>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QScrollArea>
+#include <QResizeEvent>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -309,9 +313,32 @@ QStringList CFDExpertWidget::getRemoteFilesPaths()
     return {caseDir + "/0/U", caseDir + "/system/controlDict"};
 }
 
+void CFDExpertWidget::resizeEvent(QResizeEvent *event)
+{
+    QSize theSize = event->size();
+    scrollArea->setFixedSize(theSize);
+    container->setFixedSize(container->minimumSizeHint());
+}
+
 void CFDExpertWidget::initializeUI()
 {
-    auto layout = new QGridLayout();
+    // put everything into a QScrollArea to accommodate the large inflow widget
+    //
+    // ... this also requires overloading the void resizeEvent(QResizeEvent *event) method !!!
+
+    QVBoxLayout lyt(this);
+
+    container = new QFrame();
+    container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    scrollArea = new QScrollArea(this);
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(container);
+    lyt.addWidget(scrollArea);
+
+    // here the actual contents
+
+    auto layout = new QGridLayout(container);
     layout->setMargin(0);
     layout->setSpacing(6);
 
@@ -320,7 +347,7 @@ void CFDExpertWidget::initializeUI()
 
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
-    QGridLayout *parametersLayout = new QGridLayout();
+    QGridLayout *parametersLayout = new QGridLayout(CFDGroupBox);
     parametersLayout->setMargin(6);
     parametersLayout->setSpacing(6);
 
@@ -401,42 +428,35 @@ void CFDExpertWidget::initializeUI()
     processorsBox->setValue(16);
     processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
-
-    // use building coupling?
-    couplingGroup = new UserModeShapes();
-    parametersLayout->addWidget(couplingGroup, 7,0, 1,3);
-
     // inflow parameters?
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox, 8, 1);
-    parametersLayout->addWidget(inflowLabel, 8, 0);
+    parametersLayout->addWidget(inflowCheckBox, 7, 1);
+    parametersLayout->addWidget(inflowLabel, 7, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
-    //parametersLayout->setMargin();
-    CFDGroupBox->setLayout(parametersLayout);
 
+    // refresh button for reloading remote files
+    refreshButton = new QPushButton("reload remote OpenFOAM files (takes a few seconds)");
+
+    // use building coupling?
+    couplingGroup = new UserModeShapes();
 
     //inflowWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
 
     layout->addWidget(CFDGroupBox, 1, 0);
-    layout->addItem(new QSpacerItem(500,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 1,1);
+    //layout->addItem(new QSpacerItem(500,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 1,1);
+    layout->addWidget(refreshButton, 2,0);
+    layout->addWidget(couplingGroup, 3,0);
+    layout->addWidget(inflowWidget, 4,0);
+
     inflowWidget->setHidden(true);
 
-    QVBoxLayout *vbox = new QVBoxLayout();
-    vbox->addWidget(inflowWidget,10);
-    vbox->addItem(new QSpacerItem(0,500,QSizePolicy::Minimum,QSizePolicy::Expanding));
-
-    layout->addLayout(vbox, 2,0,1,2);
-
     layout->setColumnStretch(0, 2);
-    layout->setColumnStretch(1, 1);
-    //layout->setRowStretch(1, 0.2);
     layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
-    this->setLayout(layout);
     this->setEnabled(false);
 }
 
@@ -453,6 +473,8 @@ void CFDExpertWidget::setupConnections()
         }
         else
             inflowWidget->setHidden(true);
+
+        container->setFixedSize(container->minimumSizeHint());
     });
 
     connect(remoteService, &RemoteService::downloadFilesReturn, this, [this](bool result, QObject* sender)
@@ -588,12 +610,19 @@ void CFDExpertWidget::on_couplingGroup_checked(bool checked)
     }
 }
 
+/* *******************************************************************
+ *     migrated from InflowWidget
+ * *******************************************************************/
+
 void CFDExpertWidget::exportUFile(QString fileName)
 {
-    refreshParameterMap();
+    QMap<QString, double> theParameters;
+
+    inflowWidget->fetchParameterMap(theParameters);
 
     // get the boundary condition to generate
-    QString BCselected = ui->boundarySelection->currentText();
+    //QString BCselected = ui->boundarySelection->currentText();
+    QString BCselected = inflowWidget->fetchBoundarySelection();
 
     // file handle for the U file
     QFile UFile(fileName);
@@ -766,3 +795,171 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     CDict.close();
 }
 
+
+
+bool CFDExpertWidget::readUfile(QString filename)
+{
+    QFile UFile(filename);
+
+    if (UFile.exists()) {
+        //
+        // U file exists
+        //
+        UFile.open(QFile::ReadOnly);
+        UFileContents = UFile.readAll();
+        UFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // U file missing
+        //
+        UFileContents = "";
+
+        return false;
+    }
+}
+
+bool CFDExpertWidget::readControlDict(QString filename)
+{
+    QFile CDictFile(filename);
+
+    if (CDictFile.exists()) {
+        //
+        // controlDict file exists
+        //
+        CDictFile.open(QFile::ReadOnly);
+        CDictContents = CDictFile.readAll();
+        CDictFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // controlDict file missing
+        //
+        CDictContents = "";
+
+        return false;
+    }
+}
+
+bool CFDExpertWidget::getLine(QStringList &reply)
+{
+    bool hasLine = false;
+    QByteArray lineString = "";
+
+    while (UIter->hasNext() && (!hasLine))
+    {
+        QByteArray line = UIter->next().simplified();
+        if (qstrncmp(line,"//",2) == 0) continue;
+        if (qstrncmp(line, "#",1) == 0) continue;
+        if (line.contains('{')) {
+            hasLine = true;
+            break;
+        }
+        lineString += line;
+        if (line.contains('}')) {
+            hasLine = true;
+            break;
+        }
+        if (line.contains(';')) {
+            int idx = lineString.indexOf(';');
+            lineString.truncate(idx);
+            hasLine = true;
+            break;
+        }
+    }
+
+    reply.clear();
+
+    if (hasLine)
+    {
+        QByteArrayList reply0 = lineString.simplified().split(' ');
+
+        foreach (QByteArray item, reply0)
+        {
+            reply.append(item);
+        }
+    }
+
+    return hasLine;
+}
+
+QMap<QString, QString> *CFDExpertWidget::readParameters(void)
+{
+    QMap<QString, QString> *params = new QMap<QString, QString>();
+
+    QStringList items;
+
+    while ( this->getLine(items) ) {
+        if (items[0] == '}') break;
+
+        if (items.length() > 0 ) {
+            QString key = items[0];
+            items.removeFirst();
+            QString value = items.join(" ");
+            params->insert(key, value);
+        }
+    }
+
+    return params;
+}
+
+void CFDExpertWidget::processUfile()
+{
+    // parse files for available boundaries
+    QStringList boundaryList;
+
+    UFileList = UFileContents.split('\n');
+    UIter = new QListIterator<QByteArray>(UFileList);
+
+    // read till boundaryField keyword
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileHead.append(line);
+        UFileHead.append('\n');
+        if (line.contains("boundaryField")) {
+            while ( (!line.contains('{')) && UIter->hasNext()) {
+                line = UIter->next();
+                UFileHead.append(line);
+                UFileHead.append('\n');
+            }
+            break;
+        }
+    }
+
+    // parse for boundary patches
+    while (UIter->hasNext())
+    {
+        QStringList list;
+
+        if (this->getLine(list))
+        {
+            // skip empty lines
+            if (list.length() == 0) continue;
+
+            // terminate if done with boundaryFields section
+            if (list[0] == '}') {
+                UFileTail.append("}\n");
+                break;
+            }
+
+            // read and store the boundary item
+            boundaryList.append(list[0]);
+            boundaries.insert(list[0], this->readParameters());
+        }
+    }
+
+    // collect the remainder of the file
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileTail.append(line);
+        UFileTail.append('\n');
+    }
+
+    couplingGroup->updateBoundaryList(boundaryList);
+}

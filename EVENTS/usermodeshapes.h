@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+class QStandardItemModel;
+
 namespace Ui {
 class UserModeShapes;
 }
@@ -17,6 +19,7 @@ public:
     bool isChecked();
     QString fileName();
     void setFileName(const QString &filename);
+    void updateBoundaryList(QStringList &boundaryList);
 
 signals:
     void couplingGroup_checked(bool checked);

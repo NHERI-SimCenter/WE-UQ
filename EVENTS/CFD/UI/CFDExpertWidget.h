@@ -44,6 +44,10 @@ private:
     QPushButton* selectPatchesButton;
     QComboBox* meshingComboBox;
     QSpinBox* processorsBox;
+    QPushButton* refreshButton;
+
+    QFrame *container;
+    QScrollArea *scrollArea;
 
     QString originalUFilePath;
     QString originalControlDictPath;
@@ -66,11 +70,36 @@ private:
     void autoSelectPatches();
     bool buildFiles(QString &dirName);
 
+    /* *******************************************************************
+     *     migrated from InflowWidget
+     * *******************************************************************/
+
+    bool readUfile(QString);
+    void processUfile();
     void exportUFile(QString);
+
+    bool readControlDict(QString);
     void exportControlDictFile(QString, QString);
+
+    bool getLine(QStringList &);
+    QMap<QString, QString> *readParameters(void);
+
+    QByteArray CDictContents;
+
+    QFile UFile;
+    QList<QByteArray> UFileList;
+    QListIterator<QByteArray> *UIter;
+    QMap<QString, QMap<QString, QString> * > boundaries;
+
+    QString UFilePath;
+    QByteArray UFileContents;
+    QByteArray UFileHead = "";
+    QByteArray UFileTail = "";
 
 
     // QWidget interface
+    void resizeEvent(QResizeEvent *event);
+
 protected:
     void showEvent(QShowEvent *event) override;
 };

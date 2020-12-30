@@ -76,6 +76,9 @@ public:
     void exportUFile(QString);
     void exportControlDictFile(QString, QString);
 
+    bool fetchParameterMap(QMap<QString, double> &theParams);
+    QString fetchBoundarySelection(void);
+
 signals:
     void parametersReady(QMap<QString, double> &);
     void boundarySelection(int);

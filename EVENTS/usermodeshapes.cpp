@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QIODevice>
 #include <QTextStream>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
 #include <QDebug>
 
@@ -93,6 +95,19 @@ void UserModeShapes::on_filename_editingFinished()
     QString filename = ui->filename->text();
     this->validateFile(filename);
 }
+
+
+void UserModeShapes::updateBoundaryList(QStringList &boundaryList)
+{
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+
+    ui->FSI_boundary_selection->setModel(theModel);
+}
+
 
 bool UserModeShapes::validateFile(const QString &filename)
 {
