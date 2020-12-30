@@ -8,6 +8,7 @@
 #include <QDoubleSpinBox>
 #include <QSpinBox>
 #include "usermodeshapes.h"
+#include <QDir>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -48,6 +49,9 @@ private:
     QString originalControlDictPath;
     QStringList patchesList;
 
+    QDir oldLocation = QDir(".");
+    QDir newLocation = QDir(".");
+
     bool shown;
 
 
@@ -60,6 +64,7 @@ private:
     void processBuildingPatches();
     bool validateSelectedPatches();
     void autoSelectPatches();
+    bool buildFiles(QString &dirName);
 
 
     // QWidget interface

@@ -1335,7 +1335,7 @@ bool InflowParameterWidget::copyFiles(QString &dirName)
 {
     // time to export :)
 
-    // we place new file into the existing file structure
+    // we place new files into the existing file structure
     // but we do save one version of the existing file as
     // filename.orig before writing the new one
 

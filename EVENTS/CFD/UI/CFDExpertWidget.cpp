@@ -90,7 +90,7 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
 bool CFDExpertWidget::copyFiles(QString &path)
 {
-    if (inflowCheckBox->isChecked())
+    if (inflowCheckBox->isChecked() || couplingGroup->isChecked())
     {
         QDir targetDir(path);
 
@@ -112,7 +112,120 @@ bool CFDExpertWidget::copyFiles(QString &path)
 
         QFile::copy(originalControlDictPath, newControlDictPath);
 
-        return inflowWidget->copyFiles(path);
+        //return inflowWidget->copyFiles(path);
+        return this->buildFiles(path);
+    }
+
+    return true;
+}
+
+
+
+bool CFDExpertWidget::buildFiles(QString &dirName)
+{
+    /*
+     *  !!! this method replaces inflowWidget->copyFiles(path); !!!
+     *
+     * The change was necessary since both InFlowWidget and UserModeShapes
+     * require modifications to the U and controlDict files
+     *
+     */
+
+    // time to export :)
+
+    // we place new files into the existing file structure
+    // but we do save one version of the existing file as
+    // filename.orig before writing the new one
+
+    //
+    // ... inflowProperties file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("constant")) {
+        newLocation.mkdir("constant");
+        newLocation.cd("constant");
+    }
+
+    QString newFile = newLocation.absoluteFilePath("inflowProperties");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // write the new file
+    if (inflowCheckBox->isChecked() )
+    {
+        inflowWidget->exportInflowParameterFile(newFile);
+    }
+
+    //
+    // ... U file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("0")) {
+        newLocation.mkdir("0");
+        newLocation.cd("0");
+    }
+
+    newFile  = newLocation.absoluteFilePath("U");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update U file
+
+    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked())
+    {
+        inflowWidget->exportUFile(newFile);
+    }
+    else
+    {
+        // NEED COUPLING GROUP U FILE CHANGES
+    }
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+
+    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked())
+    {
+        inflowWidget->exportControlDictFile(origFile, newFile);
+    }
+    else
+    {
+        // NEED COUPLING GROUP controlDict FILE CHANGES
     }
 
     return true;
