@@ -96,6 +96,11 @@ void UserModeShapes::on_filename_editingFinished()
     this->validateFile(filename);
 }
 
+QString UserModeShapes::fetchBoundarySelection(void)
+{
+    QString theBoundarySelection = ui->FSI_boundary_selection->currentText();
+    return theBoundarySelection;
+}
 
 void UserModeShapes::updateBoundaryList(QStringList &boundaryList)
 {

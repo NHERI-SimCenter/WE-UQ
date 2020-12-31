@@ -20,9 +20,11 @@ public:
     QString fileName();
     void setFileName(const QString &filename);
     void updateBoundaryList(QStringList &boundaryList);
+    QString fetchBoundarySelection(void);
 
 signals:
     void couplingGroup_checked(bool checked);
+    void boundarySelection(int);
 
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);

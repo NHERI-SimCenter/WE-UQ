@@ -1298,6 +1298,8 @@ bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::copyFiles(QString &dirName)
 {
+    qWarning() << "*** InflowParameterWidget::copyFiles(QString &dirName) should not be called by WE_UQ";
+
     // time to export :)
 
     // we place new files into the existing file structure

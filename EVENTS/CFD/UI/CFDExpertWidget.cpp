@@ -223,16 +223,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     qDebug() << "move" << newFile << origFile;
 
     // update controlDict file
-
-    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked())
-    {
-        inflowWidget->exportControlDictFile(origFile, newFile);
-    }
-    else
-    {
-        // NEED COUPLING GROUP controlDict FILE CHANGES
-        this->exportControlDictFile(origFile, newFile);
-    }
+    this->exportControlDictFile(origFile, newFile);
 
     return true;
 }
@@ -281,6 +272,9 @@ void CFDExpertWidget::downloadRemoteCaseFiles()
         localFilePath << originalUFilePath << originalControlDictPath;
         ensureUFileExists();
         remoteService->downloadFilesCall(remoteFilePath, localFilePath, this);
+
+        this->readUfile(originalUFilePath);
+        this->processUfile();
     }
 }
 
@@ -624,9 +618,11 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
     inflowWidget->fetchParameterMap(theParameters);
 
-    // get the boundary condition to generate
-    //QString BCselected = ui->boundarySelection->currentText();
-    QString BCselected = inflowWidget->fetchBoundarySelection();
+    // get the inflow boundary condition to generate
+    QString inflow_BCselected = inflowWidget->fetchBoundarySelection();
+
+    // get the coupling boundary condition to generate
+    QString FSI_BCselected = couplingGroup->fetchBoundarySelection();
 
     // file handle for the U file
     QFile UFile(fileName);
@@ -640,7 +636,7 @@ void CFDExpertWidget::exportUFile(QString fileName)
         out << "    " << key << Qt::endl;
         out << "    {" << Qt::endl;
 
-        if (key == BCselected)
+        if (key == inflow_BCselected)
         {
             QMap<QString, QString> theMap = *boundaries.value(key);
 
@@ -726,18 +722,6 @@ void CFDExpertWidget::exportUFile(QString fileName)
                 out << "        calculateR         true;" << Qt::endl;
             }
 
-            /* this was moved to the inflowProperties-file starting with version 1.1.0 *
-             *
-
-            out << "        intersection       ( "
-                << theParameters.value("intersection0") << " "
-                << theParameters.value("intersection1") << " "
-                << theParameters.value("intersection2") << " );" << Qt::endl;
-            out << "        yOffset            " << theParameters.value("yOffset") << ";" << Qt::endl;
-            out << "        zOffset            " << theParameters.value("zOffset") << ";" << Qt::endl;
-
-             *
-             */
 
             if (theMap.contains("type"))         theMap.remove("type");
             if (theMap.contains("filterType"))   theMap.remove("filterType");
@@ -754,6 +738,10 @@ void CFDExpertWidget::exportUFile(QString fileName)
             {
                 out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
             }
+        }
+        else if (key == FSI_BCselected) {
+            out <<  "        type               movingWall;" << Qt::endl;
+            out <<  "        value              uniform (0 0 0);" << Qt::endl;
         }
         else {
             foreach (QString s, (boundaries.value(key))->keys() )
@@ -786,14 +774,20 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     foreach (QByteArray line, CDictList)
     {
         if (line.contains("application")) {
-            out << "libs" << Qt::endl;
-            out << "(" << Qt::endl;
-            out << "    \"libturbulentInflow.so\"" << Qt::endl;
-            out << ");" << Qt::endl;
-            out << Qt::endl;
-        }
 
-        out << line << Qt::endl;
+            if (inflowCheckBox->isChecked()) {
+                out << "libs" << Qt::endl;
+                out << "(" << Qt::endl;
+                out << "    \"libturbulentInflow.so\"" << Qt::endl;
+                out << ");" << Qt::endl;
+                out << Qt::endl;
+            }
+
+            out << "application     " << solverComboBox->currentText() << ";" << Qt::endl;
+        }
+        else {
+            out << line << Qt::endl;
+        }
     }
 
     CDict.close();
@@ -915,6 +909,8 @@ void CFDExpertWidget::processUfile()
 {
     // parse files for available boundaries
     QStringList boundaryList;
+    UFileHead = "";
+    UFileTail = "";
 
     UFileList = UFileContents.split('\n');
     UIter = new QListIterator<QByteArray>(UFileList);
