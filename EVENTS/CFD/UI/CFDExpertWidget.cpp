@@ -11,6 +11,8 @@
 #include <QStandardItemModel>
 #include <QScrollArea>
 #include <QResizeEvent>
+#include <QFile>
+#include <QTextStream>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -23,6 +25,7 @@ CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, 
 
     originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/U.orig";
     originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/controlDict.orig";
+    originalfvSolutionPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/fvSolution.orig";
 }
 
 bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
@@ -107,10 +110,8 @@ bool CFDExpertWidget::copyFiles(QString &path)
         targetDir.mkpath("system");
 
         auto newUPath = targetDir.filePath("0/U");
-
         if(QFile::exists(newUPath))
             QFile::remove(newUPath);
-
 
         QFile::copy(originalUFilePath, newUPath);
 
@@ -119,6 +120,12 @@ bool CFDExpertWidget::copyFiles(QString &path)
             QFile::remove(newControlDictPath);
 
         QFile::copy(originalControlDictPath, newControlDictPath);
+
+        auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
+        if(QFile::exists(newfvSolutionPath))
+            QFile::remove(newfvSolutionPath);
+
+        QFile::copy(originalfvSolutionPath, newfvSolutionPath);
 
         //return inflowWidget->copyFiles(path);
         return this->buildFiles(path);
@@ -144,6 +151,122 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     // filename.orig before writing the new one
 
     //
+    // ... dynamicMeshDict file
+    //
+
+    if (couplingGroup->isChecked()) {
+
+        newLocation = QDir(dirName);
+        if (!newLocation.cd("constant")) {
+            newLocation.mkdir("constant");
+            newLocation.cd("constant");
+        }
+
+        QString newFile = newLocation.absoluteFilePath("dynamicMeshDict");
+        QString origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // load template file
+        QFile tmpl("qrc:/Resources/CWE/Templates/dynamicMeshDict");
+        tmpl.open(QIODevice::ReadOnly);
+        TemplateContents = tmpl.readAll();
+        tmpl.close();
+
+        QFile dMD(newFile);
+        dMD.open(QFile::WriteOnly);
+        QTextStream dMOut(&dMD);
+
+        dMD.close();
+    }
+
+    //
+    // ... fvSolution file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    QString newFile = newLocation.absoluteFilePath("fvSolution");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // write the new file
+    QString solverType = solverComboBox->currentText();
+
+    // load template file
+    QFile tpl("qrc:/Resources/CWE/Templates/fvSolution");
+    tpl.open(QIODevice::ReadOnly);
+    TemplateContents = tpl.readAll();
+    tpl.close();
+
+    QFile fvSol(newFile);
+    fvSol.open(QFile::WriteOnly);
+    QTextStream fvOut(&fvSol);
+
+    QList<QByteArray> TemplateList = TemplateContents.split('\n');
+    foreach (QByteArray line, TemplateList)
+    {
+        if (line.contains("__SOLVER__")) {
+
+            // substitute __SOLVER__ section
+
+            if (solverType.toLower() == 'pimplefoam') {
+
+                fvOut << "PIMPLE" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    //- Correct mesh flux option (default to yes)" << Qt::endl;
+                fvOut << "    correctPhi          yes;" << Qt::endl;
+                fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
+                fvOut << "    nOuterCorrectors    1;" << Qt::endl;
+                fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
+                fvOut << "    nCorrectors         1;" << Qt::endl;
+                fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+            else if (solverType.toLower() == 'pisofoam') {
+
+                fvOut << "PISO" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    pRefCell            0;" << Qt::endl;
+                fvOut << "    pRefValue           0;" << Qt::endl;
+                fvOut << "    nCorrectors         0;" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+            else if (solverType.toLower() == 'icofoam') {
+
+                fvOut << "SIMPLE" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+        }
+        else {
+            fvOut << line << Qt::endl;
+        }
+    }
+
+    fvSol.close();
+
+    //
     // ... inflowProperties file
     //
 
@@ -153,8 +276,8 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
         newLocation.cd("constant");
     }
 
-    QString newFile = newLocation.absoluteFilePath("inflowProperties");
-    QString origFile = newFile + ".orig";
+    newFile = newLocation.absoluteFilePath("inflowProperties");
+    origFile = newFile + ".orig";
 
     if (QFile(origFile).exists()) {
         qWarning() << "overwriting " << origFile;

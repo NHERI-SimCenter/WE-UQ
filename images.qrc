@@ -12,5 +12,6 @@
         <file>Resources/CWE/upload3D.json</file>
         <file>Resources/docs/textAboutWEUQ.html</file>
         <file>Resources/CWE/Templates/dynamicMeshDict</file>
+        <file>Resources/CWE/Templates/fvSolution</file>
     </qresource>
 </RCC>

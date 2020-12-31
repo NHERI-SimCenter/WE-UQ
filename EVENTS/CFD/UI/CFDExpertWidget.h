@@ -51,6 +51,7 @@ private:
 
     QString originalUFilePath;
     QString originalControlDictPath;
+    QString originalfvSolutionPath;
     QStringList patchesList;
 
     QDir oldLocation = QDir(".");
@@ -85,6 +86,7 @@ private:
     QMap<QString, QString> *readParameters(void);
 
     QByteArray CDictContents;
+    QByteArray TemplateContents;
 
     QFile UFile;
     QList<QByteArray> UFileList;
