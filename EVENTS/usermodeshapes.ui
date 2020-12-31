@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>745</width>
-    <height>245</height>
+    <width>794</width>
+    <height>284</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,7 +109,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="upload_label">
            <property name="text">
-            <string>upload user file:</string>
+            <string>upload your dynamicMeshDict file:</string>
            </property>
           </widget>
          </item>
@@ -177,7 +177,8 @@
          <item row="3" column="0" colspan="4">
           <widget class="QLabel" name="info_label">
            <property name="text">
-            <string>This version of WE-UQ requires a user-defined set of building mode shapes.  See the template file for details.</string>
+            <string>This version of WE-UQ requires a user-defined set of building mode shapes, stored in the dynamicMeshDict file.
+See the template file for format and information on the required information.</string>
            </property>
           </widget>
          </item>
