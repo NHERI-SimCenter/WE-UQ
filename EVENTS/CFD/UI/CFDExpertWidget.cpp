@@ -177,7 +177,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
         QString sourceFile = couplingGroup->fileName();
 
         if (sourceFile.isEmpty())
-            sourceFile = "qrc:/Resources/CWE/Templates/dynamicMeshDict";
+            sourceFile = ":/Resources/CWE/Templates/dynamicMeshDict";
         QFile source(sourceFile);
 
         if (source.exists()) {
@@ -213,7 +213,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     QString solverType = solverComboBox->currentText();
 
     // load template file
-    QFile tpl("qrc:/Resources/CWE/Templates/fvSolution");
+    QFile tpl(":/Resources/CWE/Templates/fvSolution");
     tpl.open(QIODevice::ReadOnly);
     TemplateContents = tpl.readAll();
     tpl.close();
