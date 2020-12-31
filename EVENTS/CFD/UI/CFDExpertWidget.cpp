@@ -50,6 +50,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["meshing"] = meshingComboBox->currentData().toString();
     eventObject["processors"] = processorsBox->value();
     eventObject["userModesFile"] = couplingGroup->fileName();
+    eventObject["FSIboundaryName"] = couplingGroup->FSIboundarySelection();
 
     return true;
 }
@@ -87,6 +88,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
     if(eventObject.contains("userModesFile"))
         this->couplingGroup->setFileName(eventObject["userModesFile"].toString());
 
+    if(eventObject.contains("FSIboundaryName"))
+        this->couplingGroup->setFSIboundarySelection(eventObject["FSIboundaryName"].toString());
+
     inflowWidget->inputFromJSON(eventObject);
 
     return true;
@@ -122,8 +126,6 @@ bool CFDExpertWidget::copyFiles(QString &path)
 
     return true;
 }
-
-
 
 bool CFDExpertWidget::buildFiles(QString &dirName)
 {
@@ -191,13 +193,9 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
 
     // update U file
 
-    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked())
-    {
+    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked()) {
         inflowWidget->exportUFile(newFile);
-    }
-    else
-    {
-        // NEED COUPLING GROUP U FILE CHANGES
+    } else {
         this->exportUFile(newFile);
     }
 
@@ -586,7 +584,6 @@ void CFDExpertWidget::autoSelectPatches()
     patchesEditBox->setText(selectedPatches.join(','));
 }
 
-
 void CFDExpertWidget::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
@@ -636,7 +633,7 @@ void CFDExpertWidget::exportUFile(QString fileName)
         out << "    " << key << Qt::endl;
         out << "    {" << Qt::endl;
 
-        if (key == inflow_BCselected)
+        if (inflowCheckBox->isChecked() && key == inflow_BCselected)
         {
             QMap<QString, QString> theMap = *boundaries.value(key);
 
@@ -739,7 +736,7 @@ void CFDExpertWidget::exportUFile(QString fileName)
                 out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
             }
         }
-        else if (key == FSI_BCselected) {
+        else if (couplingGroup->isChecked() && key == FSI_BCselected) {
             out <<  "        type               movingWall;" << Qt::endl;
             out <<  "        value              uniform (0 0 0);" << Qt::endl;
         }
@@ -792,8 +789,6 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
 
     CDict.close();
 }
-
-
 
 bool CFDExpertWidget::readUfile(QString filename)
 {

@@ -18,7 +18,9 @@ public:
     ~UserModeShapes();
     bool isChecked();
     QString fileName();
+    QString FSIboundarySelection();
     void setFileName(const QString &filename);
+    void setFSIboundarySelection(const QString &filename);
     void updateBoundaryList(QStringList &boundaryList);
     QString fetchBoundarySelection(void);
 

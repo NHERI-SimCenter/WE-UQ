@@ -48,6 +48,27 @@ void UserModeShapes::setFileName(const QString &filename)
     this->on_coupling_checkBox_stateChanged(-1);
 }
 
+QString UserModeShapes::FSIboundarySelection()
+{
+    QString selection = tr("");
+
+    if (ui->coupling_checkBox->isChecked())
+    {
+        selection = ui->FSI_boundary_selection->currentText();
+    }
+
+    return selection;}
+
+
+void UserModeShapes::setFSIboundarySelection(const QString &FSIselection)
+{
+    if (!FSIselection.isEmpty()) {
+        ui->FSI_boundary_selection->setCurrentText(FSIselection);
+        ui->coupling_checkBox->setChecked(true);
+        this->on_coupling_checkBox_stateChanged(-1);
+    }
+}
+
 /* ***************************
  * CALLBACK FUNCTIONS
  * ***************************/
