@@ -7,6 +7,12 @@
 #include "PatchesSelector.h"
 #include <QDialog>
 #include <usermodeshapes.h>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QScrollArea>
+#include <QResizeEvent>
+#include <QFile>
+#include <QTextStream>
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -19,6 +25,7 @@ CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, 
 
     originalUFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/U.orig";
     originalControlDictPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/controlDict.orig";
+    originalfvSolutionPath = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/WE-UQ/fvSolution.orig";
 }
 
 bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
@@ -46,6 +53,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["meshing"] = meshingComboBox->currentData().toString();
     eventObject["processors"] = processorsBox->value();
     eventObject["userModesFile"] = couplingGroup->fileName();
+    eventObject["FSIboundaryName"] = couplingGroup->FSIboundarySelection();
 
     return true;
 }
@@ -83,6 +91,9 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
     if(eventObject.contains("userModesFile"))
         this->couplingGroup->setFileName(eventObject["userModesFile"].toString());
 
+    if(eventObject.contains("FSIboundaryName"))
+        this->couplingGroup->setFSIboundarySelection(eventObject["FSIboundaryName"].toString());
+
     inflowWidget->inputFromJSON(eventObject);
 
     return true;
@@ -90,7 +101,7 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
 bool CFDExpertWidget::copyFiles(QString &path)
 {
-    if (inflowCheckBox->isChecked())
+    if (inflowCheckBox->isChecked() || couplingGroup->isChecked())
     {
         QDir targetDir(path);
 
@@ -99,10 +110,8 @@ bool CFDExpertWidget::copyFiles(QString &path)
         targetDir.mkpath("system");
 
         auto newUPath = targetDir.filePath("0/U");
-
         if(QFile::exists(newUPath))
             QFile::remove(newUPath);
-
 
         QFile::copy(originalUFilePath, newUPath);
 
@@ -112,8 +121,232 @@ bool CFDExpertWidget::copyFiles(QString &path)
 
         QFile::copy(originalControlDictPath, newControlDictPath);
 
-        return inflowWidget->copyFiles(path);
+        auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
+        if(QFile::exists(newfvSolutionPath))
+            QFile::remove(newfvSolutionPath);
+
+        QFile::copy(originalfvSolutionPath, newfvSolutionPath);
+
+        //return inflowWidget->copyFiles(path);
+        return this->buildFiles(path);
     }
+
+    return true;
+}
+
+bool CFDExpertWidget::buildFiles(QString &dirName)
+{
+    /*
+     *  !!! this method replaces inflowWidget->copyFiles(path); !!!
+     *
+     * The change was necessary since both InFlowWidget and UserModeShapes
+     * require modifications to the U and controlDict files
+     *
+     */
+
+    // time to export :)
+
+    // we place new files into the existing file structure
+    // but we do save one version of the existing file as
+    // filename.orig before writing the new one
+
+    //
+    // ... dynamicMeshDict file
+    //
+
+    if (couplingGroup->isChecked()) {
+
+        newLocation = QDir(dirName);
+        if (!newLocation.cd("constant")) {
+            newLocation.mkdir("constant");
+            newLocation.cd("constant");
+        }
+
+        QString newFile = newLocation.absoluteFilePath("dynamicMeshDict");
+        QString origFile = newFile + ".orig";
+
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // load template file
+        QString sourceFile = couplingGroup->fileName();
+
+        if (sourceFile.isEmpty())
+            sourceFile = ":/Resources/CWE/Templates/dynamicMeshDict";
+        QFile source(sourceFile);
+
+        if (source.exists()) {
+            source.copy(newFile);
+        }
+        else {
+            qWarning() << "Source file for dynamicMeshDict: \"" << sourceFile << "\" is missing";
+        }
+    }
+
+    //
+    // ... fvSolution file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    QString newFile = newLocation.absoluteFilePath("fvSolution");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // write the new file
+    QString solverType = solverComboBox->currentText();
+
+    // load template file
+    QFile tpl(":/Resources/CWE/Templates/fvSolution");
+    tpl.open(QIODevice::ReadOnly);
+    TemplateContents = tpl.readAll();
+    tpl.close();
+
+    QFile fvSol(newFile);
+    fvSol.open(QFile::WriteOnly);
+    QTextStream fvOut(&fvSol);
+
+    QList<QByteArray> TemplateList = TemplateContents.split('\n');
+    foreach (QByteArray line, TemplateList)
+    {
+        if (line.contains("__SOLVER__")) {
+
+            // substitute __SOLVER__ section
+
+            if (solverType.toLower() == "pimplefoam") {
+
+                fvOut << "PIMPLE" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    //- Correct mesh flux option (default to yes)" << Qt::endl;
+                fvOut << "    correctPhi          yes;" << Qt::endl;
+                fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
+                fvOut << "    nOuterCorrectors    1;" << Qt::endl;
+                fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
+                fvOut << "    nCorrectors         1;" << Qt::endl;
+                fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+            else if (solverType.toLower() == "pisofoam") {
+
+                fvOut << "PISO" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    pRefCell            0;" << Qt::endl;
+                fvOut << "    pRefValue           0;" << Qt::endl;
+                fvOut << "    nCorrectors         0;" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+            else if (solverType.toLower() == "icofoam") {
+
+                fvOut << "SIMPLE" << Qt::endl;
+                fvOut << "{" << Qt::endl;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
+                fvOut << "}" << Qt::endl;
+            }
+        }
+        else {
+            fvOut << line << Qt::endl;
+        }
+    }
+
+    fvSol.close();
+
+    //
+    // ... inflowProperties file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("constant")) {
+        newLocation.mkdir("constant");
+        newLocation.cd("constant");
+    }
+
+    newFile = newLocation.absoluteFilePath("inflowProperties");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // write the new file
+    if (inflowCheckBox->isChecked() )
+    {
+        inflowWidget->exportInflowParameterFile(newFile);
+    }
+
+    //
+    // ... U file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("0")) {
+        newLocation.mkdir("0");
+        newLocation.cd("0");
+    }
+
+    newFile  = newLocation.absoluteFilePath("U");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update U file
+
+    if (inflowCheckBox->isChecked() && !couplingGroup->isChecked()) {
+        inflowWidget->exportUFile(newFile);
+    } else {
+        this->exportUFile(newFile);
+    }
+
+    //
+    // ... controlDict file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("system")) {
+        newLocation.mkdir("system");
+        newLocation.cd("system");
+    }
+
+    newFile  = newLocation.absoluteFilePath("controlDict");
+    origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update controlDict file
+    this->exportControlDictFile(origFile, newFile);
 
     return true;
 }
@@ -162,6 +395,9 @@ void CFDExpertWidget::downloadRemoteCaseFiles()
         localFilePath << originalUFilePath << originalControlDictPath;
         ensureUFileExists();
         remoteService->downloadFilesCall(remoteFilePath, localFilePath, this);
+
+        this->readUfile(originalUFilePath);
+        this->processUfile();
     }
 }
 
@@ -194,9 +430,32 @@ QStringList CFDExpertWidget::getRemoteFilesPaths()
     return {caseDir + "/0/U", caseDir + "/system/controlDict"};
 }
 
+void CFDExpertWidget::resizeEvent(QResizeEvent *event)
+{
+    QSize theSize = event->size();
+    scrollArea->setFixedSize(theSize);
+    container->setFixedSize(container->minimumSizeHint());
+}
+
 void CFDExpertWidget::initializeUI()
 {
-    auto layout = new QGridLayout();
+    // put everything into a QScrollArea to accommodate the large inflow widget
+    //
+    // ... this also requires overloading the void resizeEvent(QResizeEvent *event) method !!!
+
+    QVBoxLayout lyt(this);
+
+    container = new QFrame();
+    container->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+    scrollArea = new QScrollArea(this);
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(container);
+    lyt.addWidget(scrollArea);
+
+    // here the actual contents
+
+    auto layout = new QGridLayout(container);
     layout->setMargin(0);
     layout->setSpacing(6);
 
@@ -205,7 +464,7 @@ void CFDExpertWidget::initializeUI()
 
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
-    QGridLayout *parametersLayout = new QGridLayout();
+    QGridLayout *parametersLayout = new QGridLayout(CFDGroupBox);
     parametersLayout->setMargin(6);
     parametersLayout->setSpacing(6);
 
@@ -227,6 +486,7 @@ void CFDExpertWidget::initializeUI()
     solverComboBox = new QComboBox(this);
     solverComboBox->addItem("pisoFoam");
     solverComboBox->addItem("icoFoam");
+    solverComboBox->addItem("pimpleFoam");
     QLabel *solverLabel = new QLabel("Solver", this);
    // parametersLayout->addRow("Solver", solverComboBox);
     parametersLayout->addWidget(solverLabel, 1, 0);
@@ -285,42 +545,35 @@ void CFDExpertWidget::initializeUI()
     processorsBox->setValue(16);
     processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
-
-    // use building coupling?
-    couplingGroup = new UserModeShapes();
-    parametersLayout->addWidget(couplingGroup, 7,0, 1,3);
-
     // inflow parameters?
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox, 8, 1);
-    parametersLayout->addWidget(inflowLabel, 8, 0);
+    parametersLayout->addWidget(inflowCheckBox, 7, 1);
+    parametersLayout->addWidget(inflowLabel, 7, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
-    //parametersLayout->setMargin();
-    CFDGroupBox->setLayout(parametersLayout);
 
+    // refresh button for reloading remote files
+    refreshButton = new QPushButton("reload remote OpenFOAM files (takes a few seconds)");
+
+    // use building coupling?
+    couplingGroup = new UserModeShapes();
 
     //inflowWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::Preferred);
 
     layout->addWidget(CFDGroupBox, 1, 0);
-    layout->addItem(new QSpacerItem(500,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 1,1);
+    //layout->addItem(new QSpacerItem(500,0,QSizePolicy::Expanding,QSizePolicy::Minimum), 1,1);
+    layout->addWidget(refreshButton, 2,0);
+    layout->addWidget(couplingGroup, 3,0);
+    layout->addWidget(inflowWidget, 4,0);
+
     inflowWidget->setHidden(true);
 
-    QVBoxLayout *vbox = new QVBoxLayout();
-    vbox->addWidget(inflowWidget,10);
-    vbox->addItem(new QSpacerItem(0,500,QSizePolicy::Minimum,QSizePolicy::Expanding));
-
-    layout->addLayout(vbox, 2,0,1,2);
-
     layout->setColumnStretch(0, 2);
-    layout->setColumnStretch(1, 1);
-    //layout->setRowStretch(1, 0.2);
     layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
-    this->setLayout(layout);
     this->setEnabled(false);
 }
 
@@ -337,6 +590,12 @@ void CFDExpertWidget::setupConnections()
         }
         else
             inflowWidget->setHidden(true);
+
+        container->setFixedSize(container->minimumSizeHint());
+    });
+
+    connect(inflowWidget, &InflowParameterWidget::rescaleRequested, this, [this](){
+        container->setFixedSize(container->minimumSizeHint());
     });
 
     connect(remoteService, &RemoteService::downloadFilesReturn, this, [this](bool result, QObject* sender)
@@ -372,6 +631,8 @@ void CFDExpertWidget::setupConnections()
     });
 
     connect(selectPatchesButton, &QPushButton::clicked, this, &CFDExpertWidget::selectPatchesPushed);
+
+    connect(couplingGroup, SIGNAL(couplingGroup_checked(bool)), this, SLOT(on_couplingGroup_checked(bool)));
 
 }
 
@@ -448,10 +709,377 @@ void CFDExpertWidget::autoSelectPatches()
     patchesEditBox->setText(selectedPatches.join(','));
 }
 
-
 void CFDExpertWidget::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
     if (!shown)
         shown = true;
+}
+
+void CFDExpertWidget::on_couplingGroup_checked(bool checked)
+{
+    if (checked)
+    {
+        solverComboBox->setCurrentText(QString("pimpleFoam"));
+        solverComboBox->setEnabled(false);
+    }
+    else
+    {
+        solverComboBox->setCurrentIndex(0);
+        solverComboBox->setEnabled(true);
+    }
+}
+
+/* *******************************************************************
+ *     migrated from InflowWidget
+ * *******************************************************************/
+
+void CFDExpertWidget::exportUFile(QString fileName)
+{
+    QMap<QString, double> theParameters;
+
+    inflowWidget->fetchParameterMap(theParameters);
+
+    // get the inflow boundary condition to generate
+    QString inflow_BCselected = inflowWidget->fetchBoundarySelection();
+
+    // get the coupling boundary condition to generate
+    QString FSI_BCselected = couplingGroup->fetchBoundarySelection();
+
+    // file handle for the U file
+    QFile UFile(fileName);
+    UFile.open(QFile::WriteOnly);
+    QTextStream out(&UFile);
+
+    out << UFileHead;
+
+    foreach (QString key, boundaries.keys())
+    {
+        out << "    " << key << Qt::endl;
+        out << "    {" << Qt::endl;
+
+        if (inflowCheckBox->isChecked() && key == inflow_BCselected)
+        {
+            QMap<QString, QString> theMap = *boundaries.value(key);
+
+            switch (int(theParameters.value("FilterMethod"))) {
+            case 0: /* digital filter */
+
+                out << "        type               turbulentDFMInlet;" << Qt::endl;
+                switch (int(theParameters.value("filterType"))) {
+                case 0:
+                    out << "        filterType         gaussian;" << Qt::endl;
+                    break;
+                case 1:
+                    out << "        filterType         exponential;" << Qt::endl;
+                    break;
+                default:
+                    out << "        filterType         exponential;" << Qt::endl;
+                }
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << Qt::endl;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 1:  /* synthetic eddy */
+
+                out << "        type               turbulentSEMInlet;" << Qt::endl;
+                switch (int(theParameters.value("eddyType"))) {
+                case 0:
+                    out << "        eddyType        gaussian;" << Qt::endl;
+                    break;
+                case 1:
+                    out << "        eddyType        tent;" << Qt::endl;
+                    break;
+                case 2:
+                    out << "        eddyType        step;" << Qt::endl;
+                    break;
+                default:
+                    out << "        eddyType        gaussian;" << Qt::endl;
+                }
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 2:  /* divergence-free synthetic eddy */
+
+                out << "        type               turbulentDFSEMInlet;" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            case 3:  /* digital spot */
+
+                out << "        type               turbulentATSMInlet;" << Qt::endl;
+
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+
+                break;
+
+            default:
+                qWarning() << "unknown turbulent inflow boundary conditions";
+            }
+
+            if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
+            {
+                out << "        calculateU         true;" << Qt::endl;
+                out << "        calculateL         true;" << Qt::endl;
+                out << "        calculateR         true;" << Qt::endl;
+            }
+
+
+            if (theMap.contains("type"))         theMap.remove("type");
+            if (theMap.contains("filterType"))   theMap.remove("filterType");
+            if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
+            if (theMap.contains("gridFactor"))   theMap.remove("gridFactor");
+            if (theMap.contains("density"))      theMap.remove("density");
+            if (theMap.contains("eddyType"))     theMap.remove("eddyType");
+            if (theMap.contains("vortonType"))   theMap.remove("vortonType");
+            if (theMap.contains("periodicInY"))  theMap.remove("periodicInY");
+            if (theMap.contains("periodicInZ"))  theMap.remove("periodicInZ");
+            if (theMap.contains("cleanRestart")) theMap.remove("cleanRestart");
+
+            foreach (QString s, theMap.keys() )
+            {
+                out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
+            }
+        }
+        else if (couplingGroup->isChecked() && key == FSI_BCselected) {
+            out <<  "        type               movingWall;" << Qt::endl;
+            out <<  "        value              uniform (0 0 0);" << Qt::endl;
+        }
+        else {
+            foreach (QString s, (boundaries.value(key))->keys() )
+            {
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << Qt::endl;
+            }
+        }
+        out << "    }" << Qt::endl;
+        out << Qt::endl;
+    }
+
+    out << UFileTail;
+
+    UFile.close();
+}
+
+void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileName)
+{
+    // file handle for the controlDict file
+    QFile CDictIn(origFileName);
+    CDictIn.open(QFile::ReadOnly);
+    CDictContents = CDictIn.readAll();
+    CDictIn.close();
+
+    QFile CDict(fileName);
+    CDict.open(QFile::WriteOnly);
+    QTextStream out(&CDict);
+
+    QList<QByteArray> CDictList = CDictContents.split('\n');
+    foreach (QByteArray line, CDictList)
+    {
+        if (line.contains("application")) {
+
+            if (inflowCheckBox->isChecked()) {
+                out << "libs" << Qt::endl;
+                out << "(" << Qt::endl;
+                out << "    \"libturbulentInflow.so\"" << Qt::endl;
+                out << ");" << Qt::endl;
+                out << Qt::endl;
+            }
+
+            out << "application     " << solverComboBox->currentText() << ";" << Qt::endl;
+        }
+        else {
+            out << line << Qt::endl;
+        }
+    }
+
+    CDict.close();
+}
+
+bool CFDExpertWidget::readUfile(QString filename)
+{
+    QFile UFile(filename);
+
+    if (UFile.exists()) {
+        //
+        // U file exists
+        //
+        UFile.open(QFile::ReadOnly);
+        UFileContents = UFile.readAll();
+        UFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // U file missing
+        //
+        UFileContents = "";
+
+        return false;
+    }
+}
+
+bool CFDExpertWidget::readControlDict(QString filename)
+{
+    QFile CDictFile(filename);
+
+    if (CDictFile.exists()) {
+        //
+        // controlDict file exists
+        //
+        CDictFile.open(QFile::ReadOnly);
+        CDictContents = CDictFile.readAll();
+        CDictFile.close();
+
+        return true;
+    }
+    else {
+        //
+        // controlDict file missing
+        //
+        CDictContents = "";
+
+        return false;
+    }
+}
+
+bool CFDExpertWidget::getLine(QStringList &reply)
+{
+    bool hasLine = false;
+    QByteArray lineString = "";
+
+    while (UIter->hasNext() && (!hasLine))
+    {
+        QByteArray line = UIter->next().simplified();
+        if (qstrncmp(line,"//",2) == 0) continue;
+        if (qstrncmp(line, "#",1) == 0) continue;
+        if (line.contains('{')) {
+            hasLine = true;
+            break;
+        }
+        lineString += line;
+        if (line.contains('}')) {
+            hasLine = true;
+            break;
+        }
+        if (line.contains(';')) {
+            int idx = lineString.indexOf(';');
+            lineString.truncate(idx);
+            hasLine = true;
+            break;
+        }
+    }
+
+    reply.clear();
+
+    if (hasLine)
+    {
+        QByteArrayList reply0 = lineString.simplified().split(' ');
+
+        foreach (QByteArray item, reply0)
+        {
+            reply.append(item);
+        }
+    }
+
+    return hasLine;
+}
+
+QMap<QString, QString> *CFDExpertWidget::readParameters(void)
+{
+    QMap<QString, QString> *params = new QMap<QString, QString>();
+
+    QStringList items;
+
+    while ( this->getLine(items) ) {
+        if (items[0] == '}') break;
+
+        if (items.length() > 0 ) {
+            QString key = items[0];
+            items.removeFirst();
+            QString value = items.join(" ");
+            params->insert(key, value);
+        }
+    }
+
+    return params;
+}
+
+void CFDExpertWidget::processUfile()
+{
+    // parse files for available boundaries
+    QStringList boundaryList;
+    UFileHead = "";
+    UFileTail = "";
+
+    UFileList = UFileContents.split('\n');
+    UIter = new QListIterator<QByteArray>(UFileList);
+
+    // read till boundaryField keyword
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileHead.append(line);
+        UFileHead.append('\n');
+        if (line.contains("boundaryField")) {
+            while ( (!line.contains('{')) && UIter->hasNext()) {
+                line = UIter->next();
+                UFileHead.append(line);
+                UFileHead.append('\n');
+            }
+            break;
+        }
+    }
+
+    // parse for boundary patches
+    while (UIter->hasNext())
+    {
+        QStringList list;
+
+        if (this->getLine(list))
+        {
+            // skip empty lines
+            if (list.length() == 0) continue;
+
+            // terminate if done with boundaryFields section
+            if (list[0] == '}') {
+                UFileTail.append("}\n");
+                break;
+            }
+
+            // read and store the boundary item
+            boundaryList.append(list[0]);
+            boundaries.insert(list[0], this->readParameters());
+        }
+    }
+
+    // collect the remainder of the file
+    while (UIter->hasNext())
+    {
+        QByteArray line = UIter->next();
+        UFileTail.append(line);
+        UFileTail.append('\n');
+    }
+
+    couplingGroup->updateBoundaryList(boundaryList);
 }

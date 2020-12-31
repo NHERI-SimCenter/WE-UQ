@@ -59,6 +59,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <math.h>
 #include <usermodeshapes.h>
 
+/*
+ * undefine NO_FSI to enable/show the userMode Widget in CFD Basic mode
+ */
+#define NO_FSI
+
+
 BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
 : SimCenterAppWidget(parent)
 {
@@ -106,7 +112,9 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     //Coupling mode shapes
     couplingGroup = new UserModeShapes(this);
-
+#ifdef NO_FSI
+    couplingGroup->hide();
+#endif
     //3D View
     graphicsWidget = new CWE3DView(this);
 
@@ -130,7 +138,6 @@ BasicCFD::~BasicCFD()
 {
 
 }
-
 
 
 double BasicCFD::toMilliMeters(QString lengthUnit) const
@@ -341,3 +348,4 @@ BasicCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
     Q_UNUSED(jsonObject);
     return true;
 }
+

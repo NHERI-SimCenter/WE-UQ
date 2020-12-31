@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+class QStandardItemModel;
+
 namespace Ui {
 class UserModeShapes;
 }
@@ -16,7 +18,15 @@ public:
     ~UserModeShapes();
     bool isChecked();
     QString fileName();
+    QString FSIboundarySelection();
     void setFileName(const QString &filename);
+    void setFSIboundarySelection(const QString &filename);
+    void updateBoundaryList(QStringList &boundaryList);
+    QString fetchBoundarySelection(void);
+
+signals:
+    void couplingGroup_checked(bool checked);
+    void boundarySelection(int);
 
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);

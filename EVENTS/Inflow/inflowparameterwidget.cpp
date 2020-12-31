@@ -71,7 +71,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     {
         ui->sourceLocationDisplay->hide();
         ui->sourceLocateBtn->hide();
-        ui->refreshButton->show();
+        ui->refreshButton->hide();
 
         connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
         {
@@ -81,7 +81,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     else {
         ui->sourceLocationDisplay->show();
         ui->sourceLocateBtn->show();
-        ui->refreshButton->hide();
+        ui->refreshButton->show();
     }
     // fmk - removed but left in .ui file in case absolutely must have
     //ui->sourceSelectionBrowser->hide();
@@ -185,8 +185,14 @@ void InflowParameterWidget::setDefaultParameters()
 
 void InflowParameterWidget::refreshParameterMap(void)
 {
+    hasParameters = this->fetchParameterMap(theParameters);
+}
+
+bool InflowParameterWidget::fetchParameterMap(QMap<QString, double> &theParams)
+{
+
     // collect data
-    theParameters.clear();
+    theParams.clear();
 
     //
     // populate theParameters map
@@ -194,95 +200,102 @@ void InflowParameterWidget::refreshParameterMap(void)
 
     /* for use in inflowProperties file */
 
-    theParameters.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
+    theParams.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
 
-    theParameters.insert("vel0",ui->vel->value());
-    theParameters.insert("refAngleU",ui->refAngleU->value());
-    theParameters.insert("refDistU",ui->refDistU->value());
-    theParameters.insert("alphaU",ui->alphaU->value());
+    theParams.insert("vel0",ui->vel->value());
+    theParams.insert("refAngleU",ui->refAngleU->value());
+    theParams.insert("refDistU",ui->refDistU->value());
+    theParams.insert("alphaU",ui->alphaU->value());
 
-    theParameters.insert("refAnglePHI",ui->refAnglePHI->value());
-    theParameters.insert("refDistPHI",ui->refDistPHI->value());
+    theParams.insert("refAnglePHI",ui->refAnglePHI->value());
+    theParams.insert("refDistPHI",ui->refDistPHI->value());
 
-    theParameters.insert("alpha0",ui->alpha1->value());
-    theParameters.insert("alpha1",ui->alpha2->value());
-    theParameters.insert("alpha2",ui->alpha3->value());
+    theParams.insert("alpha0",ui->alpha1->value());
+    theParams.insert("alpha1",ui->alpha2->value());
+    theParams.insert("alpha2",ui->alpha3->value());
 
-    theParameters.insert("phi00",ui->PHI11->value());
-    theParameters.insert("phi10",ui->PHI21->value());
-    theParameters.insert("phi20",ui->PHI31->value());
-    theParameters.insert("phi11",ui->PHI22->value());
-    theParameters.insert("phi21",ui->PHI23->value());
-    theParameters.insert("phi22",ui->PHI33->value());
+    theParams.insert("phi00",ui->PHI11->value());
+    theParams.insert("phi10",ui->PHI21->value());
+    theParams.insert("phi20",ui->PHI31->value());
+    theParams.insert("phi11",ui->PHI22->value());
+    theParams.insert("phi21",ui->PHI23->value());
+    theParams.insert("phi22",ui->PHI33->value());
     
-    theParameters.insert("refAngleL",ui->refAngleL->value());
-    theParameters.insert("refDistL",ui->refDistL->value());
+    theParams.insert("refAngleL",ui->refAngleL->value());
+    theParams.insert("refDistL",ui->refDistL->value());
 
-    theParameters.insert("alpha11",ui->alpha11->value());
-    theParameters.insert("alpha12",ui->alpha12->value());
-    theParameters.insert("alpha13",ui->alpha13->value());
-    theParameters.insert("alpha21",ui->alpha21->value());
-    theParameters.insert("alpha22",ui->alpha22->value());
-    theParameters.insert("alpha23",ui->alpha23->value());
-    theParameters.insert("alpha31",ui->alpha31->value());
-    theParameters.insert("alpha32",ui->alpha32->value());
-    theParameters.insert("alpha33",ui->alpha33->value());
+    theParams.insert("alpha11",ui->alpha11->value());
+    theParams.insert("alpha12",ui->alpha12->value());
+    theParams.insert("alpha13",ui->alpha13->value());
+    theParams.insert("alpha21",ui->alpha21->value());
+    theParams.insert("alpha22",ui->alpha22->value());
+    theParams.insert("alpha23",ui->alpha23->value());
+    theParams.insert("alpha31",ui->alpha31->value());
+    theParams.insert("alpha32",ui->alpha32->value());
+    theParams.insert("alpha33",ui->alpha33->value());
 
-    theParameters.insert("L11",ui->L11->value());
-    theParameters.insert("L12",ui->L12->value());
-    theParameters.insert("L13",ui->L13->value());
-    theParameters.insert("L21",ui->L21->value());
-    theParameters.insert("L22",ui->L22->value());
-    theParameters.insert("L23",ui->L23->value());
-    theParameters.insert("L31",ui->L31->value());
-    theParameters.insert("L32",ui->L32->value());
-    theParameters.insert("L33",ui->L33->value());
+    theParams.insert("L11",ui->L11->value());
+    theParams.insert("L12",ui->L12->value());
+    theParams.insert("L13",ui->L13->value());
+    theParams.insert("L21",ui->L21->value());
+    theParams.insert("L22",ui->L22->value());
+    theParams.insert("L23",ui->L23->value());
+    theParams.insert("L31",ui->L31->value());
+    theParams.insert("L32",ui->L32->value());
+    theParams.insert("L33",ui->L33->value());
 
     /* for use in U file */
 
     // there must be four options FIX IT!
 
     if (ui->RB_digitalFilter->isChecked())
-        { theParameters.insert("FilterMethod",0); }
+        { theParams.insert("FilterMethod",0); }
     else if (ui->RB_syntheticEddie->isChecked())
-        { theParameters.insert("FilterMethod",1); }
+        { theParams.insert("FilterMethod",1); }
     else if (ui->RB_divergenceFree->isChecked())
-        { theParameters.insert("FilterMethod",2); }
+        { theParams.insert("FilterMethod",2); }
     else if (ui->RB_turbulentSpot->isChecked())
-        { theParameters.insert("FilterMethod",3); }
+        { theParams.insert("FilterMethod",3); }
     else
-        { theParameters.insert("FilterMethod",0); }
+        { theParams.insert("FilterMethod",0); }
 
-    theParameters.insert("filterType",ui->filterType->currentIndex());
-    theParameters.insert("gridFactor",ui->gridFactor->value());
-    theParameters.insert("filterFactor",ui->filterFactor->value());
+    theParams.insert("filterType",ui->filterType->currentIndex());
+    theParams.insert("gridFactor",ui->gridFactor->value());
+    theParams.insert("filterFactor",ui->filterFactor->value());
 
-    theParameters.insert("eddyType",ui->eddyType->currentIndex());
-    theParameters.insert("eddyDensity",ui->eddyDensity->value());
-    theParameters.insert("divergenceFreeEddyDensity",ui->divEddyDensity->value());
-    theParameters.insert("turbulentSpotDensity",ui->turbulentSpotDensity->value());
+    theParams.insert("eddyType",ui->eddyType->currentIndex());
+    theParams.insert("eddyDensity",ui->eddyDensity->value());
+    theParams.insert("divergenceFreeEddyDensity",ui->divEddyDensity->value());
+    theParams.insert("turbulentSpotDensity",ui->turbulentSpotDensity->value());
     
     if (ui->RB_turbulentSpotTypeL->isChecked()) {
-        theParameters.insert("turbulentSpotType", -1.0);
+        theParams.insert("turbulentSpotType", -1.0);
     }
     else {
-        theParameters.insert("turbulentSpotType", 1.0);
+        theParams.insert("turbulentSpotType", 1.0);
     }
 
-    theParameters.insert("periodicY",ui->CBx_periodicY->isChecked()?1:0);
-    theParameters.insert("periodicZ",ui->CBx_periodicZ->isChecked()?1:0);
-    theParameters.insert("cleanRestart",ui->CBx_cleanRestart->isChecked()?1:0);
-    theParameters.insert("interpolateParameters",ui->CBx_interpolateParameters->isChecked()?1:0);
+    theParams.insert("periodicY",ui->CBx_periodicY->isChecked()?1:0);
+    theParams.insert("periodicZ",ui->CBx_periodicZ->isChecked()?1:0);
+    theParams.insert("cleanRestart",ui->CBx_cleanRestart->isChecked()?1:0);
+    theParams.insert("interpolateParameters",ui->CBx_interpolateParameters->isChecked()?1:0);
 
-    theParameters.insert("intersection0",ui->dir1->value());
-    theParameters.insert("intersection1",ui->dir2->value());
-    theParameters.insert("intersection2",ui->dir3->value());
+    theParams.insert("intersection0",ui->dir1->value());
+    theParams.insert("intersection1",ui->dir2->value());
+    theParams.insert("intersection2",ui->dir3->value());
     
-    theParameters.insert("offset0",ui->offset0->value());
-    theParameters.insert("offset1",ui->offset1->value());
-    theParameters.insert("offset2",ui->offset2->value());
+    theParams.insert("offset0",ui->offset0->value());
+    theParams.insert("offset1",ui->offset1->value());
+    theParams.insert("offset2",ui->offset2->value());
 
-    hasParameters = true;
+    return true;
+}
+
+
+QString InflowParameterWidget::fetchBoundarySelection(void)
+{
+    QString theBoundarySelection = ui->boundarySelection->currentText();
+    return theBoundarySelection;
 }
 
 void InflowParameterWidget::refreshDisplay(void)
@@ -450,6 +463,8 @@ void InflowParameterWidget::setUniformTurbulent(void)
     ui->alpha31->hide();
     ui->alpha32->hide();
     ui->alpha33->hide();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
@@ -492,6 +507,8 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->alpha31->show();
     ui->alpha32->show();
     ui->alpha33->show();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::sendParameterMap(void)
@@ -676,58 +693,6 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
             }
 
             out << "}" << Qt::endl;
-            out << Qt::endl;
-
-            /*
-            out << "// turbulence length scale profile for u component" << Qt::endl;
-            out << "LuxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lu0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-            out << Qt::endl;
-
-            out << "// turbulence length scale profile for v component" << Qt::endl;
-            out << "LvxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lv0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-            out << Qt::endl;
-
-
-            out << "// turbulence length scale profile for w component" << Qt::endl;
-            out << "LwxDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("Lw0") << ";" << Qt::endl;
-
-            out << "    profile                 " << profile << ";" << Qt::endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << Qt::endl;
-            }
-            out << "}" << Qt::endl;
-
-             */
-
             out << Qt::endl;
             out << Qt::endl;
             out << "// ************************************************************************* //" << Qt::endl;
@@ -1333,9 +1298,11 @@ bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::copyFiles(QString &dirName)
 {
+    qWarning() << "*** InflowParameterWidget::copyFiles(QString &dirName) should not be called by WE_UQ";
+
     // time to export :)
 
-    // we place new file into the existing file structure
+    // we place new files into the existing file structure
     // but we do save one version of the existing file as
     // filename.orig before writing the new one
 

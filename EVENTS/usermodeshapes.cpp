@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QIODevice>
 #include <QTextStream>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
 #include <QDebug>
 
@@ -46,6 +48,27 @@ void UserModeShapes::setFileName(const QString &filename)
     this->on_coupling_checkBox_stateChanged(-1);
 }
 
+QString UserModeShapes::FSIboundarySelection()
+{
+    QString selection = tr("");
+
+    if (ui->coupling_checkBox->isChecked())
+    {
+        selection = ui->FSI_boundary_selection->currentText();
+    }
+
+    return selection;}
+
+
+void UserModeShapes::setFSIboundarySelection(const QString &FSIselection)
+{
+    if (!FSIselection.isEmpty()) {
+        ui->FSI_boundary_selection->setCurrentText(FSIselection);
+        ui->coupling_checkBox->setChecked(true);
+        this->on_coupling_checkBox_stateChanged(-1);
+    }
+}
+
 /* ***************************
  * CALLBACK FUNCTIONS
  * ***************************/
@@ -53,6 +76,7 @@ void UserModeShapes::setFileName(const QString &filename)
 void UserModeShapes::on_coupling_checkBox_stateChanged(int arg1)
 {
     ui->modeShapeGroup->setEnabled(ui->coupling_checkBox->isChecked());
+    emit couplingGroup_checked(ui->coupling_checkBox->isChecked());
 }
 
 void UserModeShapes::on_browse_button_clicked()
@@ -92,6 +116,24 @@ void UserModeShapes::on_filename_editingFinished()
     QString filename = ui->filename->text();
     this->validateFile(filename);
 }
+
+QString UserModeShapes::fetchBoundarySelection(void)
+{
+    QString theBoundarySelection = ui->FSI_boundary_selection->currentText();
+    return theBoundarySelection;
+}
+
+void UserModeShapes::updateBoundaryList(QStringList &boundaryList)
+{
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+
+    ui->FSI_boundary_selection->setModel(theModel);
+}
+
 
 bool UserModeShapes::validateFile(const QString &filename)
 {

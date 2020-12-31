@@ -71,10 +71,19 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
 
+    // need for CFDExpertWidget
+    void exportInflowParameterFile(QString);
+    void exportUFile(QString);
+    void exportControlDictFile(QString, QString);
+
+    bool fetchParameterMap(QMap<QString, double> &theParams);
+    QString fetchBoundarySelection(void);
+
 signals:
     void parametersReady(QMap<QString, double> &);
     void boundarySelection(int);
     void uFileUpdateRequested();
+    void rescaleRequested();
 
 public slots:
     void clear(void);
@@ -105,9 +114,6 @@ private:  /* methods */
     void setLocationAvailable(bool status, QDir &loc);
     void setUniformTurbulent(void);
     void setExponentialTurbulent(void);
-    void exportInflowParameterFile(QString);
-    void exportUFile(QString);
-    void exportControlDictFile(QString, QString);
     void clearBoundaryMap(void);
     bool readUfile(QString);
     bool readControlDict(QString);

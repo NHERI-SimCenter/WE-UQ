@@ -8,6 +8,7 @@
 #include <QDoubleSpinBox>
 #include <QSpinBox>
 #include "usermodeshapes.h"
+#include <QDir>
 
 class CFDExpertWidget : public SimCenterAppWidget
 {
@@ -26,6 +27,7 @@ signals:
 public slots:
     void selectButtonPushed();
     void selectPatchesPushed();
+    void on_couplingGroup_checked(bool checked);
 
 private:
     QLineEdit* caseEditBox;
@@ -42,10 +44,18 @@ private:
     QPushButton* selectPatchesButton;
     QComboBox* meshingComboBox;
     QSpinBox* processorsBox;
+    QPushButton* refreshButton;
+
+    QFrame *container;
+    QScrollArea *scrollArea;
 
     QString originalUFilePath;
     QString originalControlDictPath;
+    QString originalfvSolutionPath;
     QStringList patchesList;
+
+    QDir oldLocation = QDir(".");
+    QDir newLocation = QDir(".");
 
     bool shown;
 
@@ -59,9 +69,39 @@ private:
     void processBuildingPatches();
     bool validateSelectedPatches();
     void autoSelectPatches();
+    bool buildFiles(QString &dirName);
+
+    /* *******************************************************************
+     *     migrated from InflowWidget
+     * *******************************************************************/
+
+    bool readUfile(QString);
+    void processUfile();
+    void exportUFile(QString);
+
+    bool readControlDict(QString);
+    void exportControlDictFile(QString, QString);
+
+    bool getLine(QStringList &);
+    QMap<QString, QString> *readParameters(void);
+
+    QByteArray CDictContents;
+    QByteArray TemplateContents;
+
+    QFile UFile;
+    QList<QByteArray> UFileList;
+    QListIterator<QByteArray> *UIter;
+    QMap<QString, QMap<QString, QString> * > boundaries;
+
+    QString UFilePath;
+    QByteArray UFileContents;
+    QByteArray UFileHead = "";
+    QByteArray UFileTail = "";
 
 
     // QWidget interface
+    void resizeEvent(QResizeEvent *event);
+
 protected:
     void showEvent(QShowEvent *event) override;
 };
