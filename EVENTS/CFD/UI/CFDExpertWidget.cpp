@@ -174,16 +174,18 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
         qDebug() << "move" << newFile << origFile;
 
         // load template file
-        QFile tmpl("qrc:/Resources/CWE/Templates/dynamicMeshDict");
-        tmpl.open(QIODevice::ReadOnly);
-        TemplateContents = tmpl.readAll();
-        tmpl.close();
+        QString sourceFile = couplingGroup->fileName();
 
-        QFile dMD(newFile);
-        dMD.open(QFile::WriteOnly);
-        QTextStream dMOut(&dMD);
+        if (sourceFile.isEmpty())
+            sourceFile = "qrc:/Resources/CWE/Templates/dynamicMeshDict";
+        QFile source(sourceFile);
 
-        dMD.close();
+        if (source.exists()) {
+            source.copy(newFile);
+        }
+        else {
+            qWarning() << "Source file for dynamicMeshDict: \"" << sourceFile << "\" is missing";
+        }
     }
 
     //
@@ -227,7 +229,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
 
             // substitute __SOLVER__ section
 
-            if (solverType.toLower() == 'pimplefoam') {
+            if (solverType.toLower() == "pimplefoam") {
 
                 fvOut << "PIMPLE" << Qt::endl;
                 fvOut << "{" << Qt::endl;
@@ -241,7 +243,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
                 fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
                 fvOut << "}" << Qt::endl;
             }
-            else if (solverType.toLower() == 'pisofoam') {
+            else if (solverType.toLower() == "pisofoam") {
 
                 fvOut << "PISO" << Qt::endl;
                 fvOut << "{" << Qt::endl;
@@ -251,7 +253,7 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
                 fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
                 fvOut << "}" << Qt::endl;
             }
-            else if (solverType.toLower() == 'icofoam') {
+            else if (solverType.toLower() == "icofoam") {
 
                 fvOut << "SIMPLE" << Qt::endl;
                 fvOut << "{" << Qt::endl;
