@@ -34,7 +34,14 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     jsonObject["Application"] = "CFDEvent";
     QJsonObject dataObj;
     dataObj["OpenFOAMCase"] = caseEditBox->text();
-    dataObj["OpenFOAMSolver"] = solverComboBox->currentText();
+
+    QString openFOAMsolver = solverComboBox->currentText();
+    if (openFOAMsolver.trimmed().toLower() == "pimplefoam") {
+        dataObj["OpenFOAMSolver"] = "newPimpleFoam";
+    }
+    else {
+        dataObj["OpenFOAMSolver"] = openFOAMsolver;
+    }
 
     jsonObject["ApplicationData"] = dataObj;
     return true;
