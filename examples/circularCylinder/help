@@ -1,0 +1,6 @@
+The two files required attention are
+1. constant/threeDoFElasticBeam
+2. system/fvSolution
+
+The first file stores the stuctural information of a three DOFs beam.
+The second file contains parameters related to the FSI algorithm.
