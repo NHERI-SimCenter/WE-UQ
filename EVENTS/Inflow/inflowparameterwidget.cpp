@@ -71,7 +71,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     {
         ui->sourceLocationDisplay->hide();
         ui->sourceLocateBtn->hide();
-        ui->refreshButton->show();
+        ui->refreshButton->hide();
 
         connect(ui->refreshButton, &QPushButton::clicked, this, [this]()
         {
@@ -81,7 +81,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
     else {
         ui->sourceLocationDisplay->show();
         ui->sourceLocateBtn->show();
-        ui->refreshButton->hide();
+        ui->refreshButton->show();
     }
     // fmk - removed but left in .ui file in case absolutely must have
     //ui->sourceSelectionBrowser->hide();
@@ -185,8 +185,14 @@ void InflowParameterWidget::setDefaultParameters()
 
 void InflowParameterWidget::refreshParameterMap(void)
 {
+    hasParameters = this->fetchParameterMap(theParameters);
+}
+
+bool InflowParameterWidget::fetchParameterMap(QMap<QString, double> &theParams)
+{
+
     // collect data
-    theParameters.clear();
+    theParams.clear();
 
     //
     // populate theParameters map
@@ -194,95 +200,102 @@ void InflowParameterWidget::refreshParameterMap(void)
 
     /* for use in inflowProperties file */
 
-    theParameters.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
+    theParams.insert("profile",double(ui->modelSelectionCBX->currentIndex()));
 
-    theParameters.insert("vel0",ui->vel->value());
-    theParameters.insert("refAngleU",ui->refAngleU->value());
-    theParameters.insert("refDistU",ui->refDistU->value());
-    theParameters.insert("alphaU",ui->alphaU->value());
+    theParams.insert("vel0",ui->vel->value());
+    theParams.insert("refAngleU",ui->refAngleU->value());
+    theParams.insert("refDistU",ui->refDistU->value());
+    theParams.insert("alphaU",ui->alphaU->value());
 
-    theParameters.insert("refAnglePHI",ui->refAnglePHI->value());
-    theParameters.insert("refDistPHI",ui->refDistPHI->value());
+    theParams.insert("refAnglePHI",ui->refAnglePHI->value());
+    theParams.insert("refDistPHI",ui->refDistPHI->value());
 
-    theParameters.insert("alpha0",ui->alpha1->value());
-    theParameters.insert("alpha1",ui->alpha2->value());
-    theParameters.insert("alpha2",ui->alpha3->value());
+    theParams.insert("alpha0",ui->alpha1->value());
+    theParams.insert("alpha1",ui->alpha2->value());
+    theParams.insert("alpha2",ui->alpha3->value());
 
-    theParameters.insert("phi00",ui->PHI11->value());
-    theParameters.insert("phi10",ui->PHI21->value());
-    theParameters.insert("phi20",ui->PHI31->value());
-    theParameters.insert("phi11",ui->PHI22->value());
-    theParameters.insert("phi21",ui->PHI23->value());
-    theParameters.insert("phi22",ui->PHI33->value());
+    theParams.insert("phi00",ui->PHI11->value());
+    theParams.insert("phi10",ui->PHI21->value());
+    theParams.insert("phi20",ui->PHI31->value());
+    theParams.insert("phi11",ui->PHI22->value());
+    theParams.insert("phi21",ui->PHI23->value());
+    theParams.insert("phi22",ui->PHI33->value());
     
-    theParameters.insert("refAngleL",ui->refAngleL->value());
-    theParameters.insert("refDistL",ui->refDistL->value());
+    theParams.insert("refAngleL",ui->refAngleL->value());
+    theParams.insert("refDistL",ui->refDistL->value());
 
-    theParameters.insert("alpha11",ui->alpha11->value());
-    theParameters.insert("alpha12",ui->alpha12->value());
-    theParameters.insert("alpha13",ui->alpha13->value());
-    theParameters.insert("alpha21",ui->alpha21->value());
-    theParameters.insert("alpha22",ui->alpha22->value());
-    theParameters.insert("alpha23",ui->alpha23->value());
-    theParameters.insert("alpha31",ui->alpha31->value());
-    theParameters.insert("alpha32",ui->alpha32->value());
-    theParameters.insert("alpha33",ui->alpha33->value());
+    theParams.insert("alpha11",ui->alpha11->value());
+    theParams.insert("alpha12",ui->alpha12->value());
+    theParams.insert("alpha13",ui->alpha13->value());
+    theParams.insert("alpha21",ui->alpha21->value());
+    theParams.insert("alpha22",ui->alpha22->value());
+    theParams.insert("alpha23",ui->alpha23->value());
+    theParams.insert("alpha31",ui->alpha31->value());
+    theParams.insert("alpha32",ui->alpha32->value());
+    theParams.insert("alpha33",ui->alpha33->value());
 
-    theParameters.insert("L11",ui->L11->value());
-    theParameters.insert("L12",ui->L12->value());
-    theParameters.insert("L13",ui->L13->value());
-    theParameters.insert("L21",ui->L21->value());
-    theParameters.insert("L22",ui->L22->value());
-    theParameters.insert("L23",ui->L23->value());
-    theParameters.insert("L31",ui->L31->value());
-    theParameters.insert("L32",ui->L32->value());
-    theParameters.insert("L33",ui->L33->value());
+    theParams.insert("L11",ui->L11->value());
+    theParams.insert("L12",ui->L12->value());
+    theParams.insert("L13",ui->L13->value());
+    theParams.insert("L21",ui->L21->value());
+    theParams.insert("L22",ui->L22->value());
+    theParams.insert("L23",ui->L23->value());
+    theParams.insert("L31",ui->L31->value());
+    theParams.insert("L32",ui->L32->value());
+    theParams.insert("L33",ui->L33->value());
 
     /* for use in U file */
 
     // there must be four options FIX IT!
 
     if (ui->RB_digitalFilter->isChecked())
-        { theParameters.insert("FilterMethod",0); }
+        { theParams.insert("FilterMethod",0); }
     else if (ui->RB_syntheticEddie->isChecked())
-        { theParameters.insert("FilterMethod",1); }
+        { theParams.insert("FilterMethod",1); }
     else if (ui->RB_divergenceFree->isChecked())
-        { theParameters.insert("FilterMethod",2); }
+        { theParams.insert("FilterMethod",2); }
     else if (ui->RB_turbulentSpot->isChecked())
-        { theParameters.insert("FilterMethod",3); }
+        { theParams.insert("FilterMethod",3); }
     else
-        { theParameters.insert("FilterMethod",0); }
+        { theParams.insert("FilterMethod",0); }
 
-    theParameters.insert("filterType",ui->filterType->currentIndex());
-    theParameters.insert("gridFactor",ui->gridFactor->value());
-    theParameters.insert("filterFactor",ui->filterFactor->value());
+    theParams.insert("filterType",ui->filterType->currentIndex());
+    theParams.insert("gridFactor",ui->gridFactor->value());
+    theParams.insert("filterFactor",ui->filterFactor->value());
 
-    theParameters.insert("eddyType",ui->eddyType->currentIndex());
-    theParameters.insert("eddyDensity",ui->eddyDensity->value());
-    theParameters.insert("divergenceFreeEddyDensity",ui->divEddyDensity->value());
-    theParameters.insert("turbulentSpotDensity",ui->turbulentSpotDensity->value());
+    theParams.insert("eddyType",ui->eddyType->currentIndex());
+    theParams.insert("eddyDensity",ui->eddyDensity->value());
+    theParams.insert("divergenceFreeEddyDensity",ui->divEddyDensity->value());
+    theParams.insert("turbulentSpotDensity",ui->turbulentSpotDensity->value());
     
     if (ui->RB_turbulentSpotTypeL->isChecked()) {
-        theParameters.insert("turbulentSpotType", -1.0);
+        theParams.insert("turbulentSpotType", -1.0);
     }
     else {
-        theParameters.insert("turbulentSpotType", 1.0);
+        theParams.insert("turbulentSpotType", 1.0);
     }
 
-    theParameters.insert("periodicY",ui->CBx_periodicY->isChecked()?1:0);
-    theParameters.insert("periodicZ",ui->CBx_periodicZ->isChecked()?1:0);
-    theParameters.insert("cleanRestart",ui->CBx_cleanRestart->isChecked()?1:0);
-    theParameters.insert("interpolateParameters",ui->CBx_interpolateParameters->isChecked()?1:0);
+    theParams.insert("periodicY",ui->CBx_periodicY->isChecked()?1:0);
+    theParams.insert("periodicZ",ui->CBx_periodicZ->isChecked()?1:0);
+    theParams.insert("cleanRestart",ui->CBx_cleanRestart->isChecked()?1:0);
+    theParams.insert("interpolateParameters",ui->CBx_interpolateParameters->isChecked()?1:0);
 
-    theParameters.insert("intersection0",ui->dir1->value());
-    theParameters.insert("intersection1",ui->dir2->value());
-    theParameters.insert("intersection2",ui->dir3->value());
+    theParams.insert("intersection0",ui->dir1->value());
+    theParams.insert("intersection1",ui->dir2->value());
+    theParams.insert("intersection2",ui->dir3->value());
     
-    theParameters.insert("offset0",ui->offset0->value());
-    theParameters.insert("offset1",ui->offset1->value());
-    theParameters.insert("offset2",ui->offset2->value());
+    theParams.insert("offset0",ui->offset0->value());
+    theParams.insert("offset1",ui->offset1->value());
+    theParams.insert("offset2",ui->offset2->value());
 
-    hasParameters = true;
+    return true;
+}
+
+
+QString InflowParameterWidget::fetchBoundarySelection(void)
+{
+    QString theBoundarySelection = ui->boundarySelection->currentText();
+    return theBoundarySelection;
 }
 
 void InflowParameterWidget::refreshDisplay(void)
@@ -450,6 +463,8 @@ void InflowParameterWidget::setUniformTurbulent(void)
     ui->alpha31->hide();
     ui->alpha32->hide();
     ui->alpha33->hide();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::setExponentialTurbulent(void)
@@ -492,6 +507,8 @@ void InflowParameterWidget::setExponentialTurbulent(void)
     ui->alpha31->show();
     ui->alpha32->show();
     ui->alpha33->show();
+
+    emit rescaleRequested();
 }
 
 void InflowParameterWidget::sendParameterMap(void)
@@ -560,63 +577,63 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
     if (theFile.open(QFile::WriteOnly | QFile::Truncate)) {
         QTextStream out(&theFile);
 
-        out << "/*--------------------------------*- C++ -*----------------------------------*\\" << endl;
-        out << "  =========                 |" << endl;
-        out << "  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox" << endl;
-        out << "   \\    /   O peration     | Website:  https://openfoam.org" << endl;
-        out << "    \\  /    A nd           | Version:  6" << endl;
-        out << "     \\/     M anipulation  |" << endl;
-        out << "\\*---------------------------------------------------------------------------*/" << endl;
-        out << "FoamFile" << endl;
-        out << "{" << endl;
-        out << "    version     2.0;" << endl;
-        out << "    format      ascii;" << endl;
-        out << "    class       dictionary;" << endl;
-        out << "    location    \"constant\";" << endl;
-        out << "    object      inflowProperties;" << endl;
-        out << "}" << endl;
-        out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << endl;
-        out << "" << endl;
+        out << "/*--------------------------------*- C++ -*----------------------------------*\\" << Qt::endl;
+        out << "  =========                 |" << Qt::endl;
+        out << "  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox" << Qt::endl;
+        out << "   \\    /   O peration     | Website:  https://openfoam.org" << Qt::endl;
+        out << "    \\  /    A nd           | Version:  6" << Qt::endl;
+        out << "     \\/     M anipulation  |" << Qt::endl;
+        out << "\\*---------------------------------------------------------------------------*/" << Qt::endl;
+        out << "FoamFile" << Qt::endl;
+        out << "{" << Qt::endl;
+        out << "    version     2.0;" << Qt::endl;
+        out << "    format      ascii;" << Qt::endl;
+        out << "    class       dictionary;" << Qt::endl;
+        out << "    location    \"constant\";" << Qt::endl;
+        out << "    object      inflowProperties;" << Qt::endl;
+        out << "}" << Qt::endl;
+        out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << Qt::endl;
+        out << "" << Qt::endl;
 
         /* this was moved to the inflowProperties-file starting with version 1.1.0 */
 
         if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
         {
-            out << endl;
+            out << Qt::endl;
             out << "Naxis       ( "
                 << theParameters.value("intersection0") << " "
                 << theParameters.value("intersection1") << " "
-                << theParameters.value("intersection2") << " );" << endl;
+                << theParameters.value("intersection2") << " );" << Qt::endl;
 
             out << "offset      ( "
                 << theParameters.value("offset0") << " "
                 << theParameters.value("offset1") << " "
-                << theParameters.value("offset2") << " );" << endl;
+                << theParameters.value("offset2") << " );" << Qt::endl;
 
-            out << endl;
+            out << Qt::endl;
 
             /* the above section was part of the U-file prior to version 1.1.0 */
 
-            out << "// mean velocity" << endl;
-            out << endl;
-            out << "UDict" << endl;
-            out << "{" << endl;
-            out << "    referenceValue          " << theParameters.value("vel0") << ";" << endl;
+            out << "// mean velocity" << Qt::endl;
+            out << Qt::endl;
+            out << "UDict" << Qt::endl;
+            out << "{" << Qt::endl;
+            out << "    referenceValue          " << theParameters.value("vel0") << ";" << Qt::endl;
 
-            out << "    profile                 " << profile << ";" << endl;
+            out << "    profile                 " << profile << ";" << Qt::endl;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("refDistU") << ";" << endl;
-                out << "    alpha                   " << theParameters.value("alphaU") << ";" << endl;
+                out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << Qt::endl;
+                out << "    referenceDist           " << theParameters.value("refDistU") << ";" << Qt::endl;
+                out << "    alpha                   " << theParameters.value("alphaU") << ";" << Qt::endl;
             }
-            out << "}" << endl;
-            out << endl;
+            out << "}" << Qt::endl;
+            out << Qt::endl;
 
-            out << "// Reynolds stress tensor (symmTensorField)" << endl;
-            out << endl;
-            out << "RDict" << endl;
-            out << "{" << endl;
+            out << "// Reynolds stress tensor (symmTensorField)" << Qt::endl;
+            out << Qt::endl;
+            out << "RDict" << Qt::endl;
+            out << "{" << Qt::endl;
             out << "    referenceValue          ("
                 << theParameters.value("phi00") << "  "
                 << theParameters.value("phi10") << "  "
@@ -624,27 +641,27 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                 << theParameters.value("phi11") << "  "
                 << theParameters.value("phi21") << "  "
                 << theParameters.value("phi22")
-                << ");" << endl;
+                << ");" << Qt::endl;
 
-            out << "    profile                 " << profile << ";" << endl;
+            out << "    profile                 " << profile << ";" << Qt::endl;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << endl;
+                out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << Qt::endl;
+                out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << Qt::endl;
                 out << "    alpha                     ("
                     << theParameters.value("alpha0") << "  "
                     << theParameters.value("alpha1") << "  "
                     << theParameters.value("alpha2")
-                    << ");" << endl;
+                    << ");" << Qt::endl;
             }
 
-            out << "}" << endl;
-            out << endl;
+            out << "}" << Qt::endl;
+            out << Qt::endl;
 
-            out << "// length scale tensor (tensorField)" << endl;
-            out << endl;
-            out << "LDict" << endl;
-            out << "{" << endl;
+            out << "// length scale tensor (tensorField)" << Qt::endl;
+            out << Qt::endl;
+            out << "LDict" << Qt::endl;
+            out << "{" << Qt::endl;
             out << "    referenceValue          ("
                 << theParameters.value("L11") << "  "
                 << theParameters.value("L12") << "  "
@@ -655,13 +672,13 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                 << theParameters.value("L31") << "  "
                 << theParameters.value("L32") << "  "
                 << theParameters.value("L33")
-                << ");" << endl;
+                << ");" << Qt::endl;
 
-            out << "    profile                 " << profile << ";" << endl;
+            out << "    profile                 " << profile << ";" << Qt::endl;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << endl;
+                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << Qt::endl;
+                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << Qt::endl;
                 out << "    alpha                     ("
                     << theParameters.value("alpha11") << "  "
                     << theParameters.value("alpha12") << "  "
@@ -672,65 +689,13 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                     << theParameters.value("alpha31") << "  "
                     << theParameters.value("alpha32") << "  "
                     << theParameters.value("alpha33")
-                    << ");" << endl;
+                    << ");" << Qt::endl;
             }
 
-            out << "}" << endl;
-            out << endl;
-
-            /*
-            out << "// turbulence length scale profile for u component" << endl;
-            out << "LuxDict" << endl;
-            out << "{" << endl;
-            out << "    referenceValue          " << theParameters.value("Lu0") << ";" << endl;
-
-            out << "    profile                 " << profile << ";" << endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LuRefAngle") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("LuRefDist") << ";" << endl;
-                out << "    alpha                   " << theParameters.value("LuAlpha") << ";" << endl;
-            }
-            out << "}" << endl;
-
-            out << endl;
-
-            out << "// turbulence length scale profile for v component" << endl;
-            out << "LvxDict" << endl;
-            out << "{" << endl;
-            out << "    referenceValue          " << theParameters.value("Lv0") << ";" << endl;
-
-            out << "    profile                 " << profile << ";" << endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LvRefAngle") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("LvRefDist") << ";" << endl;
-                out << "    alpha                   " << theParameters.value("LvAlpha") << ";" << endl;
-            }
-            out << "}" << endl;
-
-            out << endl;
-
-
-            out << "// turbulence length scale profile for w component" << endl;
-            out << "LwxDict" << endl;
-            out << "{" << endl;
-            out << "    referenceValue          " << theParameters.value("Lw0") << ";" << endl;
-
-            out << "    profile                 " << profile << ";" << endl;
-
-            if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("LwRefAngle") << ";" << endl;
-                out << "    referenceDist           " << theParameters.value("LwRefDist") << ";" << endl;
-                out << "    alpha                   " << theParameters.value("LwAlpha") << ";" << endl;
-            }
-            out << "}" << endl;
-
-             */
-
-            out << endl;
-            out << endl;
-            out << "// ************************************************************************* //" << endl;
+            out << "}" << Qt::endl;
+            out << Qt::endl;
+            out << Qt::endl;
+            out << "// ************************************************************************* //" << Qt::endl;
 
         }
 
@@ -756,8 +721,8 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
     foreach (QString key, boundaries.keys())
     {
-        out << "    " << key << endl;
-        out << "    {" << endl;
+        out << "    " << key << Qt::endl;
+        out << "    {" << Qt::endl;
 
         if (key == BCselected)
         {
@@ -766,71 +731,71 @@ void InflowParameterWidget::exportUFile(QString fileName)
             switch (int(theParameters.value("FilterMethod"))) {
             case 0: /* digital filter */
 
-                out << "        type               turbulentDFMInlet;" << endl;
+                out << "        type               turbulentDFMInlet;" << Qt::endl;
                 switch (int(theParameters.value("filterType"))) {
                 case 0:
-                    out << "        filterType         gaussian;" << endl;
+                    out << "        filterType         gaussian;" << Qt::endl;
                     break;
                 case 1:
-                    out << "        filterType         exponential;" << endl;
+                    out << "        filterType         exponential;" << Qt::endl;
                     break;
                 default:
-                    out << "        filterType         exponential;" << endl;
+                    out << "        filterType         exponential;" << Qt::endl;
                 }
-                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << endl;
-                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << endl;
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << Qt::endl;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << Qt::endl;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
 
                 break;
 
             case 1:  /* synthetic eddy */
 
-                out << "        type               turbulentSEMInlet;" << endl;
+                out << "        type               turbulentSEMInlet;" << Qt::endl;
                 switch (int(theParameters.value("eddyType"))) {
                 case 0:
-                    out << "        eddyType        gaussian;" << endl;
+                    out << "        eddyType        gaussian;" << Qt::endl;
                     break;
                 case 1:
-                    out << "        eddyType        tent;" << endl;
+                    out << "        eddyType        tent;" << Qt::endl;
                     break;
                 case 2:
-                    out << "        eddyType        step;" << endl;
+                    out << "        eddyType        step;" << Qt::endl;
                     break;
                 default:
-                    out << "        eddyType        gaussian;" << endl;
+                    out << "        eddyType        gaussian;" << Qt::endl;
                 }
-                out << "        density            " << theParameters.value("eddyDensity") << ";" << endl;
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << Qt::endl;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
 
                 break;
 
             case 2:  /* divergence-free synthetic eddy */
 
-                out << "        type               turbulentDFSEMInlet;" << endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+                out << "        type               turbulentDFSEMInlet;" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
 
                 break;
 
             case 3:  /* digital spot */
 
-                out << "        type               turbulentATSMInlet;" << endl;
+                out << "        type               turbulentATSMInlet;" << Qt::endl;
 
-                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << endl;
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << Qt::endl;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
 
                 break;
 
@@ -840,9 +805,9 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
             if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
             {
-                out << "        calculateU         true;" << endl;
-                out << "        calculateL         true;" << endl;
-                out << "        calculateR         true;" << endl;
+                out << "        calculateU         true;" << Qt::endl;
+                out << "        calculateL         true;" << Qt::endl;
+                out << "        calculateR         true;" << Qt::endl;
             }
 
             /* this was moved to the inflowProperties-file starting with version 1.1.0 *
@@ -851,9 +816,9 @@ void InflowParameterWidget::exportUFile(QString fileName)
             out << "        intersection       ( "
                 << theParameters.value("intersection0") << " "
                 << theParameters.value("intersection1") << " "
-                << theParameters.value("intersection2") << " );" << endl;
-            out << "        yOffset            " << theParameters.value("yOffset") << ";" << endl;
-            out << "        zOffset            " << theParameters.value("zOffset") << ";" << endl;
+                << theParameters.value("intersection2") << " );" << Qt::endl;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << Qt::endl;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << Qt::endl;
 
              *
              */
@@ -871,17 +836,17 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
             foreach (QString s, theMap.keys() )
             {
-                out << "        " << s << "    " << theMap.value(s) << ";" << endl;
+                out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
             }
         }
         else {
             foreach (QString s, (boundaries.value(key))->keys() )
             {
-                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << endl;
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << Qt::endl;
             }
         }
-        out << "    }" << endl;
-        out << endl;
+        out << "    }" << Qt::endl;
+        out << Qt::endl;
     }
 
     out << UFileTail;
@@ -905,14 +870,14 @@ void InflowParameterWidget::exportControlDictFile(QString origFileName, QString 
     foreach (QByteArray line, CDictList)
     {
         if (line.contains("application")) {
-            out << "libs" << endl;
-            out << "(" << endl;
-            out << "    \"libturbulentInflow.so\"" << endl;
-            out << ");" << endl;
-            out << endl;
+            out << "libs" << Qt::endl;
+            out << "(" << Qt::endl;
+            out << "    \"libturbulentInflow.so\"" << Qt::endl;
+            out << ");" << Qt::endl;
+            out << Qt::endl;
         }
 
-        out << line << endl;
+        out << line << Qt::endl;
     }
 
     CDict.close();
@@ -1333,9 +1298,11 @@ bool InflowParameterWidget::inputAppDataFromJSON(QJsonObject &rvObject)
 
 bool InflowParameterWidget::copyFiles(QString &dirName)
 {
+    qWarning() << "*** InflowParameterWidget::copyFiles(QString &dirName) should not be called by WE_UQ";
+
     // time to export :)
 
-    // we place new file into the existing file structure
+    // we place new files into the existing file structure
     // but we do save one version of the existing file as
     // filename.orig before writing the new one
 

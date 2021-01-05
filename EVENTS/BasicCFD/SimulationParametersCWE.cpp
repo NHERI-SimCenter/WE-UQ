@@ -53,6 +53,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
 {
   auto layout = new QGridLayout();
   layout->setMargin(0);
+  layout->setSpacing(6);
 
   // control
   QWidget *control = new QGroupBox("Simulation Control");
@@ -83,6 +84,9 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
   QGridLayout *controlLayout=new QGridLayout();
+  controlLayout->setMargin(6);
+  controlLayout->setSpacing(6);
+
   controlLayout->addWidget(new QLabel("Duration"),0,0);
   controlLayout->addWidget(duration,0,1);
   controlLayout->addWidget(new QLabel("s"),0,2);
@@ -122,6 +126,9 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   nonOrthogonalCorrectors->setValidator(positiveIntValidator);
     
   QGridLayout *advancedLayout=new QGridLayout();
+  advancedLayout->setMargin(6);
+  advancedLayout->setSpacing(6);
+
   advancedLayout->addWidget(new QLabel("Turbulence Model"),0,0);
   advancedLayout->addWidget(turbulanceModel,0,1);
   advancedLayout->addWidget(new QLabel("Number of Piso Correctors"),1,0);

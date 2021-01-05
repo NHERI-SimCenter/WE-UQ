@@ -1,0 +1,103 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      threeDoFElasticBeam;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//- Stutural information of a 3 DOFs beam 
+//- The 3 DOFs include two transverse (translation) displacements and a torsional displacement in the axial direction
+//- Designed for the case in which the axial displacement and the non-axial torsion of a 6 DOFs beam can be neglected
+
+//- Boudnary patches linked with the beam
+patches 1("cylinder");
+
+//- Origin (starting point) of the beam
+origin (0 0 0);
+
+//- Direction (vector) of the beam
+direction (0 0 1);
+
+//- Number of nodes on the beam
+nNode 11;
+
+//- Number of modes considered
+nFreq 2;
+
+//- Frequency of two considered modes
+frequency 2(0.2 0.2);
+
+//- Length of elment segments (the number of elements should equal to $nNode minus 1)
+length 10(0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415 0.31415);
+
+//- Mass at all nodes
+//- The mass at each node is an three component vector
+//- The first two components are the translation mass
+//- The third component stands for the moment of inertial 
+mass List<vector>
+11
+(
+(0.5 0.5 5)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(1 1 10)
+(0.5 0.5 5)
+);
+
+//- Damping ratios of the modes considered
+damping 2(0.005 0.005);
+
+//- Shape of the first mode
+//- The displacment at each node is an three component vector
+//- The first two components are transverse displacements
+//- The third component stands for the axial rotation
+modalShape1 List<vector>
+11
+(
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+(1 0 0)
+);
+
+//- Shape of the second mode
+modalShape2 List<vector>
+11
+(
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+(0 1 0)
+);
+
+// ************************************************************************* //

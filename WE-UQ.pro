@@ -14,6 +14,8 @@ win32:QMAKE_CXXFLAGS -= -m64 #TODO: This seems to be cause by smelt Conan packag
 TARGET = WE_UQ
 TEMPLATE = app
 
+DEFINES += _GRAPHICS_Qt3D
+
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
@@ -31,7 +33,10 @@ win32 {
     ICON = icons/NHERI-WEuq-Icon.icns
     }
 }
-
+include(../SimCenterCommon/Common/Common.pri)
+include(../SimCenterCommon/Workflow/Workflow.pri)
+include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
+include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
 include(./WindEvents.pri)
 
 SOURCES += main.cpp \

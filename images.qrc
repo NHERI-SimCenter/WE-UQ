@@ -1,15 +1,17 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-<file>Resources/DEDM/wImage1.png</file>
-<file>Resources/DEDM/wImage2.png</file>
-<file>Resources/DEDM/wImage3.png</file>
-<file>Resources/DEDM/wImage4.png</file>
-<file>Resources/DEDM/wImage_DEDM_HRP_Logo.png</file>
-<file>Resources/LowRise/lowriseTPU.png</file>
-<file>Resources/LowRise/lowriseFlat.png</file>
-<file>Resources/LowRise/lowriseGable.png</file>
-<file>Resources/TInF/sourceFileInfo.html</file>
-<file>Resources/CWE/upload3D.json</file>
-<file>Resources/docs/textAboutWEUQ.html</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/DEDM/wImage1.png</file>
+        <file>Resources/DEDM/wImage2.png</file>
+        <file>Resources/DEDM/wImage3.png</file>
+        <file>Resources/DEDM/wImage4.png</file>
+        <file>Resources/DEDM/wImage_DEDM_HRP_Logo.png</file>
+        <file>Resources/LowRise/lowriseTPU.png</file>
+        <file>Resources/LowRise/lowriseFlat.png</file>
+        <file>Resources/LowRise/lowriseGable.png</file>
+        <file>Resources/TInF/sourceFileInfo.html</file>
+        <file>Resources/CWE/upload3D.json</file>
+        <file>Resources/docs/textAboutWEUQ.html</file>
+        <file>Resources/CWE/Templates/dynamicMeshDict</file>
+        <file>Resources/CWE/Templates/fvSolution</file>
+    </qresource>
 </RCC>

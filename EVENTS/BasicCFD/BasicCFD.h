@@ -62,6 +62,7 @@ class QStandardItemModel;
 class QStandardItem;
 class QStackedWidget;
 class QItemSelection;
+class UserModeShapes;
 
 class BasicCFD : public SimCenterAppWidget
 {
@@ -90,6 +91,8 @@ private:
    QDoubleSpinBox* startTimeBox;
    QJsonObject *jsonObjOrig;
    CWE3DView* graphicsWidget;
+   QComboBox* forceComboBox;
+   UserModeShapes* couplingGroup;
 
     double toMilliMeters(QString lengthUnit) const;
     void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter,

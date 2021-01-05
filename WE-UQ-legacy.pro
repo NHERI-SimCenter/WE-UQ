@@ -51,12 +51,16 @@ include(./WindEvents.pri)
 INCLUDEPATH += "./Component"
 
 SOURCES += main.cpp \
+    EVENTS/modefile.cpp \
+    EVENTS/usermodeshapes.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEDP_Selection.cpp \
     StandardWindEDP.cpp
 
 HEADERS  += \
+    EVENTS/modefile.h \
+    EVENTS/usermodeshapes.h \
     WorkflowAppWE.h \
     RunWidget.h \
     StandardWindEDP.h \
@@ -98,4 +102,7 @@ DISTFILES += \
     wImage4.gif \
     wImage1.png \
     wImage_DEDM_HRP_Logo
+
+FORMS += \
+    EVENTS/usermodeshapes.ui
 

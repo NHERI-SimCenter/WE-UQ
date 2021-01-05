@@ -1,0 +1,60 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.4.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    pFinal
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+}
+
+PIMPLE
+{
+    //- Correct mesh flux option (default to yes)
+    correctPhi          yes;
+
+    //- Number of outer correction loops (an integer larger than 0 and default to 1)
+    nOuterCorrectors    1;
+
+    //- Number of PISO correction loops (an integer larger than 0 and default to 1)
+    nCorrectors         1;
+
+    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)
+    nNonOrthogonalCorrectors 0;
+}
+
+// ************************************************************************* //
