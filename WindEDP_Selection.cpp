@@ -213,3 +213,11 @@ WindEDP_Selection::copyFiles(QString &destDir) {
 
     return false;
 }
+
+void
+WindEDP_Selection::clear(void) {
+
+    if (theCurrentEDP != 0) {
+        return  theCurrentEDP->clear();
+    }
+}
