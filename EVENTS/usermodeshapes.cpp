@@ -89,28 +89,6 @@ void UserModeShapes::on_browse_button_clicked()
     this->validateFile(filename);
 }
 
-void UserModeShapes::on_btn_download_template_clicked()
-{
-    QString suggested_path = QFileInfo(QDir::homePath(), tr("dynamicMeshDictTemplate")).absoluteFilePath();
-    QString filename = QFileDialog::getSaveFileName(this,tr("save template file"),suggested_path, QDir::homePath());
-
-    //qDebug() << "Selected target filename: " << filename;
-
-    if (!filename.isEmpty()) {
-        QFile outfile(filename);
-        if (outfile.exists())
-        {
-            qWarning("file already exists - operation aborted");
-            return;
-        }
-        QFile infile(":/Resources/CWE/Templates/dynamicMeshDict");
-        if (!infile.copy(filename))
-        {
-            qWarning("failure to save to file");
-        }
-    }
-}
-
 void UserModeShapes::on_filename_editingFinished()
 {
     QString filename = ui->filename->text();
@@ -203,4 +181,44 @@ bool UserModeShapes::validateFile(const QString &filename)
     }
 
     return retval;
+}
+
+void UserModeShapes::on_btn_download_t3dof_emplate_clicked()
+{
+    QString suggested_path = QFileInfo(QDir::homePath(), tr("dynamicMeshDict_3dof_Template")).absoluteFilePath();
+    QString filename = QFileDialog::getSaveFileName(this,tr("save template file"),suggested_path, QDir::homePath());
+
+    if (!filename.isEmpty()) {
+        QFile outfile(filename);
+        if (outfile.exists())
+        {
+            qWarning("file already exists - operation aborted");
+            return;
+        }
+        QFile infile(":/Resources/CWE/Templates/dynamicMeshDict_3dof_template");
+        if (!infile.copy(filename))
+        {
+            qWarning("failure to save to file");
+        }
+    }
+}
+
+void UserModeShapes::on_btn_download_6dof_template_clicked()
+{
+    QString suggested_path = QFileInfo(QDir::homePath(), tr("dynamicMeshDict_6dof_Template")).absoluteFilePath();
+    QString filename = QFileDialog::getSaveFileName(this,tr("save template file"),suggested_path, QDir::homePath());
+
+    if (!filename.isEmpty()) {
+        QFile outfile(filename);
+        if (outfile.exists())
+        {
+            qWarning("file already exists - operation aborted");
+            return;
+        }
+        QFile infile(":/Resources/CWE/Templates/dynamicMeshDict_6dof_template");
+        if (!infile.copy(filename))
+        {
+            qWarning("failure to save to file");
+        }
+    }
 }

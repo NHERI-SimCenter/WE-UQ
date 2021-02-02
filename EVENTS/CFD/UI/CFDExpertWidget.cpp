@@ -205,6 +205,14 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
         newLocation.cd("system");
     }
 
+    // . use existing file, if exists, or use the template, if we are missing one ....
+
+    // . parse solver section for keywords U|p|k|epsilon
+    // .. add respective sections if missing.  Use U section, if exists, for missing sections
+
+    // . look for solver definition for PISO && SIMPLE && PIMPLE;
+    // .. add, if none found
+
     QString newFile = newLocation.absoluteFilePath("fvSolution");
     QString origFile = newFile + ".orig";
 

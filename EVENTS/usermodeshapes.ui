@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>794</width>
-    <height>284</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,7 +72,7 @@
       <item>
        <widget class="QFrame" name="modeShapeGroup">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -80,7 +80,7 @@
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0">
+        <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0">
          <property name="leftMargin">
           <number>6</number>
          </property>
@@ -96,24 +96,56 @@
          <property name="verticalSpacing">
           <number>6</number>
          </property>
-         <item row="5" column="3">
-          <widget class="QPushButton" name="browse_button">
-           <property name="text">
-            <string>browse</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1" colspan="2">
-          <widget class="QLineEdit" name="filename"/>
-         </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="upload_label">
            <property name="text">
             <string>upload your dynamicMeshDict file:</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="0" colspan="4">
+         <item row="6" column="3">
+          <widget class="QPushButton" name="browse_button">
+           <property name="text">
+            <string>browse</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QLabel" name="template_label">
+           <property name="text">
+            <string>You may download this template file to start your user-provided input:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="4">
+          <widget class="QLabel" name="info_label">
+           <property name="text">
+            <string>This version of WE-UQ requires a user-defined set of building mode shapes, stored in the dynamicMeshDict file.
+See the template file for format and information on the required information.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
+          <widget class="QComboBox" name="FSI_boundary_selection"/>
+         </item>
+         <item row="6" column="1" colspan="2">
+          <widget class="QLineEdit" name="filename"/>
+         </item>
+         <item row="2" column="0" colspan="4">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="FSI_boundary_label">
+           <property name="text">
+            <string>FSI boundary name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0" colspan="4">
           <widget class="QFrame" name="infoFrame">
            <property name="frameShape">
             <enum>QFrame::Panel</enum>
@@ -167,42 +199,17 @@
            </layout>
           </widget>
          </item>
-         <item row="4" column="2" colspan="2">
-          <widget class="QPushButton" name="btn_download_template">
+         <item row="4" column="2">
+          <widget class="QPushButton" name="btn_download_t3dof_emplate">
            <property name="text">
-            <string>download template file</string>
+            <string>download 3dof template file</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0" colspan="4">
-          <widget class="QLabel" name="info_label">
+         <item row="4" column="3">
+          <widget class="QPushButton" name="btn_download_6dof_template">
            <property name="text">
-            <string>This version of WE-UQ requires a user-defined set of building mode shapes, stored in the dynamicMeshDict file.
-See the template file for format and information on the required information.</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="QComboBox" name="FSI_boundary_selection"/>
-         </item>
-         <item row="4" column="0" colspan="2">
-          <widget class="QLabel" name="template_label">
-           <property name="text">
-            <string>You may download this template file to start your user-provided input:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="FSI_boundary_label">
-           <property name="text">
-            <string>FSI boundary name:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="4">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <string>download 6dof template file</string>
            </property>
           </widget>
          </item>
@@ -214,6 +221,14 @@ See the template file for format and information on the required information.</s
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>coupling_checkBox</tabstop>
+  <tabstop>FSI_boundary_selection</tabstop>
+  <tabstop>btn_download_t3dof_emplate</tabstop>
+  <tabstop>btn_download_6dof_template</tabstop>
+  <tabstop>filename</tabstop>
+  <tabstop>browse_button</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
