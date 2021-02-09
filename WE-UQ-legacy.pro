@@ -26,11 +26,11 @@ win32:LIBS += "../jansson/lib/jansson.lib"
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
-INCLUDEPATH += CFD
-INCLUDEPATH += CFD/UI
-INCLUDEPATH += CFD/Analysis
-INCLUDEPATH += CFD/CFDanalysis
-INCLUDEPATH += CFD/SimCenter_widgets
+INCLUDEPATH += ExpertCFD
+INCLUDEPATH += ExpertCFD/UI
+INCLUDEPATH += ExpertCFD/Analysis
+INCLUDEPATH += ExpertCFD/CFDanalysis
+INCLUDEPATH += ExpertCFD/SimCenter_widgets
 DEFINES += _GRAPHICS_Qt3D
 
 win32 {
