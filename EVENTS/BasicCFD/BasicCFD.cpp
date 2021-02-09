@@ -52,7 +52,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "CustomizedItemModel.h"
 #include "RandomVariablesContainer.h"
 #include "GeneralInformationWidget.h"
-#include "CFD/UI/GeometryHelper.h"
+#include "ExpertCFD/UI/GeometryHelper.h"
 #include "QDir"
 #include <QDebug>
 #include <QDoubleSpinBox>

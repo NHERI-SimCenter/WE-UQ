@@ -43,8 +43,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QGroupBox>
 #include <QVector>
-#include <CFD/UI/CFDExpertWidget.h>
-#include <CFD/UI/CFDTemplateWidget.h>
+#include <ExpertCFD/CFDExpertWidget.h>
+#include <ExpertCFD/UI/CFDTemplateWidget.h>
 #include <RemoteService.h>
 
 class QComboBox;

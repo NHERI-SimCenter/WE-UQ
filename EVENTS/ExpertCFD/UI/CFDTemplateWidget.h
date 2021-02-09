@@ -6,10 +6,10 @@
 #include <RemoteService.h>
 #include <Inflow/inflowparameterwidget.h>
 #include <QDoubleSpinBox>
-#include <CFD/cwe_guiWidgets/cwe_parameters.h>
-#include <CFD/CFDanalysis/CFDcaseInstance.h>
+#include <ExpertCFD/cwe_guiWidgets/cwe_parameters.h>
+#include <ExpertCFD/CFDanalysis/CFDcaseInstance.h>
 #include <CFDanalysisType.h>
-#include <CFD/SimCenter_widgets/sctrstates.h>
+#include <ExpertCFD/SimCenter_widgets/sctrstates.h>
 
 class QJsonObject;
 
