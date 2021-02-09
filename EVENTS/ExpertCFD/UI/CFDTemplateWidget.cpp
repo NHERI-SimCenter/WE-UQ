@@ -7,7 +7,7 @@
 #include <CFDanalysisType.h>
 
 #include "GeneralInformationWidget.h"
-#include "CFD/UI/GeometryHelper.h"
+#include "ExpertCFD/UI/GeometryHelper.h"
 
 CFDTemplateWidget::CFDTemplateWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService)
