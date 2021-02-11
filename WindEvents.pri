@@ -37,6 +37,7 @@ SOURCES += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/openfoamhelper.cpp \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.cpp \
     $$PWD/EVENTS/WindEventSelection.cpp \
     $$PWD/EVENTS/DEDM_HRP.cpp \
@@ -78,6 +79,7 @@ HEADERS  += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
+    $$PWD/EVENTS/ExpertCFD/openfoamhelper.h \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.h \
     $$PWD/EVENTS/WindEventSelection.h \
     $$PWD/EVENTS/WindTunnelExperiment.h \
