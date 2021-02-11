@@ -44,7 +44,8 @@
 #include <QJsonObject>
 #include <QBoxLayout>
 #include <QKeyValueIterator>
-#include <CFD/SimCenter_widgets/sctrstates.h>
+#include <EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h>
+//#include <CFD/SimCenter_widgets/sctrstates.h>
 
 //#include "remoteFiles/filenoderef.h"
 //#include "filenoderef.h"
