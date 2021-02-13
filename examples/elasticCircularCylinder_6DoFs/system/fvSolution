@@ -1,0 +1,88 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    pFinal
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        DICGaussSeidel;
+    }
+
+    //- Define a sub-dictionary containing parameters mesh flux correction equations
+    "pcorr.*"
+    {
+        solver           GAMG;
+        tolerance        1e-04;
+        relTol           0;
+        smoother         DICGaussSeidel;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+    UFinal
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+}
+
+//- Define a sub-dictionary containing parameters for pimpleFoam
+PIMPLE
+{
+    //- Correct mesh flux option (default to true)
+    correctPhi          true;
+
+    //- Update mesh every outer correction loop (default to true)
+    moveMeshOuterCorrectors true;
+
+    //- Number of outer correction loops (an integar larger than 0 and default to 1)
+    nOuterCorrectors    2;
+
+    //- Number of PISO correction loops (an integar larger than 0 and default to 1)
+    nCorrectors         2;
+
+    //- Number of non-orthogonal correction loops (an integar no less than 0 and default to 0)
+    nNonOrthogonalCorrectors 0;
+}
+
+
+PISO
+{
+    nCorrectors         2;
+    nNonOrthogonalCorrectors 0;
+}
+
+// ************************************************************************* //

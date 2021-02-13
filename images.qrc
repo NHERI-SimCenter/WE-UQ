@@ -13,5 +13,8 @@
         <file>Resources/docs/textAboutWEUQ.html</file>
         <file>Resources/CWE/Templates/dynamicMeshDict</file>
         <file>Resources/CWE/Templates/fvSolution</file>
+        <file>Resources/CWE/Templates/dynamicMeshDict_3dof_template</file>
+        <file>Resources/CWE/Templates/dynamicMeshDict_6dof_template</file>
+        <file>Resources/CWE/Templates/generalizedMotionState</file>
     </qresource>
 </RCC>
