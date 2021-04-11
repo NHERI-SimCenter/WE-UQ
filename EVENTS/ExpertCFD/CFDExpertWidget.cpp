@@ -196,6 +196,34 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     }
 
     //
+    // ... generalizedMotionState file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("0")) {
+        newLocation.mkdir("0");
+        newLocation.cd("0");
+    }
+    if (!newLocation.cd("uniform")) {
+        newLocation.mkdir("uniform");
+        newLocation.cd("uniform");
+    }
+
+    QString newFile  = newLocation.absoluteFilePath("generalizedMotionState");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update generalizedMotionState file
+    this->exportgeneralizedMotionStateFile(origFile, newFile);
+
+    //
     // ... fvSolution file
     //
 
@@ -213,8 +241,8 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     // . look for solver definition for PISO && SIMPLE && PIMPLE;
     // .. add, if none found
 
-    QString newFile = newLocation.absoluteFilePath("fvSolution");
-    QString origFile = newFile + ".orig";
+    newFile = newLocation.absoluteFilePath("fvSolution");
+    origFile = newFile + ".orig";
 
     if (QFile(origFile).exists()) {
         qWarning() << "overwriting " << origFile;
@@ -928,6 +956,46 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     }
 
     CDict.close();
+}
+
+
+void CFDExpertWidget::exportgeneralizedMotionStateFile(QString origFileName, QString fileName)
+{
+    // file handle for the generalizedMotionState file
+    QFile MS(fileName);
+    MS.open(QFile::WriteOnly);
+    QTextStream out(&MS);
+
+    out << "/*--------------------------------*- C++ -*----------------------------------*\\" << Qt::endl;
+    out << " =========                 |                                                   " << Qt::endl;
+    out << " \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox             " << Qt::endl;
+    out << "  \\    /   O peration     | Website:  https://openfoam.org                    " << Qt::endl;
+    out << "   \\  /    A nd           | Version:  7                                       " << Qt::endl;
+    out << "    \\/     M anipulation  |                                                   " << Qt::endl;
+    out << "\\*---------------------------------------------------------------------------*/" << Qt::endl;
+    out << "FoamFile " << Qt::endl;
+    out << "{" << Qt::endl;
+    out << "   version     2.0;                      " << Qt::endl;
+    out << "   format      ascii;                    " << Qt::endl;
+    out << "   class       dictionary;               " << Qt::endl;
+    out << "   object      generalizedMotionState;   " << Qt::endl;
+    out << "}" << Qt::endl;
+    out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << Qt::endl;
+    out << Qt::endl;
+
+    out << "// Generalized displacements (a list of scalars)" << Qt::endl;
+    out << "ubar            " << "2 (0 0)" << ";" << Qt::endl;
+    out << Qt::endl;
+
+    out << "// Generalized velocities (a list of scalars)" << Qt::endl;
+    out << "vbar            " << "2 (0 0)" << ";" << Qt::endl;
+    out << Qt::endl;
+
+    out << "// Generalized accelerations (a list of scalars)" << Qt::endl;
+    out << "abar            " << "2 (0 0)" << ";" << Qt::endl;
+    out << Qt::endl;
+
+    MS.close();
 }
 
 bool CFDExpertWidget::readUfile(QString filename)

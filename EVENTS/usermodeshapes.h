@@ -40,6 +40,10 @@ private:
     Ui::UserModeShapes *ui;
 
     QList<QVector<double > *> mode_shapes;
+
+    int nodesCount  = 0;
+    int modesCount  = 0;
+    int floorsCount = 0;
 };
 
 #endif // USERMODESHAPES_H

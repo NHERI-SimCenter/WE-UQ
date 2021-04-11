@@ -30,29 +30,30 @@ public slots:
     void on_couplingGroup_checked(bool checked);
 
 private:
-    QLineEdit* caseEditBox;
-    QComboBox* solverComboBox;
-    RemoteService* remoteService;
+    QLineEdit*      caseEditBox;
+    QComboBox*      solverComboBox;
+    RemoteService*  remoteService;
     InflowParameterWidget* inflowWidget;
-    QCheckBox* inflowCheckBox;
-    QComboBox* forceComboBox;
+    QCheckBox*      inflowCheckBox;
+    QComboBox*      forceComboBox;
     UserModeShapes* couplingGroup;
-    QPushButton* caseSelectButton;
-    QLabel* loginRequiredLabel;
+    QPushButton*    caseSelectButton;
+    QLabel*         loginRequiredLabel;
     QDoubleSpinBox* startTimeBox;
-    QLineEdit* patchesEditBox;
-    QPushButton* selectPatchesButton;
-    QComboBox* meshingComboBox;
-    QSpinBox* processorsBox;
-    QPushButton* refreshButton;
+    QLineEdit*      patchesEditBox;
+    QPushButton*    selectPatchesButton;
+    QComboBox*      meshingComboBox;
+    QSpinBox*       processorsBox;
+    QPushButton*    refreshButton;
 
-    QFrame *container;
-    QScrollArea *scrollArea;
+    QFrame          *container;
+    QScrollArea     *scrollArea;
 
-    QString originalUFilePath;
-    QString originalControlDictPath;
-    QString originalfvSolutionPath;
-    QStringList patchesList;
+    QString         originalUFilePath;
+    QString         originalControlDictPath;
+    QString         originalgeneralizedMotionStatePath;
+    QString         originalfvSolutionPath;
+    QStringList     patchesList;
 
     QDir oldLocation = QDir(".");
     QDir newLocation = QDir(".");
@@ -81,6 +82,7 @@ private:
 
     bool readControlDict(QString);
     void exportControlDictFile(QString, QString);
+    void exportgeneralizedMotionStateFile(QString, QString);
 
     bool getLine(QStringList &);
     QMap<QString, QString> *readParameters(void);
@@ -88,15 +90,16 @@ private:
     QByteArray CDictContents;
     QByteArray TemplateContents;
 
-    QFile UFile;
+    QFile       UFile;
+
     QList<QByteArray> UFileList;
     QListIterator<QByteArray> *UIter;
     QMap<QString, QMap<QString, QString> * > boundaries;
 
-    QString UFilePath;
-    QByteArray UFileContents;
-    QByteArray UFileHead = "";
-    QByteArray UFileTail = "";
+    QString     UFilePath;
+    QByteArray  UFileContents;
+    QByteArray  UFileHead = "";
+    QByteArray  UFileTail = "";
 
 
     // QWidget interface
