@@ -10,6 +10,16 @@
 #include "usermodeshapes.h"
 #include <QDir>
 
+#ifdef ENDLN
+#undef ENDLN
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#define ENDLN endl
+#else
+#define ENDLN Qt::endl
+#endif
+
 class CFDExpertWidget : public SimCenterAppWidget
 {
     Q_OBJECT

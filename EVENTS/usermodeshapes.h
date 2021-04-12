@@ -23,6 +23,9 @@ public:
     void setFSIboundarySelection(const QString &filename);
     void updateBoundaryList(QStringList &boundaryList);
     QString fetchBoundarySelection(void);
+    int numModes(void) { return modesCount; };
+    int numNodes(void) { return nodesCount; };
+    int numFloors(void) { return floorsCount; };
 
 signals:
     void couplingGroup_checked(bool checked);
