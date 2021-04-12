@@ -39,38 +39,10 @@ public slots:
     void selectPatchesPushed();
     void on_couplingGroup_checked(bool checked);
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private:
-    QLineEdit*      caseEditBox;
-    QComboBox*      solverComboBox;
-    RemoteService*  remoteService;
-    InflowParameterWidget* inflowWidget;
-    QCheckBox*      inflowCheckBox;
-    QComboBox*      forceComboBox;
-    UserModeShapes* couplingGroup;
-    QPushButton*    caseSelectButton;
-    QLabel*         loginRequiredLabel;
-    QDoubleSpinBox* startTimeBox;
-    QLineEdit*      patchesEditBox;
-    QPushButton*    selectPatchesButton;
-    QComboBox*      meshingComboBox;
-    QSpinBox*       processorsBox;
-    QPushButton*    refreshButton;
-
-    QFrame          *container;
-    QScrollArea     *scrollArea;
-
-    QString         originalUFilePath;
-    QString         originalControlDictPath;
-    QString         originalgeneralizedMotionStatePath;
-    QString         originalfvSolutionPath;
-    QStringList     patchesList;
-
-    QDir oldLocation = QDir(".");
-    QDir newLocation = QDir(".");
-
-    bool shown;
-
-
     void downloadRemoteCaseFiles();
     void ensureUFileExists();
     QStringList getRemoteFilesPaths();
@@ -97,6 +69,45 @@ private:
     bool getLine(QStringList &);
     QMap<QString, QString> *readParameters(void);
 
+    // QWidget interface
+    void resizeEvent(QResizeEvent *event);
+
+    // variables used in the GUI
+
+    QLineEdit*      caseEditBox;
+    QComboBox*      solverComboBox;
+    RemoteService*  remoteService;
+    InflowParameterWidget* inflowWidget;
+    QCheckBox*      inflowCheckBox;
+    QComboBox*      forceComboBox;
+    UserModeShapes* couplingGroup;
+    QPushButton*    caseSelectButton;
+    QLabel*         loginRequiredLabel;
+    QDoubleSpinBox* startTimeBox;
+    QLineEdit*      patchesEditBox;
+    QPushButton*    selectPatchesButton;
+    QComboBox*      meshingComboBox;
+    QSpinBox*       processorsBox;
+    QPushButton*    refreshButton;
+
+    QFrame          *container;
+    QScrollArea     *scrollArea;
+
+    // variables used to indicate state of the app
+
+    bool shown;
+
+    // variables used for processing
+
+    QString         originalUFilePath;
+    QString         originalControlDictPath;
+    QString         originalgeneralizedMotionStatePath;
+    QString         originalfvSolutionPath;
+    QStringList     patchesList;
+
+    QDir oldLocation = QDir(".");
+    QDir newLocation = QDir(".");
+
     QByteArray CDictContents;
     QByteArray TemplateContents;
 
@@ -111,12 +122,6 @@ private:
     QByteArray  UFileHead = "";
     QByteArray  UFileTail = "";
 
-
-    // QWidget interface
-    void resizeEvent(QResizeEvent *event);
-
-protected:
-    void showEvent(QShowEvent *event) override;
 };
 
 #endif // CFDEXPERTWIDGET_H
