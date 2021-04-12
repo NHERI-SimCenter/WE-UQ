@@ -84,7 +84,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QtNetwork/QNetworkRequest>
 #include <QHostInfo>
 #include <DakotaResultsSampling.h>
-
+#include <Utils/PythonProgressDialog.h>
 #include <GoogleAnalytics.h>
 
 // static pointer for global procedure set in constructor
@@ -220,6 +220,10 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     //
 
     theGI->setDefaultProperties(1,144,360,360,37.8715,-122.2730);
+
+    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    theDialog->appendInfoMessage("Welcome to WE-UQ");
+    theDialog->hideAfterElapsedTime(1);
 }
 
 WorkflowAppWE::~WorkflowAppWE()
@@ -264,29 +268,42 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     // get each of the main widgets to output themselves
     //
 
+    bool result = true;
     QJsonObject apps;
 
     QJsonObject jsonObjGenInfo;
-    theGI->outputToJSON(jsonObjGenInfo);
+    result = theGI->outputToJSON(jsonObjGenInfo);
+    if (result != true)
+        return result;
     jsonObjectTop["GeneralInformation"] = jsonObjGenInfo;
 
     QJsonObject jsonObjStructural;
-    theSIM->outputToJSON(jsonObjStructural);
+    result = theSIM->outputToJSON(jsonObjStructural);
+    if (result != true)
+        return result;
 
     jsonObjectTop["StructuralInformation"] = jsonObjStructural;
     QJsonObject appsSIM;
-    theSIM->outputAppDataToJSON(appsSIM);
+    result = theSIM->outputAppDataToJSON(appsSIM);
+    if (result != true)
+        return result;
 
     apps["Modeling"]=appsSIM;
 
-    theRVs->outputToJSON(jsonObjectTop);
+    result = theRVs->outputToJSON(jsonObjectTop);
+    if (result != true)
+        return result;
 
     QJsonObject jsonObjectEDP;
-    theEDP_Selection->outputToJSON(jsonObjectEDP);
+    result = theEDP_Selection->outputToJSON(jsonObjectEDP);
+    if (result != true)
+        return result;
     jsonObjectTop["EDP"] = jsonObjectEDP;
 
     QJsonObject appsEDP;
-    theEDP_Selection->outputAppDataToJSON(appsEDP);
+    result = theEDP_Selection->outputAppDataToJSON(appsEDP);
+    if (result != true)
+        return result;
     apps["EDP"]=appsEDP;
 
     /*
@@ -296,17 +313,32 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     */
 
 
-    theUQ_Selection->outputAppDataToJSON(apps);
-    theUQ_Selection->outputToJSON(jsonObjectTop);
+    result = theUQ_Selection->outputAppDataToJSON(apps);
+    if (result != true)
+        return result;
+    result = theUQ_Selection->outputToJSON(jsonObjectTop);
+    if (result != true)
+        return result;
 
-    theAnalysisSelection->outputAppDataToJSON(apps);
-    theAnalysisSelection->outputToJSON(jsonObjectTop);
+    result = theAnalysisSelection->outputAppDataToJSON(apps);
+    if (result != true)
+        return result;
+    result = theAnalysisSelection->outputToJSON(jsonObjectTop);
+    if (result != true)
+        return result;
 
    // NOTE: Events treated differently, due to array nature of objects
-    theEventSelection->outputToJSON(jsonObjectTop);
-    theEventSelection->outputAppDataToJSON(apps);
+    result = theEventSelection->outputToJSON(jsonObjectTop);
+    if (result != true)
+        return result;
 
-    theRunWidget->outputToJSON(jsonObjectTop);
+    result = theEventSelection->outputAppDataToJSON(apps);
+    if (result != true)
+        return result;
+
+    result = theRunWidget->outputToJSON(jsonObjectTop);
+    if (result != true)
+        return result;
 
     jsonObjectTop["Applications"]=apps;
 
