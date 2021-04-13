@@ -13,6 +13,9 @@
 #include <QResizeEvent>
 #include <QFile>
 #include <QTextStream>
+#include <QVector>
+
+#include "OpenFOAMhelper/openfoamhelper.h"
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)
@@ -196,6 +199,34 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     }
 
     //
+    // ... generalizedMotionState file
+    //
+
+    newLocation = QDir(dirName);
+    if (!newLocation.cd("0")) {
+        newLocation.mkdir("0");
+        newLocation.cd("0");
+    }
+    if (!newLocation.cd("uniform")) {
+        newLocation.mkdir("uniform");
+        newLocation.cd("uniform");
+    }
+
+    QString newFile  = newLocation.absoluteFilePath("generalizedMotionState");
+    QString origFile = newFile + ".orig";
+
+    if (QFile(origFile).exists()) {
+        qWarning() << "overwriting " << origFile;
+        QFile::remove(origFile);
+    }
+    QFile::rename(newFile, origFile);
+
+    qDebug() << "move" << newFile << origFile;
+
+    // update generalizedMotionState file
+    this->exportgeneralizedMotionStateFile(origFile, newFile);
+
+    //
     // ... fvSolution file
     //
 
@@ -213,8 +244,8 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     // . look for solver definition for PISO && SIMPLE && PIMPLE;
     // .. add, if none found
 
-    QString newFile = newLocation.absoluteFilePath("fvSolution");
-    QString origFile = newFile + ".orig";
+    newFile = newLocation.absoluteFilePath("fvSolution");
+    origFile = newFile + ".orig";
 
     if (QFile(origFile).exists()) {
         qWarning() << "overwriting " << origFile;
@@ -246,38 +277,38 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
 
             if (solverType.toLower() == "pimplefoam") {
 
-                fvOut << "PIMPLE" << Qt::endl;
-                fvOut << "{" << Qt::endl;
-                fvOut << "    //- Correct mesh flux option (default to yes)" << Qt::endl;
-                fvOut << "    correctPhi          yes;" << Qt::endl;
-                fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
-                fvOut << "    nOuterCorrectors    1;" << Qt::endl;
-                fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << Qt::endl;
-                fvOut << "    nCorrectors         1;" << Qt::endl;
-                fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << Qt::endl;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
-                fvOut << "}" << Qt::endl;
+                fvOut << "PIMPLE" << ENDLN;
+                fvOut << "{" << ENDLN;
+                fvOut << "    //- Correct mesh flux option (default to yes)" << ENDLN;
+                fvOut << "    correctPhi          yes;" << ENDLN;
+                fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+                fvOut << "    nOuterCorrectors    1;" << ENDLN;
+                fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+                fvOut << "    nCorrectors         1;" << ENDLN;
+                fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << ENDLN;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                fvOut << "}" << ENDLN;
             }
             else if (solverType.toLower() == "pisofoam") {
 
-                fvOut << "PISO" << Qt::endl;
-                fvOut << "{" << Qt::endl;
-                fvOut << "    pRefCell            0;" << Qt::endl;
-                fvOut << "    pRefValue           0;" << Qt::endl;
-                fvOut << "    nCorrectors         0;" << Qt::endl;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
-                fvOut << "}" << Qt::endl;
+                fvOut << "PISO" << ENDLN;
+                fvOut << "{" << ENDLN;
+                fvOut << "    pRefCell            0;" << ENDLN;
+                fvOut << "    pRefValue           0;" << ENDLN;
+                fvOut << "    nCorrectors         0;" << ENDLN;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                fvOut << "}" << ENDLN;
             }
             else if (solverType.toLower() == "icofoam") {
 
-                fvOut << "SIMPLE" << Qt::endl;
-                fvOut << "{" << Qt::endl;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << Qt::endl;
-                fvOut << "}" << Qt::endl;
+                fvOut << "SIMPLE" << ENDLN;
+                fvOut << "{" << ENDLN;
+                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                fvOut << "}" << ENDLN;
             }
         }
         else {
-            fvOut << line << Qt::endl;
+            fvOut << line << ENDLN;
         }
     }
 
@@ -589,7 +620,7 @@ void CFDExpertWidget::initializeUI()
     layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
-    this->setEnabled(false);
+    this->setEnabled(remoteService->isLoggedIn());
 }
 
 void CFDExpertWidget::setupConnections()
@@ -770,8 +801,8 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
     foreach (QString key, boundaries.keys())
     {
-        out << "    " << key << Qt::endl;
-        out << "    {" << Qt::endl;
+        out << "    " << key << ENDLN;
+        out << "    {" << ENDLN;
 
         if (inflowCheckBox->isChecked() && key == inflow_BCselected)
         {
@@ -780,71 +811,71 @@ void CFDExpertWidget::exportUFile(QString fileName)
             switch (int(theParameters.value("FilterMethod"))) {
             case 0: /* digital filter */
 
-                out << "        type               turbulentDFMInlet;" << Qt::endl;
+                out << "        type               turbulentDFMInlet;" << ENDLN;
                 switch (int(theParameters.value("filterType"))) {
                 case 0:
-                    out << "        filterType         gaussian;" << Qt::endl;
+                    out << "        filterType         gaussian;" << ENDLN;
                     break;
                 case 1:
-                    out << "        filterType         exponential;" << Qt::endl;
+                    out << "        filterType         exponential;" << ENDLN;
                     break;
                 default:
-                    out << "        filterType         exponential;" << Qt::endl;
+                    out << "        filterType         exponential;" << ENDLN;
                 }
-                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << Qt::endl;
-                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << Qt::endl;
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << ENDLN;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 1:  /* synthetic eddy */
 
-                out << "        type               turbulentSEMInlet;" << Qt::endl;
+                out << "        type               turbulentSEMInlet;" << ENDLN;
                 switch (int(theParameters.value("eddyType"))) {
                 case 0:
-                    out << "        eddyType        gaussian;" << Qt::endl;
+                    out << "        eddyType        gaussian;" << ENDLN;
                     break;
                 case 1:
-                    out << "        eddyType        tent;" << Qt::endl;
+                    out << "        eddyType        tent;" << ENDLN;
                     break;
                 case 2:
-                    out << "        eddyType        step;" << Qt::endl;
+                    out << "        eddyType        step;" << ENDLN;
                     break;
                 default:
-                    out << "        eddyType        gaussian;" << Qt::endl;
+                    out << "        eddyType        gaussian;" << ENDLN;
                 }
-                out << "        density            " << theParameters.value("eddyDensity") << ";" << Qt::endl;
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 2:  /* divergence-free synthetic eddy */
 
-                out << "        type               turbulentDFSEMInlet;" << Qt::endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+                out << "        type               turbulentDFSEMInlet;" << ENDLN;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 3:  /* digital spot */
 
-                out << "        type               turbulentATSMInlet;" << Qt::endl;
+                out << "        type               turbulentATSMInlet;" << ENDLN;
 
-                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << Qt::endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << ENDLN;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
@@ -854,9 +885,9 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
             if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
             {
-                out << "        calculateU         true;" << Qt::endl;
-                out << "        calculateL         true;" << Qt::endl;
-                out << "        calculateR         true;" << Qt::endl;
+                out << "        calculateU         true;" << ENDLN;
+                out << "        calculateL         true;" << ENDLN;
+                out << "        calculateR         true;" << ENDLN;
             }
 
 
@@ -873,21 +904,21 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
             foreach (QString s, theMap.keys() )
             {
-                out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
+                out << "        " << s << "    " << theMap.value(s) << ";" << ENDLN;
             }
         }
         else if (couplingGroup->isChecked() && key == FSI_BCselected) {
-            out <<  "        type               movingWall;" << Qt::endl;
-            out <<  "        value              uniform (0 0 0);" << Qt::endl;
+            out <<  "        type               movingWall;" << ENDLN;
+            out <<  "        value              uniform (0 0 0);" << ENDLN;
         }
         else {
             foreach (QString s, (boundaries.value(key))->keys() )
             {
-                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << Qt::endl;
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << ENDLN;
             }
         }
-        out << "    }" << Qt::endl;
-        out << Qt::endl;
+        out << "    }" << ENDLN;
+        out << ENDLN;
     }
 
     out << UFileTail;
@@ -913,21 +944,68 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
         if (line.contains("application")) {
 
             if (inflowCheckBox->isChecked()) {
-                out << "libs" << Qt::endl;
-                out << "(" << Qt::endl;
-                out << "    \"libturbulentInflow.so\"" << Qt::endl;
-                out << ");" << Qt::endl;
-                out << Qt::endl;
+                out << "libs" << ENDLN;
+                out << "(" << ENDLN;
+                out << "    \"libturbulentInflow.so\"" << ENDLN;
+                out << ");" << ENDLN;
+                out << ENDLN;
             }
 
-            out << "application     " << solverComboBox->currentText() << ";" << Qt::endl;
+            out << "application     " << solverComboBox->currentText() << ";" << ENDLN;
         }
         else {
-            out << line << Qt::endl;
+            out << line << ENDLN;
         }
     }
 
     CDict.close();
+}
+
+
+void CFDExpertWidget::exportgeneralizedMotionStateFile(QString origFileName, QString fileName)
+{
+    // get number of mode shapes
+    int numModes = couplingGroup->numModes();
+    if (numModes <= 0) {
+        numModes = 1;  // safety catch to prevent crash if no modes have been given
+    }
+    QVector<double> zeros(numModes, 0.0);
+
+    // file handle for the generalizedMotionState file
+    QFile MS(fileName);
+    MS.open(QFile::WriteOnly);
+    QTextStream out(&MS);
+
+    out << "/*--------------------------------*- C++ -*----------------------------------*\\" << ENDLN;
+    out << " =========                 |                                                   " << ENDLN;
+    out << " \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox             " << ENDLN;
+    out << "  \\    /   O peration     | Website:  https://openfoam.org                    " << ENDLN;
+    out << "   \\  /    A nd           | Version:  7                                       " << ENDLN;
+    out << "    \\/     M anipulation  |                                                   " << ENDLN;
+    out << "\\*---------------------------------------------------------------------------*/" << ENDLN;
+    out << "FoamFile " << ENDLN;
+    out << "{" << ENDLN;
+    out << "   version     2.0;                      " << ENDLN;
+    out << "   format      ascii;                    " << ENDLN;
+    out << "   class       dictionary;               " << ENDLN;
+    out << "   object      generalizedMotionState;   " << ENDLN;
+    out << "}" << ENDLN;
+    out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << ENDLN;
+    out << ENDLN;
+
+    out << "// Generalized displacements (a list of scalars)" << ENDLN;
+    out << "ubar            " << OpenFoamHelper(zeros) << ";" << ENDLN;
+    out << ENDLN;
+
+    out << "// Generalized velocities (a list of scalars)"    << ENDLN;
+    out << "vbar            " << OpenFoamHelper(zeros) << ";" << ENDLN;
+    out << ENDLN;
+
+    out << "// Generalized accelerations (a list of scalars)" << ENDLN;
+    out << "abar            " << OpenFoamHelper(zeros) << ";" << ENDLN;
+    out << ENDLN;
+
+    MS.close();
 }
 
 bool CFDExpertWidget::readUfile(QString filename)

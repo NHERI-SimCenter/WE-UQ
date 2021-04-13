@@ -117,9 +117,9 @@ bool UserModeShapes::validateFile(const QString &filename)
 {
     bool retval     = true;
 
-    int nodesCount  = 0;
-    int modesCount  = 0;
-    int floorsCount = 0;
+    //int nodesCount  = 0;
+    //int modesCount  = 0;
+    //int floorsCount = 0;
 
     QFile modefile(filename);
 
@@ -144,8 +144,21 @@ bool UserModeShapes::validateFile(const QString &filename)
                 }
                 if (line.contains("length")) {
                     QStringList data = line.split(" ");
-                    QStringList info = data[1].split("(");
-                    floorsCount = info[0].toInt();
+                    if (data.length()>=3) {
+                        QRegExp rxlen("(\\d+)(?:\\s*)(\\{|\\()");
+                        int pos = rxlen.indexIn(data[2]);
+                        if (pos > -1) {
+                            floorsCount = rxlen.cap(1).toInt();
+                        }
+                    }
+                    else if (data.length()>=2) {
+                        QRegExp rxlen("(\\d+)(?:\\s*)(\\{|\\()");
+                        int pos = rxlen.indexIn(data[1]);
+                        if (pos > -1) {
+                            floorsCount = rxlen.cap(1).toInt();
+                        }
+                    }
+                    else { floorsCount = 0; }
                 }
             }
 

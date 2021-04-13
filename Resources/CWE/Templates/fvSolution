@@ -33,6 +33,15 @@ solvers
         relTol          0;
     }
 
+    //- Define a sub-dictionary containing parameters mesh flux correction equations
+    "pcorr.*"
+    {
+        solver           GAMG;
+        tolerance        1e-04;
+        relTol           0;
+        smoother         DICGaussSeidel;
+    }
+
     U
     {
         solver          smoothSolver;
