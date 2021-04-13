@@ -620,7 +620,7 @@ void CFDExpertWidget::initializeUI()
     layout->setRowStretch(1, 0);
     layout->setRowStretch(2, 1);
 
-    this->setEnabled(false);
+    this->setEnabled(remoteService->isLoggedIn());
 }
 
 void CFDExpertWidget::setupConnections()
