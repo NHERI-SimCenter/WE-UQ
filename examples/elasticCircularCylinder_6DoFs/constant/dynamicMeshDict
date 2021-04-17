@@ -1,0 +1,148 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Default entry required
+dynamicFvMesh   dynamicMotionSolverFvMesh;
+
+// Load the custom library
+motionSolverLibs ("libelasticBodyDynamics.so");
+
+// Select "sixDoFElasticBodyMotion" for 6DoFs beams
+motionSolver    sixDoFElasticBodyMotion;
+
+// Fluid-Structure coupling option (true or false)
+coupling        true;
+
+// Inner Distance (to the central-line of the beam model) within which the mesh moves relatively motionless with the model
+innerDistance   1;
+
+// Inner Distance (to the central-line of the beam model) outside which the mesh stays static
+outerDistance   14;
+
+// Density of fluid
+rhoInf          1;
+
+// Time schemes for structural motion solver (valid options include: Newmark, CrankNicolson and symplectic)
+solver
+{
+    type        Newmark;
+}
+
+// Boudnary patches linked with the beam
+patches (cylinder);
+
+// Origin (starting point) of the beam
+origin (0 0 0);
+
+// Direction (vector) of the beam
+direction (0 0 1);
+
+// Number of nodes (an integer larger than 2) on the beam
+nNode 21;
+
+// Number of modes (an integer no less than 1) considered
+nMode 2;
+
+// Frequency of all considered modes
+frequency List<scalar> 2{0.16};
+
+// Length of element segments (the number of elements should equal to $nNode minus 1)
+length List<scalar> 20{0.5};
+
+// Damping ratios of the modes considered (a list of scalars)
+dampingRatio List<scalar> 2{0};
+
+// Lumped mass (a list of six-component vectors for 6DoFs beams)
+mass List<vector6D>
+21
+(
+((12.337 12.337 12.337) (0.771 0.771 0.771))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((24.674 24.674 24.674) (1.542 1.542 1.542))
+((12.337 12.337 12.337) (0.771 0.771 0.771))
+);
+
+// The first mode (a list of six-component vectors for 6DoFs beams)
+mode1 List<vector6D>
+21
+(
+((0.000000 0 0) (0 0.000000 0))
+((0.024472 0 0) (0 0.097081 0))
+((0.095492 0 0) (0 0.184658 0))
+((0.206107 0 0) (0 0.254160 0))
+((0.345492 0 0) (0 0.298783 0))
+((0.500000 0 0) (0 0.314159 0))
+((0.654508 0 0) (0 0.298783 0))
+((0.793893 0 0) (0 0.254160 0))
+((0.904508 0 0) (0 0.184658 0))
+((0.975528 0 0) (0 0.097081 0))
+((1.000000 0 0) (0 0.000000 0))
+((0.975528 0 0) (0 -0.097081 0))
+((0.904508 0 0) (0 -0.184658 0))
+((0.793893 0 0) (0 -0.254160 0))
+((0.654508 0 0) (0 -0.298783 0))
+((0.500000 0 0) (0 -0.314159 0))
+((0.345492 0 0) (0 -0.298783 0))
+((0.206107 0 0) (0 -0.254160 0))
+((0.095492 0 0) (0 -0.184658 0))
+((0.024472 0 0) (0 -0.097081 0))
+((0.000000 0 0) (0 0.000000 0))
+);
+// The second mode (a list of six-component vectors for 6DoFs beams)
+mode2 List<vector6D>
+21
+(
+((0 0.000000 0) (0.000000 0 0))
+((0 0.024472 0) (-0.097081 0 0))
+((0 0.095492 0) (-0.184658 0 0))
+((0 0.206107 0) (-0.254160 0 0))
+((0 0.345492 0) (-0.298783 0 0))
+((0 0.500000 0) (-0.314159 0 0))
+((0 0.654508 0) (-0.298783 0 0))
+((0 0.793893 0) (-0.254160 0 0))
+((0 0.904508 0) (-0.184658 0 0))
+((0 0.975528 0) (-0.097081 0 0))
+((0 1.000000 0) (0.000000 0 0))
+((0 0.975528 0) (0.097081 0 0))
+((0 0.904508 0) (0.184658 0 0))
+((0 0.793893 0) (0.254160 0 0))
+((0 0.654508 0) (0.298783 0 0))
+((0 0.500000 0) (0.314159 0 0))
+((0 0.345492 0) (0.298783 0 0))
+((0 0.206107 0) (0.254160 0 0))
+((0 0.095492 0) (0.184658 0 0))
+((0 0.024472 0) (0.097081 0 0))
+((0 0.000000 0) (0.000000 0 0))
+);
+
+// ************************************************************************* //

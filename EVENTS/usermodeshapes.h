@@ -31,8 +31,9 @@ signals:
 private slots:
     void on_coupling_checkBox_stateChanged(int arg1);
     void on_browse_button_clicked();
-    void on_btn_download_template_clicked();
     void on_filename_editingFinished();
+    void on_btn_download_t3dof_emplate_clicked();
+    void on_btn_download_6dof_template_clicked();
 
 private:
     bool validateFile(const QString &filename);

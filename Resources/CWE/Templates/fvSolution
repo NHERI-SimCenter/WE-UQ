@@ -20,23 +20,63 @@ solvers
     p
     {
         solver          GAMG;
-        tolerance       1e-06;
-        relTol          0;
         smoother        DICGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
     }
 
     pFinal
     {
         solver          GAMG;
+        smoother        DICGaussSeidel;
         tolerance       1e-06;
         relTol          0;
-        smoother        DICGaussSeidel;
     }
 
     U
     {
         solver          smoothSolver;
-        smoother        GaussSeidel;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+    }
+
+    UFinal
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+    k
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+    }
+
+    kFinal
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+    epsilon
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+    }
+
+    epsilonFinal
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
         tolerance       1e-06;
         relTol          0;
     }

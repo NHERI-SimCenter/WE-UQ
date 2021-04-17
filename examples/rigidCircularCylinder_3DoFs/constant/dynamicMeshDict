@@ -1,0 +1,78 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      dynamicMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Default entries required
+dynamicFvMesh   dynamicMotionSolverFvMesh;
+
+// Load the custom library
+motionSolverLibs ("libelasticBodyDynamics.so");
+
+// Select "threeDoFElasticBodyMotion" for 3DOFs beams
+motionSolver    threeDoFElasticBodyMotion;
+
+// Fluid-Structure interaction coupling option (true or false)
+coupling        true;
+
+// Inner Distance (to the central-line of the beam model) within which the mesh moves relatively motionless with the model
+innerDistance   1;
+
+// Inner Distance (to the central-line of the beam model) outside which the mesh stays static
+outerDistance   14;
+
+// Density of fluid
+rhoInf          1;
+
+// Time schemes for structural motion solver (valid options include: Newmark, CrankNicolson and symplectic)
+solver
+{
+    type        Newmark;
+}
+
+// Boudnary patches linked with the beam
+patches (cylinder);
+
+// Origin (starting point) of the beam
+origin (0 0 0);
+
+// Direction (vector) of the beam
+direction (0 0 1);
+
+// Number of nodes (an integer larger than 2) on the beam
+nNode 2;
+
+// Number of modes (an integer no less than 1) considered
+nMode 2;
+
+// Frequency of all considered modes
+frequency List<scalar> 2{0.16};
+
+// Length of element segments (the number of elements should equal to $nNode minus 1)
+length List<scalar> 1{1};
+
+// Lumped mass (a list of three-component vectors for 3DoFs beams)
+mass List<vector> 2{(12.337 12.337 12.337)};
+
+// Damping ratios of the modes considered (a list of scalars)
+dampingRatio List<scalar> 2{0};
+
+// The first mode (a list of three-component vectors for 3DoFs beams)
+mode1 List<vector> 2{(1 0 0)};
+
+// The second mode (a list of three-component vectors for 3DoFs beams)
+mode2 List<vector> 2{(0 1 0)};
+
+
+// ************************************************************************* //

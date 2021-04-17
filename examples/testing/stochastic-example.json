@@ -1,0 +1,144 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "StochasticWindInput-WittigSinha1975",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "dragCoefficient": 1.5,
+            "exposureCategory": "B",
+            "gustSpeed": 100,
+            "seed": "None",
+            "type": "StochasticWindInput-WittigSinha1975"
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 360,
+        "height": 288,
+        "location": {
+            "latitude": 37.8716,
+            "longitude": -127.272
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 2,
+        "units": {
+            "force": "kips",
+            "length": "in",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 360
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "dampingRatio": 0.02,
+        "dampingRatioModal": 0.02,
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 0
+    },
+    "StructuralInformation": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 10,
+        "Fyy": 10,
+        "Krz": 1000000000000000,
+        "Kx": 100,
+        "Ky": 100,
+        "ModelData": [
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 144,
+                "kx": 100,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 144,
+                "kx": 100,
+                "ky": 100,
+                "weight": "RV.w"
+            }
+        ],
+        "height": 144,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 2,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": "RV.w"
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 5,
+            "seed": 242
+        },
+        "uqEngine": "Dakota",
+        "uqType": "Forward Propagation"
+    },
+    "localAppDir": "{Current_Dir}/build-WE-UQ-Desktop_Qt_5_12_3_MSVC2017_64bit-Release/Release",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "mean": 150,
+            "name": "w",
+            "refCount": 1,
+            "stdDev": 5,
+            "value": "RV.w",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "{Current_Dir}/build-WE-UQ-Desktop_Qt_5_12_3_MSVC2017_64bit-Release/Release",
+    "runType": "local",
+    "workingDir": "C:/Users/el7ad/Documents/WE-UQ/LocalWorkDir"
+}

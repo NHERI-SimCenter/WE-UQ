@@ -12,31 +12,32 @@ INCLUDEPATH += $$PWD/EVENTS/StochasticMotionInput/include
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
 INCLUDEPATH += $$PWD/EVENTS/BasicCFD
-INCLUDEPATH += $$PWD/EVENTS/CFD
-INCLUDEPATH += $$PWD/EVENTS/CFD/UI
-INCLUDEPATH += $$PWD/EVENTS/CFD/Analysis
-INCLUDEPATH += $$PWD/EVENTS/CFD/CFDanalysis
-INCLUDEPATH += $$PWD/EVENTS/CFD/SimCenter_widgets
+INCLUDEPATH += $$PWD/EVENTS/ExpertCFD
+INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/UI
+INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/Analysis
+INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
+INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 
 SOURCES += \
-    $$PWD/EVENTS/CFD/CFDanalysis/CFDanalysisType.cpp \
-    $$PWD/EVENTS/CFD/CFDanalysis/CFDcaseInstance.cpp \
-    $$PWD/EVENTS/CFD/UI/CFDExpertWidget.cpp \
-    $$PWD/EVENTS/CFD/UI/CWE3DView.cpp \
-    $$PWD/EVENTS/CFD/UI/Edged3DBox.cpp \
-    $$PWD/EVENTS/CFD/UI/GeometryHelper.cpp \
-    $$PWD/EVENTS/CFD/UI/CFDTemplateWidget.cpp \
-    $$PWD/EVENTS/CFD/UI/Graphics3DAxes.cpp \
-    $$PWD/EVENTS/CFD/UI/PatchesSelector.cpp \
-    $$PWD/EVENTS/CFD/UI/RemoteCaseSelector.cpp \
-    $$PWD/EVENTS/CFD/UI/SubdomainsModel.cpp \
-    $$PWD/EVENTS/CFD/cfd_globals.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_parameters.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_state_label.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
+    $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
+    $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/CWE3DView.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/Edged3DBox.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/GeometryHelper.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/CFDTemplateWidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/Graphics3DAxes.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/PatchesSelector.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/RemoteCaseSelector.cpp \
+    $$PWD/EVENTS/ExpertCFD/UI/SubdomainsModel.cpp \
+    $$PWD/EVENTS/ExpertCFD/cfd_globals.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_parameters.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_state_label.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamHelper.cpp \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.cpp \
     $$PWD/EVENTS/WindEventSelection.cpp \
     $$PWD/EVENTS/DEDM_HRP.cpp \
@@ -47,37 +48,38 @@ SOURCES += \
     $$PWD/EVENTS/WindTunnelExperiment.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/WittigSinha.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/StochasticWindInput.cpp \
-    $$PWD/EVENTS/CFD/Analysis/filemetadata.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrbooldatawidget.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrfiledatawidget.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrstddatawidget.cpp \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrtextdatawidget.cpp \
-    $$PWD/EVENTS/CFD/Analysis/remotejobdata.cpp \
+    $$PWD/EVENTS/ExpertCFD/Analysis/filemetadata.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrbooldatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrchoicedatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrfiledatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrmasterdatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstddatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrtextdatawidget.cpp \
+    $$PWD/EVENTS/ExpertCFD/Analysis/remotejobdata.cpp \
     $$PWD/EVENTS/initialmodalinfo.cpp \
     $$PWD/EVENTS/usermodeshapes.cpp
 
 HEADERS  += \
-    $$PWD/EVENTS/CFD/CFDanalysis/CFDanalysisType.h \
-    $$PWD/EVENTS/CFD/CFDanalysis/CFDcaseInstance.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrstates.h \
-    $$PWD/EVENTS/CFD/UI/CFDTemplateWidget.h \
-    $$PWD/EVENTS/CFD/UI/CFDExpertWidget.h \
-    $$PWD/EVENTS/CFD/UI/CWE3DView.h \
-    $$PWD/EVENTS/CFD/UI/Edged3DBox.h \
-    $$PWD/EVENTS/CFD/UI/GeometryHelper.h \
-    $$PWD/EVENTS/CFD/UI/Graphics3DAxes.h \
-    $$PWD/EVENTS/CFD/UI/PatchesSelector.h \
-    $$PWD/EVENTS/CFD/UI/RemoteCaseSelector.h \
-    $$PWD/EVENTS/CFD/UI/SubdomainsModel.h \
-    $$PWD/EVENTS/CFD/cfd_globals.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_parameters.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_state_label.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
+    $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
+    $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \
+    $$PWD/EVENTS/ExpertCFD/UI/CFDTemplateWidget.h \
+    $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.h \
+    $$PWD/EVENTS/ExpertCFD/UI/CWE3DView.h \
+    $$PWD/EVENTS/ExpertCFD/UI/Edged3DBox.h \
+    $$PWD/EVENTS/ExpertCFD/UI/GeometryHelper.h \
+    $$PWD/EVENTS/ExpertCFD/UI/Graphics3DAxes.h \
+    $$PWD/EVENTS/ExpertCFD/UI/PatchesSelector.h \
+    $$PWD/EVENTS/ExpertCFD/UI/RemoteCaseSelector.h \
+    $$PWD/EVENTS/ExpertCFD/UI/SubdomainsModel.h \
+    $$PWD/EVENTS/ExpertCFD/cfd_globals.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_parameters.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_state_label.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_groupswidget.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
+    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamhelper.h \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.h \
     $$PWD/EVENTS/WindEventSelection.h \
     $$PWD/EVENTS/WindTunnelExperiment.h \
@@ -88,22 +90,22 @@ HEADERS  += \
     $$PWD/EVENTS/LowRiseTPU.h \
     $$PWD/EVENTS/StochasticWindModel/include/WittigSinha.h \
     $$PWD/EVENTS/StochasticWindModel/include/StochasticWindInput.h \
-    $$PWD/EVENTS/CFD/Analysis/filemetadata.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrbooldatawidget.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrchoicedatawidget.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrfiledatawidget.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrmasterdatawidget.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrstddatawidget.h \
-    $$PWD/EVENTS/CFD/SimCenter_widgets/sctrtextdatawidget.h \
-    $$PWD/EVENTS/CFD/Analysis/remotejobdata.h \
+    $$PWD/EVENTS/ExpertCFD/Analysis/filemetadata.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrbooldatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrchoicedatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrfiledatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrmasterdatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstddatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrtextdatawidget.h \
+    $$PWD/EVENTS/ExpertCFD/Analysis/remotejobdata.h \
     $$PWD/EVENTS/initialmodalinfo.h \
     $$PWD/EVENTS/usermodeshapes.h
 
 FORMS    += \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_parameters.ui \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.ui \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \
-    $$PWD/EVENTS/CFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.ui \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_parameters.ui \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.ui \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \
+    $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.ui \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.ui \
     $$PWD/EVENTS/usermodeshapes.ui
 

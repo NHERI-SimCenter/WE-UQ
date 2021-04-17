@@ -49,7 +49,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVector3D>
 #include <QPoint>
 #include "MeshParametersCWE.h"
-#include <CFD/UI/CWE3DView.h>
+#include <ExpertCFD/UI/CWE3DView.h>
 
 
 class InputWidgetParameters;

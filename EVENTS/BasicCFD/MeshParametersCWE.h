@@ -47,7 +47,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <QTableView>
-#include <CFD/UI/SubdomainsModel.h>
+#include <ExpertCFD/UI/SubdomainsModel.h>
 #include <QVector3D>
 
 class InputWidgetParameters;
