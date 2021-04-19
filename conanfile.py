@@ -3,8 +3,8 @@ from conans import ConanFile
 class WEUQ(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "qmake"
-    requires =  "zlib/1.2.11", \
-               "libcurl/7.64.1"
+    requires = "zlib/1.2.11", \
+               "libcurl/7.72.0"
     build_policy = "missing"
 
     def configure(self):
