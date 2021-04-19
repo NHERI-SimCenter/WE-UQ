@@ -908,7 +908,7 @@ void CFDExpertWidget::exportUFile(QString fileName)
             }
         }
         else if (couplingGroup->isChecked() && key == FSI_BCselected) {
-            out <<  "        type               movingWall;" << ENDLN;
+            out <<  "        type               movingWallVelocity;" << ENDLN;
             out <<  "        value              uniform (0 0 0);" << ENDLN;
         }
         else {
