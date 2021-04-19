@@ -23,6 +23,9 @@ public:
     void setFSIboundarySelection(const QString &filename);
     void updateBoundaryList(QStringList &boundaryList);
     QString fetchBoundarySelection(void);
+    int numModes(void) { return modesCount; };
+    int numNodes(void) { return nodesCount; };
+    int numFloors(void) { return floorsCount; };
 
 signals:
     void couplingGroup_checked(bool checked);
@@ -40,6 +43,10 @@ private:
     Ui::UserModeShapes *ui;
 
     QList<QVector<double > *> mode_shapes;
+
+    int nodesCount  = 0;
+    int modesCount  = 0;
+    int floorsCount = 0;
 };
 
 #endif // USERMODESHAPES_H
