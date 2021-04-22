@@ -247,72 +247,82 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
     newFile = newLocation.absoluteFilePath("fvSolution");
     origFile = newFile + ".orig";
 
-    if (QFile(origFile).exists()) {
-        qWarning() << "overwriting " << origFile;
-        QFile::remove(origFile);
+    if (QFile(newFile).exists()) {
+        qWarning() << "using the provided " << newFile;
     }
-    QFile::rename(newFile, origFile);
+    else {
+        qWarning() << "creating a new " << newFile;
 
-    qDebug() << "move" << newFile << origFile;
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
 
-    // write the new file
-    QString solverType = solverComboBox->currentText();
+        qDebug() << "move" << newFile << origFile;
 
-    // load template file
-    QFile tpl(":/Resources/CWE/Templates/fvSolution");
-    tpl.open(QIODevice::ReadOnly);
-    TemplateContents = tpl.readAll();
-    tpl.close();
+        // write the new file
+        QString solverType = solverComboBox->currentText();
 
-    QFile fvSol(newFile);
-    fvSol.open(QFile::WriteOnly);
-    QTextStream fvOut(&fvSol);
+        // load template file
+        QFile tpl(":/Resources/CWE/Templates/fvSolution");
+        tpl.open(QIODevice::ReadOnly);
+        TemplateContents = tpl.readAll();
+        tpl.close();
 
-    QList<QByteArray> TemplateList = TemplateContents.split('\n');
-    foreach (QByteArray line, TemplateList)
-    {
-        if (line.contains("__SOLVER__")) {
+        QFile fvSol(newFile);
+        fvSol.open(QFile::WriteOnly);
+        QTextStream fvOut(&fvSol);
 
-            // substitute __SOLVER__ section
+        QList<QByteArray> TemplateList = TemplateContents.split('\n');
+        foreach (QByteArray line, TemplateList)
+        {
+            if (line.contains("__SOLVER__")) {
 
-            if (solverType.toLower() == "pimplefoam") {
+                // substitute __SOLVER__ section
 
-                fvOut << "PIMPLE" << ENDLN;
-                fvOut << "{" << ENDLN;
-                fvOut << "    //- Correct mesh flux option (default to yes)" << ENDLN;
-                fvOut << "    correctPhi          yes;" << ENDLN;
-                fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << ENDLN;
-                fvOut << "    nOuterCorrectors    1;" << ENDLN;
-                fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << ENDLN;
-                fvOut << "    nCorrectors         1;" << ENDLN;
-                fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << ENDLN;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                fvOut << "}" << ENDLN;
+                if (solverType.toLower() == "pimplefoam") {
+
+                    fvOut << "PIMPLE" << ENDLN;
+                    fvOut << "{" << ENDLN;
+                    fvOut << "    //- Correct mesh flux option (default to true)" << ENDLN;
+                    fvOut << "    correctPhi          true;" << ENDLN << ENDLN;
+
+                    fvOut << "    //- Update mesh every outer correction loop (default to true)" << ENDLN;
+                    fvOut << "    moveMeshOuterCorrectors true;" << ENDLN << ENDLN;
+                    fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+                    fvOut << "    nOuterCorrectors    1;" << ENDLN << ENDLN;
+                    fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+                    fvOut << "    nCorrectors         1;" << ENDLN << ENDLN;
+                    fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << ENDLN;
+                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                    fvOut << "}" << ENDLN;
+                }
+                else if (solverType.toLower() == "pisofoam") {
+
+                    fvOut << "PISO" << ENDLN;
+                    fvOut << "{" << ENDLN;
+                    fvOut << "    pRefCell            0;" << ENDLN;
+                    fvOut << "    pRefValue           0;" << ENDLN;
+                    fvOut << "    nCorrectors         0;" << ENDLN;
+                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                    fvOut << "}" << ENDLN;
+                }
+                else if (solverType.toLower() == "icofoam") {
+
+                    fvOut << "SIMPLE" << ENDLN;
+                    fvOut << "{" << ENDLN;
+                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+                    fvOut << "}" << ENDLN;
+                }
             }
-            else if (solverType.toLower() == "pisofoam") {
-
-                fvOut << "PISO" << ENDLN;
-                fvOut << "{" << ENDLN;
-                fvOut << "    pRefCell            0;" << ENDLN;
-                fvOut << "    pRefValue           0;" << ENDLN;
-                fvOut << "    nCorrectors         0;" << ENDLN;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                fvOut << "}" << ENDLN;
-            }
-            else if (solverType.toLower() == "icofoam") {
-
-                fvOut << "SIMPLE" << ENDLN;
-                fvOut << "{" << ENDLN;
-                fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                fvOut << "}" << ENDLN;
+            else {
+                fvOut << line << ENDLN;
             }
         }
-        else {
-            fvOut << line << ENDLN;
-        }
-    }
 
-    fvSol.close();
+        fvSol.close();
+    }
 
     //
     // ... inflowProperties file
@@ -562,7 +572,7 @@ void CFDExpertWidget::initializeUI()
     //Patches for building forces
     QLabel *patchesLabel = new QLabel("Building Patches", this);
     patchesEditBox = new QLineEdit("building");
-    patchesEditBox->setDisabled(true);
+    //patchesEditBox->setDisabled(true);
     patchesEditBox->setToolTip(tr("Patches used to extract the forces on the building model"));
     selectPatchesButton = new QPushButton("Select");
     parametersLayout->addWidget(patchesLabel, 4, 0);
@@ -648,8 +658,12 @@ void CFDExpertWidget::setupConnections()
     {
         if(result && sender == this)
         {
-            inflowWidget->on_RemoteFilesChanged(originalUFilePath, originalControlDictPath);
             this->parseBoundaryPatches(originalUFilePath);
+
+            // tell Widgets the latest about patch list ...
+            inflowWidget->on_RemoteFilesChanged(originalUFilePath, originalControlDictPath);
+            couplingGroup->updateBoundaryList(patchesList);
+
             this->processBuildingPatches();
         }
     });
