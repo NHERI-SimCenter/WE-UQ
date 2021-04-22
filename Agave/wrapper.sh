@@ -29,10 +29,15 @@ cd OpenFOAMExtensions
 unzip '*.zip'
 rm *.zip
 cd ..
+chmod 'a+rx' -R OpenFOAMExtensions
 
 #Add OpenFOAM Extensions folder to libraries loading path
 #to load OpenFOAM extensions (e.g. tubulent inflow)
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/OpenFOAMExtensions
+# and add the binSimCenter folder to PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/OpenFOAMExtensions/libSimCenter
+export PATH=$PATH:$PWD/OpenFOAMExtensions/binSimCenter
+export FOAM_USER_LIBBIN=$PWD/OpenFOAMExtensions/libSimCenter
+export FOAM_USER_APPBIN=$PWD/OpenFOAMExtensions/binSimCenter
 
 #Set the BIM file path to use it for 
 export BIM=${inputDirectory}/templatedir/dakota.json
@@ -44,7 +49,7 @@ echo "Event application detected is $EVENTAPP"
 
 
 #CWE has some special handling 
-if [[ $EVENTAPP == "CWE" ]]
+if [[ $EVENTAPP == "BasicCFD" ]]
 then
 	echo "CWE will be used to generate Event"
 
@@ -55,7 +60,10 @@ then
 	mkdir mesh
 	cp ${inputDirectory}/templatedir/building.obj mesh
 	
-	jq '{type:"upload3D" , vars:.Events[0].mesh}' $BIM > mesh/.caseParams
+	jq '.Events[0].mesh * .Events[0].sim | {type:"upload3D" , vars:.}' $BIM > mesh/.caseParams
+    
+    export nProcessors=$(jq -r .Events[0].sim.processors $BIM)
+    
 	export TASKSTAGE=mesh
 	export PARENTDIR=$PWD/mesh
 	export EXTRAFILE=/mesh/building.obj
@@ -67,8 +75,8 @@ then
 	echo "Running Simulation..."
 	#Running the simulation stage
 	mkdir sim
-	#Extracting the simulation parameters
-	jq '{type:"upload3D" , vars:.Events[0].sim}' $BIM > sim/.caseParams
+	#Extracting the simulation stage parameters
+	jq '.Events[0].mesh * .Events[0].sim | {type:"upload3D" , vars:.}' $BIM > sim/.caseParams
 	export TASKSTAGE=sim
 	export PARENTDIR=$PWD/sim
 	cd sim
@@ -104,7 +112,7 @@ then
 else
 	echo "OpenFOAM will run"
 	# Load the OpenFoam module
-	module load openfoam
+	module load intel/18.0.2  impi/18.0.2 openfoam/6.0
 	
 	#Copy turbulent inflow files, if they exist
 	[ -d "${inputDirectory}/templatedir/constant" ] && cp -rf ${inputDirectory}/templatedir/constant ${OpenFOAMCase}
@@ -120,6 +128,7 @@ else
 	# cd to the input directory and run the application with the runtime
 	#values passed in from the job request
 	meshing=$(jq -r .Events[0].meshing $BIM)
+        nProcessors=$(jq -r .Events[0].processors $BIM)
 
 	cd ${OpenFOAMCase}
 
@@ -138,7 +147,7 @@ else
 	fi
 
 	decomposePar > decomposePar.log
-	ibrun ${OpenFOAMSolver} -parallel > ${OpenFOAMSolver}.log
+	ibrun -n $nProcessors -o 0 ${OpenFOAMSolver} -parallel > ${OpenFOAMSolver}.log
 	cd ..
 
 	# Get Building Forces from OpenFOAM post-processing
@@ -174,7 +183,7 @@ DRIVERFILE='${driverFile}'
 DRIVERFILE="${DRIVERFILE##*/}"
 
 #Load dakota module
-module load dakota
+module load intel/18.0.2  impi/18.0.2 dakota/6.8.0 python3
 
 # Change to input directory
 cd "${inputDirectory}"
