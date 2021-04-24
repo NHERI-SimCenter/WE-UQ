@@ -10,6 +10,16 @@
 #include "usermodeshapes.h"
 #include <QDir>
 
+#ifdef ENDLN
+#undef ENDLN
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#define ENDLN endl
+#else
+#define ENDLN Qt::endl
+#endif
+
 class CFDExpertWidget : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -29,37 +39,10 @@ public slots:
     void selectPatchesPushed();
     void on_couplingGroup_checked(bool checked);
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private:
-    QLineEdit* caseEditBox;
-    QComboBox* solverComboBox;
-    RemoteService* remoteService;
-    InflowParameterWidget* inflowWidget;
-    QCheckBox* inflowCheckBox;
-    QComboBox* forceComboBox;
-    UserModeShapes* couplingGroup;
-    QPushButton* caseSelectButton;
-    QLabel* loginRequiredLabel;
-    QDoubleSpinBox* startTimeBox;
-    QLineEdit* patchesEditBox;
-    QPushButton* selectPatchesButton;
-    QComboBox* meshingComboBox;
-    QSpinBox* processorsBox;
-    QPushButton* refreshButton;
-
-    QFrame *container;
-    QScrollArea *scrollArea;
-
-    QString originalUFilePath;
-    QString originalControlDictPath;
-    QString originalfvSolutionPath;
-    QStringList patchesList;
-
-    QDir oldLocation = QDir(".");
-    QDir newLocation = QDir(".");
-
-    bool shown;
-
-
     void downloadRemoteCaseFiles();
     void ensureUFileExists();
     QStringList getRemoteFilesPaths();
@@ -81,29 +64,64 @@ private:
 
     bool readControlDict(QString);
     void exportControlDictFile(QString, QString);
+    void exportgeneralizedMotionStateFile(QString, QString);
 
     bool getLine(QStringList &);
     QMap<QString, QString> *readParameters(void);
 
+    // QWidget interface
+    void resizeEvent(QResizeEvent *event);
+
+    // variables used in the GUI
+
+    QLineEdit*      caseEditBox;
+    QComboBox*      solverComboBox;
+    RemoteService*  remoteService;
+    InflowParameterWidget* inflowWidget;
+    QCheckBox*      inflowCheckBox;
+    QComboBox*      forceComboBox;
+    UserModeShapes* couplingGroup;
+    QPushButton*    caseSelectButton;
+    QLabel*         loginRequiredLabel;
+    QDoubleSpinBox* startTimeBox;
+    QLineEdit*      patchesEditBox;
+    QPushButton*    selectPatchesButton;
+    QComboBox*      meshingComboBox;
+    QSpinBox*       processorsBox;
+    QPushButton*    refreshButton;
+
+    QFrame          *container;
+    QScrollArea     *scrollArea;
+
+    // variables used to indicate state of the app
+
+    bool shown;
+
+    // variables used for processing
+
+    QString         originalUFilePath;
+    QString         originalControlDictPath;
+    QString         originalgeneralizedMotionStatePath;
+    QString         originalfvSolutionPath;
+    QStringList     patchesList;
+
+    QDir oldLocation = QDir(".");
+    QDir newLocation = QDir(".");
+
     QByteArray CDictContents;
     QByteArray TemplateContents;
 
-    QFile UFile;
+    QFile       UFile;
+
     QList<QByteArray> UFileList;
     QListIterator<QByteArray> *UIter;
     QMap<QString, QMap<QString, QString> * > boundaries;
 
-    QString UFilePath;
-    QByteArray UFileContents;
-    QByteArray UFileHead = "";
-    QByteArray UFileTail = "";
+    QString     UFilePath;
+    QByteArray  UFileContents;
+    QByteArray  UFileHead = "";
+    QByteArray  UFileTail = "";
 
-
-    // QWidget interface
-    void resizeEvent(QResizeEvent *event);
-
-protected:
-    void showEvent(QShowEvent *event) override;
 };
 
 #endif // CFDEXPERTWIDGET_H
