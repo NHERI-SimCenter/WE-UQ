@@ -60,6 +60,8 @@ OpenSeesPreprocessor
 extractEDP
 *.mat
 *.swp
+.base.git/
+*.git
 
 WE-UQ.pro.user.4.9-pre1
 
