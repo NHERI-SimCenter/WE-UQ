@@ -1,0 +1,129 @@
+{
+  "items": {
+    "weuq-0001": {
+      "id": "weuq-0001",
+      "title": "9 Story Building: Sampling Analysis",
+      "base": "weuq-0001",
+      "doc": [
+        "weuq-0001/figures/9story-GI.png",
+        "weuq-0001/README.rst",
+        "weuq-0001/figures/9story-EDP-Reliability.png",
+        "weuq-0001/figures/9story-SIM1.png",
+        "weuq-0001/figures/9Story.png",
+        "weuq-0001/figures/9story-RV.png",
+        "weuq-0001/figures/9story-FEM.png",
+        "weuq-0001/../weuq-0002/src/FramePost.py",
+        "weuq-0001/figures/9story-RES1.png",
+        "weuq-0001/figures/9story-RES-Reliability.png",
+        "weuq-0001/figures/9story-UQ-Reliability.png",
+        "weuq-0001/figures/9story-RES-USER.png",
+        "weuq-0001/../weuq-0002/src/FrameRecorder.tcl",
+        "weuq-0001/figures/9story-EDP-USER.png",
+        "weuq-0001/src/Frame9Model.tcl",
+        "weuq-0001/figures/9story-SIM2.png",
+        "weuq-0001/figures/9story-RES6.png",
+        "weuq-0001/../weuq-0002/src/FramePost.tcl",
+        "weuq-0001/figures/9story-UQ.png",
+        "weuq-0001/figures/9story-EVENT.png",
+        "weuq-0001/figures/9story-RES2.png"
+      ],
+      "entry_point": "weuq-0001/./input.json",
+      "summary": "Forward propagation of a 9-story frame with stochastic wind loading and default EDPs.",
+      "logo": "figures/9Story.png",
+      "published": "2020-12-17T21:26:53.946381-08:00",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    },
+    "weuq-0002": {
+      "id": "weuq-0002",
+      "base": "weuq-0002",
+      "title": "9-Story Building: Sensitivity with user-defined EDPs",
+      "published": "2021-03-17T21:26:53.946381-08:00\"",
+      "doc": [],
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    },
+    "weuq-0003": {
+      "id": "weuq-0003",
+      "base": "weuq-0003",
+      "title": "9-Story Building: Reliability",
+      "published": "2021-03-17T21:26:53.946381-08:00\"",
+      "doc": [],
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    },
+    "weuq-0007": {
+      "id": "weuq-0007",
+      "title": "3 Story Building: Sensitivity Analysis",
+      "base": "weuq-0007",
+      "doc": [
+        "weuq-0007/postprocess.py",
+        "weuq-0007/README.rst",
+        "weuq-0007/figures/9story-RES-USER.png",
+        "weuq-0007/figures/9story-RES6.png",
+        "weuq-0007/figures/9story-RES-Reliability.png",
+        "weuq-0007/3Story.tcl",
+        "weuq-0007/figures/9story-UQ-Reliability.png",
+        "weuq-0007/figures/weuq-0007-FEM.png",
+        "weuq-0007/postprocess.tcl",
+        "weuq-0007/figures/9story-RES1.png",
+        "weuq-0007/figures/weuq-0007-UQ.png",
+        "weuq-0007/figures/9story-EDP-USER.png",
+        "weuq-0007/figures/weuq-0007-EVT.png",
+        "weuq-0007/figures/3story.png",
+        "weuq-0007/figures/weuq-0007-GI.png",
+        "weuq-0007/figures/9story-RES2.png",
+        "weuq-0007/recorder.tcl",
+        "weuq-0007/figures/9story-RV.png",
+        "weuq-0007/figures/9story-EDP-Reliability.png",
+        "weuq-0007/figures/weuq-0007-SIM.png"
+      ],
+      "entry_point": "weuq-0007/./input.json",
+      "summary": "This study uses WE-UQ's built-in interface to the TPU wind tunel datasets in the analysis of a 3 story building with quantified uncertainty.",
+      "logo": "figures/3story.png",
+      "published": "2021-03-17T21:26:53.946381-08:00",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    }
+  },
+  "categories": {
+    "Difficulty": {
+      "0": "Beginner",
+      "1": "Intermediate",
+      "2": "Advanced"
+    },
+    "Simulation": {
+      "IMasEDP": "IMasEDP",
+      "OpenSees-Simulation": "OpenSees",
+      "OpenSeesPy-Simulation": "OpenSeesPy"
+    }
+  }
+}
