@@ -140,11 +140,12 @@ int main(int argc, char *argv[])
     QString version("Version 2.1.0");
     w.setVersion(version);
 
-    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Jiawei Wan, & Dae Kun Kwon. (2019, September 30). NHERI-SimCenter/WE-UQ: Version 2.0.0 (Version v2.0.0). Zenodo. http://doi.org/10.5281/zenodo.3464692");
+    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan & Stevan Gavrilovic. (2021, May 17). NHERI-SimCenter/WE-UQ: Version 2.1.0 (Version v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.3274227");
 
     w.setCite(citeText);
 
-    QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE_UQ/");
+    // QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE_UQ/");
+    QString manualURL("https://nheri-simcenter.github.io/WE-UQ-Documentation/");
     w.setDocumentationURL(manualURL);
 
     QString messageBoardURL("https://simcenter-messageboard.designsafe-ci.org/smf/index.php?board=5.0");
