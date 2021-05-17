@@ -47,6 +47,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QStandardItem>
 #include <QStandardItemModel>
 
+#ifdef ENDLN
+#undef ENDLN
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#define ENDLN endl
+#else
+#define ENDLN Qt::endl
+#endif
+
 
 #include <QDebug>
 
@@ -577,63 +587,63 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
     if (theFile.open(QFile::WriteOnly | QFile::Truncate)) {
         QTextStream out(&theFile);
 
-        out << "/*--------------------------------*- C++ -*----------------------------------*\\" << Qt::endl;
-        out << "  =========                 |" << Qt::endl;
-        out << "  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox" << Qt::endl;
-        out << "   \\    /   O peration     | Website:  https://openfoam.org" << Qt::endl;
-        out << "    \\  /    A nd           | Version:  6" << Qt::endl;
-        out << "     \\/     M anipulation  |" << Qt::endl;
-        out << "\\*---------------------------------------------------------------------------*/" << Qt::endl;
-        out << "FoamFile" << Qt::endl;
-        out << "{" << Qt::endl;
-        out << "    version     2.0;" << Qt::endl;
-        out << "    format      ascii;" << Qt::endl;
-        out << "    class       dictionary;" << Qt::endl;
-        out << "    location    \"constant\";" << Qt::endl;
-        out << "    object      inflowProperties;" << Qt::endl;
-        out << "}" << Qt::endl;
-        out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << Qt::endl;
-        out << "" << Qt::endl;
+        out << "/*--------------------------------*- C++ -*----------------------------------*\\" << ENDLN;
+        out << "  =========                 |" << ENDLN;
+        out << "  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox" << ENDLN;
+        out << "   \\    /   O peration     | Website:  https://openfoam.org" << ENDLN;
+        out << "    \\  /    A nd           | Version:  6" << ENDLN;
+        out << "     \\/     M anipulation  |" << ENDLN;
+        out << "\\*---------------------------------------------------------------------------*/" << ENDLN;
+        out << "FoamFile" << ENDLN;
+        out << "{" << ENDLN;
+        out << "    version     2.0;" << ENDLN;
+        out << "    format      ascii;" << ENDLN;
+        out << "    class       dictionary;" << ENDLN;
+        out << "    location    \"constant\";" << ENDLN;
+        out << "    object      inflowProperties;" << ENDLN;
+        out << "}" << ENDLN;
+        out << "// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //" << ENDLN;
+        out << "" << ENDLN;
 
         /* this was moved to the inflowProperties-file starting with version 1.1.0 */
 
         if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
         {
-            out << Qt::endl;
+            out << ENDLN;
             out << "Naxis       ( "
                 << theParameters.value("intersection0") << " "
                 << theParameters.value("intersection1") << " "
-                << theParameters.value("intersection2") << " );" << Qt::endl;
+                << theParameters.value("intersection2") << " );" << ENDLN;
 
             out << "offset      ( "
                 << theParameters.value("offset0") << " "
                 << theParameters.value("offset1") << " "
-                << theParameters.value("offset2") << " );" << Qt::endl;
+                << theParameters.value("offset2") << " );" << ENDLN;
 
-            out << Qt::endl;
+            out << ENDLN;
 
             /* the above section was part of the U-file prior to version 1.1.0 */
 
-            out << "// mean velocity" << Qt::endl;
-            out << Qt::endl;
-            out << "UDict" << Qt::endl;
-            out << "{" << Qt::endl;
-            out << "    referenceValue          " << theParameters.value("vel0") << ";" << Qt::endl;
+            out << "// mean velocity" << ENDLN;
+            out << ENDLN;
+            out << "UDict" << ENDLN;
+            out << "{" << ENDLN;
+            out << "    referenceValue          " << theParameters.value("vel0") << ";" << ENDLN;
 
-            out << "    profile                 " << profile << ";" << Qt::endl;
+            out << "    profile                 " << profile << ";" << ENDLN;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("refDistU") << ";" << Qt::endl;
-                out << "    alpha                   " << theParameters.value("alphaU") << ";" << Qt::endl;
+                out << "    referenceAngl           " << theParameters.value("refAngleU") << ";" << ENDLN;
+                out << "    referenceDist           " << theParameters.value("refDistU") << ";" << ENDLN;
+                out << "    alpha                   " << theParameters.value("alphaU") << ";" << ENDLN;
             }
-            out << "}" << Qt::endl;
-            out << Qt::endl;
+            out << "}" << ENDLN;
+            out << ENDLN;
 
-            out << "// Reynolds stress tensor (symmTensorField)" << Qt::endl;
-            out << Qt::endl;
-            out << "RDict" << Qt::endl;
-            out << "{" << Qt::endl;
+            out << "// Reynolds stress tensor (symmTensorField)" << ENDLN;
+            out << ENDLN;
+            out << "RDict" << ENDLN;
+            out << "{" << ENDLN;
             out << "    referenceValue          ("
                 << theParameters.value("phi00") << "  "
                 << theParameters.value("phi10") << "  "
@@ -641,27 +651,27 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                 << theParameters.value("phi11") << "  "
                 << theParameters.value("phi21") << "  "
                 << theParameters.value("phi22")
-                << ");" << Qt::endl;
+                << ");" << ENDLN;
 
-            out << "    profile                 " << profile << ";" << Qt::endl;
+            out << "    profile                 " << profile << ";" << ENDLN;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << Qt::endl;
+                out << "    referenceAngl           " << theParameters.value("refAnglePHI") << ";" << ENDLN;
+                out << "    referenceDist           " << theParameters.value("refDistPHI") << ";" << ENDLN;
                 out << "    alpha                     ("
                     << theParameters.value("alpha0") << "  "
                     << theParameters.value("alpha1") << "  "
                     << theParameters.value("alpha2")
-                    << ");" << Qt::endl;
+                    << ");" << ENDLN;
             }
 
-            out << "}" << Qt::endl;
-            out << Qt::endl;
+            out << "}" << ENDLN;
+            out << ENDLN;
 
-            out << "// length scale tensor (tensorField)" << Qt::endl;
-            out << Qt::endl;
-            out << "LDict" << Qt::endl;
-            out << "{" << Qt::endl;
+            out << "// length scale tensor (tensorField)" << ENDLN;
+            out << ENDLN;
+            out << "LDict" << ENDLN;
+            out << "{" << ENDLN;
             out << "    referenceValue          ("
                 << theParameters.value("L11") << "  "
                 << theParameters.value("L12") << "  "
@@ -672,13 +682,13 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                 << theParameters.value("L31") << "  "
                 << theParameters.value("L32") << "  "
                 << theParameters.value("L33")
-                << ");" << Qt::endl;
+                << ");" << ENDLN;
 
-            out << "    profile                 " << profile << ";" << Qt::endl;
+            out << "    profile                 " << profile << ";" << ENDLN;
 
             if ( int(theParameters.value("profile")) > 0 ) {
-                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << Qt::endl;
-                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << Qt::endl;
+                out << "    referenceAngl           " << theParameters.value("refAngleL") << ";" << ENDLN;
+                out << "    referenceDist           " << theParameters.value("refDistL") << ";" << ENDLN;
                 out << "    alpha                     ("
                     << theParameters.value("alpha11") << "  "
                     << theParameters.value("alpha12") << "  "
@@ -689,13 +699,13 @@ void InflowParameterWidget::exportInflowParameterFile(QString fileName)
                     << theParameters.value("alpha31") << "  "
                     << theParameters.value("alpha32") << "  "
                     << theParameters.value("alpha33")
-                    << ");" << Qt::endl;
+                    << ");" << ENDLN;
             }
 
-            out << "}" << Qt::endl;
-            out << Qt::endl;
-            out << Qt::endl;
-            out << "// ************************************************************************* //" << Qt::endl;
+            out << "}" << ENDLN;
+            out << ENDLN;
+            out << ENDLN;
+            out << "// ************************************************************************* //" << ENDLN;
 
         }
 
@@ -721,8 +731,8 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
     foreach (QString key, boundaries.keys())
     {
-        out << "    " << key << Qt::endl;
-        out << "    {" << Qt::endl;
+        out << "    " << key << ENDLN;
+        out << "    {" << ENDLN;
 
         if (key == BCselected)
         {
@@ -731,71 +741,71 @@ void InflowParameterWidget::exportUFile(QString fileName)
             switch (int(theParameters.value("FilterMethod"))) {
             case 0: /* digital filter */
 
-                out << "        type               turbulentDFMInlet;" << Qt::endl;
+                out << "        type               turbulentDFMInlet;" << ENDLN;
                 switch (int(theParameters.value("filterType"))) {
                 case 0:
-                    out << "        filterType         gaussian;" << Qt::endl;
+                    out << "        filterType         gaussian;" << ENDLN;
                     break;
                 case 1:
-                    out << "        filterType         exponential;" << Qt::endl;
+                    out << "        filterType         exponential;" << ENDLN;
                     break;
                 default:
-                    out << "        filterType         exponential;" << Qt::endl;
+                    out << "        filterType         exponential;" << ENDLN;
                 }
-                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << Qt::endl;
-                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << Qt::endl;
+                out << "        filterFactor       " << theParameters.value("filterFactor") << ";" << ENDLN;
+                out << "        gridFactor         " << theParameters.value("gridFactor") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 1:  /* synthetic eddy */
 
-                out << "        type               turbulentSEMInlet;" << Qt::endl;
+                out << "        type               turbulentSEMInlet;" << ENDLN;
                 switch (int(theParameters.value("eddyType"))) {
                 case 0:
-                    out << "        eddyType        gaussian;" << Qt::endl;
+                    out << "        eddyType        gaussian;" << ENDLN;
                     break;
                 case 1:
-                    out << "        eddyType        tent;" << Qt::endl;
+                    out << "        eddyType        tent;" << ENDLN;
                     break;
                 case 2:
-                    out << "        eddyType        step;" << Qt::endl;
+                    out << "        eddyType        step;" << ENDLN;
                     break;
                 default:
-                    out << "        eddyType        gaussian;" << Qt::endl;
+                    out << "        eddyType        gaussian;" << ENDLN;
                 }
-                out << "        density            " << theParameters.value("eddyDensity") << ";" << Qt::endl;
+                out << "        density            " << theParameters.value("eddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 2:  /* divergence-free synthetic eddy */
 
-                out << "        type               turbulentDFSEMInlet;" << Qt::endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+                out << "        type               turbulentDFSEMInlet;" << ENDLN;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
             case 3:  /* digital spot */
 
-                out << "        type               turbulentATSMInlet;" << Qt::endl;
+                out << "        type               turbulentATSMInlet;" << ENDLN;
 
-                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << Qt::endl;
-                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << Qt::endl;
+                out << "        vortonType         type" << ((theParameters.value("turbulentSpotType") > 0.0) ? "R" : "L" ) << ";" << ENDLN;
+                out << "        density            " << theParameters.value("divergenceFreeEddyDensity") << ";" << ENDLN;
 
-                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << Qt::endl;
-                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << Qt::endl;
+                out << "        perodicInY         " << (( theParameters.value("periodicY") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        perodicInZ         " << (( theParameters.value("periodicZ") > 0.1 ) ? "true" : "false") << ";" << ENDLN;
+                out << "        cleanRestart       " << (( theParameters.value("cleanRestart")>0.1 ) ? "true" : "false") << ";" << ENDLN;
 
                 break;
 
@@ -805,9 +815,9 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
             if (theParameters.value("interpolateParameters") < 0.1)   // shall we enter parameters (y) or interpolate (n)?
             {
-                out << "        calculateU         true;" << Qt::endl;
-                out << "        calculateL         true;" << Qt::endl;
-                out << "        calculateR         true;" << Qt::endl;
+                out << "        calculateU         true;" << ENDLN;
+                out << "        calculateL         true;" << ENDLN;
+                out << "        calculateR         true;" << ENDLN;
             }
 
             /* this was moved to the inflowProperties-file starting with version 1.1.0 *
@@ -816,9 +826,9 @@ void InflowParameterWidget::exportUFile(QString fileName)
             out << "        intersection       ( "
                 << theParameters.value("intersection0") << " "
                 << theParameters.value("intersection1") << " "
-                << theParameters.value("intersection2") << " );" << Qt::endl;
-            out << "        yOffset            " << theParameters.value("yOffset") << ";" << Qt::endl;
-            out << "        zOffset            " << theParameters.value("zOffset") << ";" << Qt::endl;
+                << theParameters.value("intersection2") << " );" << ENDLN;
+            out << "        yOffset            " << theParameters.value("yOffset") << ";" << ENDLN;
+            out << "        zOffset            " << theParameters.value("zOffset") << ";" << ENDLN;
 
              *
              */
@@ -836,17 +846,17 @@ void InflowParameterWidget::exportUFile(QString fileName)
 
             foreach (QString s, theMap.keys() )
             {
-                out << "        " << s << "    " << theMap.value(s) << ";" << Qt::endl;
+                out << "        " << s << "    " << theMap.value(s) << ";" << ENDLN;
             }
         }
         else {
             foreach (QString s, (boundaries.value(key))->keys() )
             {
-                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << Qt::endl;
+                out << "        " << s << "    " << (boundaries.value(key))->value(s) << ";" << ENDLN;
             }
         }
-        out << "    }" << Qt::endl;
-        out << Qt::endl;
+        out << "    }" << ENDLN;
+        out << ENDLN;
     }
 
     out << UFileTail;
@@ -870,14 +880,14 @@ void InflowParameterWidget::exportControlDictFile(QString origFileName, QString 
     foreach (QByteArray line, CDictList)
     {
         if (line.contains("application")) {
-            out << "libs" << Qt::endl;
-            out << "(" << Qt::endl;
-            out << "    \"libturbulentInflow.so\"" << Qt::endl;
-            out << ");" << Qt::endl;
-            out << Qt::endl;
+            out << "libs" << ENDLN;
+            out << "(" << ENDLN;
+            out << "    \"libturbulentInflow.so\"" << ENDLN;
+            out << ");" << ENDLN;
+            out << ENDLN;
         }
 
-        out << line << Qt::endl;
+        out << line << ENDLN;
     }
 
     CDict.close();

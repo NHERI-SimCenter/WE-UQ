@@ -19,6 +19,16 @@
 #include <QDir>
 #include <SimCenterPreferences.h>
 
+#ifdef ENDLN
+#undef ENDLN
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#define ENDLN endl
+#else
+#define ENDLN Qt::endl
+#endif
+
  // customMessgaeOutput code from web:
  // https://stackoverflow.com/questions/4954140/how-to-redirect-qdebug-qwarning-qcritical-etc-output
 
@@ -40,7 +50,7 @@ void customMessageOutput(QtMsgType type, const QMessageLogContext &context, cons
         QFile outFile(logFilePath);
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
         QTextStream ts(&outFile);
-        ts << txt << Qt::endl;
+        ts << txt << ENDLN;
         outFile.close();
     } else {
         fprintf(stderr, "%s %s: %s (%s:%u, %s)\n", formattedTimeMsg.constData(), logLevelMsg.constData(), localMsg.constData(), context.file, context.line, context.function);
