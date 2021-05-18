@@ -18,6 +18,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <SimCenterPreferences.h>
+#include <QStatusBar>
 
  // customMessgaeOutput code from web:
  // https://stackoverflow.com/questions/4954140/how-to-redirect-qdebug-qwarning-qcritical-etc-output
@@ -62,23 +63,26 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
     QCoreApplication::setApplicationVersion("2.1.0");
-    GoogleAnalytics::SetTrackingId("UA-121615795-1");
+    //GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
+
+
+    Q_INIT_RESOURCE(images1);
 
     //
     // set up logging of output messages for user debugging
     //
 
     logFilePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)
-      + QDir::separator() + QCoreApplication::applicationName();
+            + QDir::separator() + QCoreApplication::applicationName();
 
     // make sure tool dir exists in Documentss folder
     QDir dirWork(logFilePath);
     if (!dirWork.exists())
-      if (!dirWork.mkpath(logFilePath)) {
-	qDebug() << QString("Could not create Working Dir: ") << logFilePath;
-      }
+        if (!dirWork.mkpath(logFilePath)) {
+            qDebug() << QString("Could not create Working Dir: ") << logFilePath;
+        }
 
     // full path to debug.log file
     logFilePath = logFilePath + QDir::separator() + QString("debug.log");
@@ -91,10 +95,11 @@ int main(int argc, char *argv[])
 
 
     // remove old log file
-    QFile debugFile(logFilePath);
-    debugFile.remove();
-  QApplication a(argc, argv);
-  Q_INIT_RESOURCE(images1);
+    // QFile debugFile(logFilePath);
+    // debugFile.remove();
+
+    QApplication a(argc, argv);
+
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 
@@ -167,6 +172,7 @@ int main(int argc, char *argv[])
     //
 
     w.show();
+    w.statusBar()->showMessage("Ready", 5000);
 
 #ifdef Q_OS_WIN
     QFile file(":/styleCommon/stylesheetWIN.qss");
