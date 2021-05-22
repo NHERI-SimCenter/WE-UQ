@@ -67,10 +67,16 @@ public:
     bool copyFiles(QString &destName);
     bool supportsLocalRun() override;
 
- signals:
+signals:
+    void statusMessage(QString message);
+    void errorMessage(QString message);
+    void fatalMessage(QString message);
 
 public slots:
    void eventSelectionChanged(const QString &arg1);
+   void sendStatusMessage(QString message);
+   void sendErrorMessage(QString message);
+   void sendFatalMessage(QString message);
 
 private:
    QComboBox   *eventSelection;

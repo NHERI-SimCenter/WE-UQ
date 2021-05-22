@@ -150,7 +150,8 @@ int main(int argc, char *argv[])
     QString version("Version 2.1.0");
     w.setVersion(version);
 
-    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan & Stevan Gavrilovic. (2021, May 17). NHERI-SimCenter/WE-UQ: Version 2.1.0 (Version v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.3274227");
+    QString citeText("Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan, Wael Elhaddad, Michael Gardner, & Dae Kun Kwon. (2021, May 21). NHERI-SimCenter/WE-UQ: Version 2.1.0 (Version v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.3274227");
+
 
     w.setCite(citeText);
 

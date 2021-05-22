@@ -33,11 +33,18 @@ public:
     bool supportsLocalRun() override;
 
 signals:
+    void statusMessage(QString message);
+    void errorMessage(QString message);
+    void fatalMessage(QString message);
 
 public slots:
     void selectButtonPushed();
     void selectPatchesPushed();
     void on_couplingGroup_checked(bool checked);
+
+    void sendStatusMessage(QString message) { emit statusMessage(message); }
+    void sendErrorMessage(QString message)  { emit errorMessage(message); }
+    void sendFatalMessage(QString message)  { emit fatalMessage(message); }
 
 protected:
     void showEvent(QShowEvent *event) override;

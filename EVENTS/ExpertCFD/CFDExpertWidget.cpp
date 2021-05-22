@@ -942,6 +942,9 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
 void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileName)
 {
+    bool has_force_function = false;
+    bool inside_functions_block = false;
+
     // file handle for the controlDict file
     QFile CDictIn(origFileName);
     CDictIn.open(QFile::ReadOnly);
@@ -952,10 +955,17 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     CDict.open(QFile::WriteOnly);
     QTextStream out(&CDict);
 
+    // parsing the given file line by line ...
+
     QList<QByteArray> CDictList = CDictContents.split('\n');
     foreach (QByteArray line, CDictList)
     {
+        //
+        // looking for "application" keyword ...
+        //
         if (line.contains("application")) {
+
+            // ... add loading the  libturbulentInflow.so
 
             if (inflowCheckBox->isChecked()) {
                 out << "libs" << ENDLN;
@@ -967,12 +977,36 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
 
             out << "application     " << solverComboBox->currentText() << ";" << ENDLN;
         }
+        //
+        // looking for the "functions" keyword
+        //
+        else if (line.contains("functions")) {
+            inside_functions_block = true;
+            out << line << ENDLN;
+        }
+        //
+        // looking for buildingsForces function
+        //
+        else if ( inside_functions_block &&
+                 ( line.contains("buildingsForces") || line.contains("forces") ) ) {
+            has_force_function = true;
+            out << line << ENDLN;
+        }
         else {
             out << line << ENDLN;
         }
     }
 
     CDict.close();
+
+    // test if FSI has been checked by the user
+    bool do_FSI_checked = couplingGroup->isChecked();
+    //emit statusMessage("WE: FSI requested");
+
+    if (do_FSI_checked && !has_force_function) {
+        // this will be a problem!!!
+        emit errorMessage("buildingsForces function undefined in controlDict");
+    }
 }
 
 
