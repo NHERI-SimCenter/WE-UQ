@@ -33,3 +33,13 @@ then
     echo "WE-UQ: make failed";
     exit $status;
 fi
+
+if [[ "$OSTYPE" == "darwin"* ]]
+then
+    cp -r ../Examples ./WE_UQ.app/contents/MacOS
+    rm -fr ./WE_UQ.app/contents/MacOS/Examples/.archive
+    rm -fr ./WE_UQ.app/contents/MacOS/Examples/.aurore    
+else
+    #
+    echo "No Examples Copied"
+fi
