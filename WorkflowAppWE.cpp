@@ -660,7 +660,7 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     emit setUpForApplicationRunDone(tmpDirectory, inputFile);
 }
 
-void
+int
 WorkflowAppWE::loadFile(const QString fileName){
 
     //
@@ -670,7 +670,7 @@ WorkflowAppWE::loadFile(const QString fileName){
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         emit errorMessage(QString("Could Not Open File: ") + fileName);
-        return;
+        return -1;
     }
 
     //
@@ -690,7 +690,11 @@ WorkflowAppWE::loadFile(const QString fileName){
     //
 
     this->clear();
-    this->inputFromJSON(jsonObj);
+    bool result = this->inputFromJSON(jsonObj);
+    if (result == false)
+      return -1;
+    else
+      return 0;
 }
 
 int

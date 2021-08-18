@@ -91,14 +91,14 @@ public:
     
 signals:
     void setUpForApplicationRunDone(QString &tmpDirectory, QString &inputFile);
-    void sendLoadFile(QString filename);
+    int sendLoadFile(QString filename);
 
 public slots:  
 
     void setUpForApplicationRun(QString &, QString &);
     void processResults(QString dakotaOut, QString dakotaTab, QString inputFile);
 
-    void loadFile(QString filename);
+    int loadFile(QString filename);
     void replyFinished(QNetworkReply*);
 
 private:
