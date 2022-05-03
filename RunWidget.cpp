@@ -95,7 +95,8 @@ void
 RunWidget::showLocalApplication(void) {
     theStackedWidget->setCurrentIndex(0);
     theCurrentApplication = localApp;
-    this->show();
+
+   // this->show();
     theCurrentApplication->displayed();
 }
 
@@ -107,6 +108,7 @@ RunWidget::showRemoteApplication(void) {
 
     theStackedWidget->setCurrentIndex(1);    
     theCurrentApplication = remoteApp;
+
     this->show();
     theCurrentApplication->displayed();
 }
@@ -115,6 +117,5 @@ void
 RunWidget::setupForRunApplicationDone(QString &tmpDirectory, QString &inputFile) {
     qDebug() << "RunWidget::setupForRunApplicationDone";
     //this->hide();
-    if(!theCurrentApplication->setupDoneRunApplication(tmpDirectory, inputFile))
-        this->hide();
+    theCurrentApplication->setupDoneRunApplication(tmpDirectory, inputFile);
 }
