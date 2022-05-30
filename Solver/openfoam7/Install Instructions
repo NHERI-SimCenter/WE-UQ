@@ -1,0 +1,6 @@
+Install instructions:
+
+1. Complie the library files inside the "src" folder (the OpenFOAM should be installed or loaded in prior) by excuting the command "wmake" at this folder;
+2. Complie a new fluid solver named as "newPimpleFoam" by excuting the command "wmake" at "../applications/pimpleFoam";
+
+After finishing the above two steps, run the provided tutorials to check if it works.
