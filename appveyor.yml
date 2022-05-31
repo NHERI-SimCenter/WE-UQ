@@ -17,7 +17,8 @@ for:
     clone_folder: ~/SimCenter
 
     init:
-       - export PATH="$HOME/Qt/5.15.2/clang_64/bin:$HOME/venv3.8.6/bin:$PATH"
+       - export PATH="$HOME/Qt/5.15.2/clang_64/bin:$HOME/venv3.9/bin:$PATH"
+       - python --version       
        - python -m pip install --upgrade pip
        - pip install conan
        - conan user
@@ -25,7 +26,7 @@ for:
 
     install:
        - uname
-       - git clone https://github.com/NHERI-SimCenter/SimCenterBackendApplications.git       
+       - git clone https://github.com/NHERI-SimCenter/SimCenterBackendApplications.git 
        - git clone https://github.com/NHERI-SimCenter/SimCenterCommon.git
        - git clone https://github.com/NHERI-SimCenter/WE-UQ.git
 
