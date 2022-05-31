@@ -7,11 +7,6 @@ class WEUQ(ConanFile):
                "libcurl/7.72.0"
     build_policy = "missing"
 
-    def configure(self):
-        if self.settings.os == "Windows":
-            self.options["libcurl"].with_winssl = True
-            self.options["libcurl"].with_openssl = False
-
     def imports(self):
         appsDestination = "./applications"
         if self.settings.os == "Windows":
