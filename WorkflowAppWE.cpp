@@ -429,9 +429,8 @@ WorkflowAppWE::processResults(QString &dirName){
   //
 
   QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
-  if (oldResults != NULL) {
-    //    disconnect(oldResults,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    //    disconnect(oldResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
+  
+  if (oldResults != NULL && oldResults != theResults) {
     delete oldResults;
   }
 
@@ -446,8 +445,33 @@ WorkflowAppWE::processResults(QString &dirName){
 void
 WorkflowAppWE::clear(void)
 {
+    theRVs->clear();
+    theUQ_Selection->clear();    
     theGI->clear();
     theSIM->clear();
+    theEventSelection->clear();
+    theAnalysisSelection->clear();
+
+  theResults=theUQ_Selection->getResults();
+  if (theResults == NULL) {
+    this->errorMessage("FATAL - UQ option selected not returning results widget");
+    return;
+  }
+
+
+  //
+  // swap current results with existing one in selection & disconnect signals
+  //
+
+  QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
+  
+  if (oldResults != NULL && oldResults != theResults) {
+    delete oldResults;
+  }
+
+  //
+  // process results
+  //     
 }
 
 bool

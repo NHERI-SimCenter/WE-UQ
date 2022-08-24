@@ -46,15 +46,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 class QComboBox;
 class QStackedWidget;
 class UserDefinedApplication;
-class RockOutcrop;
-
-class RandomVariablesContainer;
 
 class WindEDP_Selection : public  SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEDP_Selection(RandomVariablesContainer *, QWidget *parent = 0);
+    explicit WindEDP_Selection(QWidget *parent = 0);
     ~WindEDP_Selection();
 
     bool outputToJSON(QJsonObject &rvObject);
@@ -74,11 +71,8 @@ private:
    QComboBox   *edpSelection;
    QStackedWidget *theStackedWidget;
    SimCenterAppWidget *theCurrentEDP;
-
    SimCenterAppWidget *theStandardWindEDPs;
    SimCenterAppWidget *theUserDefinedEDPs;
-
-   RandomVariablesContainer *theRandomVariablesContainer;
 };
 
 #endif // WIND_SELECTION_H
