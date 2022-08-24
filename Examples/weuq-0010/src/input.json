@@ -1,0 +1,735 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "CFDEvent",
+                "ApplicationData": {
+                    "OpenFOAMCase": "agave://designsafe.storage.community/SimCenter/Software/WE_UQ/Examples/TallBuilding",
+                    "OpenFOAMSolver": "pisoFoam"
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "FilterMethod": 0,
+            "InflowConditions": false,
+            "L11": 1,
+            "L12": 1,
+            "L13": 1,
+            "L21": 1,
+            "L22": 1,
+            "L23": 1,
+            "L31": 1,
+            "L32": 1,
+            "L33": 1,
+            "OpenFOAMCase": "agave://designsafe.storage.community/SimCenter/Software/WE_UQ/Examples/TallBuilding",
+            "OpenFOAMSolver": "pisoFoam",
+            "alpha0": 0,
+            "alpha1": 0,
+            "alpha11": 0,
+            "alpha12": 0,
+            "alpha13": 0,
+            "alpha2": 0,
+            "alpha21": 0,
+            "alpha22": 0,
+            "alpha23": 0,
+            "alpha31": 0,
+            "alpha32": 0,
+            "alpha33": 0,
+            "alphaU": 0,
+            "cleanRestart": 0,
+            "divergenceFreeEddyDensity": 1,
+            "eddyDensity": 1,
+            "eddyType": 0,
+            "filterFactor": 2,
+            "filterType": 0,
+            "gridFactor": 1,
+            "interpolateParameters": 0,
+            "intersection0": 0,
+            "intersection1": 0,
+            "intersection2": 0,
+            "meshing": "blockMesh",
+            "offset0": 0,
+            "offset1": 0,
+            "offset2": 0,
+            "patches": "building",
+            "periodicY": 0,
+            "periodicZ": 0,
+            "phi00": 1,
+            "phi10": 0,
+            "phi11": 1,
+            "phi20": 0,
+            "phi21": 0,
+            "phi22": 1,
+            "processors": 64,
+            "profile": 0,
+            "refAngleL": 0,
+            "refAnglePHI": 0,
+            "refAngleU": 0,
+            "refDistL": 1,
+            "refDistPHI": 1,
+            "refDistU": 1,
+            "start": 0.01,
+            "turbulentSpotDensity": 1,
+            "turbulentSpotType": -1,
+            "type": "CFD - Expert",
+            "vel0": 1
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 40,
+        "height": 200,
+        "location": {
+            "latitude": 37.8716,
+            "longitude": -127.272
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 50,
+        "units": {
+            "force": "N",
+            "length": "m",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 40
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "dampingRatio": 0.02,
+        "dampingRatioModal": 0.02,
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 0,
+        "solver": "Umfpack"
+    },
+    "StructuralInformation": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 10000000000,
+        "Fyy": 10000000000,
+        "Krz": 1000000000000000,
+        "Kx": 2000000000,
+        "Ky": 2000000000,
+        "ModelData": [
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 2000000000,
+                "ky": 100,
+                "weight": "RV.w"
+            }
+        ],
+        "height": 144,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 50,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": "RV.w"
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 512,
+            "seed": 797
+        },
+        "uqEngine": "Dakota",
+        "uqType": "Forward Propagation"
+    },
+    "localAppDir": "C:/SandBox/NHERI/2.1.0/WE-UQ",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "mean": 1600000,
+            "name": "w",
+            "refCount": 1,
+            "stdDev": 50000,
+            "value": "RV.w",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "remoteAppWorkingDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "runType": "runningRemote",
+    "workingDir": "C:/Users/el7ad/Documents/WE-UQ/RemoteWorkDir"
+}
