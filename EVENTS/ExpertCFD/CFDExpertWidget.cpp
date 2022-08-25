@@ -1,3 +1,4 @@
+
 #include "CFDExpertWidget.h"
 #include <QFormLayout>
 #include <QComboBox>
@@ -56,7 +57,7 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
     eventObject["OpenFOAMCase"] = caseEditBox->text();
     eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
     eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
-    eventObject["type"] = "CFD - Expert";
+    eventObject["type"] = "ExpertCFD";
     eventObject["forceCalculationMethod"] = forceComboBox->currentText();
     eventObject["start"] = startTimeBox->value();
     eventObject["patches"] = patchesEditBox->text();
@@ -70,17 +71,24 @@ bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
 
 bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 {
+  if(remoteService->isLoggedIn()) {
+
+    loginRequiredLabel->hide();
+	  
     if(eventObject.contains("OpenFOAMCase"))
-        caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
+      caseEditBox->setText(eventObject["OpenFOAMCase"].toString());
 
+    this->setEnabled(true);
+    this->downloadRemoteCaseFiles();
+    
     if(eventObject.contains("OpenFOAMSolver"))
-        solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
-
+      solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
+    
     if(eventObject.contains("InflowConditions"))
-        inflowCheckBox->setChecked(eventObject["InflowConditions"].toBool());
+      inflowCheckBox->setChecked(eventObject["InflowConditions"].toBool());
 
     if(eventObject.contains("start"))
-        this->startTimeBox->setValue(eventObject["start"].toDouble());
+      this->startTimeBox->setValue(eventObject["start"].toDouble());
 
     if(eventObject.contains("forceCalculationMethod"))
         this->forceComboBox->setCurrentText(eventObject["forceCalculationMethod"].toString());
@@ -106,7 +114,14 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
     inflowWidget->inputFromJSON(eventObject);
 
-    return true;
+  } else {
+    loginRequiredLabel->show();
+    
+    errorMessage("For CFD Expert you need to be logged into DsaignSafe before input (Login button top right)");    
+    return false;
+  }
+
+  return true;
 }
 
 bool CFDExpertWidget::copyFiles(QString &path)
@@ -194,7 +209,8 @@ bool CFDExpertWidget::buildFiles(QString &dirName)
             source.copy(newFile);
         }
         else {
-            qWarning() << "Source file for dynamicMeshDict: \"" << sourceFile << "\" is missing";
+	  QString errorMsg = "Source file for dynamicMeshDict: \"" + sourceFile + "\" is missing";
+	  errorMessage(errorMsg);
         }
     }
 
@@ -425,6 +441,8 @@ void CFDExpertWidget::selectButtonPushed()
             this->downloadRemoteCaseFiles();
         }
         selector.close();
+    } else {
+        errorMessage("You need to Login Before you can Browse (Login button top right)");
     }
 }
 
@@ -675,9 +693,9 @@ void CFDExpertWidget::setupConnections()
     {
         if(loggedIn && shown)
         {
-            loginRequiredLabel->hide();
-            this->setEnabled(true);
-            this->downloadRemoteCaseFiles();
+	  loginRequiredLabel->hide();
+	  this->setEnabled(true);
+	  this->downloadRemoteCaseFiles();
         }
     });
 

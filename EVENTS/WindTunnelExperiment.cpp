@@ -195,7 +195,7 @@ WindTunnelExperiment::inputAppDataFromJSON(QJsonObject &jsonObject) {
  WindTunnelExperiment::copyFiles(QString &destDir) {
 
      if (this->copyFile(filename->text(), destDir) ==  false) {
-         emit sendErrorMessage(QString("ERROR: copyFiles: failed to copy") + filename->text());
+         errorMessage(QString("ERROR: copyFiles: failed to copy") + filename->text());
                  return false;
      }
      return true;

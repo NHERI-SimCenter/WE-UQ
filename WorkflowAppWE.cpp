@@ -61,17 +61,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "GeneralInformationWidget.h"
 #include <SIM_Selection.h>
 #include <RandomVariablesContainer.h>
-#include <InputWidgetSampling.h>
-#include <FEM_Selection.h>
+#include <FEA_Selection.h>
 #include <QDir>
 #include <QFile>
 #include <UQ_EngineSelection.h>
+#include <UQ_Results.h>
 #include <LocalApplication.h>
 #include <RemoteApplication.h>
 #include <RemoteJobManager.h>
 #include <RunWidget.h>
 #include <InputWidgetBIM.h>
-#include <InputWidgetUQ.h>
 
 #include <WindEDP_Selection.h>
 
@@ -85,6 +84,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QHostInfo>
 #include <DakotaResultsSampling.h>
 #include <Utils/PythonProgressDialog.h>
+#include <Utils/RelativePathResolver.h>
+
 #include <GoogleAnalytics.h>
 
 // static pointer for global procedure set in constructor
@@ -104,20 +105,18 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     //
     // create the various widgets
     //
-
-    theRVs = new RandomVariablesContainer();
+    theRVs = RandomVariablesContainer::getInstance();
     theGI = GeneralInformationWidget::getInstance();
-    theSIM = new SIM_Selection(theRVs, true);
+    theSIM = new SIM_Selection(true, false);
     theEventSelection = new WindEventSelection(theRVs, theService);
-    theAnalysisSelection = new FEM_Selection(theRVs);
-    theUQ_Selection = new UQ_EngineSelection(theRVs);
-    theEDP_Selection = new WindEDP_Selection(theRVs);
+    theAnalysisSelection = new FEA_Selection(false);    
 
-    //theResults = new DakotaResultsSampling(theRVs);
+    theEDP_Selection = new WindEDP_Selection(theRVs);
+    theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivity);
     theResults = theUQ_Selection->getResults();
 
-    localApp = new LocalApplication("femUQ.py");
-    remoteApp = new RemoteApplication("femUQ.py", theService);
+    localApp = new LocalApplication("sWHALE.py");
+    remoteApp = new RemoteApplication("sWHALE.py", theService);
 
     theJobManager = new RemoteJobManager(theService);
 
@@ -127,36 +126,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     //
     // connect signals and slots
     //
-
-    // error messages and signals
-
-    connect(theResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(theResults, SIGNAL(sendErrorMessage(QString)), this, SLOT(errorMessage(QString)));
-
-    connect(theGI,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(theGI,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(theGI,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
-    connect(theSIM,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(theSIM,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(theSIM,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
-    connect(theEventSelection,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(theEventSelection,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(theEventSelection,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
-    connect(theRunWidget,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(theRunWidget,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(theRunWidget,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
-    connect(localApp,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(localApp,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(localApp,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
-    connect(remoteApp,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    connect(remoteApp,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    connect(remoteApp,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));
-
+    
     connect(localApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
     {
         currentApp = localApp;
@@ -164,25 +134,26 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     });
 
     connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
-    connect(localApp,SIGNAL(processResults(QString, QString, QString)), this, SLOT(processResults(QString, QString, QString)));
+    connect(localApp,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
 
     connect(remoteApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
     {
         currentApp = remoteApp;
         setUpForApplicationRun(workingDir, subDir);
     });
-    connect(theJobManager,SIGNAL(processResults(QString , QString, QString)), this, SLOT(processResults(QString, QString, QString)));
-    connect(theJobManager,SIGNAL(loadFile(QString)), this, SLOT(loadFile(QString)));
+    connect(theJobManager,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
+    connect(theJobManager,SIGNAL(loadFile(QString&)), this, SLOT(loadFile(QString&)));
 
     connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
-       
-    //connect(theRunLocalWidget, SIGNAL(runButtonPressed(QString, QString)), this, SLOT(runLocal(QString, QString)));
 
-
+    connect(localApp,SIGNAL(runComplete()), this, SLOT(runComplete()));
+    connect(remoteApp,SIGNAL(successfullJobStart()), this, SLOT(runComplete()));
+    connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
+    connect(theJobManager, SIGNAL(closeDialog()), this, SLOT(runComplete()));    
+    
     //
     // create layout to hold component selection
     //
-
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
     horizontalLayout->setMargin(0);
@@ -223,7 +194,6 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
     theDialog->appendInfoMessage("Welcome to WE-UQ");
-    theDialog->hideAfterElapsedTime(1);
 }
 
 WorkflowAppWE::~WorkflowAppWE()
@@ -267,6 +237,102 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     //
     // get each of the main widgets to output themselves
     //
+    bool result = true;
+    QJsonObject apps;
+
+    QJsonObject jsonObjGenInfo;
+    result = theGI->outputToJSON(jsonObjGenInfo);
+    if (result == false)
+        return result;
+
+    jsonObjectTop["GeneralInformation"] = jsonObjGenInfo;
+
+
+    result = theRVs->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    QJsonObject jsonObjectEDP;
+    result = theEDP_Selection->outputToJSON(jsonObjectEDP);
+    if (result == false)
+        return result;
+
+    jsonObjectTop["EDP"] = jsonObjectEDP;
+
+    QJsonObject appsEDP;
+    result = theEDP_Selection->outputAppDataToJSON(appsEDP);
+    if (result == false)
+        return result;
+
+    apps["EDP"]=appsEDP;
+
+    result = theUQ_Selection->outputAppDataToJSON(apps);
+    if (result == false)
+        return result;
+
+    
+    result = theUQ_Selection->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    result = theSIM->outputAppDataToJSON(apps);
+    if (result == false)
+        return result;
+
+    result = theSIM->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+    
+    result = theAnalysisSelection->outputAppDataToJSON(apps);
+    if (result == false)
+        return result;
+
+    result = theAnalysisSelection->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+   // NOTE: Events treated differently, due to array nature of objects
+    result = theEventSelection->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    result = theEventSelection->outputAppDataToJSON(apps);
+    if (result == false)
+        return result;
+
+    result = theRunWidget->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    jsonObjectTop["Applications"]=apps;
+
+    QJsonObject defaultValues;
+    defaultValues["workflowInput"]=QString("scInput.json");    
+    defaultValues["filenameBIM"]=QString("BIM.json");
+    defaultValues["filenameEVENT"] = QString("EVENT.json");
+    defaultValues["filenameSAM"]= QString("SAM.json");
+    defaultValues["filenameEDP"]= QString("EDP.json");
+    defaultValues["filenameSIM"]= QString("SIM.json");
+    defaultValues["driverFile"]= QString("driver");
+    defaultValues["filenameDL"]= QString("BIM.json");
+    defaultValues["workflowOutput"]= QString("EDP.json");
+    QJsonArray rvFiles, edpFiles;
+    rvFiles.append(QString("BIM.json"));
+    rvFiles.append(QString("SAM.json"));
+    rvFiles.append(QString("EVENT.json"));
+    rvFiles.append(QString("SIM.json"));
+    edpFiles.append(QString("EDP.json"));
+    defaultValues["rvFiles"]= rvFiles;
+    defaultValues["edpFiles"]=edpFiles;
+    jsonObjectTop["DefaultValues"]=defaultValues;
+    
+    //theRunLocalWidget->outputToJSON(jsonObjectTop);
+
+    return result;
+    /*
+    //
+    // get each of the main widgets to output themselves
+    //
 
     bool result = true;
     QJsonObject apps;
@@ -288,6 +354,8 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     if (result != true)
         return result;
 
+    
+
     apps["Modeling"]=appsSIM;
 
     result = theRVs->outputToJSON(jsonObjectTop);
@@ -305,13 +373,6 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     if (result != true)
         return result;
     apps["EDP"]=appsEDP;
-
-    /*
-    QJsonObject jsonObjectUQ;
-    theUQ_Selection->outputToJSON(jsonObjectUQ);
-    jsonObjectTop["UQ_Method"] = jsonObjectUQ;
-    */
-
 
     result = theUQ_Selection->outputAppDataToJSON(apps);
     if (result != true)
@@ -345,14 +406,13 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     //theRunLocalWidget->outputToJSON(jsonObjectTop);
 
     return true;
+    */
 }
 
 
 void
-WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inputFile){
+WorkflowAppWE::processResults(QString &dirName){
 
-
-  Q_UNUSED(inputFile);
   //
   // get results widget fr currently selected UQ option
   //
@@ -363,44 +423,144 @@ WorkflowAppWE::processResults(QString dakotaOut, QString dakotaTab, QString inpu
     return;
   }
 
-  //
-  // connect signals for results widget
-  //
-
-  connect(theResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-  connect(theResults,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
 
   //
   // swap current results with existing one in selection & disconnect signals
   //
 
   QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
-  if (oldResults != NULL) {
-    disconnect(oldResults,SIGNAL(sendErrorMessage(QString)), this,SLOT(errorMessage(QString)));
-    disconnect(oldResults,SIGNAL(sendStatusMessage(QString)), this,SLOT(statusMessage(QString)));
-    //    disconnect(oldResults,SIGNAL(sendFatalMessage(QString)), this,SLOT(fatalMessage(QString)));  
+  
+  if (oldResults != NULL && oldResults != theResults) {
     delete oldResults;
   }
 
   //
-  // proess results
+  // process results
   // 
 
-  theResults->processResults(dakotaOut, dakotaTab);
-  theRunWidget->hide();
-  theComponentSelection->displayComponent("RES");
+  theResults->processResults(dirName);
+  theComponentSelection->displayComponent("RES");  
 }
 
 void
 WorkflowAppWE::clear(void)
 {
+    theRVs->clear();
+    theUQ_Selection->clear();    
     theGI->clear();
     theSIM->clear();
+    theEventSelection->clear();
+    theAnalysisSelection->clear();
+
+  theResults=theUQ_Selection->getResults();
+  if (theResults == NULL) {
+    this->errorMessage("FATAL - UQ option selected not returning results widget");
+    return;
+  }
+
+
+  //
+  // swap current results with existing one in selection & disconnect signals
+  //
+
+  QWidget *oldResults = theComponentSelection->swapComponent(QString("RES"), theResults);
+  
+  if (oldResults != NULL && oldResults != theResults) {
+    delete oldResults;
+  }
+
+  //
+  // process results
+  //     
 }
 
 bool
 WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
 {
+    //
+    // get each of the main widgets to input themselves
+    //
+
+    if (jsonObject.contains("GeneralInformation")) {
+        QJsonObject jsonObjGeneralInformation = jsonObject["GeneralInformation"].toObject();
+        if (theGI->inputFromJSON(jsonObjGeneralInformation) == false) {
+            this->errorMessage("EE_UQ: failed to read GeneralInformation");
+        }
+    } else {
+        this->errorMessage("EE_UQ: failed to find GeneralInformation");
+        return false;
+    }
+
+    if (jsonObject.contains("Applications")) {
+
+        QJsonObject theApplicationObject = jsonObject["Applications"].toObject();
+
+        // note: Events is different because the object is an Array
+        if (theApplicationObject.contains("Events")) {
+            //  QJsonObject theObject = theApplicationObject["Events"].toObject(); it is null object, actually an array
+            if (theEventSelection->inputAppDataFromJSON(theApplicationObject) == false) {
+                this->errorMessage("EE_UQ: failed to read Event Application");
+            }
+
+        } else {
+            this->errorMessage("EE_UQ: failed to find Event Application");
+            return false;
+        }
+
+        if (theUQ_Selection->inputAppDataFromJSON(theApplicationObject) == false)
+            this->errorMessage("EE_UQ: failed to read UQ application");
+
+        if (theSIM->inputAppDataFromJSON(theApplicationObject) == false)
+            this->errorMessage("EE_UQ: failed to read SIM application");
+	
+        if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false)
+            this->errorMessage("EE_UQ: failed to read FEM application");
+
+        if (theApplicationObject.contains("EDP")) {
+            QJsonObject theObject = theApplicationObject["EDP"].toObject();
+            if (theEDP_Selection->inputAppDataFromJSON(theObject) == false) {
+                this->errorMessage("EE_UQ: failed to read EDP application");
+            }
+        } else {
+            this->errorMessage("EE_UQ: failed to find EDP application");
+            return false;
+        }
+
+    } else
+        return false;
+
+    /*
+    ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
+    */
+
+    theEventSelection->inputFromJSON(jsonObject);
+    theRVs->inputFromJSON(jsonObject);
+    theRunWidget->inputFromJSON(jsonObject);
+        
+    if (jsonObject.contains("EDP")) {
+        QJsonObject edpObj = jsonObject["EDP"].toObject();
+        if (theEDP_Selection->inputFromJSON(edpObj) == false)
+            this->errorMessage("EE_UQ: failed to read EDP data");
+    } else {
+        this->errorMessage("EE_UQ: failed to find EDP data");
+        return false;
+    }
+
+
+    if (theUQ_Selection->inputFromJSON(jsonObject) == false)
+       this->errorMessage("EE_UQ: failed to read UQ Method data");
+
+    if (theAnalysisSelection->inputFromJSON(jsonObject) == false)
+
+    if (theSIM->inputFromJSON(jsonObject) == false)
+        this->errorMessage("EE_UQ: failed to read FEM Method data");
+
+    if (theSIM->inputFromJSON(jsonObject) == false)
+        this->errorMessage("EE_UQ: failed to read SIM Method data");
+
+    this->statusMessage("Done Loading File");
+    return true;
+    /*
     //
     // get each of the main widgets to input themselves
     //
@@ -460,10 +620,6 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     } else
         return false;
 
-    /*
-    ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
-    */
-
     theEventSelection->inputFromJSON(jsonObject);
     theRVs->inputFromJSON(jsonObject);
     theRunWidget->inputFromJSON(jsonObject);
@@ -493,7 +649,8 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
 
     if (theAnalysisSelection->inputFromJSON(jsonObject) == false)
         emit errorMessage("WE: failed to read FEM Method data");
-
+    */
+    
     return true;
 }
 
@@ -557,17 +714,7 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     // and copy all files needed to this directory by invoking copyFiles() on app widgets
     //
 
-    // designsafe will need a unique name
-    /* *********************************************
-    will let ParallelApplication rename dir
-    QUuid uniqueName = QUuid::createUuid();
-    QString strUnique = uniqueName.toString();
-    strUnique = strUnique.mid(1,36);
-    QString tmpDirName = QString("tmp.SimCenter") + strUnique;
-    *********************************************** */
-
     QString tmpDirName = QString("tmp.SimCenter");
-    qDebug() << "TMP_DIR: " << tmpDirName;
     QDir workDir(workingDir);
 
     QString tmpDirectory = workDir.absoluteFilePath(tmpDirName);
@@ -593,7 +740,7 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     // NOTE: we append object workingDir to this which points to template dir
     //
 
-    QString inputFile = templateDirectory + QDir::separator() + tr("dakota.json");
+    QString inputFile = templateDirectory + QDir::separator() + tr("scInput.json");
 
     QFile file(inputFile);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -660,8 +807,8 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     emit setUpForApplicationRunDone(tmpDirectory, inputFile);
 }
 
-void
-WorkflowAppWE::loadFile(const QString fileName){
+int
+WorkflowAppWE::loadFile(QString &fileName){
 
     //
     // open file
@@ -670,7 +817,7 @@ WorkflowAppWE::loadFile(const QString fileName){
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         emit errorMessage(QString("Could Not Open File: ") + fileName);
-        return;
+        return -1;
     }
 
     //
@@ -685,12 +832,20 @@ WorkflowAppWE::loadFile(const QString fileName){
     // close file
     file.close();
 
+    //Resolve absolute paths from relative ones
+    QFileInfo fileInfo(fileName);
+    SCUtils::ResolveAbsolutePaths(jsonObj, fileInfo.dir());    
+    
     //
     // clear current and input from new JSON
     //
 
     this->clear();
-    this->inputFromJSON(jsonObj);
+    bool result = this->inputFromJSON(jsonObj);
+    if (result == false)
+      return -1;
+    else
+      return 0;
 }
 
 int

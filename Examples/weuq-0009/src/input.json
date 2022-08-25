@@ -1,0 +1,708 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "CFDEvent",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "mesh": {
+                "geoChoose": "uploaded",
+                "geoFile": "building.obj",
+                "highYPad": 5,
+                "highYPlane": "SYM_PLANE",
+                "highZPad": 2,
+                "highZPlane": "SYM_PLANE",
+                "inPad": 5,
+                "innerDomains": 0,
+                "lowYPad": 5,
+                "lowYPlane": "SYM_PLANE",
+                "lowZPad": 0.0,
+                "lowZPlane": "WALL",
+                "meshDensity": 4,
+                "meshDensityFar": 20,
+                "outPad": 10
+            },
+            "sim": {
+                "deltaT": 0.005,
+                "endTime": 120,
+                "nu": 1.48e-05,
+                "pisoCorrectors": 2,
+                "pisoNonOrthCorrect": 0,
+                "processors": 8,
+                "turbModel": "kEpsilon",
+                "turbintensity": 0.05,
+                "velocity": 10.0
+            },
+            "start": 30,
+            "type": "BasicCFD"
+        }
+    ],
+    "GeneralInformation": {
+        "depth": 40,
+        "height": 200,
+        "location": {
+            "latitude": 37.8716,
+            "longitude": -127.272
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 50,
+        "units": {
+            "force": "N",
+            "length": "m",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 40
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "dampingRatio": 0.02,
+        "dampingRatioModal": 0.02,
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 0,
+        "solver": "Umfpack"
+    },
+    "StructuralInformation": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 10000000000,
+        "Fyy": 10000000000,
+        "Krz": 1000000000000000,
+        "Kx": "RV.k",
+        "Ky": "RV.k",
+        "ModelData": [
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 10,
+                "Fyy": 10,
+                "Ktheta": 1000000000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            }
+        ],
+        "height": 144,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 50,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": "RV.w"
+    },
+    "UQ_Method": {
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 256,
+            "seed": 797
+        },
+        "uqEngine": "Dakota",
+        "uqType": "Forward Propagation"
+    },
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "mean": 1600000,
+            "name": "w",
+            "refCount": 1,
+            "stdDev": 50000,
+            "value": "RV.w",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "mean": 2000000000,
+            "name": "k",
+            "refCount": 1,
+            "stdDev": 100000000,
+            "value": "RV.k",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "remoteAppWorkingDir": "/home1/00477/tg457427/SimCenterBackendApplications/May-2020",
+    "runType": "runningRemote",
+    "workingDir": "C:/Users/el7ad/Documents/WE-UQ/RemoteWorkDir"
+}

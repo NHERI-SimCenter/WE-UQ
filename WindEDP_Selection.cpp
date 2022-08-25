@@ -61,8 +61,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <StandardWindEDP.h>
 #include <UserDefinedEDP.h>
 
-WindEDP_Selection::WindEDP_Selection(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theCurrentEDP(0), theRandomVariablesContainer(theRandomVariableIW)
+WindEDP_Selection::WindEDP_Selection(QWidget *parent)
+    : SimCenterAppWidget(parent), theCurrentEDP(0)
 {
     QVBoxLayout *layout = new QVBoxLayout();
 
@@ -95,10 +95,10 @@ WindEDP_Selection::WindEDP_Selection(RandomVariablesContainer *theRandomVariable
     // create the individual widgets add to stacked widget
     //
 
-    theStandardWindEDPs = new StandardWindEDP(theRandomVariablesContainer);
+    theStandardWindEDPs = new StandardWindEDP();
     theStackedWidget->addWidget(theStandardWindEDPs);
 
-    theUserDefinedEDPs = new UserDefinedEDP(theRandomVariablesContainer);
+    theUserDefinedEDPs = new UserDefinedEDP();
     theStackedWidget->addWidget(theUserDefinedEDPs);
 
     layout->addWidget(theStackedWidget);
@@ -175,7 +175,7 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
         QJsonValue theName = jsonObject["Application"];
         type = theName.toString();
     } else {
-        emit sendErrorMessage("WindEDP_Selection - no Application key found");
+        errorMessage("WindEDP_Selection - no Application key found");
         return false;
     }
 
@@ -189,7 +189,7 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
                (type == QString("User Defined EDPs"))) {
         index = 1;
     } else {
-        emit sendErrorMessage("WindEDP_Selection - no valid type found");
+        errorMessage("WindEDP_Selection - no valid type found");
         return false;
     }
 

@@ -36,13 +36,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna
 
+#include <QJsonObject>
 #include "StandardWindEDP.h"
-#include <RandomVariablesContainer.h>
 
-//#include <InputWidgetParameters.h>
-
-StandardWindEDP::StandardWindEDP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+StandardWindEDP::StandardWindEDP(QWidget *parent)
+    : SimCenterAppWidget(parent)
 {
 
 }

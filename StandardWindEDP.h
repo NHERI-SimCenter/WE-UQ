@@ -47,13 +47,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QComboBox>
 
 class InputWidgetParameters;
-class RandomVariablesContainer;
 
 class StandardWindEDP : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit StandardWindEDP(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit StandardWindEDP(QWidget *parent = 0);
     ~StandardWindEDP();
 
     bool outputToJSON(QJsonObject &rvObject);
@@ -68,9 +67,8 @@ signals:
 
 public slots:
 
-
 private:
-    RandomVariablesContainer *theRandomVariablesContainer;
+
 };
 
 #endif // STANDARD_WIND_EDP_H

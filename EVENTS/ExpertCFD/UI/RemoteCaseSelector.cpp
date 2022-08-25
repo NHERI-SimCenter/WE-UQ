@@ -9,6 +9,8 @@ const QString PARENT_DIR_LABEL = QObject::tr("(Up to parent directory)");
 RemoteCaseSelector::RemoteCaseSelector(RemoteService* remoteService, QWidget *parent) :
     QDialog(parent), agaveService(remoteService)
 {
+  qDebug() << "RemoteCaseSelector::constructor()";
+  
     setWindowTitle("Select remote OpenFOAM case");
     QVBoxLayout* layout = new QVBoxLayout(this);
 

@@ -307,32 +307,33 @@ MeshParametersCWE::outputToJSON(QJsonObject &jsonObject)
     //Mesh Parameters set by user
 
     //Domain Length
-    jsonObject["inPad"] = domainLengthInlet->text();//Domain Length (Inlet)
-    jsonObject["outPad"] = domainLengthOutlet->text();//Domain Length (Outlet)
-    jsonObject["lowYPad"] = domainLengthYneg->text();//Domain Length (-Y)
-    jsonObject["highYPad"] = domainLengthYpos->text();//Domain Length (+Y)
-    jsonObject["lowZPad"] = domainLengthZneg->text();//Domain Length (-Z)
-    jsonObject["highZPad"] = domainLengthZpos->text();//Domain Length (+Z)
+    bool ok;
+    jsonObject["inPad"] = domainLengthInlet->text().QString::toDouble(&ok);;//Domain Length (Inlet)
+    jsonObject["outPad"] = domainLengthOutlet->text().QString::toDouble(&ok);;//Domain Length (Outlet)
+    jsonObject["lowYPad"] = domainLengthYneg->text().QString::toDouble(&ok);;//Domain Length (-Y)
+    jsonObject["highYPad"] = domainLengthYpos->text().QString::toDouble(&ok);;//Domain Length (+Y)
+    jsonObject["lowZPad"] = domainLengthZneg->text().QString::toDouble(&ok);;//Domain Length (-Z)
+    jsonObject["highZPad"] = domainLengthZpos->text().QString::toDouble(&ok);;//Domain Length (+Z)
 
     auto subdomains = subdomainsModel->getSubdomains();
 
     for (int i = 0; i < subdomains.count(); i++)
     {
-        jsonObject["inPadDom" + QString::number(i+1)] = QString::number(subdomains[i].inlet);//Subdomain Length (Inlet)
-        jsonObject["outPadDom" + QString::number(i+1)] = QString::number(subdomains[i].outlet);//Subdomain Length (Outlet)
-        jsonObject["lowYDom" + QString::number(i+1)] = QString::number(subdomains[i].outward);//Subdomain Length (-Y)
-        jsonObject["highYDom" + QString::number(i+1)] = QString::number(subdomains[i].inward);//Subdomain Length (+Y)
-        jsonObject["lowZDom" + QString::number(i+1)] = QString::number(subdomains[i].bottom);//Subdomain Length (-Z)
-        jsonObject["highZDom" + QString::number(i+1)] = QString::number(subdomains[i].top);//Subdomain Length (+Z)
-        jsonObject["meshDensityDom" + QString::number(i+1)] = QString::number(subdomains[i].meshSize);//Subdomain outer mesh size
+        jsonObject["inPadDom" + QString::number(i+1)] = QString::number(subdomains[i].inlet).QString::toDouble(&ok);;//Subdomain Length (Inlet)
+        jsonObject["outPadDom" + QString::number(i+1)] = QString::number(subdomains[i].outlet).QString::toDouble(&ok);;//Subdomain Length (Outlet)
+        jsonObject["lowYDom" + QString::number(i+1)] = QString::number(subdomains[i].outward).QString::toDouble(&ok);;//Subdomain Length (-Y)
+        jsonObject["highYDom" + QString::number(i+1)] = QString::number(subdomains[i].inward).QString::toDouble(&ok);;//Subdomain Length (+Y)
+        jsonObject["lowZDom" + QString::number(i+1)] = QString::number(subdomains[i].bottom).QString::toDouble(&ok);;//Subdomain Length (-Z)
+        jsonObject["highZDom" + QString::number(i+1)] = QString::number(subdomains[i].top).QString::toDouble(&ok);;//Subdomain Length (+Z)
+        jsonObject["meshDensityDom" + QString::number(i+1)] = QString::number(subdomains[i].meshSize).QString::toDouble(&ok);;//Subdomain outer mesh size
     }
 
     //Mesh Size
-    jsonObject["meshDensity"] = gridSizeBluffBody->text();//Grid Size (on the bluff body)
-    jsonObject["meshDensityFar"] = gridSizeOuterBoundary->text();//Grid Size (on the outer bound)
+    jsonObject["meshDensity"] = gridSizeBluffBody->text().QString::toDouble(&ok);;//Grid Size (on the bluff body)
+    jsonObject["meshDensityFar"] = gridSizeOuterBoundary->text().QString::toDouble(&ok);;//Grid Size (on the outer bound)
 
     //Subdomains
-    jsonObject["innerDomains"] = QString::number(numSubdomains->currentData().toInt());//Number of Subdomains
+    jsonObject["innerDomains"] = numSubdomains->currentData().toInt();//Number of Subdomains
 
     //Boundary Conditions
     jsonObject["lowYPlane"] = boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
@@ -348,21 +349,21 @@ bool
 MeshParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
-    
+
     //Domain Length
-    domainLengthInlet->setText(jsonObject["inPad"].toString());//Domain Length (Inlet)
-    domainLengthOutlet->setText(jsonObject["outPad"].toString());//Domain Length (Outlet)
-    domainLengthYneg->setText(jsonObject["lowYPad"].toString());//Domain Length (-Y)
-    domainLengthYpos->setText(jsonObject["highYPad"].toString());//Domain Length (+Y)
-    domainLengthZneg->setText(jsonObject["lowZPad"].toString());//Domain Length (-Z)
-    domainLengthZpos->setText(jsonObject["highZPad"].toString());//Domain Length (+Z)
+    domainLengthInlet->setText(QString::number(jsonObject["inPad"].toDouble()));//Domain Length (Inlet)
+    domainLengthOutlet->setText(QString::number(jsonObject["outPad"].toDouble()));//Domain Length (Outlet)
+    domainLengthYneg->setText(QString::number(jsonObject["lowYPad"].toDouble()));//Domain Length (-Y)
+    domainLengthYpos->setText(QString::number(jsonObject["highYPad"].toDouble()));//Domain Length (+Y)
+    domainLengthZneg->setText(QString::number(jsonObject["lowZPad"].toDouble()));//Domain Length (-Z)
+    domainLengthZpos->setText(QString::number(jsonObject["highZPad"].toDouble()));//Domain Length (+Z)
 
     //Mesh Size
-    gridSizeBluffBody->setText(jsonObject["meshDensity"].toString());//Grid Size (on the bluff body)
-    gridSizeOuterBoundary->setText(jsonObject["meshDensityFar"].toString());//Grid Size (on the outer bound)
+    gridSizeBluffBody->setText(QString::number(jsonObject["meshDensity"].toDouble()));//Grid Size (on the bluff body)
+    gridSizeOuterBoundary->setText(QString::number(jsonObject["meshDensityFar"].toDouble()));//Grid Size (on the outer bound)
 
     //Subdomains
-    int index = numSubdomains->findData(jsonObject["innerDomains"].toString().toInt());
+    int index = numSubdomains->findData(jsonObject["innerDomains"].toInt());
     if(index >=0 )
     {
         numSubdomains->setCurrentIndex(index);//Number of Subdomains

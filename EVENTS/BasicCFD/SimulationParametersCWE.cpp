@@ -78,9 +78,9 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   //Number of processors
   QLabel *processorsLabel = new QLabel("Processors", this);
   processorsBox = new QSpinBox(this);
-  processorsBox->setMinimum(1);
-  processorsBox->setMaximum(1024);
-  processorsBox->setValue(16);
+  processorsBox->setMinimum(2);
+  processorsBox->setMaximum(64);
+  processorsBox->setValue(8);
   processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
   QGridLayout *controlLayout=new QGridLayout();
@@ -182,20 +182,21 @@ void SimulationParametersCWE::setupConnections()
 bool
 SimulationParametersCWE::outputToJSON(QJsonObject &jsonObject)
 {
-    //Simulation Control
-    jsonObject["deltaT"] = dT->text();//Simulation Time Step
-    jsonObject["endTime"] = duration->text();//Simulation Duration
-    jsonObject["velocity"] = inflowVelocity->text();//Inflow Velocity
-    jsonObject["nu"] = kinematicViscosity->text();//Kinematic Viscosity
-    jsonObject["processors"] = processorsBox->text();
+  //Simulation Control
+  bool ok;
+  jsonObject["deltaT"] = dT->text().QString::toDouble(&ok);
+  jsonObject["endTime"] = duration->text().QString::toDouble(&ok);//Simulation Duration
+  jsonObject["velocity"] = inflowVelocity->text().QString::toDouble(&ok);//Inflow Velocity
+  jsonObject["nu"] = kinematicViscosity->text().QString::toDouble(&ok);//Kinematic Viscosity
+  jsonObject["processors"] = processorsBox->text().QString::toInt(&ok);
 
     //Advanced
     jsonObject["turbModel"] = turbulanceModel->currentData().toString();//Turbulence Model
-    jsonObject["pisoCorrectors"] = pisoCorrectors->text();//Number of PISO Correctors,
-    jsonObject["pisoNonOrthCorrect"] = nonOrthogonalCorrectors->text();//Number of non-orthogonal Correctors,
+    jsonObject["pisoCorrectors"] = pisoCorrectors->text().QString::toInt(&ok);;//Number of PISO Correctors,
+    jsonObject["pisoNonOrthCorrect"] = nonOrthogonalCorrectors->text().QString::toInt(&ok);;//Number of non-orthogonal Correctors,
 
     if(0 != turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
-        jsonObject["turbintensity"] = turbulenceIntensity->text();//Turbulence Intensity
+      jsonObject["turbintensity"] = turbulenceIntensity->text().QString::toDouble(&ok);//Turbulence Intensity
 
     
     return true;
@@ -206,23 +207,23 @@ bool
 SimulationParametersCWE::inputFromJSON(QJsonObject &jsonObject)
 {
     //Simulation Control
-    dT->setText(jsonObject["deltaT"].toString());//Simulation Time Step
-    duration->setText(jsonObject["endTime"].toString());//Simulation Duration
-    inflowVelocity->setText(jsonObject["velocity"].toString());//Inflow Velocity
-    kinematicViscosity->setText(jsonObject["nu"].toString());//Kinematic Viscosity
+  dT->setText(QString::number(jsonObject["deltaT"].toDouble()));//Simulation Time Step
+  duration->setText(QString::number(jsonObject["endTime"].toDouble()));//Simulation Duration
+  inflowVelocity->setText(QString::number(jsonObject["velocity"].toDouble()));//Inflow Velocity
+  kinematicViscosity->setText(QString::number(jsonObject["nu"].toDouble()));//Kinematic Viscosity
 
     //Advanced
     int index = turbulanceModel->findData(jsonObject["turbModel"].toVariant());
     if(index >= 0)
         turbulanceModel->setCurrentIndex(index);//Turbulence Model
-    pisoCorrectors->setText(jsonObject["pisoCorrectors"].toString());//Number of PISO Correctors,
-    nonOrthogonalCorrectors->setText(jsonObject["pisoNonOrthCorrect"].toString());//Number of non-orthogonal Correctors,
+    pisoCorrectors->setText(QString::number(jsonObject["pisoCorrectors"].toInt()));//Number of PISO Correctors,
+    nonOrthogonalCorrectors->setText(QString::number(jsonObject["pisoNonOrthCorrect"].toInt()));//Number of non-orthogonal Correctors,
 
     if(jsonObject.contains("turbintensity"))
-        turbulenceIntensity->setText(jsonObject["turbintensity"].toString());//Turbulence Intensity
+      turbulenceIntensity->setText(QString::number(jsonObject["turbintensity"].toDouble()));//Turbulence Intensity
 
     if(jsonObject.contains("processors"))
-        processorsBox->setValue(jsonObject["processors"].toInt());
+      processorsBox->setValue(jsonObject["processors"].toInt());
 
     return true;
 }
