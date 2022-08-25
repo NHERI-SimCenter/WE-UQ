@@ -1027,7 +1027,6 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     }
 }
 
-
 void CFDExpertWidget::exportgeneralizedMotionStateFile(QString origFileName, QString fileName)
 {
     // get number of mode shapes
