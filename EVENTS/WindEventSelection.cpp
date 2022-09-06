@@ -64,6 +64,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <WindTunnelExperiment.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
 #include <Inflow/inflowparameterwidget.h>
+#include "Utils/PythonProgressDialog.h"
 
 #include <UserDefinedApplication.h>
 #include <BasicCFD.h>
@@ -150,6 +151,11 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theCurrentEvent=theStochasticModel;
 
     connect(eventSelection,SIGNAL(currentIndexChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
+
+    // status and error messaging
+    connect(CFDExpertEventWidget,SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+    connect(CFDExpertEventWidget,SIGNAL(statusMessage(QString)),this,SLOT(sendStatusMessage(QString)));
+    connect(CFDExpertEventWidget,SIGNAL(fatalMessage(QString)), this,SLOT(sendFatalMessage(QString)));
 }
 
 WindEventSelection::~WindEventSelection()
@@ -281,6 +287,25 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
 
     // this is needed for some reason if Basic was last selected item!
     eventSelection->repaint();
+}
+
+
+void
+WindEventSelection::sendStatusMessage(QString message) {
+    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    theDialog->appendInfoMessage(message);
+}
+
+void
+WindEventSelection::sendErrorMessage(QString message) {
+    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    theDialog->appendErrorMessage(message);
+}
+
+void
+WindEventSelection::sendFatalMessage(QString message) {
+    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    theDialog->appendErrorMessage(message);
 }
 
 bool

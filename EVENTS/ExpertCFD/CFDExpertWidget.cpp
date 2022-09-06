@@ -37,7 +37,10 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     jsonObject["EventClassification"]="Wind";
     jsonObject["Application"] = "CFDEvent";
     QJsonObject dataObj;
-    dataObj["OpenFOAMCase"] = caseEditBox->text();
+    dataObj["OpenFOAMCase"]  = caseEditBox->text();
+
+    dataObj["LengthScale"]   = lengthScale->value();
+    dataObj["VelocityScale"] = velocityScale->value();
 
     QString openFOAMsolver = solverComboBox->currentText();
     if (openFOAMsolver.trimmed().toLower() == "pimplefoam") {
@@ -54,17 +57,19 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
 bool CFDExpertWidget::outputToJSON(QJsonObject &eventObject)
 {
     inflowWidget->outputToJSON(eventObject);
-    eventObject["OpenFOAMCase"] = caseEditBox->text();
-    eventObject["OpenFOAMSolver"] = solverComboBox->currentText();
+    eventObject["OpenFOAMCase"]     = caseEditBox->text();
+    eventObject["LengthScale"]      = lengthScale->value();
+    eventObject["VelocityScale"]    = velocityScale->value();
+    eventObject["OpenFOAMSolver"]   = solverComboBox->currentText();
     eventObject["InflowConditions"] = (inflowCheckBox->checkState() == Qt::CheckState::Checked);
-    eventObject["type"] = "ExpertCFD";
+    eventObject["type"]             = "ExpertCFD";
     eventObject["forceCalculationMethod"] = forceComboBox->currentText();
-    eventObject["start"] = startTimeBox->value();
-    eventObject["patches"] = patchesEditBox->text();
-    eventObject["meshing"] = meshingComboBox->currentData().toString();
-    eventObject["processors"] = processorsBox->value();
-    eventObject["userModesFile"] = couplingGroup->fileName();
-    eventObject["FSIboundaryName"] = couplingGroup->FSIboundarySelection();
+    eventObject["start"]            = startTimeBox->value();
+    eventObject["patches"]          = patchesEditBox->text();
+    eventObject["meshing"]          = meshingComboBox->currentData().toString();
+    eventObject["processors"]       = processorsBox->value();
+    eventObject["userModesFile"]    = couplingGroup->fileName();
+    eventObject["FSIboundaryName"]  = couplingGroup->FSIboundarySelection();
 
     return true;
 }
@@ -80,6 +85,20 @@ bool CFDExpertWidget::inputFromJSON(QJsonObject &eventObject)
 
     this->setEnabled(true);
     this->downloadRemoteCaseFiles();
+
+    if(eventObject.contains("LengthScale")) {
+        lengthScale->setValue(eventObject["LengthScale"].toDouble());
+    }
+    else {
+        lengthScale->setValue(1.00);
+    }
+
+    if(eventObject.contains("VelocityScale")) {
+        velocityScale->setValue(eventObject["VelocityScale"].toDouble());
+    }
+    else {
+        velocityScale->setValue(1.00);
+    }
     
     if(eventObject.contains("OpenFOAMSolver"))
       solverComboBox->setCurrentText(eventObject["OpenFOAMSolver"].toString());
@@ -541,6 +560,7 @@ void CFDExpertWidget::initializeUI()
     QGridLayout *parametersLayout = new QGridLayout(CFDGroupBox);
     parametersLayout->setMargin(6);
     parametersLayout->setSpacing(6);
+    int row = 0;
 
     //QFormLayout* parametersLayout = new QFormLayout();
 
@@ -551,11 +571,34 @@ void CFDExpertWidget::initializeUI()
     caseEditBox->setMinimumWidth(400);
 
     QLabel *caseLabel = new QLabel("Case", this);
-    parametersLayout->addWidget(caseLabel, 0, 0);
-    parametersLayout->addWidget(caseEditBox, 0, 1);
-    parametersLayout->addWidget(caseSelectButton, 0, 2);
+    parametersLayout->addWidget(caseLabel, row, 0);
+    parametersLayout->addWidget(caseEditBox, row, 1);
+    parametersLayout->addWidget(caseSelectButton, row, 2);
 
     //parametersLayout->addRow("Case", caseLayout);
+
+    QHBoxLayout *hlyt = new QHBoxLayout();
+    parametersLayout->addLayout(hlyt, ++row, 0, 1, 3);
+    //
+    lengthScale   = new QDoubleSpinBox(this);
+    lengthScale->setValue(1.0);
+    lengthScale->setMinimum(0.0);
+    lengthScale->setMaximum(100.0);
+    lengthScale->setDecimals(4);
+    //
+    velocityScale = new QDoubleSpinBox(this);
+    velocityScale->setValue(1.0);
+    velocityScale->setMinimum(0.0);
+    velocityScale->setMaximum(100.0);
+    velocityScale->setDecimals(4);
+    //
+    hlyt->addWidget(new QLabel("Length scale factor:"));
+    hlyt->addWidget(lengthScale);
+    QLabel *label = new QLabel("Velocity scale factor:");
+    label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    hlyt->addWidget(label);
+    hlyt->addWidget(velocityScale);
+
 
     solverComboBox = new QComboBox(this);
     solverComboBox->addItem("pisoFoam");
@@ -563,8 +606,8 @@ void CFDExpertWidget::initializeUI()
     solverComboBox->addItem("pimpleFoam");
     QLabel *solverLabel = new QLabel("Solver", this);
    // parametersLayout->addRow("Solver", solverComboBox);
-    parametersLayout->addWidget(solverLabel, 1, 0);
-    parametersLayout->addWidget(solverComboBox, 1, 1, 1, 2);
+    parametersLayout->addWidget(solverLabel, ++row, 0);
+    parametersLayout->addWidget(solverComboBox, row, 1, 1, 2);
     solverComboBox->setToolTip(tr("OpenFOAM solver used in the analysis"));
 
     //Meshing
@@ -574,8 +617,8 @@ void CFDExpertWidget::initializeUI()
     meshingComboBox->addItem("User provided mesh", "User");
     QLabel *meshingLabel = new QLabel("Meshing");
     //parametersLayout->addRow("Meshing", meshingComboBox);
-    parametersLayout->addWidget(meshingComboBox, 2, 1, 1, 2);
-    parametersLayout->addWidget(meshingLabel, 2, 0);
+    parametersLayout->addWidget(meshingComboBox, ++row, 1, 1, 2);
+    parametersLayout->addWidget(meshingLabel, row, 0);
     meshingComboBox->setToolTip(tr("Method used for generating the mesh for the model"));
 
     //Force Calculation
@@ -583,8 +626,8 @@ void CFDExpertWidget::initializeUI()
     forceComboBox = new QComboBox();
     forceComboBox->addItem("Binning with uniform floor heights");
     //parametersLayout->addRow("Force Calculation     ", forceComboBox);
-    parametersLayout->addWidget(forceComboBox, 3, 1, 1, 2);
-    parametersLayout->addWidget(forceLabel, 3, 0);
+    parametersLayout->addWidget(forceComboBox, ++row, 1, 1, 2);
+    parametersLayout->addWidget(forceLabel, row, 0);
     forceComboBox->setToolTip(tr("Method used for calculating the forces on the building model"));
 
     //Patches for building forces
@@ -593,16 +636,16 @@ void CFDExpertWidget::initializeUI()
     //patchesEditBox->setDisabled(true);
     patchesEditBox->setToolTip(tr("Patches used to extract the forces on the building model"));
     selectPatchesButton = new QPushButton("Select");
-    parametersLayout->addWidget(patchesLabel, 4, 0);
-    parametersLayout->addWidget(patchesEditBox, 4, 1);
-    parametersLayout->addWidget(selectPatchesButton, 4, 2);
+    parametersLayout->addWidget(patchesLabel, ++row, 0);
+    parametersLayout->addWidget(patchesEditBox, row, 1);
+    parametersLayout->addWidget(selectPatchesButton, row, 2);
 
 
     //Force Start Time
     QLabel *startTimeLabel = new QLabel("Start time", this);
-    parametersLayout->addWidget(startTimeLabel, 5, 0);
+    parametersLayout->addWidget(startTimeLabel, ++row, 0);
     startTimeBox = new QDoubleSpinBox(this);
-    parametersLayout->addWidget(startTimeBox, 5, 1, 1, 2);
+    parametersLayout->addWidget(startTimeBox, row, 1, 1, 2);
     startTimeBox->setDecimals(3);
     startTimeBox->setSingleStep(0.001);
     startTimeBox->setMinimum(0);
@@ -611,9 +654,9 @@ void CFDExpertWidget::initializeUI()
 
     //Number of processors
     QLabel *processorsLabel = new QLabel("Processors", this);
-    parametersLayout->addWidget(processorsLabel, 6, 0);
+    parametersLayout->addWidget(processorsLabel, ++row, 0);
     processorsBox = new QSpinBox(this);
-    parametersLayout->addWidget(processorsBox, 6, 1, 1, 2);
+    parametersLayout->addWidget(processorsBox, row, 1, 1, 2);
     processorsBox->setMinimum(1);
     processorsBox->setMaximum(1024);
     processorsBox->setValue(16);
@@ -623,8 +666,8 @@ void CFDExpertWidget::initializeUI()
     inflowCheckBox = new QCheckBox();
     //parametersLayout->addRow("Inflow conditions", inflowCheckBox);
     QLabel *inflowLabel = new QLabel("Inflow Conditions     ");
-    parametersLayout->addWidget(inflowCheckBox, 7, 1);
-    parametersLayout->addWidget(inflowLabel, 7, 0);
+    parametersLayout->addWidget(inflowCheckBox, ++row, 1);
+    parametersLayout->addWidget(inflowLabel, row, 0);
     inflowCheckBox->setToolTip(tr("Indicate whether or not to include inflow condition specification"));
 
 
@@ -960,6 +1003,9 @@ void CFDExpertWidget::exportUFile(QString fileName)
 
 void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileName)
 {
+    bool has_force_function = false;
+    bool inside_functions_block = false;
+
     // file handle for the controlDict file
     QFile CDictIn(origFileName);
     CDictIn.open(QFile::ReadOnly);
@@ -970,10 +1016,17 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
     CDict.open(QFile::WriteOnly);
     QTextStream out(&CDict);
 
+    // parsing the given file line by line ...
+
     QList<QByteArray> CDictList = CDictContents.split('\n');
     foreach (QByteArray line, CDictList)
     {
+        //
+        // looking for "application" keyword ...
+        //
         if (line.contains("application")) {
+
+            // ... add loading the  libturbulentInflow.so
 
             if (inflowCheckBox->isChecked()) {
                 out << "libs" << ENDLN;
@@ -985,14 +1038,37 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
 
             out << "application     " << solverComboBox->currentText() << ";" << ENDLN;
         }
+        //
+        // looking for the "functions" keyword
+        //
+        else if (line.contains("functions")) {
+            inside_functions_block = true;
+            out << line << ENDLN;
+        }
+        //
+        // looking for buildingsForces function
+        //
+        else if ( inside_functions_block &&
+                 ( line.contains("buildingsForces") || line.contains("forces") ) ) {
+            has_force_function = true;
+            out << line << ENDLN;
+        }
         else {
             out << line << ENDLN;
         }
     }
 
     CDict.close();
-}
 
+    // test if FSI has been checked by the user
+    bool do_FSI_checked = couplingGroup->isChecked();
+    //emit statusMessage("WE: FSI requested");
+
+    if (do_FSI_checked && !has_force_function) {
+        // this will be a problem!!!
+        emit errorMessage("buildingsForces function undefined in controlDict");
+    }
+}
 
 void CFDExpertWidget::exportgeneralizedMotionStateFile(QString origFileName, QString fileName)
 {
