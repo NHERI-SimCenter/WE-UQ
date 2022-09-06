@@ -82,6 +82,8 @@ private:
     // variables used in the GUI
 
     QLineEdit*      caseEditBox;
+    QDoubleSpinBox* lengthScale;
+    QDoubleSpinBox* velocityScale;
     QComboBox*      solverComboBox;
     RemoteService*  remoteService;
     InflowParameterWidget* inflowWidget;
