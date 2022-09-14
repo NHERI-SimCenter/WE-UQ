@@ -308,7 +308,7 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
 
     QJsonObject defaultValues;
     defaultValues["workflowInput"]=QString("scInput.json");    
-    defaultValues["filenameBIM"]=QString("BIM.json");
+    defaultValues["filenameAIM"]=QString("AIM.json");
     defaultValues["filenameEVENT"] = QString("EVENT.json");
     defaultValues["filenameSAM"]= QString("SAM.json");
     defaultValues["filenameEDP"]= QString("EDP.json");
@@ -317,7 +317,7 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
     defaultValues["filenameDL"]= QString("BIM.json");
     defaultValues["workflowOutput"]= QString("EDP.json");
     QJsonArray rvFiles, edpFiles;
-    rvFiles.append(QString("BIM.json"));
+    rvFiles.append(QString("AIM.json"));
     rvFiles.append(QString("SAM.json"));
     rvFiles.append(QString("EVENT.json"));
     rvFiles.append(QString("SIM.json"));
@@ -484,10 +484,10 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("GeneralInformation")) {
         QJsonObject jsonObjGeneralInformation = jsonObject["GeneralInformation"].toObject();
         if (theGI->inputFromJSON(jsonObjGeneralInformation) == false) {
-            this->errorMessage("EE_UQ: failed to read GeneralInformation");
+            this->errorMessage("WE_UQ: failed to read GeneralInformation");
         }
     } else {
-        this->errorMessage("EE_UQ: failed to find GeneralInformation");
+        this->errorMessage("WE_UQ: failed to find GeneralInformation");
         return false;
     }
 
@@ -499,30 +499,30 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         if (theApplicationObject.contains("Events")) {
             //  QJsonObject theObject = theApplicationObject["Events"].toObject(); it is null object, actually an array
             if (theEventSelection->inputAppDataFromJSON(theApplicationObject) == false) {
-                this->errorMessage("EE_UQ: failed to read Event Application");
+                this->errorMessage("WE_UQ: failed to read Event Application");
             }
 
         } else {
-            this->errorMessage("EE_UQ: failed to find Event Application");
+            this->errorMessage("WE_UQ: failed to find Event Application");
             return false;
         }
 
         if (theUQ_Selection->inputAppDataFromJSON(theApplicationObject) == false)
-            this->errorMessage("EE_UQ: failed to read UQ application");
+            this->errorMessage("WE_UQ: failed to read UQ application");
 
         if (theSIM->inputAppDataFromJSON(theApplicationObject) == false)
-            this->errorMessage("EE_UQ: failed to read SIM application");
+            this->errorMessage("WE_UQ: failed to read SIM application");
 	
         if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false)
-            this->errorMessage("EE_UQ: failed to read FEM application");
+            this->errorMessage("WE_UQ: failed to read FEM application");
 
         if (theApplicationObject.contains("EDP")) {
             QJsonObject theObject = theApplicationObject["EDP"].toObject();
             if (theEDP_Selection->inputAppDataFromJSON(theObject) == false) {
-                this->errorMessage("EE_UQ: failed to read EDP application");
+                this->errorMessage("WE_UQ: failed to read EDP application");
             }
         } else {
-            this->errorMessage("EE_UQ: failed to find EDP application");
+            this->errorMessage("WE_UQ: failed to find EDP application");
             return false;
         }
 
@@ -540,23 +540,23 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("EDP")) {
         QJsonObject edpObj = jsonObject["EDP"].toObject();
         if (theEDP_Selection->inputFromJSON(edpObj) == false)
-            this->errorMessage("EE_UQ: failed to read EDP data");
+            this->errorMessage("WE_UQ: failed to read EDP data");
     } else {
-        this->errorMessage("EE_UQ: failed to find EDP data");
+        this->errorMessage("WE_UQ: failed to find EDP data");
         return false;
     }
 
 
     if (theUQ_Selection->inputFromJSON(jsonObject) == false)
-       this->errorMessage("EE_UQ: failed to read UQ Method data");
+       this->errorMessage("WE_UQ: failed to read UQ Method data");
 
     if (theAnalysisSelection->inputFromJSON(jsonObject) == false)
 
     if (theSIM->inputFromJSON(jsonObject) == false)
-        this->errorMessage("EE_UQ: failed to read FEM Method data");
+        this->errorMessage("WE_UQ: failed to read FEM Method data");
 
     if (theSIM->inputFromJSON(jsonObject) == false)
-        this->errorMessage("EE_UQ: failed to read SIM Method data");
+        this->errorMessage("WE_UQ: failed to read SIM Method data");
 
     this->statusMessage("Done Loading File");
     return true;
