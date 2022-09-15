@@ -175,7 +175,7 @@ EDP_WindSelection::inputAppDataFromJSON(QJsonObject &jsonObject)
         QJsonValue theName = jsonObject["Application"];
         type = theName.toString();
     } else {
-        emit sendErrorMessage("EDP_WindSelection - no Application key found");
+        errorMessage("EDP_WindSelection - no Application key found");
         return false;
     }
 
@@ -189,7 +189,7 @@ EDP_WindSelection::inputAppDataFromJSON(QJsonObject &jsonObject)
                (type == QString("User Defined EDPs"))) {
         index = 1;
     } else {
-        emit sendErrorMessage("EDP_WindSelection - no valid type found");
+        errorMessage("EDP_WindSelection - no valid type found");
         return false;
     }
 

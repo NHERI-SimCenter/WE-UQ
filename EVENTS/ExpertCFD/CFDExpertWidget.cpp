@@ -39,9 +39,6 @@ bool CFDExpertWidget::outputAppDataToJSON(QJsonObject &jsonObject)
     QJsonObject dataObj;
     dataObj["OpenFOAMCase"]  = caseEditBox->text();
 
-    dataObj["LengthScale"]   = lengthScale->value();
-    dataObj["VelocityScale"] = velocityScale->value();
-
     QString openFOAMsolver = solverComboBox->currentText();
     if (openFOAMsolver.trimmed().toLower() == "pimplefoam") {
         dataObj["OpenFOAMSolver"] = "newPimpleFoam";
@@ -1062,11 +1059,10 @@ void CFDExpertWidget::exportControlDictFile(QString origFileName, QString fileNa
 
     // test if FSI has been checked by the user
     bool do_FSI_checked = couplingGroup->isChecked();
-    //emit statusMessage("WE: FSI requested");
 
     if (do_FSI_checked && !has_force_function) {
         // this will be a problem!!!
-        emit errorMessage("buildingsForces function undefined in controlDict");
+        errorMessage("buildingsForces function undefined in controlDict");
     }
 }
 
