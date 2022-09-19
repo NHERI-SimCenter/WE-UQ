@@ -189,9 +189,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="inflowVelocity"/>
-      </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label_25">
         <property name="text">
@@ -251,9 +248,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
-      </item>
       <item row="4" column="1" colspan="2">
        <widget class="QSpinBox" name="nonOrthogonalCorrectors">
         <property name="maximum">
@@ -261,18 +255,24 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="QDoubleSpinBox" name="turbulenceIntensity"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QDoubleSpinBox" name="kinematicViscosity"/>
-      </item>
       <item row="6" column="2">
        <widget class="QLabel" name="label_26">
         <property name="text">
          <string>m&lt;sup&gt;2&lt;/sup&gt;/s</string>
         </property>
        </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QLineEdit" name="turbulenceIntensity"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="kinematicViscosity"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="inflowVelocity"/>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="ReynoldsNumber"/>
       </item>
      </layout>
     </widget>
@@ -373,7 +373,7 @@
      <property name="title">
       <string>Building Forces</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
       <property name="leftMargin">
        <number>6</number>
       </property>
@@ -386,10 +386,10 @@
       <property name="bottomMargin">
        <number>6</number>
       </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_23">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_24">
         <property name="text">
-         <string>Force Calculation</string>
+         <string>Start Time</string>
         </property>
        </widget>
       </item>
@@ -405,28 +405,15 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_24">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_23">
         <property name="text">
-         <string>Start Time</string>
+         <string>Force Calculation</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="startTimeBox">
-        <property name="toolTip">
-         <string>The time in the OpenFOAM simulation when the building force event starts. Forces before that time are ignored.</string>
-        </property>
-        <property name="decimals">
-         <number>3</number>
-        </property>
-        <property name="singleStep">
-         <double>0.001000000000000</double>
-        </property>
-        <property name="value">
-         <double>0.010000000000000</double>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="startTimeBox"/>
       </item>
      </layout>
     </widget>
@@ -436,7 +423,7 @@
      <property name="title">
       <string>Simulation Control</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1,0">
       <property name="leftMargin">
        <number>6</number>
       </property>
@@ -465,9 +452,6 @@
          <number>64</number>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="dT"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_20">
@@ -499,9 +483,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="duration"/>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_27">
         <property name="text">
@@ -528,6 +509,12 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="duration"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="dT"/>
       </item>
      </layout>
     </widget>

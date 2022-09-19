@@ -105,7 +105,59 @@ BasicCFDv2::BasicCFDv2(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     ui->subdomainsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
     ui->subdomainsTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
     ui->subdomainsTable->setMaximumHeight(120);
-    //ui->subdomainsTable->setHidden(true);
+    ui->subdomainsTable->setHidden(true);
+
+    //Setting validator
+    auto positiveDoubleValidator = new QDoubleValidator(this);
+    positiveDoubleValidator->setBottom(0.0);
+    positiveDoubleValidator->setDecimals(3);
+    ui->domainLengthInlet->setValidator(positiveDoubleValidator);
+    ui->domainLengthOutlet->setValidator(positiveDoubleValidator);
+    ui->domainLengthYpos->setValidator(positiveDoubleValidator);
+    ui->domainLengthYneg->setValidator(positiveDoubleValidator);
+    ui->domainLengthZpos->setValidator(positiveDoubleValidator);
+    ui->domainLengthZneg->setValidator(positiveDoubleValidator);
+    ui->turbulenceIntensity->setValidator(positiveDoubleValidator);
+    ui->duration->setValidator(positiveDoubleValidator);
+    ui->inflowVelocity->setValidator(positiveDoubleValidator);
+
+    auto smallDoubleValidator = new QDoubleValidator(this);
+    smallDoubleValidator->setBottom(0.0);
+    smallDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
+    ui->dT->setValidator(smallDoubleValidator);
+    ui->kinematicViscosity->setValidator(smallDoubleValidator);
+
+    auto positiveSciDoubleValidator = new QDoubleValidator(this);
+    positiveSciDoubleValidator->setBottom(0.0);
+    positiveSciDoubleValidator->setDecimals(1);
+    positiveSciDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
+    ui->ReynoldsNumber->setValidator(positiveSciDoubleValidator);
+
+
+    // setting default values
+    ui->domainLengthInlet->setText("5.0");
+    ui->domainLengthOutlet->setText("15.0");
+    ui->domainLengthYpos->setText("5.0");
+    ui->domainLengthYneg->setText("5.0");
+    ui->domainLengthZpos->setText("4.0");
+    ui->domainLengthZneg->setText("0.0");
+
+    ui->turbulanceModel->addItem(tr("Smagorinsky Turbulence Model (LES)"), "Smagorinsky");
+    ui->turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"), "SpalartAllmaras");
+    ui->turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"), "SpalartAllmarasDDES");
+    ui->turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"), "dynOneEqEddy");
+    ui->turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"), "kEpsilon");
+    ui->turbulanceModel->addItem(tr("Laminar Flow Model"), "laminar");
+    ui->turbulanceModel->setCurrentIndex(4);
+
+    ui->pisoCorrectors->setValue(1);
+    ui->nonOrthogonalCorrectors->setValue(0);
+    ui->turbulenceIntensity->setText("0.02");
+    ui->duration->setText("1.0");
+    ui->dT->setText("0.1");
+    ui->inflowVelocity->setText("1.0");
+    ui->kinematicViscosity->setText("1.48e-05");
+    ui->ReynoldsNumber->setText("1000.0");
 
     setupConnections();
 }
@@ -183,6 +235,42 @@ BasicCFDv2::setupConnections()
 {
     //connect(meshParameters, &MeshParametersCWE::meshChanged, this, [this](){update3DView();});
 
+    connect(ui->domainLengthInlet, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
+    connect(ui->domainLengthOutlet, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
+    connect(ui->domainLengthYneg, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
+    connect(ui->domainLengthYpos, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
+    connect(ui->domainLengthZneg, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
+    connect(ui->domainLengthZpos, &QLineEdit::textChanged, this, [this](const QString& text)
+    {
+        Q_UNUSED(text);
+        this->update3DView();
+    });
+
     auto generalInfo = GeneralInformationWidget::getInstance();
 
     connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &BasicCFDv2::update3DViewCentered);
@@ -197,7 +285,7 @@ BasicCFDv2::outputToJSON(QJsonObject &eventObject) {
     eventObject["EventClassification"] = "Wind";
     eventObject["type"] = "BasicCFD";
     eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
-    eventObject["start"] = ui->startTimeBox->value();
+    eventObject["start"] = ui->startTimeBox->text().toDouble();
     eventObject["userModesFile"] = couplingGroup->fileName();
 
     //
@@ -246,7 +334,7 @@ BasicCFDv2::update3DViewCentered()
 bool
 BasicCFDv2::inputFromJSON(QJsonObject &jsonObject)
 {
-    ui->startTimeBox->setValue(jsonObject["start"].toDouble());
+    ui->startTimeBox->setText(jsonObject["start"].toString());
 
     if(jsonObject.contains("forceCalculationMethod")) {
         ui->forceComboBox->setCurrentText(jsonObject["forceCalculationMethod"].toString());
