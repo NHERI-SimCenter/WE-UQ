@@ -324,7 +324,7 @@ BasicCFDv2::outputToJSON(QJsonObject &eventObject) {
     eventObject["mesh"] = jsonObjMesh;
 
     QJsonObject jsonObjSimulation;
-    simulationParameters->outputToJSON(jsonObjSimulation);
+    this->outputParametersToJSON(jsonObjSimulation);
     eventObject["sim"] = jsonObjSimulation;
 
     return true;
@@ -378,7 +378,7 @@ BasicCFDv2::inputFromJSON(QJsonObject &jsonObject)
 
     if (jsonObject.contains("sim")) {
         QJsonObject jsonObjSimulation = jsonObject["sim"].toObject();
-        simulationParameters->inputFromJSON(jsonObjSimulation);
+        this->inputParametersFromJSON(jsonObjSimulation);
     } else
         return false;
 
@@ -584,6 +584,56 @@ BasicCFDv2::inputMeshFromJSON(QJsonObject &jsonObject)
     setComboBoxByData(*(ui->boundaryConditionYpos), jsonObject["highYPlane"].toVariant());  //Boundary Condition (Y+)
     setComboBoxByData(*(ui->boundaryConditionZneg), jsonObject["lowZPlane"].toVariant());   //Boundary Condition (Z-)
     setComboBoxByData(*(ui->boundaryConditionZpos), jsonObject["highZPlane"].toVariant());  //Boundary Condition (Z+)
+
+    return true;
+}
+
+
+bool
+BasicCFDv2::outputParametersToJSON(QJsonObject &jsonObject)
+{
+    //Simulation Control
+    bool ok;
+    jsonObject["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
+    jsonObject["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
+    jsonObject["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
+    jsonObject["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
+    jsonObject["processors"] = ui->processorsBox->text().QString::toInt(&ok);
+
+    //Advanced
+    jsonObject["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
+    jsonObject["pisoCorrectors"]     = ui->pisoCorrectors->value();                             //Number of PISO Correctors,
+    jsonObject["pisoNonOrthCorrect"] = ui->nonOrthogonalCorrectors->value();                    //Number of non-orthogonal Correctors,
+
+    if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
+        jsonObject["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
+
+
+    return true;
+}
+
+
+bool
+BasicCFDv2::inputParametersFromJSON(QJsonObject &jsonObject)
+{
+    //Simulation Control
+    ui->dT->setText(QString::number(jsonObject["deltaT"].toDouble()));                       //Simulation Time Step
+    ui->duration->setText(QString::number(jsonObject["endTime"].toDouble()));                //Simulation Duration
+    ui->inflowVelocity->setText(QString::number(jsonObject["velocity"].toDouble()));         //Inflow Velocity
+    ui->kinematicViscosity->setText(QString::number(jsonObject["nu"].toDouble()));           //Kinematic Viscosity
+
+    //Advanced
+    int index = ui->turbulanceModel->findData(jsonObject["turbModel"].toVariant());
+    if(index >= 0)
+        ui->turbulanceModel->setCurrentIndex(index);                                          //Turbulence Model
+    ui->pisoCorrectors->setValue(jsonObject["pisoCorrectors"].toInt());                       //Number of PISO Correctors,
+    ui->nonOrthogonalCorrectors->setValue(jsonObject["pisoNonOrthCorrect"].toInt());          //Number of non-orthogonal Correctors,
+
+    if(jsonObject.contains("turbintensity"))
+        ui->turbulenceIntensity->setText(QString::number(jsonObject["turbintensity"].toDouble()));   //Turbulence Intensity
+
+    if(jsonObject.contains("processors"))
+        ui->processorsBox->setValue(jsonObject["processors"].toInt());
 
     return true;
 }

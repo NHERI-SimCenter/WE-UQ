@@ -120,6 +120,10 @@ private:
     bool inputMeshFromJSON(QJsonObject &jsonObjMesh);
     bool outputMeshToJSON(QJsonObject &jsonObjMesh);
 
+    // from SimulationParametersCWE
+    bool inputParametersFromJSON(QJsonObject &jsonObj);
+    bool outputParametersToJSON(QJsonObject &jsonObj);
+
     // from BasicCFD
     double toMilliMeters(QString lengthUnit) const;
     void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter,
