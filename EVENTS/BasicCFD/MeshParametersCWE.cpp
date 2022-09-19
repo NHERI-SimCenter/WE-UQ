@@ -227,7 +227,7 @@ void MeshParametersCWE::setupConnection()
     connect(numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
     {
         Q_UNUSED(index);
-        int nSubdomains = this->numSubdomains->currentData().toInt();
+        int nSubdomains = this->numSubdomains->currentIndex();
         subdomainsModel->setSubdomains(nSubdomains,
                                        domainLengthInlet->text().toDouble(),
                                        domainLengthOutlet->text().toDouble(),
