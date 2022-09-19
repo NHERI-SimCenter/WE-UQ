@@ -1,11 +1,11 @@
-#ifndef BASIC_CFD_H
-#define BASIC_CFD_H
+#ifndef BASICCFDV2_H
+#define BASICCFDV2_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without 
+Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
@@ -29,23 +29,24 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 
-REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS 
-PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
 UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written:  fmckenna
+// Modified: pmackenz
 
 #include <SimCenterAppWidget.h>
 
-#include <QComboBox>
-#include <QSpinBox>
+//#include <QComboBox>
+//#include <QSpinBox>
 #include <QGroupBox>
-#include <QVBoxLayout>
-#include <QVector>
+//#include <QVBoxLayout>
+//#include <QVector>
 #include <QVector3D>
 #include <QPoint>
 #include "MeshParametersCWE.h"
@@ -64,12 +65,18 @@ class QStackedWidget;
 class QItemSelection;
 class UserModeShapes;
 
-class BasicCFD : public SimCenterAppWidget
+
+namespace Ui {
+class BasicCFDv2;
+}
+
+class BasicCFDv2 : public SimCenterAppWidget
 {
     Q_OBJECT
+
 public:
-    explicit BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
-    ~BasicCFD() override;
+    explicit BasicCFDv2(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = nullptr);
+    ~BasicCFDv2() override;
 
     bool outputToJSON(QJsonObject &rvObject) override;
     bool inputFromJSON(QJsonObject &rvObject) override;
@@ -78,26 +85,50 @@ public:
     bool copyFiles(QString &dirName) override;
     bool supportsLocalRun() override;
 
+    // from MeshParameterCWE
+    QVector3D getDomainMultipliers();
+    QVector3D getDomainCenterMultipliers();
+    double getBuildingGridSize();
+    double getDomainGridSize();
+
+private:
+    Ui::BasicCFDv2 *ui;
+
 signals:
 
 public slots:
-   void clear(void) override;
-   void update3DView(bool centered = false);
-   void update3DViewCentered();
+    void clear(void) override;
+    void update3DView(bool centered = false);
+    void update3DViewCentered();
 
 private:
-   MeshParametersCWE *meshParameters;
-   SimCenterWidget *simulationParameters;
-   QDoubleSpinBox* startTimeBox;
-   QJsonObject *jsonObjOrig;
-   CWE3DView* graphicsWidget;
-   QComboBox* forceComboBox;
-   UserModeShapes* couplingGroup;
+    MeshParametersCWE *meshParameters;
+    SimCenterWidget *simulationParameters;
+    //QDoubleSpinBox* startTimeBox;
+    QJsonObject *jsonObjOrig;
+    CWE3DView* graphicsWidget;
+    //QComboBox* forceComboBox;
+    UserModeShapes* couplingGroup;
+    //
+    SubdomainsModel* subdomainsModel;
 
+    double gridSizeBluffBody;
+    double gridSizeOuterBoundary;
+
+    // from MeshParametersCWE
+    void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
+    bool inputMeshFromJSON(QJsonObject &jsonObjMesh);
+    bool outputMeshToJSON(QJsonObject &jsonObjMesh);
+
+    // from SimulationParametersCWE
+    bool inputParametersFromJSON(QJsonObject &jsonObj);
+    bool outputParametersToJSON(QJsonObject &jsonObj);
+
+    // from BasicCFD
     double toMilliMeters(QString lengthUnit) const;
     void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter,
                              QPoint& buildingGrid, QPoint& domainGrid);
     void setupConnections();
 };
 
-#endif // BASIC_CFD_H
+#endif // BASICCFDV2_H

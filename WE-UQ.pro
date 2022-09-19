@@ -44,12 +44,14 @@ include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
 include(./WindEvents.pri)
 
 SOURCES += main.cpp \
+    EVENTS/BasicCFD/BasicCFDv2.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
     WindEDP_Selection.cpp \
     StandardWindEDP.cpp
 
 HEADERS  += \
+    EVENTS/BasicCFD/BasicCFDv2.h \
     WorkflowAppWE.h \
     RunWidget.h \
     StandardWindEDP.h \
@@ -83,3 +85,6 @@ DISTFILES += \
 OTHER_FILES += conanfile.py azure-pipelines.yml
 
 RESOURCES += images.qrc
+
+FORMS += \
+    EVENTS/BasicCFD/BasicCFDv2.ui

@@ -68,6 +68,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <UserDefinedApplication.h>
 #include <BasicCFD.h>
+#include <BasicCFDv2.h>
 
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
@@ -125,7 +126,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-    CFDBeginnerEventWidget = new BasicCFD(theRandomVariablesContainer);
+    //CFDBeginnerEventWidget = new BasicCFD(theRandomVariablesContainer);
+    CFDBeginnerEventWidget = new BasicCFDv2(theRandomVariablesContainer);
     theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
     //CFDTemplateEventWidget = new CFDTemplateWidget(theRandomVariablesContainer, remoteService);

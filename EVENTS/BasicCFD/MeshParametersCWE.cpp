@@ -168,7 +168,7 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   numSubdomains->addItem(tr("3 subdomains"), 3);
 
   //Subdomains
-  subdomainsTable = new QTableView();
+  //subdomainsTable = new QTableView();
   subdomainsModel = new SubdomainsModel(0, this);
   subdomainsTable->setModel(subdomainsModel);
   subdomainsTable->setEditTriggers(QAbstractItemView::AnyKeyPressed);
@@ -227,7 +227,7 @@ void MeshParametersCWE::setupConnection()
     connect(numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
     {
         Q_UNUSED(index);
-        int nSubdomains = this->numSubdomains->currentData().toInt();
+        int nSubdomains = this->numSubdomains->currentIndex();
         subdomainsModel->setSubdomains(nSubdomains,
                                        domainLengthInlet->text().toDouble(),
                                        domainLengthOutlet->text().toDouble(),
