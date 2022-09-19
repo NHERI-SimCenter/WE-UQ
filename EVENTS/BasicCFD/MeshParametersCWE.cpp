@@ -168,7 +168,7 @@ MeshParametersCWE::MeshParametersCWE(QWidget *parent)
   numSubdomains->addItem(tr("3 subdomains"), 3);
 
   //Subdomains
-  subdomainsTable = new QTableView();
+  //subdomainsTable = new QTableView();
   subdomainsModel = new SubdomainsModel(0, this);
   subdomainsTable->setModel(subdomainsModel);
   subdomainsTable->setEditTriggers(QAbstractItemView::AnyKeyPressed);
