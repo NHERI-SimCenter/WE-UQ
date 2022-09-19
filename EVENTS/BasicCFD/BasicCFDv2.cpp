@@ -598,7 +598,11 @@ BasicCFDv2::outputParametersToJSON(QJsonObject &jsonObject)
     jsonObject["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
     jsonObject["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
     jsonObject["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
-    jsonObject["processors"] = ui->processorsBox->text().QString::toInt(&ok);
+    jsonObject["processors"] = ui->processorsBox->text().QString::toInt(&ok);           // # of processors to use
+
+    jsonObject["inflowVelocity"] = ui->inflowVelocity->text().QString::toDouble(&ok);   // inflow velocity
+    jsonObject["ReynoldsNumber"] = ui->ReynoldsNumber->text().QString::toDouble(&ok);   // Reynold number
+    jsonObject["solver"]         = ui->solverSelection->currentText();                  // which CFD solver to use
 
     //Advanced
     jsonObject["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
@@ -617,10 +621,15 @@ bool
 BasicCFDv2::inputParametersFromJSON(QJsonObject &jsonObject)
 {
     //Simulation Control
-    ui->dT->setText(QString::number(jsonObject["deltaT"].toDouble()));                       //Simulation Time Step
-    ui->duration->setText(QString::number(jsonObject["endTime"].toDouble()));                //Simulation Duration
-    ui->inflowVelocity->setText(QString::number(jsonObject["velocity"].toDouble()));         //Inflow Velocity
-    ui->kinematicViscosity->setText(QString::number(jsonObject["nu"].toDouble()));           //Kinematic Viscosity
+    ui->dT->setText(QString::number(jsonObject["deltaT"].toDouble()));                        //Simulation Time Step
+    ui->duration->setText(QString::number(jsonObject["endTime"].toDouble()));                 //Simulation Duration
+    ui->inflowVelocity->setText(QString::number(jsonObject["velocity"].toDouble()));          //Inflow Velocity
+    ui->kinematicViscosity->setText(QString::number(jsonObject["nu"].toDouble()));            //Kinematic Viscosity
+
+
+    ui->inflowVelocity->setText(QString::number(jsonObject["inflowVelocity"].toDouble()));    // inflow velocity
+    ui->ReynoldsNumber->setText(QString::number(jsonObject["ReynoldsNumber"].toDouble()));    // Reynold number
+    ui->solverSelection->setCurrentText(jsonObject["solver"].toString());                                // which CFD solver to use
 
     //Advanced
     int index = ui->turbulanceModel->findData(jsonObject["turbModel"].toVariant());
