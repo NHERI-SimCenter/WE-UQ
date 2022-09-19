@@ -142,6 +142,9 @@ BasicCFDv2::BasicCFDv2(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     ui->domainLengthZpos->setText("4.0");
     ui->domainLengthZneg->setText("0.0");
 
+    gridSizeBluffBody = 4;
+    gridSizeOuterBoundary = 20;
+
     ui->turbulanceModel->addItem(tr("Smagorinsky Turbulence Model (LES)"), "Smagorinsky");
     ui->turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"), "SpalartAllmaras");
     ui->turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"), "SpalartAllmarasDDES");
@@ -234,6 +237,31 @@ void
 BasicCFDv2::setupConnections()
 {
     //connect(meshParameters, &MeshParametersCWE::meshChanged, this, [this](){update3DView();});
+
+    connect(ui->numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
+    {
+        Q_UNUSED(index);
+        int nSubdomains = ui->numSubdomains->currentIndex();
+        subdomainsModel->setSubdomains(nSubdomains,
+                                       ui->domainLengthInlet->text().toDouble(),
+                                       ui->domainLengthOutlet->text().toDouble(),
+                                       ui->domainLengthYneg->text().toDouble(),
+                                       ui->domainLengthYpos->text().toDouble(),
+                                       ui->domainLengthZneg->text().toDouble(),
+                                       ui->domainLengthZpos->text().toDouble(),
+                                       gridSizeBluffBody,
+                                       gridSizeOuterBoundary);
+
+        if (nSubdomains > 0)
+        {
+            ui->subdomainsTable->setHidden(false);
+            ui->subdomainsTable->setMaximumHeight(30 + 30 * nSubdomains);
+        }
+        else if (nSubdomains == 0)
+            ui->subdomainsTable->setHidden(true);
+
+    });
+
 
     connect(ui->domainLengthInlet, &QLineEdit::textChanged, this, [this](const QString& text)
     {
@@ -453,13 +481,13 @@ BasicCFDv2::getDomainCenterMultipliers()
 double
 BasicCFDv2::getBuildingGridSize()
 {
-    return 4.;   // replaces Mesh Size option
+    return gridSizeBluffBody;   // replaces Mesh Size option
 }
 
 double
 BasicCFDv2::getDomainGridSize()
 {
-    return 20.;   // replaces Mesh Size option
+    return gridSizeOuterBoundary;   // replaces Mesh Size option
 }
 
 bool
@@ -526,8 +554,8 @@ BasicCFDv2::inputMeshFromJSON(QJsonObject &jsonObject)
     ui->domainLengthZpos->setText(QString::number(jsonObject["highZPad"].toDouble())); //Domain Length (+Z)
 
     //Mesh Size -- these are only loaded for debugging
-    double gridSizeBluffBody     = jsonObject["meshDensity"].toDouble();    //Grid Size (on the bluff body)
-    double gridSizeOuterBoundary = jsonObject["meshDensityFar"].toDouble(); //Grid Size (on the outer bound)
+    gridSizeBluffBody     = jsonObject["meshDensity"].toDouble();    //Grid Size (on the bluff body)
+    gridSizeOuterBoundary = jsonObject["meshDensityFar"].toDouble(); //Grid Size (on the outer bound)
 
     //Subdomains
     int index = ui->numSubdomains->findData(jsonObject["innerDomains"].toInt());

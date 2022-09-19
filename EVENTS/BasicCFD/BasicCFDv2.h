@@ -111,8 +111,9 @@ private:
     UserModeShapes* couplingGroup;
     //
     SubdomainsModel* subdomainsModel;
-    QTableView* subdomainsTable;
 
+    double gridSizeBluffBody;
+    double gridSizeOuterBoundary;
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
