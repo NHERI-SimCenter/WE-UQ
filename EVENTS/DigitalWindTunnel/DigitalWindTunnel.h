@@ -101,6 +101,9 @@ public slots:
     void update3DView(bool centered = false);
     void update3DViewCentered();
 
+private slots:
+    void on_modelSelectionCBX_activated(int index);
+
 private:
     MeshParametersCWE *meshParameters;
     SimCenterWidget *simulationParameters;

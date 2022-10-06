@@ -220,6 +220,11 @@ DigitalWindTunnel::setupConnections()
         }
     });
 
+    connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
+    connect(ui->RB_syntheticEddie, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(1); });
+    connect(ui->RB_divergenceFree, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(2); });
+    connect(ui->RB_turbulentSpot,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(3); });
+
     auto generalInfo = GeneralInformationWidget::getInstance();
 
     connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &DigitalWindTunnel::update3DViewCentered);
@@ -592,3 +597,25 @@ DigitalWindTunnel::inputParametersFromJSON(QJsonObject &jsonObject)
 
     return true;
 }
+
+void DigitalWindTunnel::on_modelSelectionCBX_activated(int index)
+{
+    switch (index) {
+    case 0:  // uniform model
+        ui->velocityGroup->show();
+        ui->frictionParametersGroup->hide();
+        break;
+    case 1:  // exponential model
+        ui->velocityGroup->show();
+        ui->frictionParametersGroup->hide();
+        break;
+    case 2:  // logarithmic model
+        ui->velocityGroup->hide();
+        ui->frictionParametersGroup->show();
+        break;
+    default:
+        ui->modelSelectionCBX->setCurrentIndex(2);
+    }
+}
+
+
