@@ -71,3 +71,6 @@ WE-UQ.pro.user.4.10-pre1
 build/*
 tests/WEUQ-FSI/ZOOM instructions/
 userID.sh
+EVENTS/DigitalWindTunnel/.DS_Store
+
+.DS_Store

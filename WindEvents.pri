@@ -17,8 +17,11 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/UI
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/Analysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
+INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
 
 SOURCES += \
+    $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \
+    $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -60,6 +63,8 @@ SOURCES += \
     $$PWD/EVENTS/usermodeshapes.cpp
 
 HEADERS  += \
+    $$PWD/EVENTS/BasicCFD/BasicCFDv2.h \
+    $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \
@@ -102,6 +107,8 @@ HEADERS  += \
     $$PWD/EVENTS/usermodeshapes.h
 
 FORMS    += \
+    $$PWD/EVENTS/BasicCFD/BasicCFDv2.ui \
+    $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.ui \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_parameters.ui \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.ui \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.ui \

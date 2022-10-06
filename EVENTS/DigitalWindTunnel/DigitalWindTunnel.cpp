@@ -34,11 +34,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written:  fmckenna
-// Modified: pmackenz
+// Written:  fmckenna & pmackenz
 
-#include "BasicCFDv2.h"
-#include "ui_BasicCFDv2.h"
+#include "DigitalWindTunnel.h"
+#include "ui_DigitalWindTunnel.h"
 
 #include <QJsonObject>
 #include <QDebug>
@@ -68,9 +67,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #define NO_FSI
 
 
-BasicCFDv2::BasicCFDv2(RandomVariablesContainer *theRandomVariableIW, QWidget *parent) :
+DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariableIW, QWidget *parent) :
     SimCenterAppWidget(parent),
-    ui(new Ui::BasicCFDv2)
+    ui(new Ui::DigitalWindTunnel)
 {
     Q_UNUSED(theRandomVariableIW);
     // note: not keeping pointer to the random variables in this clsss
@@ -165,13 +164,13 @@ BasicCFDv2::BasicCFDv2(RandomVariablesContainer *theRandomVariableIW, QWidget *p
     setupConnections();
 }
 
-BasicCFDv2::~BasicCFDv2()
+DigitalWindTunnel::~DigitalWindTunnel()
 {
     delete ui;
 }
 
 
-double BasicCFDv2::toMilliMeters(QString lengthUnit) const
+double DigitalWindTunnel::toMilliMeters(QString lengthUnit) const
 {
     static std::map<QString,double> conversionMap
     {
@@ -191,7 +190,7 @@ double BasicCFDv2::toMilliMeters(QString lengthUnit) const
 
 }
 
-void BasicCFDv2::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter, QPoint& buildingGrid, QPoint& domainGrid)
+void DigitalWindTunnel::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter, QPoint& buildingGrid, QPoint& domainGrid)
 {
     auto generalInfo = GeneralInformationWidget::getInstance();
 
@@ -234,7 +233,7 @@ void BasicCFDv2::get3DViewParameters(QVector3D& buildingSize, QVector3D& domainS
 }
 
 void
-BasicCFDv2::setupConnections()
+DigitalWindTunnel::setupConnections()
 {
     //connect(meshParameters, &MeshParametersCWE::meshChanged, this, [this](){update3DView();});
 
@@ -301,17 +300,17 @@ BasicCFDv2::setupConnections()
 
     auto generalInfo = GeneralInformationWidget::getInstance();
 
-    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &BasicCFDv2::update3DViewCentered);
-    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &BasicCFDv2::update3DViewCentered);
+    connect(generalInfo, &GeneralInformationWidget::buildingDimensionsChanged, this, &DigitalWindTunnel::update3DViewCentered);
+    connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &DigitalWindTunnel::update3DViewCentered);
 }
 
 
 bool
-BasicCFDv2::outputToJSON(QJsonObject &eventObject) {
+DigitalWindTunnel::outputToJSON(QJsonObject &eventObject) {
 
     //Output basic info
     eventObject["EventClassification"] = "Wind";
-    eventObject["type"] = "BasicCFD";
+    eventObject["type"] = "DigitalWindTunnel";
     eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
     eventObject["start"] = ui->startTimeBox->text().toDouble();
     eventObject["userModesFile"] = couplingGroup->fileName();
@@ -332,13 +331,13 @@ BasicCFDv2::outputToJSON(QJsonObject &eventObject) {
 
 
 void
-BasicCFDv2::clear(void)
+DigitalWindTunnel::clear(void)
 {
 
 }
 
 void
-BasicCFDv2::update3DView(bool centered)
+DigitalWindTunnel::update3DView(bool centered)
 {
     QVector3D buildingSize;
     QVector3D domainSize;
@@ -354,13 +353,13 @@ BasicCFDv2::update3DView(bool centered)
 }
 
 void
-BasicCFDv2::update3DViewCentered()
+DigitalWindTunnel::update3DViewCentered()
 {
     update3DView(true);
 }
 
 bool
-BasicCFDv2::inputFromJSON(QJsonObject &jsonObject)
+DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 {
     ui->startTimeBox->setText(jsonObject["start"].toString());
 
@@ -396,7 +395,7 @@ BasicCFDv2::inputFromJSON(QJsonObject &jsonObject)
 
 
 bool
-BasicCFDv2::outputAppDataToJSON(QJsonObject &jsonObject) {
+DigitalWindTunnel::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     //
     // per API, need to add name of application to be called in AppLication
@@ -412,7 +411,7 @@ BasicCFDv2::outputAppDataToJSON(QJsonObject &jsonObject) {
 }
 
 bool
-BasicCFDv2::copyFiles(QString &dirName){
+DigitalWindTunnel::copyFiles(QString &dirName){
     auto generalInfo = GeneralInformationWidget::getInstance();
 
     //Read the dimensions from general information
@@ -435,19 +434,19 @@ BasicCFDv2::copyFiles(QString &dirName){
 }
 
 bool
-BasicCFDv2::supportsLocalRun()
+DigitalWindTunnel::supportsLocalRun()
 {
     return false;
 }
 
 bool
-BasicCFDv2::inputAppDataFromJSON(QJsonObject &jsonObject) {
+DigitalWindTunnel::inputAppDataFromJSON(QJsonObject &jsonObject) {
     Q_UNUSED(jsonObject);
     return true;
 }
 
 void
-BasicCFDv2::setComboBoxByData(QComboBox &comboBox, const QVariant &data)
+DigitalWindTunnel::setComboBoxByData(QComboBox &comboBox, const QVariant &data)
 {
     int index = comboBox.findData(data);
     if(index >= 0)
@@ -455,7 +454,7 @@ BasicCFDv2::setComboBoxByData(QComboBox &comboBox, const QVariant &data)
 }
 
 QVector3D
-BasicCFDv2::getDomainMultipliers()
+DigitalWindTunnel::getDomainMultipliers()
 {
     QVector3D domainMultipliers;
 
@@ -467,7 +466,7 @@ BasicCFDv2::getDomainMultipliers()
 }
 
 QVector3D
-BasicCFDv2::getDomainCenterMultipliers()
+DigitalWindTunnel::getDomainCenterMultipliers()
 {
     QVector3D domainCenterMultipliers;
 
@@ -479,7 +478,7 @@ BasicCFDv2::getDomainCenterMultipliers()
 }
 
 double
-BasicCFDv2::getBuildingGridSize()
+DigitalWindTunnel::getBuildingGridSize()
 {
     double Re = ui->ReynoldsNumber->text().toDouble();
 
@@ -489,7 +488,7 @@ BasicCFDv2::getBuildingGridSize()
 }
 
 double
-BasicCFDv2::getDomainGridSize()
+DigitalWindTunnel::getDomainGridSize()
 {
     double Re = ui->ReynoldsNumber->text().toDouble();
 
@@ -499,7 +498,7 @@ BasicCFDv2::getDomainGridSize()
 }
 
 bool
-BasicCFDv2::outputMeshToJSON(QJsonObject &jsonObjMesh)
+DigitalWindTunnel::outputMeshToJSON(QJsonObject &jsonObjMesh)
 {
     //Geometry file
     jsonObjMesh["geoChoose"] = "uploaded";
@@ -549,7 +548,7 @@ BasicCFDv2::outputMeshToJSON(QJsonObject &jsonObjMesh)
 
 
 bool
-BasicCFDv2::inputMeshFromJSON(QJsonObject &jsonObject)
+DigitalWindTunnel::inputMeshFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
@@ -598,7 +597,7 @@ BasicCFDv2::inputMeshFromJSON(QJsonObject &jsonObject)
 
 
 bool
-BasicCFDv2::outputParametersToJSON(QJsonObject &jsonObject)
+DigitalWindTunnel::outputParametersToJSON(QJsonObject &jsonObject)
 {
     //Simulation Control
     bool ok;
@@ -626,7 +625,7 @@ BasicCFDv2::outputParametersToJSON(QJsonObject &jsonObject)
 
 
 bool
-BasicCFDv2::inputParametersFromJSON(QJsonObject &jsonObject)
+DigitalWindTunnel::inputParametersFromJSON(QJsonObject &jsonObject)
 {
     //Simulation Control
     ui->dT->setText(QString::number(jsonObject["deltaT"].toDouble()));                        //Simulation Time Step
