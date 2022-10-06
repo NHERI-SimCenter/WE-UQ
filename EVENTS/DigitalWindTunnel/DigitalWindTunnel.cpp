@@ -48,6 +48,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QModelIndex>
 #include <QStackedWidget>
 #include <QFile>
+#include <QRadioButton>
 
 #include "SimulationParametersCWE.h"
 
@@ -90,76 +91,40 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     //3D View
     graphicsWidget = new CWE3DView(this);
 
-    // add graphicsWidget to layout
-    //layout->addWidget(couplingGroup, 3, 0);
-
-    layout->addWidget(graphicsWidget, 0, 2, 5, 1);
+    layout->addWidget(graphicsWidget, 0, 2, 3, 1);
+    layout->setColumnStretch(0,1);
+    layout->setColumnStretch(1,1);
     layout->setColumnStretch(2,2);
-
-    //Subdomains
-    //subdomainsTable = new QTableView();
-    subdomainsModel = new SubdomainsModel(0, this);
-    ui->subdomainsTable->setModel(subdomainsModel);
-    ui->subdomainsTable->setEditTriggers(QAbstractItemView::AnyKeyPressed);
-    ui->subdomainsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
-    ui->subdomainsTable->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Stretch);
-    ui->subdomainsTable->setMaximumHeight(120);
-    ui->subdomainsTable->setHidden(true);
 
     //Setting validator
     auto positiveDoubleValidator = new QDoubleValidator(this);
     positiveDoubleValidator->setBottom(0.0);
     positiveDoubleValidator->setDecimals(3);
-    ui->domainLengthInlet->setValidator(positiveDoubleValidator);
-    ui->domainLengthOutlet->setValidator(positiveDoubleValidator);
-    ui->domainLengthYpos->setValidator(positiveDoubleValidator);
-    ui->domainLengthYneg->setValidator(positiveDoubleValidator);
-    ui->domainLengthZpos->setValidator(positiveDoubleValidator);
-    ui->domainLengthZneg->setValidator(positiveDoubleValidator);
-    ui->turbulenceIntensity->setValidator(positiveDoubleValidator);
-    ui->duration->setValidator(positiveDoubleValidator);
-    ui->inflowVelocity->setValidator(positiveDoubleValidator);
+    ui->startTimeBox->setValidator(positiveDoubleValidator);
+
+    auto doubleValidator = new QDoubleValidator(this);
+    doubleValidator->setDecimals(3);
+    //ui->dir1->setValidator(doubleValidator);
+    //ui->dir2->setValidator(doubleValidator);
+    //ui->dir3->setValidator(doubleValidator);
+    //ui->offset0->setValidator(doubleValidator);
+    //ui->offset1->setValidator(doubleValidator);
+    //ui->offset2->setValidator(doubleValidator);
 
     auto smallDoubleValidator = new QDoubleValidator(this);
     smallDoubleValidator->setBottom(0.0);
     smallDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
-    ui->dT->setValidator(smallDoubleValidator);
-    ui->kinematicViscosity->setValidator(smallDoubleValidator);
 
     auto positiveSciDoubleValidator = new QDoubleValidator(this);
     positiveSciDoubleValidator->setBottom(0.0);
     positiveSciDoubleValidator->setDecimals(1);
     positiveSciDoubleValidator->setNotation(QDoubleValidator::ScientificNotation);
-    ui->ReynoldsNumber->setValidator(positiveSciDoubleValidator);
 
 
     // setting default values
-    ui->domainLengthInlet->setText("5.0");
-    ui->domainLengthOutlet->setText("15.0");
-    ui->domainLengthYpos->setText("5.0");
-    ui->domainLengthYneg->setText("5.0");
-    ui->domainLengthZpos->setText("4.0");
-    ui->domainLengthZneg->setText("0.0");
 
     gridSizeBluffBody = 4;
     gridSizeOuterBoundary = 20;
-
-    ui->turbulanceModel->addItem(tr("Smagorinsky Turbulence Model (LES)"), "Smagorinsky");
-    ui->turbulanceModel->addItem(tr("S-A One Equation Model (RANS)"), "SpalartAllmaras");
-    ui->turbulanceModel->addItem(tr("Spalart Allmaras DDES Model"), "SpalartAllmarasDDES");
-    ui->turbulanceModel->addItem(tr("Dynamic One Equation Model (LES)"), "dynOneEqEddy");
-    ui->turbulanceModel->addItem(tr("k-p Epsilon Model (RANS)"), "kEpsilon");
-    ui->turbulanceModel->addItem(tr("Laminar Flow Model"), "laminar");
-    ui->turbulanceModel->setCurrentIndex(4);
-
-    ui->pisoCorrectors->setValue(1);
-    ui->nonOrthogonalCorrectors->setValue(0);
-    ui->turbulenceIntensity->setText("0.02");
-    ui->duration->setText("1.0");
-    ui->dT->setText("0.1");
-    ui->inflowVelocity->setText("1.0");
-    ui->kinematicViscosity->setText("1.48e-05");
-    ui->ReynoldsNumber->setText("1000.0");
 
     setupConnections();
 }
@@ -237,65 +202,22 @@ DigitalWindTunnel::setupConnections()
 {
     //connect(meshParameters, &MeshParametersCWE::meshChanged, this, [this](){update3DView();});
 
-    connect(ui->numSubdomains, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index)
-    {
-        Q_UNUSED(index);
-        int nSubdomains = ui->numSubdomains->currentIndex();
-        subdomainsModel->setSubdomains(nSubdomains,
-                                       ui->domainLengthInlet->text().toDouble(),
-                                       ui->domainLengthOutlet->text().toDouble(),
-                                       ui->domainLengthYneg->text().toDouble(),
-                                       ui->domainLengthYpos->text().toDouble(),
-                                       ui->domainLengthZneg->text().toDouble(),
-                                       ui->domainLengthZpos->text().toDouble(),
-                                       gridSizeBluffBody,
-                                       gridSizeOuterBoundary);
-
-        if (nSubdomains > 0)
-        {
-            ui->subdomainsTable->setHidden(false);
-            ui->subdomainsTable->setMaximumHeight(30 + 30 * nSubdomains);
+    connect(ui->loadDataFromFile_RBTN, &QRadioButton::toggled, [this](){
+        if (ui->loadDataFromFile_RBTN->isChecked()) {
+            ui->modelParametersStack->setCurrentIndex(0);
         }
-        else if (nSubdomains == 0)
-            ui->subdomainsTable->setHidden(true);
-
+        else {
+            ui->modelParametersStack->setCurrentIndex(1);
+        }
     });
 
-
-    connect(ui->domainLengthInlet, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
-    });
-
-    connect(ui->domainLengthOutlet, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
-    });
-
-    connect(ui->domainLengthYneg, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
-    });
-
-    connect(ui->domainLengthYpos, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
-    });
-
-    connect(ui->domainLengthZneg, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
-    });
-
-    connect(ui->domainLengthZpos, &QLineEdit::textChanged, this, [this](const QString& text)
-    {
-        Q_UNUSED(text);
-        this->update3DView();
+    connect(ui->manualDataEntry_RBTN, &QRadioButton::toggled, [this](){
+        if (ui->loadDataFromFile_RBTN->isChecked()) {
+            ui->modelParametersStack->setCurrentIndex(0);
+        }
+        else {
+            ui->modelParametersStack->setCurrentIndex(1);
+        }
     });
 
     auto generalInfo = GeneralInformationWidget::getInstance();
@@ -458,9 +380,13 @@ DigitalWindTunnel::getDomainMultipliers()
 {
     QVector3D domainMultipliers;
 
-    domainMultipliers.setX(ui->domainLengthInlet->text().toFloat() + ui->domainLengthOutlet->text().toFloat() + 1.0f);
-    domainMultipliers.setY(ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat() + 1.0f);
-    domainMultipliers.setZ(ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f);
+    //domainMultipliers.setX(ui->domainLengthInlet->text().toFloat() + ui->domainLengthOutlet->text().toFloat() + 1.0f);
+    //domainMultipliers.setY(ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat() + 1.0f);
+    //domainMultipliers.setZ(ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f);
+
+    domainMultipliers.setX(1.0f);
+    domainMultipliers.setY(1.0f);
+    domainMultipliers.setZ(1.0f);
 
     return domainMultipliers;
 }
@@ -470,9 +396,13 @@ DigitalWindTunnel::getDomainCenterMultipliers()
 {
     QVector3D domainCenterMultipliers;
 
-    domainCenterMultipliers.setX((-ui->domainLengthInlet->text().toFloat() + ui->domainLengthOutlet->text().toFloat())/2.0f);
-    domainCenterMultipliers.setY((-ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat())/2.0f);
-    domainCenterMultipliers.setZ((-ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f)/2.0f);
+    //domainCenterMultipliers.setX((-ui->domainLengthInlet->text().toFloat() + ui->domainLengthOutlet->text().toFloat())/2.0f);
+    //domainCenterMultipliers.setY((-ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat())/2.0f);
+    //domainCenterMultipliers.setZ((-ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f)/2.0f);
+
+    domainCenterMultipliers.setX(1.0f);
+    domainCenterMultipliers.setY(1.0f);
+    domainCenterMultipliers.setZ(1.0f);
 
     return domainCenterMultipliers;
 }
@@ -480,7 +410,7 @@ DigitalWindTunnel::getDomainCenterMultipliers()
 double
 DigitalWindTunnel::getBuildingGridSize()
 {
-    double Re = ui->ReynoldsNumber->text().toDouble();
+    //double Re = ui->ReynoldsNumber->text().toDouble();
 
     //gridSizeBluffBody = ....;
 
@@ -490,7 +420,7 @@ DigitalWindTunnel::getBuildingGridSize()
 double
 DigitalWindTunnel::getDomainGridSize()
 {
-    double Re = ui->ReynoldsNumber->text().toDouble();
+    //double Re = ui->ReynoldsNumber->text().toDouble();
 
     //gridSizeOuterBoundary = ....;
 
@@ -506,6 +436,7 @@ DigitalWindTunnel::outputMeshToJSON(QJsonObject &jsonObjMesh)
 
     //Mesh Parameters set by user
 
+#if 0
     //Domain Length
     bool ok;
     jsonObjMesh["inPad"]    = ui->domainLengthInlet->text().QString::toDouble(&ok);;  //Domain Length (Inlet)
@@ -543,6 +474,8 @@ DigitalWindTunnel::outputMeshToJSON(QJsonObject &jsonObjMesh)
     jsonObjMesh["lowZPlane"]   = ui->boundaryConditionZneg->currentData().toString();//Boundary Condition (Z-)
     jsonObjMesh["highZPlane"]  = ui->boundaryConditionZpos->currentData().toString();//Boundary Condition (Z+)
 
+#endif
+
     return true;
 }
 
@@ -552,6 +485,7 @@ DigitalWindTunnel::inputMeshFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
+#if 0
     //Domain Length
     ui->domainLengthInlet->setText(QString::number(jsonObject["inPad"].toDouble()));   //Domain Length (Inlet)
     ui->domainLengthOutlet->setText(QString::number(jsonObject["outPad"].toDouble())); //Domain Length (Outlet)
@@ -591,6 +525,7 @@ DigitalWindTunnel::inputMeshFromJSON(QJsonObject &jsonObject)
     setComboBoxByData(*(ui->boundaryConditionYpos), jsonObject["highYPlane"].toVariant());  //Boundary Condition (Y+)
     setComboBoxByData(*(ui->boundaryConditionZneg), jsonObject["lowZPlane"].toVariant());   //Boundary Condition (Z-)
     setComboBoxByData(*(ui->boundaryConditionZpos), jsonObject["highZPlane"].toVariant());  //Boundary Condition (Z+)
+#endif
 
     return true;
 }
@@ -601,6 +536,8 @@ DigitalWindTunnel::outputParametersToJSON(QJsonObject &jsonObject)
 {
     //Simulation Control
     bool ok;
+
+#if 0
     jsonObject["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
     jsonObject["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
     jsonObject["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
@@ -618,7 +555,7 @@ DigitalWindTunnel::outputParametersToJSON(QJsonObject &jsonObject)
 
     if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
         jsonObject["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
-
+#endif
 
     return true;
 }
@@ -627,6 +564,7 @@ DigitalWindTunnel::outputParametersToJSON(QJsonObject &jsonObject)
 bool
 DigitalWindTunnel::inputParametersFromJSON(QJsonObject &jsonObject)
 {
+#if 0
     //Simulation Control
     ui->dT->setText(QString::number(jsonObject["deltaT"].toDouble()));                        //Simulation Time Step
     ui->duration->setText(QString::number(jsonObject["endTime"].toDouble()));                 //Simulation Duration
@@ -650,6 +588,7 @@ DigitalWindTunnel::inputParametersFromJSON(QJsonObject &jsonObject)
 
     if(jsonObject.contains("processors"))
         ui->processorsBox->setValue(jsonObject["processors"].toInt());
+#endif
 
     return true;
 }
