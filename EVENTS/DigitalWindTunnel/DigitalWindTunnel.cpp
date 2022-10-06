@@ -91,10 +91,9 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     //3D View
     graphicsWidget = new CWE3DView(this);
 
-    layout->addWidget(graphicsWidget, 0, 2, 3, 1);
+    layout->addWidget(graphicsWidget, 0, 1, 1, 1);
     layout->setColumnStretch(0,1);
     layout->setColumnStretch(1,1);
-    layout->setColumnStretch(2,2);
 
     //Setting validator
     auto positiveDoubleValidator = new QDoubleValidator(this);
@@ -127,6 +126,10 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     gridSizeOuterBoundary = 20;
 
     setupConnections();
+
+    // initialize interface state
+    ui->loadDataFromFile_RBTN->setChecked(true);
+    ui->modelSelectionCBX->setCurrentIndex(2);   // logarithmic model
 }
 
 DigitalWindTunnel::~DigitalWindTunnel()
@@ -204,21 +207,26 @@ DigitalWindTunnel::setupConnections()
 
     connect(ui->loadDataFromFile_RBTN, &QRadioButton::toggled, [this](){
         if (ui->loadDataFromFile_RBTN->isChecked()) {
-            ui->modelParametersStack->setCurrentIndex(0);
+            ui->modelParametersStack->setCurrentIndex(1);
         }
         else {
-            ui->modelParametersStack->setCurrentIndex(1);
+            ui->modelParametersStack->setCurrentIndex(0);
         }
     });
 
     connect(ui->manualDataEntry_RBTN, &QRadioButton::toggled, [this](){
         if (ui->loadDataFromFile_RBTN->isChecked()) {
-            ui->modelParametersStack->setCurrentIndex(0);
-        }
-        else {
             ui->modelParametersStack->setCurrentIndex(1);
         }
+        else {
+            ui->modelParametersStack->setCurrentIndex(0);
+        }
     });
+
+    connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
+    connect(ui->RB_syntheticEddie, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(1); });
+    connect(ui->RB_divergenceFree, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(2); });
+    connect(ui->RB_turbulentSpot,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(3); });
 
     auto generalInfo = GeneralInformationWidget::getInstance();
 
@@ -592,3 +600,49 @@ DigitalWindTunnel::inputParametersFromJSON(QJsonObject &jsonObject)
 
     return true;
 }
+
+void DigitalWindTunnel::on_modelSelectionCBX_currentIndexChanged(int index)
+{
+    switch (index) {
+    case 0:  // uniform model
+        ui->velocityGroup->show();
+        ui->frictionParametersGroup->hide();
+        ui->manualDataEntry_RBTN->setEnabled(true);
+        break;
+    case 1:  // exponential model
+        ui->velocityGroup->show();
+        ui->frictionParametersGroup->hide();
+        ui->manualDataEntry_RBTN->setEnabled(true);
+        break;
+    case 2:  // logarithmic model
+    default:
+        ui->velocityGroup->hide();
+        ui->frictionParametersGroup->show();
+        ui->loadDataFromFile_RBTN->setChecked(true);
+        ui->manualDataEntry_RBTN->setEnabled(false);
+        break;
+    }
+}
+
+
+
+void DigitalWindTunnel::on_sourceLocateBtn_clicked()
+{
+
+}
+
+void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
+{
+
+}
+
+void DigitalWindTunnel::on_loadReynodsStress_BTN_clicked()
+{
+
+}
+
+void DigitalWindTunnel::on_loadLengthScale_BTN_clicked()
+{
+
+}
+

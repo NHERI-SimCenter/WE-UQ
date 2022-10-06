@@ -101,6 +101,13 @@ public slots:
     void update3DView(bool centered = false);
     void update3DViewCentered();
 
+private slots:
+    void on_sourceLocateBtn_clicked();
+    void on_browseForTInFDataFile_button_clicked();
+    void on_loadReynodsStress_BTN_clicked();
+    void on_loadLengthScale_BTN_clicked();
+    void on_modelSelectionCBX_currentIndexChanged(int index);
+
 private:
     MeshParametersCWE *meshParameters;
     SimCenterWidget *simulationParameters;
