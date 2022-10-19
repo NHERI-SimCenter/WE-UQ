@@ -109,6 +109,7 @@ private slots:
     void on_btn_export_clicked(void);
 
 private:  /* methods */
+    void updateUIsettings(void);
     void refreshParameterMap(void);
     void refreshDisplay(void);
     void setLocationAvailable(bool status, QDir &loc);
