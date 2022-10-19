@@ -122,6 +122,8 @@ private:
     double gridSizeBluffBody;
     double gridSizeOuterBoundary;
 
+    void updateUIsettings(void);
+
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
     bool inputMeshFromJSON(QJsonObject &jsonObjMesh);
