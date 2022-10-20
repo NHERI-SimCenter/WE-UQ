@@ -48,7 +48,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QModelIndex>
 #include <QStackedWidget>
 #include <QFile>
+#include <QDir>
+#include <QDebug>
+#include <QDoubleSpinBox>
 #include <QRadioButton>
+#include <QFileDialog>
 
 #include "SimulationParametersCWE.h"
 
@@ -56,9 +60,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "RandomVariablesContainer.h"
 #include "GeneralInformationWidget.h"
 #include "ExpertCFD/UI/GeometryHelper.h"
-#include "QDir"
-#include <QDebug>
-#include <QDoubleSpinBox>
 #include <math.h>
 #include <usermodeshapes.h>
 
@@ -91,6 +92,8 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     // initialize interface state
     ui->loadDataFromFile_RBTN->setChecked(true);
     ui->modelSelectionCBX->setCurrentIndex(2);   // logarithmic model
+
+    m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
 }
 
 DigitalWindTunnel::~DigitalWindTunnel()
@@ -666,21 +669,69 @@ void DigitalWindTunnel::on_modelSelectionCBX_currentIndexChanged(int index)
 
 void DigitalWindTunnel::on_sourceLocateBtn_clicked()
 {
+    QString selectedFilter;
+    QString dirname = QFileDialog::getExistingDirectory(this,
+                                                        "Locate directory containing the OpenFOAM model",
+                                                        getLoadFromDir());
+    if (dirname.isEmpty()) return;
 
+    ui->sourceLocationDisplay->setText(dirname);
+    updateLoadFromDir(dirname, 1);
 }
 
 void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate inflow turbulence data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
 
+    ui->TInFDataFile_TE->setText(filename);
+    updateLoadFromDir(filename);
 }
 
 void DigitalWindTunnel::on_loadReynodsStress_BTN_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate Reynolds stress data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
 
+    ui->ReynoldsStress_LE->setText(filename);
+    updateLoadFromDir(filename);
 }
 
 void DigitalWindTunnel::on_loadLengthScale_BTN_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate Length scale data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
+
+    ui->LengthScale_LE->setText(filename);
+    updateLoadFromDir(filename);
+}
+
+
+void DigitalWindTunnel::on_defaultCaseButton_clicked()
+{
 
 }
 
+void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)
+{
+    QDir newDir(filename);
+    for (int i=0; i<levels_up; i++)
+        newDir.cdUp();
+    QString dirname = newDir.path();
+    m_loadFromDir.setPath(dirname);
+}

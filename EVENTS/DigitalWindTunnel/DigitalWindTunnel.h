@@ -51,6 +51,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPoint>
 #include "MeshParametersCWE.h"
 #include <ExpertCFD/UI/CWE3DView.h>
+#include <QDir>
 
 
 class InputWidgetParameters;
@@ -107,6 +108,7 @@ private slots:
     void on_loadReynodsStress_BTN_clicked();
     void on_loadLengthScale_BTN_clicked();
     void on_modelSelectionCBX_currentIndexChanged(int index);
+    void on_defaultCaseButton_clicked();
 
 private:
     MeshParametersCWE *meshParameters;
@@ -122,7 +124,11 @@ private:
     double gridSizeBluffBody;
     double gridSizeOuterBoundary;
 
+    QDir   m_loadFromDir;
+
     void updateUIsettings(void);
+    QString getLoadFromDir(void) { return m_loadFromDir.path(); }
+    void updateLoadFromDir(QString filename, int levels_up=0);
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
