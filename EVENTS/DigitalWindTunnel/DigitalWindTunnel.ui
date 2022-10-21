@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>930</width>
-        <height>1748</height>
+        <height>1950</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -336,7 +336,7 @@
                 </sizepolicy>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="digitalFilterPage">
                 <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0,0" columnstretch="0,1">
@@ -724,7 +724,7 @@
             <property name="checkable">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,3,10,0">
+            <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0,1,0">
              <property name="leftMargin">
               <number>6</number>
              </property>
@@ -740,203 +740,36 @@
              <property name="spacing">
               <number>-1</number>
              </property>
-             <item row="2" column="0" colspan="3">
-              <widget class="QRadioButton" name="radioButton_2">
-               <property name="text">
-                <string>Inflow turbulence parameters</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QLabel" name="profileTypeLabel">
-               <property name="text">
-                <string>Profile type</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QLineEdit" name="TInFDataFile_TE"/>
-             </item>
-             <item row="3" column="2">
-              <widget class="QComboBox" name="modelSelectionCBX">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <item>
-                <property name="text">
-                 <string>uniform model</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>exponential model</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>logarithmic model</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="QPushButton" name="browseForTInFDataFile_button">
-               <property name="text">
-                <string>browse</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1" colspan="3">
-              <widget class="QGroupBox" name="velocityGroup">
+             <item row="6" column="1" colspan="4">
+              <widget class="QGroupBox" name="frictionParametersGroup">
                <property name="title">
-                <string>Mean velocity</string>
+                <string>Friction model parameters</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
-                <property name="leftMargin">
-                 <number>6</number>
-                </property>
-                <property name="topMargin">
-                 <number>6</number>
-                </property>
-                <property name="rightMargin">
-                 <number>6</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>6</number>
-                </property>
+               <layout class="QGridLayout" name="gridLayout_13">
                 <item row="0" column="1">
-                 <widget class="QDoubleSpinBox" name="vel">
-                  <property name="maximum">
-                   <double>333.000000000000000</double>
-                  </property>
-                  <property name="singleStep">
-                   <double>0.100000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_refAngleU">
-                  <property name="text">
-                   <string>reference angle (deg)</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_velocityU">
-                  <property name="text">
-                   <string>magnitude</string>
-                  </property>
-                 </widget>
+                 <widget class="QLineEdit" name="frictionVelocity"/>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QDoubleSpinBox" name="refAngleU">
-                  <property name="decimals">
-                   <number>1</number>
-                  </property>
-                  <property name="minimum">
-                   <double>-180.000000000000000</double>
-                  </property>
-                  <property name="maximum">
-                   <double>180.000000000000000</double>
-                  </property>
-                 </widget>
+                 <widget class="QLineEdit" name="roughnessHeight"/>
                 </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_alphaU">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="roughnessHeight_label">
                   <property name="text">
-                   <string>alpha</string>
+                   <string>Roughness height (z&lt;sub&gt;0&lt;/sub&gt;)</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
-                 <widget class="QDoubleSpinBox" name="alphaU">
-                  <property name="decimals">
-                   <number>3</number>
-                  </property>
-                  <property name="singleStep">
-                   <double>0.010000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="label_refDistU">
-                  <property name="text">
-                   <string>reference distance</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="refDistU">
-                  <property name="maximum">
-                   <double>300.000000000000000</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Data file (.csv)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="3">
-              <widget class="QRadioButton" name="radioButton">
-               <property name="text">
-                <string>User-defined inflow boundary data</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="1" colspan="3">
-              <widget class="QFrame" name="frame_2">
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_15">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
                 <item row="0" column="0">
-                 <widget class="QRadioButton" name="loadDataFromFile_RBTN">
+                 <widget class="QLabel" name="frictionVelocity_label">
                   <property name="text">
-                   <string>load R and L from file</string>
-                  </property>
-                  <property name="checked">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QRadioButton" name="manualDataEntry_RBTN">
-                  <property name="text">
-                   <string>enter R and L manually</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Friction velocity (u&lt;span style=&quot; vertical-align:super;&quot;&gt;*&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
              </item>
-             <item row="7" column="1" colspan="3">
+             <item row="8" column="1" colspan="4">
               <widget class="QStackedWidget" name="modelParametersStack">
                <property name="currentIndex">
                 <number>1</number>
@@ -1316,26 +1149,6 @@
                </widget>
                <widget class="QWidget" name="parametersFromFile">
                 <layout class="QGridLayout" name="gridLayout_14">
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="lineEdit"/>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="loadLengthScale_BTN">
-                   <property name="text">
-                    <string>browse</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="lineEdit_2"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label_3">
-                   <property name="text">
-                    <string>Length scale tensor (&lt;b&gt;L&lt;/b&gt;)</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QPushButton" name="loadReynodsStress_BTN">
                    <property name="text">
@@ -1343,14 +1156,7 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_2">
-                   <property name="text">
-                    <string>Reynolds stress (&lt;b&gt;R&lt;/b&gt;)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
+                 <item row="4" column="1">
                   <spacer name="verticalSpacer_3">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
@@ -1366,38 +1172,241 @@
                    </property>
                   </spacer>
                  </item>
+                 <item row="2" column="2">
+                  <widget class="QPushButton" name="loadLengthScale_BTN">
+                   <property name="text">
+                    <string>browse</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_3">
+                   <property name="text">
+                    <string>Length scale tensor (&lt;b&gt;L&lt;/b&gt;)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>Reynolds stress (&lt;b&gt;R&lt;/b&gt;)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0" colspan="3">
+                  <widget class="QTableView" name="ReynoldsStressView"/>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="LengthScale_LE"/>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="ReynoldsStress_LE"/>
+                 </item>
+                 <item row="3" column="0" colspan="3">
+                  <widget class="QTableView" name="LengthScaleView"/>
+                 </item>
                 </layout>
                </widget>
               </widget>
              </item>
-             <item row="5" column="1" colspan="3">
-              <widget class="QGroupBox" name="frictionParametersGroup">
+             <item row="5" column="1" colspan="4">
+              <widget class="QGroupBox" name="velocityGroup">
                <property name="title">
-                <string>Friction model parameters</string>
+                <string>Mean velocity</string>
                </property>
-               <layout class="QGridLayout" name="gridLayout_13">
+               <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+                <property name="leftMargin">
+                 <number>6</number>
+                </property>
+                <property name="topMargin">
+                 <number>6</number>
+                </property>
+                <property name="rightMargin">
+                 <number>6</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>6</number>
+                </property>
                 <item row="0" column="1">
-                 <widget class="QLineEdit" name="frictionVelocity"/>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="roughnessHeight"/>
+                 <widget class="QDoubleSpinBox" name="vel">
+                  <property name="maximum">
+                   <double>333.000000000000000</double>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.100000000000000</double>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QLabel" name="roughnessHeight_label">
+                 <widget class="QLabel" name="label_refAngleU">
                   <property name="text">
-                   <string>Roughness height (z&lt;sub&gt;0&lt;/sub&gt;)</string>
+                   <string>reference angle (deg)</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QLabel" name="frictionVelocity_label">
+                 <widget class="QLabel" name="label_velocityU">
                   <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Friction velocity (u&lt;span style=&quot; vertical-align:super;&quot;&gt;*&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <string>magnitude</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="refAngleU">
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="minimum">
+                   <double>-180.000000000000000</double>
+                  </property>
+                  <property name="maximum">
+                   <double>180.000000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_alphaU">
+                  <property name="text">
+                   <string>alpha</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QDoubleSpinBox" name="alphaU">
+                  <property name="decimals">
+                   <number>3</number>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.010000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_refDistU">
+                  <property name="text">
+                   <string>reference distance</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QDoubleSpinBox" name="refDistU">
+                  <property name="maximum">
+                   <double>300.000000000000000</double>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QPushButton" name="browseForTInFDataFile_button">
+               <property name="text">
+                <string>browse</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Data file (.csv)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLabel" name="profileTypeLabel">
+               <property name="text">
+                <string>Profile type</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QComboBox" name="modelSelectionCBX">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <item>
+                <property name="text">
+                 <string>uniform model</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>exponential model</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>logarithmic model</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLineEdit" name="TInFDataFile_LE"/>
+             </item>
+             <item row="7" column="1" colspan="4">
+              <widget class="QFrame" name="frame_2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_15">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QRadioButton" name="loadDataFromFile_RBTN">
+                  <property name="text">
+                   <string>load R and L from file</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QRadioButton" name="manualDataEntry_RBTN">
+                  <property name="text">
+                   <string>enter R and L manually</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="5">
+              <widget class="QRadioButton" name="radioButton">
+               <property name="text">
+                <string>User-defined inflow boundary data</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="5">
+              <widget class="QRadioButton" name="radioButton_2">
+               <property name="text">
+                <string>Inflow turbulence parameters</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1" colspan="4">
+              <widget class="QTableView" name="InflowDataView"/>
              </item>
             </layout>
            </widget>

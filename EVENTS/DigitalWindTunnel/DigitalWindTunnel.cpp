@@ -45,10 +45,17 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTreeView>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QList>
 #include <QModelIndex>
 #include <QStackedWidget>
 #include <QFile>
+#include <QDir>
+#include <QDebug>
+#include <QDoubleSpinBox>
 #include <QRadioButton>
+#include <QFileDialog>
 
 #include "SimulationParametersCWE.h"
 
@@ -56,9 +63,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "RandomVariablesContainer.h"
 #include "GeneralInformationWidget.h"
 #include "ExpertCFD/UI/GeometryHelper.h"
-#include "QDir"
-#include <QDebug>
-#include <QDoubleSpinBox>
 #include <math.h>
 #include <usermodeshapes.h>
 
@@ -91,6 +95,8 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     // initialize interface state
     ui->loadDataFromFile_RBTN->setChecked(true);
     ui->modelSelectionCBX->setCurrentIndex(2);   // logarithmic model
+
+    m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
 }
 
 DigitalWindTunnel::~DigitalWindTunnel()
@@ -101,6 +107,11 @@ DigitalWindTunnel::~DigitalWindTunnel()
 
 void DigitalWindTunnel::updateUIsettings(void)
 {
+    // add models to table views
+    ui->InflowDataView->setModel(new QStandardItemModel());
+    ui->ReynoldsStressView->setModel(new QStandardItemModel());
+    ui->LengthScaleView->setModel(new QStandardItemModel());
+
     auto layout = dynamic_cast<QGridLayout*>(this->layout());
 
     //Coupling mode shapes
@@ -174,6 +185,11 @@ void DigitalWindTunnel::updateUIsettings(void)
     ui->alpha1->setToolTip("&alpha;<sub>1</sub>");
     ui->alpha2->setToolTip("&alpha;<sub>2</sub>");
     ui->alpha3->setToolTip("&alpha;<sub>3</sub>");
+
+    // UI components
+    ui->InflowDataView->hide();
+    ui->ReynoldsStressView->hide();
+    ui->LengthScaleView->hide();
 }
 
 double DigitalWindTunnel::toMilliMeters(QString lengthUnit) const
@@ -666,21 +682,112 @@ void DigitalWindTunnel::on_modelSelectionCBX_currentIndexChanged(int index)
 
 void DigitalWindTunnel::on_sourceLocateBtn_clicked()
 {
+    QString selectedFilter;
+    QString dirname = QFileDialog::getExistingDirectory(this,
+                                                        "Locate directory containing the OpenFOAM model",
+                                                        getLoadFromDir());
+    if (dirname.isEmpty()) return;
 
+    ui->sourceLocationDisplay->setText(dirname);
+    updateLoadFromDir(dirname, 1);
 }
 
 void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate inflow turbulence data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
 
+    ui->TInFDataFile_LE->setText(filename);
+    updateLoadFromDir(filename);
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+    csv2model(filename, *model);
+
+    ui->InflowDataView->show();
 }
 
 void DigitalWindTunnel::on_loadReynodsStress_BTN_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate Reynolds stress data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
 
+    ui->ReynoldsStress_LE->setText(filename);
+    updateLoadFromDir(filename);
+
+    ui->ReynoldsStressView->show();
 }
 
 void DigitalWindTunnel::on_loadLengthScale_BTN_clicked()
 {
+    QString selectedFilter;
+    QString filename = QFileDialog::getOpenFileName(this,
+                                                    "Locate Length scale data file",
+                                                    getLoadFromDir(),
+                                                    "Text files (*.txt *.csv)",
+                                                    &selectedFilter);
+    if (filename.isEmpty()) return;
+
+    ui->LengthScale_LE->setText(filename);
+    updateLoadFromDir(filename);
+
+    ui->LengthScaleView->show();
+}
+
+
+void DigitalWindTunnel::on_defaultCaseButton_clicked()
+{
 
 }
 
+void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)
+{
+    QDir newDir(filename);
+    for (int i=0; i<levels_up; i++)
+        newDir.cdUp();
+    QString dirname = newDir.path();
+    m_loadFromDir.setPath(dirname);
+}
+
+bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
+{
+    model.clear();
+
+    // verify that the given file exists
+    QFile csv_file = QFile(filename);
+    if (!csv_file.exists()) {
+        return false;
+    }
+
+    // try opening the file and parse it if successful
+    if (!csv_file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QTextStream in(&csv_file);
+
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList fields = line.split(",");
+        QList<QStandardItem *> *newRow = new QList<QStandardItem *>;
+
+        foreach ( const QString field, fields )
+        {
+            double val = field.toDouble();
+            newRow->append(new QStandardItem(val));
+        }
+        model.appendRow(*newRow);
+    }
+
+    csv_file.close();
+
+    return true;
+}
