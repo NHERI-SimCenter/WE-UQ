@@ -315,10 +315,14 @@ DigitalWindTunnel::setupConnections()
 
     connect(ui->userDefinedInflow_CKX, &QRadioButton::toggled, [this](){
         ui->inflowTurbulenceParameters_CKX->setChecked(!(ui->userDefinedInflow_CKX->isChecked()));
+        ui->ReynoldsStressAndLengthScaleView->hide();
+        ui->InflowDataView->show();
     });
 
     connect(ui->inflowTurbulenceParameters_CKX, &QRadioButton::toggled, [this](){
         ui->userDefinedInflow_CKX->setChecked(!(ui->inflowTurbulenceParameters_CKX->isChecked()));
+        ui->ReynoldsStressAndLengthScaleView->show();
+        ui->InflowDataView->hide();
     });
 
     connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
