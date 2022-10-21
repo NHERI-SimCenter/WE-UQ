@@ -105,8 +105,7 @@ public slots:
 private slots:
     void on_sourceLocateBtn_clicked();
     void on_browseForTInFDataFile_button_clicked();
-    void on_loadReynodsStress_BTN_clicked();
-    void on_loadLengthScale_BTN_clicked();
+    void on_loadReynoldsStressAndLengthScale_BTN_clicked();
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void on_defaultCaseButton_clicked();
 

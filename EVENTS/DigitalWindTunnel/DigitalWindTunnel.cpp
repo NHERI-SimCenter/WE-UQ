@@ -108,9 +108,46 @@ DigitalWindTunnel::~DigitalWindTunnel()
 void DigitalWindTunnel::updateUIsettings(void)
 {
     // add models to table views
-    ui->InflowDataView->setModel(new QStandardItemModel());
-    ui->ReynoldsStressView->setModel(new QStandardItemModel());
-    ui->LengthScaleView->setModel(new QStandardItemModel());
+    QStandardItemModel *model = new QStandardItemModel();
+    ui->InflowDataView->setModel(model);
+
+    model->setHorizontalHeaderItem(0, new QStandardItem("Points (mm)"));
+    model->setHorizontalHeaderItem(1, new QStandardItem("meanU (m/s)"));
+    model->setHorizontalHeaderItem(2, new QStandardItem("<u'u'> (m2/s2)"));
+    model->setHorizontalHeaderItem(3, new QStandardItem("<v'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(4, new QStandardItem("<w'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(5, new QStandardItem("<u'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(6, new QStandardItem("<u'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(7, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(8, new QStandardItem("xLu (m)"));
+    model->setHorizontalHeaderItem(9, new QStandardItem("yLu (m)"));
+    model->setHorizontalHeaderItem(10, new QStandardItem("zLu (m)"));
+    model->setHorizontalHeaderItem(11, new QStandardItem("xLv (m)"));
+    model->setHorizontalHeaderItem(12, new QStandardItem("yLv (m)"));
+    model->setHorizontalHeaderItem(13, new QStandardItem("zLv (m)"));
+    model->setHorizontalHeaderItem(14, new QStandardItem("xLw (m)"));
+    model->setHorizontalHeaderItem(15, new QStandardItem("yLw (m)"));
+    model->setHorizontalHeaderItem(16, new QStandardItem("zLw (m)"));
+
+    model = new QStandardItemModel();
+    ui->ReynoldsStressAndLengthScaleView->setModel(model);
+
+    model->setHorizontalHeaderItem(0, new QStandardItem("Points (mm)"));
+    model->setHorizontalHeaderItem(1, new QStandardItem("<u'u'> (m2/s2)"));
+    model->setHorizontalHeaderItem(2, new QStandardItem("<v'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(3, new QStandardItem("<w'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(4, new QStandardItem("<u'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(5, new QStandardItem("<u'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(6, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(7, new QStandardItem("xLu (m)"));
+    model->setHorizontalHeaderItem(8, new QStandardItem("yLu (m)"));
+    model->setHorizontalHeaderItem(9, new QStandardItem("zLu (m)"));
+    model->setHorizontalHeaderItem(10, new QStandardItem("xLv (m)"));
+    model->setHorizontalHeaderItem(11, new QStandardItem("yLv (m)"));
+    model->setHorizontalHeaderItem(12, new QStandardItem("zLv (m)"));
+    model->setHorizontalHeaderItem(13, new QStandardItem("xLw (m)"));
+    model->setHorizontalHeaderItem(14, new QStandardItem("yLw (m)"));
+    model->setHorizontalHeaderItem(15, new QStandardItem("zLw (m)"));
 
     auto layout = dynamic_cast<QGridLayout*>(this->layout());
 
@@ -188,8 +225,7 @@ void DigitalWindTunnel::updateUIsettings(void)
 
     // UI components
     ui->InflowDataView->hide();
-    ui->ReynoldsStressView->hide();
-    ui->LengthScaleView->hide();
+    ui->ReynoldsStressAndLengthScaleView->hide();
 }
 
 double DigitalWindTunnel::toMilliMeters(QString lengthUnit) const
@@ -275,6 +311,14 @@ DigitalWindTunnel::setupConnections()
         else {
             ui->modelParametersStack->setCurrentIndex(0);
         }
+    });
+
+    connect(ui->userDefinedInflow_CKX, &QRadioButton::toggled, [this](){
+        ui->inflowTurbulenceParameters_CKX->setChecked(!(ui->userDefinedInflow_CKX->isChecked()));
+    });
+
+    connect(ui->inflowTurbulenceParameters_CKX, &QRadioButton::toggled, [this](){
+        ui->userDefinedInflow_CKX->setChecked(!(ui->inflowTurbulenceParameters_CKX->isChecked()));
     });
 
     connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
@@ -710,7 +754,7 @@ void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
     ui->InflowDataView->show();
 }
 
-void DigitalWindTunnel::on_loadReynodsStress_BTN_clicked()
+void DigitalWindTunnel::on_loadReynoldsStressAndLengthScale_BTN_clicked()
 {
     QString selectedFilter;
     QString filename = QFileDialog::getOpenFileName(this,
@@ -720,28 +764,13 @@ void DigitalWindTunnel::on_loadReynodsStress_BTN_clicked()
                                                     &selectedFilter);
     if (filename.isEmpty()) return;
 
-    ui->ReynoldsStress_LE->setText(filename);
+    ui->ReynoldsStressAndLengthScale_LE->setText(filename);
     updateLoadFromDir(filename);
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
+    csv2model(filename, *model);
 
-    ui->ReynoldsStressView->show();
+    ui->ReynoldsStressAndLengthScaleView->show();
 }
-
-void DigitalWindTunnel::on_loadLengthScale_BTN_clicked()
-{
-    QString selectedFilter;
-    QString filename = QFileDialog::getOpenFileName(this,
-                                                    "Locate Length scale data file",
-                                                    getLoadFromDir(),
-                                                    "Text files (*.txt *.csv)",
-                                                    &selectedFilter);
-    if (filename.isEmpty()) return;
-
-    ui->LengthScale_LE->setText(filename);
-    updateLoadFromDir(filename);
-
-    ui->LengthScaleView->show();
-}
-
 
 void DigitalWindTunnel::on_defaultCaseButton_clicked()
 {
@@ -759,7 +788,7 @@ void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)
 
 bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
 {
-    model.clear();
+    model.removeRows(0, model.rowCount());
 
     // verify that the given file exists
     QFile csv_file = QFile(filename);
@@ -782,7 +811,7 @@ bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
         foreach ( const QString field, fields )
         {
             double val = field.toDouble();
-            newRow->append(new QStandardItem(val));
+            newRow->append(new QStandardItem(field));
         }
         model.appendRow(*newRow);
     }
