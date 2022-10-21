@@ -132,12 +132,6 @@ private:
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
-    bool inputMeshFromJSON(QJsonObject &jsonObjMesh);
-    bool outputMeshToJSON(QJsonObject &jsonObjMesh);
-
-    // from SimulationParametersCWE
-    bool inputParametersFromJSON(QJsonObject &jsonObj);
-    bool outputParametersToJSON(QJsonObject &jsonObj);
 
     // from BasicCFD
     double toMilliMeters(QString lengthUnit) const;
