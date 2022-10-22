@@ -129,6 +129,8 @@ private:
     QString getLoadFromDir(void) { return m_loadFromDir.path(); }
     void updateLoadFromDir(QString filename, int levels_up=0);
     bool csv2model(QString filename, QStandardItemModel &model);
+    bool model2json(QStandardItemModel &model, QJsonObject &jsonObject);
+    bool json2model(QJsonObject &jsonObject, QStandardItemModel &model);
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);

@@ -223,7 +223,7 @@ void DigitalWindTunnel::updateUIsettings(void)
     ui->alpha3->setToolTip("&alpha;<sub>3</sub>");
 
     // UI components
-    ui->InflowDataView->hide();
+    ui->InflowDataView->show();
     ui->ReynoldsStressAndLengthScaleView->hide();
 }
 
@@ -349,6 +349,34 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
     eventObject["start"] = ui->startTimeBox->text().toDouble();
     eventObject["userModesFile"] = couplingGroup->fileName();
 
+    // UI settings
+    QJsonObject UIparameters = QJsonObject();
+    UIparameters["userDefinedInflow"] = ui->userDefinedInflow_CKX->isChecked() ;
+    UIparameters["inflowTurbulenceParameters"] = ui->inflowTurbulenceParameters_CKX->isChecked() ;
+    UIparameters["loadDataFromFile"] = ui->loadDataFromFile_RBTN->isChecked() ;
+    UIparameters["manualDataEntry"] = ui->manualDataEntry_RBTN->isChecked() ;
+    UIparameters["TInFDataFileName"] = ui->TInFDataFile_LE->text() ;
+    UIparameters["ReynoldsStressAndLengthScaleFileName"] = ui->ReynoldsStressAndLengthScale_LE->text() ;
+    //UIparameters[""] = ui-> ;
+    //UIparameters[""] = ui-> ;
+    //UIparameters[""] = ui-> ;
+    eventObject["UIparameters"] = UIparameters;
+
+    // export table values
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+    QJsonObject dataObject = QJsonObject();
+    if (model2json(*model, dataObject)) {
+        eventObject["InflowData"] = dataObject;
+    }
+
+    model = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
+    dataObject = QJsonObject();
+    if (model2json(*model, dataObject)) {
+        eventObject["ReynoldsStressAndLengthScale"] = dataObject;
+    }
+
+    model = nullptr;
+
     //
     // get each of the main widgets to output themselves
     //
@@ -470,6 +498,39 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     } else {
         ui->forceComboBox->setCurrentIndex(0);
     }
+
+    // UI settings
+    if (jsonObject.contains("UIparameters")) {
+
+        QJsonObject UIparameters = jsonObject["UIparameters"].toObject();
+
+        ui->userDefinedInflow_CKX->setChecked( UIparameters["userDefinedInflow"].toBool() );
+        ui->inflowTurbulenceParameters_CKX->setChecked( UIparameters["inflowTurbulenceParameters"].toBool() );
+        ui->loadDataFromFile_RBTN->setChecked( UIparameters["loadDataFromFile"].toBool() );
+        ui->manualDataEntry_RBTN->setChecked( UIparameters["manualDataEntry"].toBool() );
+        ui->TInFDataFile_LE->setText( UIparameters["TInFDataFileName"].toString() );
+        ui->ReynoldsStressAndLengthScale_LE->setText( UIparameters["ReynoldsStressAndLengthScaleFileName"].toString() );
+        //UIparameters[""] = ui-> ;
+        //UIparameters[""] = ui-> ;
+        //UIparameters[""] = ui-> ;
+    }
+
+    // import table values
+    QStandardItemModel *model = nullptr;
+
+    if (jsonObject.contains("InflowData")) {
+        model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+        QJsonObject dataObject = jsonObject["InflowData"].toObject();
+        json2model(dataObject, *model);
+    }
+
+    if (jsonObject.contains("ReynoldsStressAndLengthScale")) {
+        model = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
+        QJsonObject dataObject = jsonObject["ReynoldsStressAndLengthScale"].toObject();
+        json2model(dataObject, *model);
+    }
+
+    model = nullptr;
 
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
@@ -698,8 +759,6 @@ void DigitalWindTunnel::on_modelSelectionCBX_currentIndexChanged(int index)
     }
 }
 
-
-
 void DigitalWindTunnel::on_sourceLocateBtn_clicked()
 {
     QString selectedFilter;
@@ -787,7 +846,9 @@ bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
         foreach ( const QString field, fields )
         {
             double val = field.toDouble();
-            newRow->append(new QStandardItem(field));
+            QStandardItem *item = new QStandardItem();
+            item->setData(val, Qt::DisplayRole);
+            newRow->append(item);
         }
         model.appendRow(*newRow);
     }
@@ -796,3 +857,55 @@ bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
 
     return true;
 }
+
+bool DigitalWindTunnel::model2json(QStandardItemModel &model, QJsonObject &jsonObject)
+{
+    QJsonArray array = QJsonArray();
+
+    for (int col=0; col < model.columnCount(); col++) {
+        QStandardItem *item = model.horizontalHeaderItem(col);
+        array.append(item->data(Qt::DisplayRole).toString());
+    }
+    jsonObject.insert("header", array);
+
+    array = QJsonArray();
+
+    for (int row=0; row<model.rowCount(); row++) {
+
+        QJsonArray oneRow = QJsonArray();
+        for (int col=0; col < model.columnCount(); col++) {
+            QStandardItem *item = model.item(row,col);
+            oneRow.append(item->data(Qt::DisplayRole).toDouble());
+        }
+        array.append(oneRow);
+    }
+    jsonObject.insert("data", array);
+
+    return true;
+}
+
+bool DigitalWindTunnel::json2model(QJsonObject &jsonObject, QStandardItemModel &model)
+{
+    model.removeRows(0, model.rowCount());
+
+    if (jsonObject.contains("data")) {
+        QJsonArray array = jsonObject["data"].toArray();
+
+        for (auto row = array.begin(); row != array.end(); row++) {
+            QList<QStandardItem *> newRow;
+            QJsonArray jsonRow = row->toArray();
+            for (auto col = jsonRow.begin(); col != jsonRow.end(); col++) {
+
+                double val = col->toDouble();
+                QStandardItem *item = new QStandardItem();
+                item->setData(val, Qt::DisplayRole);
+
+                newRow.append(item);
+            }
+            model.appendRow(newRow);
+        }
+    }
+
+    return true;
+}
+
