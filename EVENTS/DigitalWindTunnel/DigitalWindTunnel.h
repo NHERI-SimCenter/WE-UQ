@@ -105,8 +105,7 @@ public slots:
 private slots:
     void on_sourceLocateBtn_clicked();
     void on_browseForTInFDataFile_button_clicked();
-    void on_loadReynodsStress_BTN_clicked();
-    void on_loadLengthScale_BTN_clicked();
+    void on_loadReynoldsStressAndLengthScale_BTN_clicked();
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void on_defaultCaseButton_clicked();
 
@@ -130,15 +129,11 @@ private:
     QString getLoadFromDir(void) { return m_loadFromDir.path(); }
     void updateLoadFromDir(QString filename, int levels_up=0);
     bool csv2model(QString filename, QStandardItemModel &model);
+    bool model2json(QStandardItemModel &model, QJsonObject &jsonObject);
+    bool json2model(QJsonObject &jsonObject, QStandardItemModel &model);
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
-    bool inputMeshFromJSON(QJsonObject &jsonObjMesh);
-    bool outputMeshToJSON(QJsonObject &jsonObjMesh);
-
-    // from SimulationParametersCWE
-    bool inputParametersFromJSON(QJsonObject &jsonObj);
-    bool outputParametersToJSON(QJsonObject &jsonObj);
 
     // from BasicCFD
     double toMilliMeters(QString lengthUnit) const;

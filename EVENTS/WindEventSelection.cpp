@@ -208,21 +208,22 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
     int index = 0;
     qDebug() << "TYPE: " << type;
 
-    if (type == QString("DEDM_HRP")) {
-        index = 3;
-    } else if (type.contains(QString("LowRiseTPU"))) {
-        index = 4;
-    } else if (type.contains(QString("WindTunnelExperiment"))) {
-        index = 5;
-    } else if (type.contains(QString("StochasticWind"))) {
+
+    if (type.contains(QString("StochasticWind"))) {
         index = 0;
     } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
         index = 1;
     } else if (type == QString("CFD - Expert")) {
         index = 2;
-    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-        index = 6;
     } else if ((type == QString("CFD - Digital Wind Tunnel")) || (type == QString("DigitalWindTunnel"))) {
+        index = 3;
+    } else if (type == QString("DEDM_HRP")) {
+        index = 4;
+    } else if (type.contains(QString("LowRiseTPU"))) {
+        index = 5;
+    } else if (type.contains(QString("WindTunnelExperiment"))) {
+        index = 6;
+    } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
         index = 7;
     }
     else {

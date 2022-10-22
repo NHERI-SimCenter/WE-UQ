@@ -1150,13 +1150,13 @@
                <widget class="QWidget" name="parametersFromFile">
                 <layout class="QGridLayout" name="gridLayout_14">
                  <item row="0" column="2">
-                  <widget class="QPushButton" name="loadReynodsStress_BTN">
+                  <widget class="QPushButton" name="loadReynoldsStressAndLengthScale_BTN">
                    <property name="text">
                     <string>browse</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="1">
+                 <item row="2" column="1">
                   <spacer name="verticalSpacer_3">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
@@ -1172,20 +1172,6 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="2" column="2">
-                  <widget class="QPushButton" name="loadLengthScale_BTN">
-                   <property name="text">
-                    <string>browse</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_3">
-                   <property name="text">
-                    <string>Length scale tensor (&lt;b&gt;L&lt;/b&gt;)</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_2">
                    <property name="text">
@@ -1194,16 +1180,10 @@
                   </widget>
                  </item>
                  <item row="1" column="0" colspan="3">
-                  <widget class="QTableView" name="ReynoldsStressView"/>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="LengthScale_LE"/>
+                  <widget class="QTableView" name="ReynoldsStressAndLengthScaleView"/>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QLineEdit" name="ReynoldsStress_LE"/>
-                 </item>
-                 <item row="3" column="0" colspan="3">
-                  <widget class="QTableView" name="LengthScaleView"/>
+                  <widget class="QLineEdit" name="ReynoldsStressAndLengthScale_LE"/>
                  </item>
                 </layout>
                </widget>
@@ -1389,7 +1369,7 @@
               </widget>
              </item>
              <item row="0" column="0" colspan="5">
-              <widget class="QRadioButton" name="radioButton">
+              <widget class="QRadioButton" name="userDefinedInflow_CKX">
                <property name="text">
                 <string>User-defined inflow boundary data</string>
                </property>
@@ -1399,9 +1379,12 @@
               </widget>
              </item>
              <item row="3" column="0" colspan="5">
-              <widget class="QRadioButton" name="radioButton_2">
+              <widget class="QRadioButton" name="inflowTurbulenceParameters_CKX">
                <property name="text">
                 <string>Inflow turbulence parameters</string>
+               </property>
+               <property name="autoExclusive">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
