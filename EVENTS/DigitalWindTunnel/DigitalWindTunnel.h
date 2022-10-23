@@ -109,6 +109,34 @@ private slots:
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void on_defaultCaseButton_clicked();
 
+/* ===== from CFD Expert ================= */
+
+protected:
+    //void showEvent(QShowEvent *event) override;
+
+private:
+    void downloadRemoteCaseFiles();
+    void ensureUFileExists();
+    QStringList getRemoteFilesPaths();
+    void parseBoundaryPatches(QString uFilePath);
+    void processBuildingPatches();
+    bool validateSelectedPatches();
+    void autoSelectPatches();
+    bool buildFiles(QString &dirName);
+
+    bool readUfile(QString);
+    void processUfile();
+    void exportUFile(QString);
+
+    bool readControlDict(QString);
+    void exportControlDictFile(QString, QString);
+    void exportgeneralizedMotionStateFile(QString, QString);
+
+    bool getLine(QStringList &);
+    QMap<QString, QString> *readParameters(void);
+
+/* ===== end insert from CDF Expert ====== */
+
 private:
     MeshParametersCWE *meshParameters;
     SimCenterWidget *simulationParameters;

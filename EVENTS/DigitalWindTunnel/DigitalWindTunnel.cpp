@@ -909,3 +909,83 @@ bool DigitalWindTunnel::json2model(QJsonObject &jsonObject, QStandardItemModel &
     return true;
 }
 
+void downloadRemoteCaseFiles()
+{
+
+}
+
+void ensureUFileExists()
+{
+
+}
+
+QStringList getRemoteFilesPaths()
+{
+
+}
+
+void DigitalWindTunnel::parseBoundaryPatches(QString uFilePath)
+{
+
+}
+
+void DigitalWindTunnel::processBuildingPatches()
+{
+
+}
+
+bool DigitalWindTunnel::validateSelectedPatches()
+{
+
+}
+
+void DigitalWindTunnel::autoSelectPatches()
+{
+
+}
+
+bool DigitalWindTunnel::buildFiles(QString &dirName)
+{
+
+}
+
+bool DigitalWindTunnel::readUfile(QString)
+{
+
+}
+
+void DigitalWindTunnel::processUfile()
+{
+
+}
+
+void DigitalWindTunnel::exportUFile(QString)
+{
+
+}
+
+bool DigitalWindTunnel::readControlDict(QString)
+{
+
+}
+
+void DigitalWindTunnel::exportControlDictFile(QString, QString)
+{
+
+}
+
+void DigitalWindTunnel::exportgeneralizedMotionStateFile(QString, QString)
+{
+
+}
+
+bool DigitalWindTunnel::getLine(QStringList &)
+{
+
+}
+
+QMap<QString, QString> *DigitalWindTunnel::readParameters(void)
+{
+
+}
+
