@@ -227,7 +227,7 @@ void DigitalWindTunnel::updateUIsettings(void)
     // UI components
     ui->InflowDataView->show();
     ui->ReynoldsStressAndLengthScaleView->hide();
-    ui->solverComboBox->hide();
+    ui->solverSelection->hide();
     ui->solver_label->hide();
 
     setDefaultParameters();
@@ -341,128 +341,6 @@ DigitalWindTunnel::setupConnections()
     connect(generalInfo, &GeneralInformationWidget::numStoriesOrHeightChanged, this, &DigitalWindTunnel::update3DViewCentered);
 
     connect(ui->patchesEditBox_BTN, &QPushButton::clicked, this, &DigitalWindTunnel::selectPatchesPushed);
-}
-
-
-bool
-DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
-{
-    //Simulation Control
-    bool ok;
-
-    //Output basic info
-    eventObject["EventClassification"] = "Wind";
-    eventObject["type"] = "DigitalWindTunnel";
-    eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
-    eventObject["start"] = ui->startTimeBox->text().toDouble();
-    eventObject["userModesFile"] = couplingGroup->fileName();
-
-    // UI settings
-    QJsonObject UIparameters = QJsonObject();
-    UIparameters["userDefinedInflow"] = ui->userDefinedInflow_CKX->isChecked() ;
-    UIparameters["inflowTurbulenceParameters"] = ui->inflowTurbulenceParameters_CKX->isChecked() ;
-    UIparameters["loadDataFromFile"] = ui->loadDataFromFile_RBTN->isChecked() ;
-    UIparameters["manualDataEntry"] = ui->manualDataEntry_RBTN->isChecked() ;
-    UIparameters["TInFDataFileName"] = ui->TInFDataFile_LE->text() ;
-    UIparameters["ReynoldsStressAndLengthScaleFileName"] = ui->ReynoldsStressAndLengthScale_LE->text() ;
-    //UIparameters[""] = ui-> ;
-    //UIparameters[""] = ui-> ;
-    //UIparameters[""] = ui-> ;
-    eventObject["UIparameters"] = UIparameters;
-
-    // export table values
-    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
-    QJsonObject dataObject = QJsonObject();
-    if (model2json(*model, dataObject)) {
-        eventObject["InflowData"] = dataObject;
-    }
-
-    model = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
-    dataObject = QJsonObject();
-    if (model2json(*model, dataObject)) {
-        eventObject["ReynoldsStressAndLengthScale"] = dataObject;
-    }
-
-    model = nullptr;
-
-    //
-    // get each of the main widgets to output themselves
-    //
-    QJsonObject jsonObjMesh;
-    //Geometry file
-    jsonObjMesh["geoChoose"] = "uploaded";
-    jsonObjMesh["geoFile"] = "building.obj";
-
-    //Mesh Parameters set by user
-
-#if 0
-    //Domain Length
-    bool ok;
-    jsonObjMesh["inPad"]    = ui->domainLengthInlet->text().QString::toDouble(&ok);;  //Domain Length (Inlet)
-    jsonObjMesh["outPad"]   = ui->domainLengthOutlet->text().QString::toDouble(&ok);; //Domain Length (Outlet)
-    jsonObjMesh["lowYPad"]  = ui->domainLengthYneg->text().QString::toDouble(&ok);;   //Domain Length (-Y)
-    jsonObjMesh["highYPad"] = ui->domainLengthYpos->text().QString::toDouble(&ok);;   //Domain Length (+Y)
-    jsonObjMesh["lowZPad"]  = ui->domainLengthZneg->text().QString::toDouble(&ok);;   //Domain Length (-Z)
-    jsonObjMesh["highZPad"] = ui->domainLengthZpos->text().QString::toDouble(&ok);;   //Domain Length (+Z)
-
-    auto subdomains = subdomainsModel->getSubdomains();
-
-    for (int i = 0; i < subdomains.count(); i++)
-    {
-        jsonObjMesh["inPadDom" + QString::number(i+1)] = QString::number(subdomains[i].inlet).QString::toDouble(&ok);;         //Subdomain Length (Inlet)
-        jsonObjMesh["outPadDom" + QString::number(i+1)] = QString::number(subdomains[i].outlet).QString::toDouble(&ok);;       //Subdomain Length (Outlet)
-        jsonObjMesh["lowYDom" + QString::number(i+1)] = QString::number(subdomains[i].outward).QString::toDouble(&ok);;        //Subdomain Length (-Y)
-        jsonObjMesh["highYDom" + QString::number(i+1)] = QString::number(subdomains[i].inward).QString::toDouble(&ok);;        //Subdomain Length (+Y)
-        jsonObjMesh["lowZDom" + QString::number(i+1)] = QString::number(subdomains[i].bottom).QString::toDouble(&ok);;         //Subdomain Length (-Z)
-        jsonObjMesh["highZDom" + QString::number(i+1)] = QString::number(subdomains[i].top).QString::toDouble(&ok);;           //Subdomain Length (+Z)
-        jsonObjMesh["meshDensityDom" + QString::number(i+1)] = QString::number(subdomains[i].meshSize).QString::toDouble(&ok);;//Subdomain outer mesh size
-    }
-
-    //Mesh Size
-    jsonObjMesh["meshDensity"]    = this->getBuildingGridSize();  //Grid Size (on the bluff body)
-    jsonObjMesh["meshDensityFar"] = this->getDomainGridSize();    //Grid Size (on the outer bound)
-
-    //Subdomains
-    jsonObjMesh["innerDomains"] = ui->numSubdomains->currentData().toInt();  //Number of Subdomains
-
-    //Boundary Conditions
-    jsonObjMesh["frontXPlane"] = ui->boundaryConditionXneg->currentData().toString();//Boundary Condition (X-)
-    jsonObjMesh["backXPlane"]  = ui->boundaryConditionXpos->currentData().toString();//Boundary Condition (X+)
-    jsonObjMesh["lowYPlane"]   = ui->boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
-    jsonObjMesh["highYPlane"]  = ui->boundaryConditionYpos->currentData().toString();//Boundary Condition (Y+)
-    jsonObjMesh["lowZPlane"]   = ui->boundaryConditionZneg->currentData().toString();//Boundary Condition (Z-)
-    jsonObjMesh["highZPlane"]  = ui->boundaryConditionZpos->currentData().toString();//Boundary Condition (Z+)
-
-#endif
-
-    eventObject["mesh"] = jsonObjMesh;
-
-
-    QJsonObject jsonObjSimulation;
-
-#if 0
-    jsonObjSimulation["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
-    jsonObjSimulation["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
-    jsonObjSimulation["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
-    jsonObjSimulation["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
-    jsonObjSimulation["processors"] = ui->processorsBox->text().QString::toInt(&ok);           // # of processors to use
-
-    jsonObjSimulation["inflowVelocity"] = ui->inflowVelocity->text().QString::toDouble(&ok);   // inflow velocity
-    jsonObjSimulation["ReynoldsNumber"] = ui->ReynoldsNumber->text().QString::toDouble(&ok);   // Reynold number
-    jsonObjSimulation["solver"]         = ui->solverSelection->currentText();                  // which CFD solver to use
-
-    //Advanced
-    jsonObjSimulation["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
-    jsonObjSimulation["pisoCorrectors"]     = ui->pisoCorrectors->value();                             //Number of PISO Correctors,
-    jsonObjSimulation["pisoNonOrthCorrect"] = ui->nonOrthogonalCorrectors->value();                    //Number of non-orthogonal Correctors,
-
-    if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
-        jsonObjSimulation["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
-#endif
-
-    eventObject["sim"] = jsonObjSimulation;
-
-    return true;
 }
 
 
@@ -769,6 +647,123 @@ DigitalWindTunnel::update3DViewCentered()
 }
 
 bool
+DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
+{
+    //Simulation Control
+    bool ok;
+
+    //Output basic info
+    eventObject["EventClassification"] = "Wind";
+    eventObject["type"] = "DigitalWindTunnel";
+    eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
+    eventObject["start"] = ui->startTimeBox->text().toDouble();
+    eventObject["userModesFile"] = couplingGroup->fileName();
+
+    // UI settings
+    QJsonObject UIparameters = QJsonObject();
+    UIparameters["userDefinedInflow"] = ui->userDefinedInflow_CKX->isChecked() ;
+    UIparameters["inflowTurbulenceParameters"] = ui->inflowTurbulenceParameters_CKX->isChecked() ;
+    UIparameters["loadDataFromFile"] = ui->loadDataFromFile_RBTN->isChecked() ;
+    UIparameters["manualDataEntry"] = ui->manualDataEntry_RBTN->isChecked() ;
+    UIparameters["TInFDataFileName"] = ui->TInFDataFile_LE->text() ;
+    UIparameters["ReynoldsStressAndLengthScaleFileName"] = ui->ReynoldsStressAndLengthScale_LE->text() ;
+    //UIparameters[""] = ui-> ;
+    //UIparameters[""] = ui-> ;
+    //UIparameters[""] = ui-> ;
+    eventObject["UIparameters"] = UIparameters;
+
+    // export table values
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+    QJsonObject dataObject = QJsonObject();
+    if (model2json(*model, dataObject)) {
+        eventObject["InflowData"] = dataObject;
+    }
+
+    model = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
+    dataObject = QJsonObject();
+    if (model2json(*model, dataObject)) {
+        eventObject["ReynoldsStressAndLengthScale"] = dataObject;
+    }
+
+    model = nullptr;
+
+    //
+    // get each of the main widgets to output themselves
+    //
+    QJsonObject jsonObjMesh;
+    //Geometry file
+    jsonObjMesh["geoChoose"] = "uploaded";
+    jsonObjMesh["geoFile"] = "building.obj";
+
+    //Mesh Parameters set by user
+
+//    //Domain Length
+//    bool ok;
+//    jsonObjMesh["inPad"]    = ui->domainLengthInlet->text().QString::toDouble(&ok);;  //Domain Length (Inlet)
+//    jsonObjMesh["outPad"]   = ui->domainLengthOutlet->text().QString::toDouble(&ok);; //Domain Length (Outlet)
+//    jsonObjMesh["lowYPad"]  = ui->domainLengthYneg->text().QString::toDouble(&ok);;   //Domain Length (-Y)
+//    jsonObjMesh["highYPad"] = ui->domainLengthYpos->text().QString::toDouble(&ok);;   //Domain Length (+Y)
+//    jsonObjMesh["lowZPad"]  = ui->domainLengthZneg->text().QString::toDouble(&ok);;   //Domain Length (-Z)
+//    jsonObjMesh["highZPad"] = ui->domainLengthZpos->text().QString::toDouble(&ok);;   //Domain Length (+Z)
+
+//    auto subdomains = subdomainsModel->getSubdomains();
+
+//    for (int i = 0; i < subdomains.count(); i++)
+//    {
+//        jsonObjMesh["inPadDom" + QString::number(i+1)] = QString::number(subdomains[i].inlet).QString::toDouble(&ok);;         //Subdomain Length (Inlet)
+//        jsonObjMesh["outPadDom" + QString::number(i+1)] = QString::number(subdomains[i].outlet).QString::toDouble(&ok);;       //Subdomain Length (Outlet)
+//        jsonObjMesh["lowYDom" + QString::number(i+1)] = QString::number(subdomains[i].outward).QString::toDouble(&ok);;        //Subdomain Length (-Y)
+//        jsonObjMesh["highYDom" + QString::number(i+1)] = QString::number(subdomains[i].inward).QString::toDouble(&ok);;        //Subdomain Length (+Y)
+//        jsonObjMesh["lowZDom" + QString::number(i+1)] = QString::number(subdomains[i].bottom).QString::toDouble(&ok);;         //Subdomain Length (-Z)
+//        jsonObjMesh["highZDom" + QString::number(i+1)] = QString::number(subdomains[i].top).QString::toDouble(&ok);;           //Subdomain Length (+Z)
+//        jsonObjMesh["meshDensityDom" + QString::number(i+1)] = QString::number(subdomains[i].meshSize).QString::toDouble(&ok);;//Subdomain outer mesh size
+//    }
+
+//    //Mesh Size
+//    jsonObjMesh["meshDensity"]    = this->getBuildingGridSize();  //Grid Size (on the bluff body)
+//    jsonObjMesh["meshDensityFar"] = this->getDomainGridSize();    //Grid Size (on the outer bound)
+
+//    //Subdomains
+//    jsonObjMesh["innerDomains"] = ui->numSubdomains->currentData().toInt();  //Number of Subdomains
+
+//    //Boundary Conditions
+//    jsonObjMesh["frontXPlane"] = ui->boundaryConditionXneg->currentData().toString();//Boundary Condition (X-)
+//    jsonObjMesh["backXPlane"]  = ui->boundaryConditionXpos->currentData().toString();//Boundary Condition (X+)
+//    jsonObjMesh["lowYPlane"]   = ui->boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
+//    jsonObjMesh["highYPlane"]  = ui->boundaryConditionYpos->currentData().toString();//Boundary Condition (Y+)
+//    jsonObjMesh["lowZPlane"]   = ui->boundaryConditionZneg->currentData().toString();//Boundary Condition (Z-)
+//    jsonObjMesh["highZPlane"]  = ui->boundaryConditionZpos->currentData().toString();//Boundary Condition (Z+)
+
+
+    eventObject["mesh"] = jsonObjMesh;
+
+
+    QJsonObject jsonObjSimulation;
+
+//    jsonObjSimulation["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
+//    jsonObjSimulation["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
+//    jsonObjSimulation["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
+//    jsonObjSimulation["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
+    jsonObjSimulation["processors"] = ui->processorsBox->text().QString::toInt(&ok);           // # of processors to use
+
+//    jsonObjSimulation["inflowVelocity"] = ui->inflowVelocity->text().QString::toDouble(&ok);   // inflow velocity
+//    jsonObjSimulation["ReynoldsNumber"] = ui->ReynoldsNumber->text().QString::toDouble(&ok);   // Reynold number
+//    jsonObjSimulation["solver"]         = ui->solverSelection->currentText();                  // which CFD solver to use
+
+//    //Advanced
+//    jsonObjSimulation["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
+//    jsonObjSimulation["pisoCorrectors"]     = ui->pisoCorrectors->value();                             //Number of PISO Correctors,
+//    jsonObjSimulation["pisoNonOrthCorrect"] = ui->nonOrthogonalCorrectors->value();                    //Number of non-orthogonal Correctors,
+
+//    if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
+//        jsonObjSimulation["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
+
+    eventObject["sim"] = jsonObjSimulation;
+
+    return true;
+}
+
+bool
 DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
@@ -817,47 +812,45 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
 
-    #if 0
-        //Domain Length
-        ui->domainLengthInlet->setText(QString::number(jsonObjMesh["inPad"].toDouble()));   //Domain Length (Inlet)
-        ui->domainLengthOutlet->setText(QString::number(jsonObjMesh["outPad"].toDouble())); //Domain Length (Outlet)
-        ui->domainLengthYneg->setText(QString::number(jsonObjMesh["lowYPad"].toDouble()));  //Domain Length (-Y)
-        ui->domainLengthYpos->setText(QString::number(jsonObjMesh["highYPad"].toDouble())); //Domain Length (+Y)
-        ui->domainLengthZneg->setText(QString::number(jsonObjMesh["lowZPad"].toDouble()));  //Domain Length (-Z)
-        ui->domainLengthZpos->setText(QString::number(jsonObjMesh["highZPad"].toDouble())); //Domain Length (+Z)
+//        //Domain Length
+//        ui->domainLengthInlet->setText(QString::number(jsonObjMesh["inPad"].toDouble()));   //Domain Length (Inlet)
+//        ui->domainLengthOutlet->setText(QString::number(jsonObjMesh["outPad"].toDouble())); //Domain Length (Outlet)
+//        ui->domainLengthYneg->setText(QString::number(jsonObjMesh["lowYPad"].toDouble()));  //Domain Length (-Y)
+//        ui->domainLengthYpos->setText(QString::number(jsonObjMesh["highYPad"].toDouble())); //Domain Length (+Y)
+//        ui->domainLengthZneg->setText(QString::number(jsonObjMesh["lowZPad"].toDouble()));  //Domain Length (-Z)
+//        ui->domainLengthZpos->setText(QString::number(jsonObjMesh["highZPad"].toDouble())); //Domain Length (+Z)
 
-        //Mesh Size -- these are only loaded for debugging
-        gridSizeBluffBody     = jsonObjMesh["meshDensity"].toDouble();    //Grid Size (on the bluff body)
-        gridSizeOuterBoundary = jsonObjMesh["meshDensityFar"].toDouble(); //Grid Size (on the outer bound)
+//        //Mesh Size -- these are only loaded for debugging
+//        gridSizeBluffBody     = jsonObjMesh["meshDensity"].toDouble();    //Grid Size (on the bluff body)
+//        gridSizeOuterBoundary = jsonObjMesh["meshDensityFar"].toDouble(); //Grid Size (on the outer bound)
 
-        //Subdomains
-        int index = ui->numSubdomains->findData(jsonObjMesh["innerDomains"].toInt());
-        if(index >=0 )
-        {
-            ui->numSubdomains->setCurrentIndex(index);  //Number of Subdomains
-            int nSubdomains = ui->numSubdomains->currentData().toInt();
-            QVector<Subdomain> subdomains(nSubdomains);
+//        //Subdomains
+//        int index = ui->numSubdomains->findData(jsonObjMesh["innerDomains"].toInt());
+//        if(index >=0 )
+//        {
+//            ui->numSubdomains->setCurrentIndex(index);  //Number of Subdomains
+//            int nSubdomains = ui->numSubdomains->currentData().toInt();
+//            QVector<Subdomain> subdomains(nSubdomains);
 
-            for (int i = 0; i < nSubdomains; i++)
-            {
-                subdomains[i].inlet    = jsonObjMesh["inPadDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (Inlet)
-                subdomains[i].outlet   = jsonObjMesh["outPadDom" + QString::number(i+1)].toString().toDouble();      //Subdomain Length (Outlet)
-                subdomains[i].outward  = jsonObjMesh["lowYDom" + QString::number(i+1)].toString().toDouble();        //Subdomain Length (-Y)
-                subdomains[i].inward   = jsonObjMesh["highYDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (+Y)
-                subdomains[i].bottom   = jsonObjMesh["lowZDom" + QString::number(i+1)].toString().toDouble();        //Subdomain Length (-Z)
-                subdomains[i].top      = jsonObjMesh["highZDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (+Z)
-                subdomains[i].meshSize = jsonObjMesh["meshDensityDom" + QString::number(i+1)].toString().toDouble(); //Subdomain outer mesh size
-            }
-            subdomainsModel->setSubdomains(subdomains);
-        }
-        //Boundary Conditions
-        setComboBoxByData(*(ui->boundaryConditionXneg), jsonObjMesh["frontXPlane"].toVariant()); //Boundary Condition (X-)
-        setComboBoxByData(*(ui->boundaryConditionXpos), jsonObjMesh["backXPlane"].toVariant());  //Boundary Condition (X+)
-        setComboBoxByData(*(ui->boundaryConditionYneg), jsonObjMesh["lowYPlane"].toVariant());   //Boundary Condition (Y-)
-        setComboBoxByData(*(ui->boundaryConditionYpos), jsonObjMesh["highYPlane"].toVariant());  //Boundary Condition (Y+)
-        setComboBoxByData(*(ui->boundaryConditionZneg), jsonObjMesh["lowZPlane"].toVariant());   //Boundary Condition (Z-)
-        setComboBoxByData(*(ui->boundaryConditionZpos), jsonObjMesh["highZPlane"].toVariant());  //Boundary Condition (Z+)
-#endif
+//            for (int i = 0; i < nSubdomains; i++)
+//            {
+//                subdomains[i].inlet    = jsonObjMesh["inPadDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (Inlet)
+//                subdomains[i].outlet   = jsonObjMesh["outPadDom" + QString::number(i+1)].toString().toDouble();      //Subdomain Length (Outlet)
+//                subdomains[i].outward  = jsonObjMesh["lowYDom" + QString::number(i+1)].toString().toDouble();        //Subdomain Length (-Y)
+//                subdomains[i].inward   = jsonObjMesh["highYDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (+Y)
+//                subdomains[i].bottom   = jsonObjMesh["lowZDom" + QString::number(i+1)].toString().toDouble();        //Subdomain Length (-Z)
+//                subdomains[i].top      = jsonObjMesh["highZDom" + QString::number(i+1)].toString().toDouble();       //Subdomain Length (+Z)
+//                subdomains[i].meshSize = jsonObjMesh["meshDensityDom" + QString::number(i+1)].toString().toDouble(); //Subdomain outer mesh size
+//            }
+//            subdomainsModel->setSubdomains(subdomains);
+//        }
+//        //Boundary Conditions
+//        setComboBoxByData(*(ui->boundaryConditionXneg), jsonObjMesh["frontXPlane"].toVariant()); //Boundary Condition (X-)
+//        setComboBoxByData(*(ui->boundaryConditionXpos), jsonObjMesh["backXPlane"].toVariant());  //Boundary Condition (X+)
+//        setComboBoxByData(*(ui->boundaryConditionYneg), jsonObjMesh["lowYPlane"].toVariant());   //Boundary Condition (Y-)
+//        setComboBoxByData(*(ui->boundaryConditionYpos), jsonObjMesh["highYPlane"].toVariant());  //Boundary Condition (Y+)
+//        setComboBoxByData(*(ui->boundaryConditionZneg), jsonObjMesh["lowZPlane"].toVariant());   //Boundary Condition (Z-)
+//        setComboBoxByData(*(ui->boundaryConditionZpos), jsonObjMesh["highZPlane"].toVariant());  //Boundary Condition (Z+)
 
     } else
         return false;
@@ -865,32 +858,29 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("sim")) {
         QJsonObject jsonObjSimulation = jsonObject["sim"].toObject();
 
-#if 0
-        //Simulation Control
-        ui->dT->setText(QString::number(jsonObjSimulation["deltaT"].toDouble()));                        //Simulation Time Step
-        ui->duration->setText(QString::number(jsonObjSimulation["endTime"].toDouble()));                 //Simulation Duration
-        ui->inflowVelocity->setText(QString::number(jsonObjSimulation["velocity"].toDouble()));          //Inflow Velocity
-        ui->kinematicViscosity->setText(QString::number(jsonObjSimulation["nu"].toDouble()));            //Kinematic Viscosity
+//        //Simulation Control
+//        ui->dT->setText(QString::number(jsonObjSimulation["deltaT"].toDouble()));                        //Simulation Time Step
+//        ui->duration->setText(QString::number(jsonObjSimulation["endTime"].toDouble()));                 //Simulation Duration
+//        ui->inflowVelocity->setText(QString::number(jsonObjSimulation["velocity"].toDouble()));          //Inflow Velocity
+//        ui->kinematicViscosity->setText(QString::number(jsonObjSimulation["nu"].toDouble()));            //Kinematic Viscosity
 
 
-        ui->inflowVelocity->setText(QString::number(jsonObjSimulation["inflowVelocity"].toDouble()));    // inflow velocity
-        ui->ReynoldsNumber->setText(QString::number(jsonObjSimulation["ReynoldsNumber"].toDouble()));    // Reynold number
+//        ui->inflowVelocity->setText(QString::number(jsonObjSimulation["inflowVelocity"].toDouble()));    // inflow velocity
+//        ui->ReynoldsNumber->setText(QString::number(jsonObjSimulation["ReynoldsNumber"].toDouble()));    // Reynold number
         ui->solverSelection->setCurrentText(jsonObjSimulation["solver"].toString());                                // which CFD solver to use
 
-        //Advanced
-        int index = ui->turbulanceModel->findData(jsonObjSimulation["turbModel"].toVariant());
-        if(index >= 0)
-            ui->turbulanceModel->setCurrentIndex(index);                                          //Turbulence Model
-        ui->pisoCorrectors->setValue(jsonObjSimulation["pisoCorrectors"].toInt());                       //Number of PISO Correctors,
-        ui->nonOrthogonalCorrectors->setValue(jsonObjSimulation["pisoNonOrthCorrect"].toInt());          //Number of non-orthogonal Correctors,
+//        //Advanced
+//        int index = ui->turbulanceModel->findData(jsonObjSimulation["turbModel"].toVariant());
+//        if(index >= 0)
+//            ui->turbulanceModel->setCurrentIndex(index);                                          //Turbulence Model
+//        ui->pisoCorrectors->setValue(jsonObjSimulation["pisoCorrectors"].toInt());                       //Number of PISO Correctors,
+//        ui->nonOrthogonalCorrectors->setValue(jsonObjSimulation["pisoNonOrthCorrect"].toInt());          //Number of non-orthogonal Correctors,
 
-        if(jsonObjSimulation.contains("turbintensity"))
-            ui->turbulenceIntensity->setText(QString::number(jsonObjSimulation["turbintensity"].toDouble()));   //Turbulence Intensity
+//        if(jsonObjSimulation.contains("turbintensity"))
+//            ui->turbulenceIntensity->setText(QString::number(jsonObjSimulation["turbintensity"].toDouble()));   //Turbulence Intensity
 
-        if(jsonObjSimulation.contains("processors"))
-            ui->processorsBox->setValue(jsonObjSimulation["processors"].toInt());
-#endif
-
+//        if(jsonObjSimulation.contains("processors"))
+//            ui->processorsBox->setValue(jsonObjSimulation["processors"].toInt());
     } else
         return false;
 
@@ -1489,7 +1479,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         qDebug() << "move" << newFile << origFile;
 
         // write the new file
-        QString solverType = ui->solverComboBox->currentText();
+        QString solverType = ui->solverSelection->currentText();
 
         // load template file
         QFile tpl(":/Resources/CWE/Templates/fvSolution");
@@ -1956,7 +1946,7 @@ void DigitalWindTunnel::exportControlDictFile(QString origFileName, QString file
             out << ");" << ENDLN;
             out << ENDLN;
 
-            out << "application     " << ui->solverComboBox->currentText() << ";" << ENDLN;
+            out << "application     " << ui->solverSelection->currentText() << ";" << ENDLN;
         }
         //
         // looking for the "functions" keyword
@@ -2201,5 +2191,10 @@ void DigitalWindTunnel::processUfile()
         m_UFileTail.append('\n');
     }
 
-    couplingGroup->updateBoundaryList(boundaryList);
+    QStandardItemModel *theModel= new QStandardItemModel();
+    foreach(QString s, boundaryList)
+    {
+        theModel->appendRow(new QStandardItem(s));
+    }
+    ui->boundarySelection->setModel(theModel);
 }
