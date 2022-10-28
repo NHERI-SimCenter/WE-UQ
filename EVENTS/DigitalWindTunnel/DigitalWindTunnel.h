@@ -53,6 +53,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <ExpertCFD/UI/CWE3DView.h>
 #include <QDir>
 
+#ifdef ENDLN
+#undef ENDLN
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+#define ENDLN endl
+#else
+#define ENDLN Qt::endl
+#endif
+
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -109,6 +119,40 @@ private slots:
     void on_modelSelectionCBX_currentIndexChanged(int index);
     void on_defaultCaseButton_clicked();
 
+/* ===== from CFD Expert ================= */
+
+    void on_patchesEditBox_BTN_clicked();
+
+protected:
+    //void showEvent(QShowEvent *event) override;
+
+private:
+    void refreshParameterMap(void);
+    void refreshDisplay(void);
+
+    void downloadRemoteCaseFiles(void);
+    bool ensureUFileExists(void);
+    void parseBoundaryPatches(QString uFilePath);
+    void processBuildingPatches(void);
+    bool validateSelectedPatches(void);
+    void autoSelectPatches(void);
+    void selectPatchesPushed(void);
+    bool buildFiles(QString &dirName);
+
+    bool readUfile(QString);
+    void processUfile(void);
+    void exportUFile(QString);
+
+    bool readControlDict(QString);
+    void exportControlDictFile(QString, QString);
+    void exportgeneralizedMotionStateFile(QString, QString);
+    void exportInflowParameterFile(QString newFile);
+
+    bool getLine(QStringList &);
+    QMap<QString, QString> *readParameters(void);
+
+/* ===== end insert from CDF Expert ====== */
+
 private:
     MeshParametersCWE *meshParameters;
     SimCenterWidget *simulationParameters;
@@ -126,6 +170,9 @@ private:
     QDir   m_loadFromDir;
 
     void updateUIsettings(void);
+    void setDefaultParameters();
+    bool fetchParameterMap(QMap<QString, double> &theParams);
+    void sourcePathChanged(QString sourcedir);
     QString getLoadFromDir(void) { return m_loadFromDir.path(); }
     void updateLoadFromDir(QString filename, int levels_up=0);
     bool csv2model(QString filename, QStandardItemModel &model);
@@ -140,6 +187,35 @@ private:
     void get3DViewParameters(QVector3D& buildingSize, QVector3D& domainSize, QVector3D& domainCenter,
                              QPoint& buildingGrid, QPoint& domainGrid);
     void setupConnections();
+
+
+    // variables used for processing
+
+    QString         m_originalUFilePath;
+    QString         m_originalControlDictPath;
+    QString         m_originalgeneralizedMotionStatePath;
+    QString         m_originalfvSolutionPath;
+    QStringList     m_patchesList;
+
+    bool hasParameters = false;
+    QMap<QString, double> theParameters;
+
+    QDir m_oldLocation = QDir(".");
+    QDir m_newLocation = QDir(".");
+
+    QByteArray m_CDictContents;
+    QByteArray m_TemplateContents;
+
+    QFile       m_UFile;
+
+    QList<QByteArray> m_UFileList;
+    QListIterator<QByteArray> *m_UIter;
+    QMap<QString, QMap<QString, QString> * > m_boundaries;
+
+    QString     m_UFilePath;
+    QByteArray  m_UFileContents;
+    QByteArray  m_UFileHead = "";
+    QByteArray  m_UFileTail = "";
 };
 
 #endif // DIGITALWINDTUNNEL_H
