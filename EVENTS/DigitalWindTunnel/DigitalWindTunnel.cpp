@@ -661,15 +661,15 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     // UI settings
     QJsonObject UIparameters = QJsonObject();
+
+    UIparameters["CFDsourceLocation"] = ui->sourceLocationDisplay->text();
     UIparameters["userDefinedInflow"] = ui->userDefinedInflow_CKX->isChecked() ;
     UIparameters["inflowTurbulenceParameters"] = ui->inflowTurbulenceParameters_CKX->isChecked() ;
     UIparameters["loadDataFromFile"] = ui->loadDataFromFile_RBTN->isChecked() ;
     UIparameters["manualDataEntry"] = ui->manualDataEntry_RBTN->isChecked() ;
     UIparameters["TInFDataFileName"] = ui->TInFDataFile_LE->text() ;
-    UIparameters["ReynoldsStressAndLengthScaleFileName"] = ui->ReynoldsStressAndLengthScale_LE->text() ;
-    //UIparameters[""] = ui-> ;
-    //UIparameters[""] = ui-> ;
-    //UIparameters[""] = ui-> ;
+    UIparameters["ReynoldsStressAndLengthScaleFileName"] = ui->ReynoldsStressAndLengthScale_LE->text();
+
     eventObject["UIparameters"] = UIparameters;
 
     // export table values
@@ -800,15 +800,17 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 
         QJsonObject UIparameters = jsonObject["UIparameters"].toObject();
 
+        // make sure to parse the files ...
+        QString dirname = UIparameters["CFDsourceLocation"].toString();
+        ui->sourceLocationDisplay->setText(dirname);
+        sourcePathChanged(dirname);
+
         ui->userDefinedInflow_CKX->setChecked( UIparameters["userDefinedInflow"].toBool() );
         ui->inflowTurbulenceParameters_CKX->setChecked( UIparameters["inflowTurbulenceParameters"].toBool() );
         ui->loadDataFromFile_RBTN->setChecked( UIparameters["loadDataFromFile"].toBool() );
         ui->manualDataEntry_RBTN->setChecked( UIparameters["manualDataEntry"].toBool() );
         ui->TInFDataFile_LE->setText( UIparameters["TInFDataFileName"].toString() );
         ui->ReynoldsStressAndLengthScale_LE->setText( UIparameters["ReynoldsStressAndLengthScaleFileName"].toString() );
-        //UIparameters[""] = ui-> ;
-        //UIparameters[""] = ui-> ;
-        //UIparameters[""] = ui-> ;
     }
 
     // import table values
@@ -1122,6 +1124,9 @@ void DigitalWindTunnel::on_sourceLocateBtn_clicked()
 
     ui->sourceLocationDisplay->setText(dirname);
     updateLoadFromDir(dirname, 1);
+
+    // need to parse those files ...
+    sourcePathChanged(dirname);
 }
 
 void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
