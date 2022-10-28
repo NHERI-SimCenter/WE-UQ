@@ -657,7 +657,7 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
     eventObject["type"] = "DigitalWindTunnel";
     eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
     eventObject["start"] = ui->startTimeBox->text().toDouble();
-    eventObject["userModesFile"] = couplingGroup->fileName();
+    //eventObject["userModesFile"]  = couplingGroup->fileName();
 
     // UI settings
     QJsonObject UIparameters = QJsonObject();
@@ -740,25 +740,46 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     QJsonObject jsonObjSimulation;
 
-//    jsonObjSimulation["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
-//    jsonObjSimulation["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
-//    jsonObjSimulation["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
-//    jsonObjSimulation["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
-    jsonObjSimulation["processors"] = ui->processorsBox->text().QString::toInt(&ok);           // # of processors to use
+    jsonObjSimulation["processors"]        = ui->processorsBox->text().QString::toInt(&ok);       // # of processors to use
+    jsonObjSimulation["solver"]            = ui->solverSelection->currentText();                  // which CFD solver to use
+    jsonObjSimulation["start"]             = ui->startTimeBox->text().QString::toDouble(&ok);     // start time for force calculation
+    jsonObjSimulation["force_calculation"] = ui->forceComboBox->currentText();                    // foce calculation method
+    jsonObjSimulation["building_patches"]  = ui->patchesEditBox->text();                          // list of building patches
 
-//    jsonObjSimulation["inflowVelocity"] = ui->inflowVelocity->text().QString::toDouble(&ok);   // inflow velocity
-//    jsonObjSimulation["ReynoldsNumber"] = ui->ReynoldsNumber->text().QString::toDouble(&ok);   // Reynold number
-//    jsonObjSimulation["solver"]         = ui->solverSelection->currentText();                  // which CFD solver to use
 
-//    //Advanced
-//    jsonObjSimulation["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
-//    jsonObjSimulation["pisoCorrectors"]     = ui->pisoCorrectors->value();                             //Number of PISO Correctors,
-//    jsonObjSimulation["pisoNonOrthCorrect"] = ui->nonOrthogonalCorrectors->value();                    //Number of non-orthogonal Correctors,
+    //    jsonObjSimulation["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
+    //    jsonObjSimulation["endTime"]    = ui->duration->text().QString::toDouble(&ok);             //Simulation Duration
+    //    jsonObjSimulation["velocity"]   = ui->inflowVelocity->text().QString::toDouble(&ok);       //Inflow Velocity
+    //    jsonObjSimulation["nu"]         = ui->kinematicViscosity->text().QString::toDouble(&ok);   //Kinematic Viscosity
 
-//    if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
-//        jsonObjSimulation["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
+    //    jsonObjSimulation["inflowVelocity"] = ui->inflowVelocity->text().QString::toDouble(&ok);   // inflow velocity
+    //    jsonObjSimulation["ReynoldsNumber"] = ui->ReynoldsNumber->text().QString::toDouble(&ok);   // Reynold number
+
+    //    //Advanced
+    //    jsonObjSimulation["turbModel"]          = ui->turbulanceModel->currentData().toString();           //Turbulence Model
+    //    jsonObjSimulation["pisoCorrectors"]     = ui->pisoCorrectors->value();                             //Number of PISO Correctors,
+    //    jsonObjSimulation["pisoNonOrthCorrect"] = ui->nonOrthogonalCorrectors->value();                    //Number of non-orthogonal Correctors,
+
+    //    if(0 != ui->turbulanceModel->currentData().toString().compare("laminar", Qt::CaseInsensitive))
+    //        jsonObjSimulation["turbintensity"] = ui->turbulenceIntensity->text().QString::toDouble(&ok);   //Turbulence Intensity
+
 
     eventObject["sim"] = jsonObjSimulation;
+
+
+    // manual inflow parameters
+
+    QJsonObject jsonObjParams;
+
+    refreshParameterMap();
+
+    jsonObjParams["inflow_patch"] = ui->boundarySelection->currentText();
+    foreach (QString key, theParameters.keys())
+    {
+        jsonObjParams[key] = theParameters.value(key);
+    }
+
+    eventObject["inflow_parameters"] = jsonObjParams;
 
     return true;
 }
@@ -767,8 +788,6 @@ bool
 DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
-
-    ui->startTimeBox->setText(jsonObject["start"].toString());
 
     if(jsonObject.contains("forceCalculationMethod")) {
         ui->forceComboBox->setCurrentText(jsonObject["forceCalculationMethod"].toString());
@@ -858,6 +877,17 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("sim")) {
         QJsonObject jsonObjSimulation = jsonObject["sim"].toObject();
 
+        if(jsonObjSimulation.contains("solver"))
+            ui->solverSelection->setCurrentText(jsonObjSimulation["solver"].toString());                   // which CFD solver to use
+        if(jsonObjSimulation.contains("processors"))
+            ui->processorsBox->setValue(jsonObjSimulation["processors"].toInt());
+        if(jsonObjSimulation.contains("start"))
+            ui->startTimeBox->setText(jsonObjSimulation["start"].toString());
+        if(jsonObjSimulation.contains("force_calculation"))
+            ui->forceComboBox->setCurrentText(jsonObjSimulation["force_calculation"].toString());          // foce calculation method
+        if(jsonObjSimulation.contains("building_patches"))
+            ui->patchesEditBox->setText(jsonObjSimulation["building_patches"].toString());                 // list of building patches
+
 //        //Simulation Control
 //        ui->dT->setText(QString::number(jsonObjSimulation["deltaT"].toDouble()));                        //Simulation Time Step
 //        ui->duration->setText(QString::number(jsonObjSimulation["endTime"].toDouble()));                 //Simulation Duration
@@ -867,28 +897,48 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 
 //        ui->inflowVelocity->setText(QString::number(jsonObjSimulation["inflowVelocity"].toDouble()));    // inflow velocity
 //        ui->ReynoldsNumber->setText(QString::number(jsonObjSimulation["ReynoldsNumber"].toDouble()));    // Reynold number
-        ui->solverSelection->setCurrentText(jsonObjSimulation["solver"].toString());                                // which CFD solver to use
-
 //        //Advanced
 //        int index = ui->turbulanceModel->findData(jsonObjSimulation["turbModel"].toVariant());
 //        if(index >= 0)
-//            ui->turbulanceModel->setCurrentIndex(index);                                          //Turbulence Model
+//            ui->turbulanceModel->setCurrentIndex(index);                                                 //Turbulence Model
 //        ui->pisoCorrectors->setValue(jsonObjSimulation["pisoCorrectors"].toInt());                       //Number of PISO Correctors,
 //        ui->nonOrthogonalCorrectors->setValue(jsonObjSimulation["pisoNonOrthCorrect"].toInt());          //Number of non-orthogonal Correctors,
 
 //        if(jsonObjSimulation.contains("turbintensity"))
 //            ui->turbulenceIntensity->setText(QString::number(jsonObjSimulation["turbintensity"].toDouble()));   //Turbulence Intensity
 
-//        if(jsonObjSimulation.contains("processors"))
-//            ui->processorsBox->setValue(jsonObjSimulation["processors"].toInt());
-    } else
-        return false;
-
-    if (jsonObject.contains("userModesFile")) {
-        QString filename = jsonObject["userModesFile"].toString();
-        couplingGroup->setFileName(filename);
     } else {
-        couplingGroup->setFileName(tr(""));
+        return false;
+    }
+
+//    if (jsonObject.contains("userModesFile")) {
+//        QString filename = jsonObject["userModesFile"].toString();
+//        couplingGroup->setFileName(filename);
+//    } else {
+//        couplingGroup->setFileName(tr(""));
+//    }
+
+    if (jsonObject.contains("inflow_parameters")) {
+        QJsonObject jsonObjParams = jsonObject["inflow_parameters"].toObject();
+
+        if (jsonObjParams.contains("inflow_patch")) {
+                ui->boundarySelection->setCurrentText( jsonObjParams["inflow_patch"].toString() );
+        }
+
+        // initialize theParameters to reflect all properties
+        refreshParameterMap();
+
+        // update theParameters using information from the JSON file
+        foreach (QString key, theParameters.keys())
+        {
+            if (jsonObjParams.contains(key)) {
+                QJsonValue theValue = jsonObjParams[key];
+                theParameters[key] = theValue.toDouble();
+            }
+        }
+
+        // update parameter values
+        refreshDisplay();
     }
 
     update3DViewCentered();
