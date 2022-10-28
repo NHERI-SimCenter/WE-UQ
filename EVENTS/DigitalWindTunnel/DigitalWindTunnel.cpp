@@ -1122,7 +1122,7 @@ void DigitalWindTunnel::on_loadReynoldsStressAndLengthScale_BTN_clicked()
 
 void DigitalWindTunnel::on_defaultCaseButton_clicked()
 {
-    QString dirname = "qrc:/Openfoam_digital_twin";
+    QString dirname = ":/Openfoam_digital_twin";
     ui->sourceLocationDisplay->setText(dirname);
     //m_loadFromDir.setPath(dirname);
     m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
@@ -1145,13 +1145,6 @@ void DigitalWindTunnel::sourcePathChanged(QString caseDir)
     {
         return;
     }
-
-    //downloadFilesCall(sourceFilePath, localFilePath, this);
-
-    readUfile(m_originalUFilePath);
-    processUfile();
-
-    // ----------
 
     m_UFilePath = m_originalUFilePath;
     m_UFileHead = "";
@@ -1281,14 +1274,9 @@ bool DigitalWindTunnel::ensureUFileExists()
     if (uFile.exists())
         return true;
     else
+        qDebug() << "Cannot locate U-file: " << m_originalUFilePath;
         return false;
 }
-
-QStringList DigitalWindTunnel::getRemoteFilesPaths()
-{
-
-}
-
 
 void DigitalWindTunnel::parseBoundaryPatches(QString uFilePath)
 {

@@ -132,7 +132,6 @@ private:
 
     void downloadRemoteCaseFiles(void);
     bool ensureUFileExists(void);
-    QStringList getRemoteFilesPaths(void);
     void parseBoundaryPatches(QString uFilePath);
     void processBuildingPatches(void);
     bool validateSelectedPatches(void);
