@@ -269,6 +269,9 @@
                <property name="checked">
                 <bool>true</bool>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
               </widget>
              </item>
              <item row="0" column="2">
@@ -276,6 +279,9 @@
                <property name="text">
                 <string>divergence-free synthetic eddy</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
               </widget>
              </item>
              <item row="0" column="1">
@@ -283,6 +289,9 @@
                <property name="text">
                 <string>synthetic eddy</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
               </widget>
              </item>
              <item row="2" column="0" colspan="4">
@@ -608,6 +617,9 @@
                <property name="text">
                 <string>turbulent spot</string>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
               </widget>
              </item>
             </layout>
@@ -1392,6 +1404,9 @@
                <property name="checked">
                 <bool>true</bool>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup_2</string>
+               </attribute>
               </widget>
              </item>
              <item row="3" column="0" colspan="5">
@@ -1402,6 +1417,9 @@
                <property name="autoExclusive">
                 <bool>true</bool>
                </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup_2</string>
+               </attribute>
               </widget>
              </item>
              <item row="2" column="1" colspan="4">
@@ -1421,4 +1439,8 @@
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
 </ui>
