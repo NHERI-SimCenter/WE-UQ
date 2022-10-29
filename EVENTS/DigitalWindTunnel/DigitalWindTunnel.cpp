@@ -96,7 +96,6 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
     theParameters.clear();
     hasParameters = false;
 
-
     setupConnections();
 
     // initialize interface state
@@ -347,6 +346,23 @@ DigitalWindTunnel::setupConnections()
 void DigitalWindTunnel::setDefaultParameters()
 {
     this->on_modelSelectionCBX_currentIndexChanged(0);
+
+    //Domain Length
+    m_domainLengthInlet  = 20.0;   //Domain Length (Inlet)
+    m_domainLengthOutlet =  0.0;   //Domain Length (Outlet)
+    m_domainLengthYneg   =  5.0;   //Domain Length (-Y)
+    m_domainLengthYpos   =  5.0;   //Domain Length (+Y)
+    m_domainLengthZneg   =  0.0;   //Domain Length (-Z)
+    m_domainLengthZpos   =  5.0;   //Domain Length (+Z)
+
+    //Boundary Conditions
+    m_boundaryConditionXneg = "turbulentDFMInlet";  //Boundary Condition (X-)
+    m_boundaryConditionXpos = "inletOutlet";        //Boundary Condition (X+)
+    m_boundaryConditionYneg = "symmetryPlane";      //Boundary Condition (Y-)
+    m_boundaryConditionYpos = "symmetryPlane";      //Boundary Condition (Y+)
+    m_boundaryConditionZneg = "noSlip";             //Boundary Condition (Z-)
+    m_boundaryConditionZpos = "symmetryPlane";      //Boundary Condition (Z+)
+
 
     theParameters.clear();
 
@@ -697,14 +713,13 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     //Mesh Parameters set by user
 
-//    //Domain Length
-//    bool ok;
-//    jsonObjMesh["inPad"]    = ui->domainLengthInlet->text().QString::toDouble(&ok);;  //Domain Length (Inlet)
-//    jsonObjMesh["outPad"]   = ui->domainLengthOutlet->text().QString::toDouble(&ok);; //Domain Length (Outlet)
-//    jsonObjMesh["lowYPad"]  = ui->domainLengthYneg->text().QString::toDouble(&ok);;   //Domain Length (-Y)
-//    jsonObjMesh["highYPad"] = ui->domainLengthYpos->text().QString::toDouble(&ok);;   //Domain Length (+Y)
-//    jsonObjMesh["lowZPad"]  = ui->domainLengthZneg->text().QString::toDouble(&ok);;   //Domain Length (-Z)
-//    jsonObjMesh["highZPad"] = ui->domainLengthZpos->text().QString::toDouble(&ok);;   //Domain Length (+Z)
+    //Domain Length
+    jsonObjMesh["inPad"]    = m_domainLengthInlet;  //Domain Length (Inlet)
+    jsonObjMesh["outPad"]   = m_domainLengthOutlet; //Domain Length (Outlet)
+    jsonObjMesh["lowYPad"]  = m_domainLengthYneg;   //Domain Length (-Y)
+    jsonObjMesh["highYPad"] = m_domainLengthYpos;   //Domain Length (+Y)
+    jsonObjMesh["lowZPad"]  = m_domainLengthZneg;   //Domain Length (-Z)
+    jsonObjMesh["highZPad"] = m_domainLengthZpos;   //Domain Length (+Z)
 
 //    auto subdomains = subdomainsModel->getSubdomains();
 
@@ -726,13 +741,13 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 //    //Subdomains
 //    jsonObjMesh["innerDomains"] = ui->numSubdomains->currentData().toInt();  //Number of Subdomains
 
-//    //Boundary Conditions
-//    jsonObjMesh["frontXPlane"] = ui->boundaryConditionXneg->currentData().toString();//Boundary Condition (X-)
-//    jsonObjMesh["backXPlane"]  = ui->boundaryConditionXpos->currentData().toString();//Boundary Condition (X+)
-//    jsonObjMesh["lowYPlane"]   = ui->boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
-//    jsonObjMesh["highYPlane"]  = ui->boundaryConditionYpos->currentData().toString();//Boundary Condition (Y+)
-//    jsonObjMesh["lowZPlane"]   = ui->boundaryConditionZneg->currentData().toString();//Boundary Condition (Z-)
-//    jsonObjMesh["highZPlane"]  = ui->boundaryConditionZpos->currentData().toString();//Boundary Condition (Z+)
+    //Boundary Conditions
+    jsonObjMesh["frontXPlane"] = m_boundaryConditionXneg;   //Boundary Condition (X-)
+    jsonObjMesh["backXPlane"]  = m_boundaryConditionXpos;   //Boundary Condition (X+)
+    jsonObjMesh["lowYPlane"]   = m_boundaryConditionYneg;   //Boundary Condition (Y-)
+    jsonObjMesh["highYPlane"]  = m_boundaryConditionYpos;   //Boundary Condition (Y+)
+    jsonObjMesh["lowZPlane"]   = m_boundaryConditionZneg;   //Boundary Condition (Z-)
+    jsonObjMesh["highZPlane"]  = m_boundaryConditionZpos;   //Boundary Condition (Z+)
 
 
     eventObject["mesh"] = jsonObjMesh;
@@ -833,13 +848,13 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
 
-//        //Domain Length
-//        ui->domainLengthInlet->setText(QString::number(jsonObjMesh["inPad"].toDouble()));   //Domain Length (Inlet)
-//        ui->domainLengthOutlet->setText(QString::number(jsonObjMesh["outPad"].toDouble())); //Domain Length (Outlet)
-//        ui->domainLengthYneg->setText(QString::number(jsonObjMesh["lowYPad"].toDouble()));  //Domain Length (-Y)
-//        ui->domainLengthYpos->setText(QString::number(jsonObjMesh["highYPad"].toDouble())); //Domain Length (+Y)
-//        ui->domainLengthZneg->setText(QString::number(jsonObjMesh["lowZPad"].toDouble()));  //Domain Length (-Z)
-//        ui->domainLengthZpos->setText(QString::number(jsonObjMesh["highZPad"].toDouble())); //Domain Length (+Z)
+        //Domain Length
+        m_domainLengthInlet  = jsonObjMesh["inPad"].toDouble();     //Domain Length (Inlet)
+        m_domainLengthOutlet = jsonObjMesh["outPad"].toDouble();    //Domain Length (Outlet)
+        m_domainLengthYneg   = jsonObjMesh["lowYPad"].toDouble();   //Domain Length (-Y)
+        m_domainLengthYpos   = jsonObjMesh["highYPad"].toDouble();  //Domain Length (+Y)
+        m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   //Domain Length (-Z)
+        m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  //Domain Length (+Z)
 
 //        //Mesh Size -- these are only loaded for debugging
 //        gridSizeBluffBody     = jsonObjMesh["meshDensity"].toDouble();    //Grid Size (on the bluff body)
@@ -865,13 +880,14 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 //            }
 //            subdomainsModel->setSubdomains(subdomains);
 //        }
-//        //Boundary Conditions
-//        setComboBoxByData(*(ui->boundaryConditionXneg), jsonObjMesh["frontXPlane"].toVariant()); //Boundary Condition (X-)
-//        setComboBoxByData(*(ui->boundaryConditionXpos), jsonObjMesh["backXPlane"].toVariant());  //Boundary Condition (X+)
-//        setComboBoxByData(*(ui->boundaryConditionYneg), jsonObjMesh["lowYPlane"].toVariant());   //Boundary Condition (Y-)
-//        setComboBoxByData(*(ui->boundaryConditionYpos), jsonObjMesh["highYPlane"].toVariant());  //Boundary Condition (Y+)
-//        setComboBoxByData(*(ui->boundaryConditionZneg), jsonObjMesh["lowZPlane"].toVariant());   //Boundary Condition (Z-)
-//        setComboBoxByData(*(ui->boundaryConditionZpos), jsonObjMesh["highZPlane"].toVariant());  //Boundary Condition (Z+)
+
+        //Boundary Conditions
+        m_boundaryConditionXneg = jsonObjMesh["frontXPlane"].toString(); //Boundary Condition (X-)
+        m_boundaryConditionXpos = jsonObjMesh["backXPlane"].toString();  //Boundary Condition (X+)
+        m_boundaryConditionYneg = jsonObjMesh["lowYPlane"].toString();   //Boundary Condition (Y-)
+        m_boundaryConditionYpos = jsonObjMesh["highYPlane"].toString();  //Boundary Condition (Y+)
+        m_boundaryConditionZneg = jsonObjMesh["lowZPlane"].toString();   //Boundary Condition (Z-)
+        m_boundaryConditionZpos = jsonObjMesh["highZPlane"].toString();  //Boundary Condition (Z+)
 
     } else
         return false;
@@ -1048,9 +1064,13 @@ DigitalWindTunnel::getDomainMultipliers()
     //domainMultipliers.setY(ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat() + 1.0f);
     //domainMultipliers.setZ(ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f);
 
-    domainMultipliers.setX(1.0f);
-    domainMultipliers.setY(1.0f);
-    domainMultipliers.setZ(1.0f);
+    domainMultipliers.setX(m_domainLengthInlet + m_domainLengthOutlet + 1.0f);
+    domainMultipliers.setY(m_domainLengthYneg + m_domainLengthYpos + 1.0f);
+    domainMultipliers.setZ(m_domainLengthZneg + m_domainLengthZpos + 1.0f);
+
+    //    domainMultipliers.setX(1.0f);
+    //    domainMultipliers.setY(1.0f);
+    //    domainMultipliers.setZ(1.0f);
 
     return domainMultipliers;
 }
@@ -1064,9 +1084,13 @@ DigitalWindTunnel::getDomainCenterMultipliers()
     //domainCenterMultipliers.setY((-ui->domainLengthYneg->text().toFloat() + ui->domainLengthYpos->text().toFloat())/2.0f);
     //domainCenterMultipliers.setZ((-ui->domainLengthZneg->text().toFloat() + ui->domainLengthZpos->text().toFloat() + 1.0f)/2.0f);
 
-    domainCenterMultipliers.setX(1.0f);
-    domainCenterMultipliers.setY(1.0f);
-    domainCenterMultipliers.setZ(1.0f);
+    domainCenterMultipliers.setX((-m_domainLengthInlet + m_domainLengthOutlet)/2.0f);
+    domainCenterMultipliers.setY((-m_domainLengthYneg + m_domainLengthYpos)/2.0f);
+    domainCenterMultipliers.setZ((-m_domainLengthZneg + m_domainLengthZpos + 1.0f)/2.0f);
+
+    //    domainCenterMultipliers.setX(1.0f);
+    //    domainCenterMultipliers.setY(1.0f);
+    //    domainCenterMultipliers.setZ(1.0f);
 
     return domainCenterMultipliers;
 }
@@ -1205,7 +1229,7 @@ void DigitalWindTunnel::sourcePathChanged(QString caseDir)
 
     couplingGroup->updateBoundaryList(m_patchesList);
 
-    this->processBuildingPatches();
+    processBuildingPatches();
 }
 
 void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)

@@ -197,6 +197,22 @@ private:
     QString         m_originalfvSolutionPath;
     QStringList     m_patchesList;
 
+    //Domain Length
+    double  m_domainLengthInlet;  //Domain Length (Inlet)
+    double  m_domainLengthOutlet; //Domain Length (Outlet)
+    double  m_domainLengthYneg;   //Domain Length (-Y)
+    double  m_domainLengthYpos;   //Domain Length (+Y)
+    double  m_domainLengthZneg;   //Domain Length (-Z)
+    double  m_domainLengthZpos;   //Domain Length (+Z)
+
+    //Boundary Conditions
+    QString m_boundaryConditionXneg;  //Boundary Condition (X-)
+    QString m_boundaryConditionXpos;  //Boundary Condition (X+)
+    QString m_boundaryConditionYneg;  //Boundary Condition (Y-)
+    QString m_boundaryConditionYpos;  //Boundary Condition (Y+)
+    QString m_boundaryConditionZneg;  //Boundary Condition (Z-)
+    QString m_boundaryConditionZpos;  //Boundary Condition (Z+)
+
     bool hasParameters = false;
     QMap<QString, double> theParameters;
 
