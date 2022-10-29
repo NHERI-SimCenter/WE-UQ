@@ -348,6 +348,15 @@ void DigitalWindTunnel::setDefaultParameters()
 {
     this->on_modelSelectionCBX_currentIndexChanged(0);
 
+    //Boundary Conditions
+    m_boundaryConditionXneg = "turbulentDFMInlet";  //Boundary Condition (X-)
+    m_boundaryConditionXpos = "inletOutlet";        //Boundary Condition (X+)
+    m_boundaryConditionYneg = "symmetryPlane";      //Boundary Condition (Y-)
+    m_boundaryConditionYpos = "symmetryPlane";      //Boundary Condition (Y+)
+    m_boundaryConditionZneg = "noSlip";             //Boundary Condition (Z-)
+    m_boundaryConditionZpos = "symmetryPlane";      //Boundary Condition (Z+)
+
+
     theParameters.clear();
 
     /* for use in inflowProperties file */
@@ -726,13 +735,13 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 //    //Subdomains
 //    jsonObjMesh["innerDomains"] = ui->numSubdomains->currentData().toInt();  //Number of Subdomains
 
-//    //Boundary Conditions
-//    jsonObjMesh["frontXPlane"] = ui->boundaryConditionXneg->currentData().toString();//Boundary Condition (X-)
-//    jsonObjMesh["backXPlane"]  = ui->boundaryConditionXpos->currentData().toString();//Boundary Condition (X+)
-//    jsonObjMesh["lowYPlane"]   = ui->boundaryConditionYneg->currentData().toString();//Boundary Condition (Y-)
-//    jsonObjMesh["highYPlane"]  = ui->boundaryConditionYpos->currentData().toString();//Boundary Condition (Y+)
-//    jsonObjMesh["lowZPlane"]   = ui->boundaryConditionZneg->currentData().toString();//Boundary Condition (Z-)
-//    jsonObjMesh["highZPlane"]  = ui->boundaryConditionZpos->currentData().toString();//Boundary Condition (Z+)
+    //Boundary Conditions
+    jsonObjMesh["frontXPlane"] = m_boundaryConditionXneg;   //Boundary Condition (X-)
+    jsonObjMesh["backXPlane"]  = m_boundaryConditionXpos;   //Boundary Condition (X+)
+    jsonObjMesh["lowYPlane"]   = m_boundaryConditionYneg;   //Boundary Condition (Y-)
+    jsonObjMesh["highYPlane"]  = m_boundaryConditionYpos;   //Boundary Condition (Y+)
+    jsonObjMesh["lowZPlane"]   = m_boundaryConditionZneg;   //Boundary Condition (Z-)
+    jsonObjMesh["highZPlane"]  = m_boundaryConditionZpos;   //Boundary Condition (Z+)
 
 
     eventObject["mesh"] = jsonObjMesh;
@@ -865,13 +874,14 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
 //            }
 //            subdomainsModel->setSubdomains(subdomains);
 //        }
-//        //Boundary Conditions
-//        setComboBoxByData(*(ui->boundaryConditionXneg), jsonObjMesh["frontXPlane"].toVariant()); //Boundary Condition (X-)
-//        setComboBoxByData(*(ui->boundaryConditionXpos), jsonObjMesh["backXPlane"].toVariant());  //Boundary Condition (X+)
-//        setComboBoxByData(*(ui->boundaryConditionYneg), jsonObjMesh["lowYPlane"].toVariant());   //Boundary Condition (Y-)
-//        setComboBoxByData(*(ui->boundaryConditionYpos), jsonObjMesh["highYPlane"].toVariant());  //Boundary Condition (Y+)
-//        setComboBoxByData(*(ui->boundaryConditionZneg), jsonObjMesh["lowZPlane"].toVariant());   //Boundary Condition (Z-)
-//        setComboBoxByData(*(ui->boundaryConditionZpos), jsonObjMesh["highZPlane"].toVariant());  //Boundary Condition (Z+)
+
+        //Boundary Conditions
+        m_boundaryConditionXneg = jsonObjMesh["frontXPlane"].toString(); //Boundary Condition (X-)
+        m_boundaryConditionXpos = jsonObjMesh["backXPlane"].toString();  //Boundary Condition (X+)
+        m_boundaryConditionYneg = jsonObjMesh["lowYPlane"].toString();   //Boundary Condition (Y-)
+        m_boundaryConditionYpos = jsonObjMesh["highYPlane"].toString();  //Boundary Condition (Y+)
+        m_boundaryConditionZneg = jsonObjMesh["lowZPlane"].toString();   //Boundary Condition (Z-)
+        m_boundaryConditionZpos = jsonObjMesh["highZPlane"].toString();  //Boundary Condition (Z+)
 
     } else
         return false;
@@ -1205,7 +1215,7 @@ void DigitalWindTunnel::sourcePathChanged(QString caseDir)
 
     couplingGroup->updateBoundaryList(m_patchesList);
 
-    this->processBuildingPatches();
+    processBuildingPatches();
 }
 
 void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)

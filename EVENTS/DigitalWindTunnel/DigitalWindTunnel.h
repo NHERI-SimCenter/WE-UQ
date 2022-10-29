@@ -197,6 +197,14 @@ private:
     QString         m_originalfvSolutionPath;
     QStringList     m_patchesList;
 
+    //Boundary Conditions
+    QString m_boundaryConditionXneg;  //Boundary Condition (X-)
+    QString m_boundaryConditionXpos;  //Boundary Condition (X+)
+    QString m_boundaryConditionYneg;  //Boundary Condition (Y-)
+    QString m_boundaryConditionYpos;  //Boundary Condition (Y+)
+    QString m_boundaryConditionZneg;  //Boundary Condition (Z-)
+    QString m_boundaryConditionZpos;  //Boundary Condition (Z+)
+
     bool hasParameters = false;
     QMap<QString, double> theParameters;
 
