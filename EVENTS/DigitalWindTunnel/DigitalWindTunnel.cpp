@@ -176,6 +176,13 @@ void DigitalWindTunnel::updateUIsettings(void)
     positiveDoubleValidator->setDecimals(3);
     ui->startTimeBox->setValidator(positiveDoubleValidator);
 
+    ui->domainLengthInlet->setValidator(positiveDoubleValidator);
+    ui->domainLengthOutlet->setValidator(positiveDoubleValidator);
+    ui->domainLengthYneg->setValidator(positiveDoubleValidator);
+    ui->domainLengthYpos->setValidator(positiveDoubleValidator);
+    ui->domainLengthZneg->setValidator(positiveDoubleValidator);
+    ui->domainLengthZpos->setValidator(positiveDoubleValidator);
+
     auto doubleValidator = new QDoubleValidator(this);
     doubleValidator->setDecimals(3);
 
@@ -228,6 +235,7 @@ void DigitalWindTunnel::updateUIsettings(void)
     ui->ReynoldsStressAndLengthScaleView->hide();
     ui->solverSelection->hide();
     ui->solver_label->hide();
+    ui->dimensions_group->hide();
 
     setDefaultParameters();
 }
@@ -329,6 +337,13 @@ DigitalWindTunnel::setupConnections()
         ui->InflowDataView->hide();
     });
 
+    connect(ui->domainLengthInlet, &QLineEdit::editingFinished, [this](){ m_domainLengthInlet = ui->domainLengthInlet->text().toDouble();});
+    connect(ui->domainLengthOutlet, &QLineEdit::editingFinished, [this](){ m_domainLengthOutlet = ui->domainLengthOutlet->text().toDouble();});
+    connect(ui->domainLengthYneg, &QLineEdit::editingFinished, [this](){ m_domainLengthYneg = ui->domainLengthYneg->text().toDouble();});
+    connect(ui->domainLengthYpos, &QLineEdit::editingFinished, [this](){ m_domainLengthYpos = ui->domainLengthYpos->text().toDouble();});
+    connect(ui->domainLengthZneg, &QLineEdit::editingFinished, [this](){ m_domainLengthZneg = ui->domainLengthZneg->text().toDouble();});
+    connect(ui->domainLengthZpos, &QLineEdit::editingFinished, [this](){ m_domainLengthZpos = ui->domainLengthZpos->text().toDouble();});
+
     connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
     connect(ui->RB_syntheticEddie, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(1); });
     connect(ui->RB_divergenceFree, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(2); });
@@ -348,12 +363,19 @@ void DigitalWindTunnel::setDefaultParameters()
     this->on_modelSelectionCBX_currentIndexChanged(0);
 
     //Domain Length
-    m_domainLengthInlet  = 20.0;   //Domain Length (Inlet)
-    m_domainLengthOutlet =  0.0;   //Domain Length (Outlet)
+    m_domainLengthInlet  =  5.0;   //Domain Length (Inlet)
+    m_domainLengthOutlet = 15.0;   //Domain Length (Outlet)
     m_domainLengthYneg   =  5.0;   //Domain Length (-Y)
     m_domainLengthYpos   =  5.0;   //Domain Length (+Y)
     m_domainLengthZneg   =  0.0;   //Domain Length (-Z)
     m_domainLengthZpos   =  5.0;   //Domain Length (+Z)
+
+    ui->domainLengthInlet->setText(QString("%1").arg(m_domainLengthInlet,0,'f',3));
+    ui->domainLengthOutlet->setText(QString("%1").arg(m_domainLengthOutlet,0,'f',3));
+    ui->domainLengthYneg->setText(QString("%1").arg(m_domainLengthYneg,0,'f',3));
+    ui->domainLengthYpos->setText(QString("%1").arg(m_domainLengthYpos,0,'f',3));
+    ui->domainLengthZneg->setText(QString("%1").arg(m_domainLengthZneg,0,'f',3));
+    ui->domainLengthZpos->setText(QString("%1").arg(m_domainLengthZpos,0,'f',3));
 
     //Boundary Conditions
     m_boundaryConditionXneg = "turbulentDFMInlet";  //Boundary Condition (X-)
@@ -1151,6 +1173,8 @@ void DigitalWindTunnel::on_sourceLocateBtn_clicked()
 
     // need to parse those files ...
     sourcePathChanged(dirname);
+
+    ui->dimensions_group->show();
 }
 
 void DigitalWindTunnel::on_browseForTInFDataFile_button_clicked()
@@ -1197,6 +1221,7 @@ void DigitalWindTunnel::on_defaultCaseButton_clicked()
     m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
 
     sourcePathChanged(dirname);
+    ui->dimensions_group->hide();
 }
 
 void DigitalWindTunnel::sourcePathChanged(QString caseDir)
