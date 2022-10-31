@@ -1870,7 +1870,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         for (int row=0; row<model->rowCount(); row++) {
             oneRow = new QVector<double>;
             oneRow->append(0.0);
-            oneRow->append(0.0);
+            oneRow->append(10.0*count);
             QStandardItem *item = model->item(row,ptIdx);
             double height = item->data(Qt::DisplayRole).toDouble();
             height *= m_domainLengthZpos / modelHeight;
