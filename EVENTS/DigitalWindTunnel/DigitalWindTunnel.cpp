@@ -1812,7 +1812,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(RData);
+    out << OpenFoamHelper(RData, OpenFoamHelper::Options::StandardVector);
     RFile.close();
 
     // create constant/boundaryData/inlet/L file
@@ -1844,7 +1844,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(LData);
+    out << OpenFoamHelper(LData, OpenFoamHelper::Options::StandardVector);
     LFile.close();
 
     // create constant/boundaryData/inlet/points file
@@ -1880,7 +1880,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(PtsData);
+    out << OpenFoamHelper(PtsData, OpenFoamHelper::Options::StandardVector);
     PtsFile.close();
 
     return true;
