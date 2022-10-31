@@ -1693,6 +1693,196 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     // update controlDict file
     this->exportControlDictFile(origFile, newFile);
 
+    //
+    // boundaryData files U, L, R, points
+    //
+
+    m_newLocation = QDir(dirName);
+    if (!m_newLocation.cd("constant")) {
+        m_newLocation.mkdir("constant");
+        m_newLocation.cd("constant");
+    }
+    if (!m_newLocation.cd("boundaryData")) {
+        m_newLocation.mkdir("boundaryData");
+        m_newLocation.cd("boundaryData");
+    }
+    if (!m_newLocation.cd("inlet")) {
+        m_newLocation.mkdir("inlet");
+        m_newLocation.cd("inlet");
+    }
+
+    // fetch data from table
+
+    QStandardItemModel *model = NULL;
+    int ptIdx  = 0;
+    int Uidx   = -1;
+    int Rstart = 0;
+    int Rend   = 0;
+    int Lstart = 0;
+    int Lend   = 0;
+    int count;
+
+    if (ui->userDefinedInflow_CKX->isChecked())
+    {
+        model  = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+        Uidx   = 1;
+        Rstart = 2;
+        Rend   = Rstart + 6;
+        Lstart = Rend + 1;
+        Lend   = Lstart + 9;
+    }
+    else if (ui->inflowTurbulenceParameters_CKX->isChecked()
+             && ui->loadDataFromFile_RBTN->isChecked())
+    {
+        model  = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
+        Uidx   = -1;
+        Rstart = 1;
+        Rend   = Rstart + 6;
+        Lstart = Rend + 1;
+        Lend   = Lstart + 9;
+    }
+    else
+    {
+        return false;
+    }
+
+    if (ptIdx > model->columnCount()) ptIdx = model->columnCount() - 1;
+    if (Uidx > model->columnCount()) Uidx = model->columnCount() - 1;
+    if (Rend > model->columnCount()) Rend = model->columnCount();
+    if (Lend > model->columnCount()) Lend = model->columnCount();
+
+    // create constant/boundaryData/inlet/U file
+
+    newFile  = m_newLocation.absoluteFilePath("U");
+
+    QFile UFile(newFile);
+
+    if (UFile.exists()) {
+        qWarning() << "overwriting " << newFile;
+    }
+
+    UFile.open(QFile::WriteOnly);
+    QTextStream out(&UFile);
+
+    out << "(" << ENDLN;
+
+    if (Uidx >= 0)
+    {
+        count = 0;
+        while (count < 2) {
+            QVector<double> oneRow;
+            for (int row=0; row<model->rowCount(); row++) {
+                QStandardItem *item = model->item(row,Uidx);
+                out << item->data(Qt::DisplayRole).toDouble() << ENDLN;
+            }
+            count++;
+        }
+    }
+
+    out << ")" << ENDLN;
+
+    UFile.close();
+
+    // create constant/boundaryData/inlet/R file
+
+    newFile  = m_newLocation.absoluteFilePath("R");
+
+    QFile RFile(newFile);
+
+    if (RFile.exists()) {
+        qWarning() << "overwriting " << newFile;
+    }
+
+    RFile.open(QFile::WriteOnly);
+    out.setDevice(&RFile);
+    QVector<QVector<double> *> RData;
+
+    count = 0;
+    while (count < 2) {
+        QVector<double> *oneRow;
+
+        for (int row=0; row<model->rowCount(); row++) {
+            oneRow = new QVector<double>;
+            for (int col=Rstart; col < Rend; col++) {
+                QStandardItem *item = model->item(row,col);
+                oneRow->append(item->data(Qt::DisplayRole).toDouble());
+            }
+            RData.append(oneRow);
+        }
+        count++;
+    }
+
+    out << OpenFoamHelper(RData);
+    RFile.close();
+
+    // create constant/boundaryData/inlet/L file
+
+    newFile  = m_newLocation.absoluteFilePath("L");
+
+    QFile LFile(newFile);
+
+    if (LFile.exists()) {
+        qWarning() << "overwriting " << newFile;
+    }
+
+    LFile.open(QFile::WriteOnly);
+    out.setDevice(&LFile);
+    QVector<QVector<double> *> LData;
+
+    count = 0;
+    while (count < 2) {
+        QVector<double> *oneRow;
+
+        for (int row=0; row<model->rowCount(); row++) {
+            oneRow = new QVector<double>;
+            for (int col=Lstart; col < Lend; col++) {
+                QStandardItem *item = model->item(row,col);
+                oneRow->append(item->data(Qt::DisplayRole).toDouble());
+            }
+            LData.append(oneRow);
+        }
+        count++;
+    }
+
+    out << OpenFoamHelper(LData);
+    LFile.close();
+
+    // create constant/boundaryData/inlet/points file
+
+    newFile  = m_newLocation.absoluteFilePath("points");
+
+    QFile PtsFile(newFile);
+
+    if (PtsFile.exists()) {
+        qWarning() << "overwriting " << newFile;
+    }
+
+    PtsFile.open(QFile::WriteOnly);
+    out.setDevice(&PtsFile);
+    QVector<QVector<double> *> PtsData;
+
+    double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
+
+    count = 0;
+    while (count < 2) {
+        QVector<double> *oneRow;
+
+        for (int row=0; row<model->rowCount(); row++) {
+            oneRow = new QVector<double>;
+            oneRow->append(0.0);
+            oneRow->append(0.0);
+            QStandardItem *item = model->item(row,ptIdx);
+            double height = item->data(Qt::DisplayRole).toDouble();
+            height *= m_domainLengthZpos / modelHeight;
+            oneRow->append(height);
+            PtsData.append(oneRow);
+        }
+        count++;
+    }
+
+    out << OpenFoamHelper(PtsData);
+    PtsFile.close();
+
     return true;
 }
 
