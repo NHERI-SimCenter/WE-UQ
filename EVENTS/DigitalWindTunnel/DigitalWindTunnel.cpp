@@ -1861,6 +1861,8 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     out.setDevice(&PtsFile);
     QVector<QVector<double> *> PtsData;
 
+    double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
+
     count = 0;
     while (count < 2) {
         QVector<double> *oneRow;
@@ -1870,7 +1872,9 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
             oneRow->append(0.0);
             oneRow->append(0.0);
             QStandardItem *item = model->item(row,ptIdx);
-            oneRow->append(item->data(Qt::DisplayRole).toDouble());
+            double height = item->data(Qt::DisplayRole).toDouble();
+            height *= m_domainLengthZpos / modelHeight;
+            oneRow->append(height);
             PtsData.append(oneRow);
         }
         count++;
