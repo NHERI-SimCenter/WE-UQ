@@ -53,6 +53,12 @@ boundaryField
     {
         type    symmetryPlane;
     }
+
+    building
+    {
+        type            nutUSpaldingWallFunction;
+        value           uniform 0.05;
+    }
 }
 
 // ************************************************************************* //

@@ -52,6 +52,11 @@ boundaryField
     {
         type    symmetryPlane;
     }
+
+    building
+    {
+        type            zeroGradient;
+    }
 }
 
 // ************************************************************************* //

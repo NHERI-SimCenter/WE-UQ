@@ -235,7 +235,7 @@ void DigitalWindTunnel::updateUIsettings(void)
     ui->ReynoldsStressAndLengthScaleView->hide();
     ui->solverSelection->hide();
     ui->solver_label->hide();
-    ui->dimensions_group->hide();
+    //ui->dimensions_group->hide();
 
     setDefaultParameters();
 }
@@ -337,12 +337,30 @@ DigitalWindTunnel::setupConnections()
         ui->InflowDataView->hide();
     });
 
-    connect(ui->domainLengthInlet, &QLineEdit::editingFinished, [this](){ m_domainLengthInlet = ui->domainLengthInlet->text().toDouble();});
-    connect(ui->domainLengthOutlet, &QLineEdit::editingFinished, [this](){ m_domainLengthOutlet = ui->domainLengthOutlet->text().toDouble();});
-    connect(ui->domainLengthYneg, &QLineEdit::editingFinished, [this](){ m_domainLengthYneg = ui->domainLengthYneg->text().toDouble();});
-    connect(ui->domainLengthYpos, &QLineEdit::editingFinished, [this](){ m_domainLengthYpos = ui->domainLengthYpos->text().toDouble();});
-    connect(ui->domainLengthZneg, &QLineEdit::editingFinished, [this](){ m_domainLengthZneg = ui->domainLengthZneg->text().toDouble();});
-    connect(ui->domainLengthZpos, &QLineEdit::editingFinished, [this](){ m_domainLengthZpos = ui->domainLengthZpos->text().toDouble();});
+    connect(ui->domainLengthInlet, &QLineEdit::editingFinished, [this](){
+        m_domainLengthInlet = ui->domainLengthInlet->text().toDouble();
+        update3DViewCentered();
+    });
+    connect(ui->domainLengthOutlet, &QLineEdit::editingFinished, [this](){
+        m_domainLengthOutlet = ui->domainLengthOutlet->text().toDouble();
+        update3DViewCentered();
+    });
+    connect(ui->domainLengthYneg, &QLineEdit::editingFinished, [this](){
+        m_domainLengthYneg = ui->domainLengthYneg->text().toDouble();
+        update3DViewCentered();
+    });
+    connect(ui->domainLengthYpos, &QLineEdit::editingFinished, [this](){
+        m_domainLengthYpos = ui->domainLengthYpos->text().toDouble();
+        update3DViewCentered();
+    });
+    connect(ui->domainLengthZneg, &QLineEdit::editingFinished, [this](){
+        m_domainLengthZneg = ui->domainLengthZneg->text().toDouble();
+        update3DViewCentered();
+    });
+    connect(ui->domainLengthZpos, &QLineEdit::editingFinished, [this](){
+        m_domainLengthZpos = ui->domainLengthZpos->text().toDouble();
+        update3DViewCentered();
+    });
 
     connect(ui->RB_digitalFilter,  &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(0); });
     connect(ui->RB_syntheticEddie, &QRadioButton::clicked, [this](){ ui->stackedMethods->setCurrentIndex(1); });
@@ -358,10 +376,8 @@ DigitalWindTunnel::setupConnections()
 }
 
 
-void DigitalWindTunnel::setDefaultParameters()
+void DigitalWindTunnel::setDefaultGeometry()
 {
-    this->on_modelSelectionCBX_currentIndexChanged(0);
-
     //Domain Length
     m_domainLengthInlet  =  5.0;   //Domain Length (Inlet)
     m_domainLengthOutlet = 15.0;   //Domain Length (Outlet)
@@ -376,6 +392,17 @@ void DigitalWindTunnel::setDefaultParameters()
     ui->domainLengthYpos->setText(QString("%1").arg(m_domainLengthYpos,0,'f',3));
     ui->domainLengthZneg->setText(QString("%1").arg(m_domainLengthZneg,0,'f',3));
     ui->domainLengthZpos->setText(QString("%1").arg(m_domainLengthZpos,0,'f',3));
+
+    update3DView();
+}
+
+
+void DigitalWindTunnel::setDefaultParameters()
+{
+    this->on_modelSelectionCBX_currentIndexChanged(2);
+
+    //Domain Length
+    setDefaultGeometry();
 
     //Boundary Conditions
     m_boundaryConditionXneg = "turbulentDFMInlet";  //Boundary Condition (X-)
@@ -563,6 +590,9 @@ bool DigitalWindTunnel::fetchParameterMap(QMap<QString, double> &theParams)
     theParams.insert("offset1",ui->offset1->value());
     theParams.insert("offset2",ui->offset2->value());
 
+    theParams.insert("frictionVelocity", ui->frictionVelocity->text().toDouble());
+    theParams.insert("roughnessHeight", ui->roughnessHeight->text().toDouble());
+
     return true;
 }
 
@@ -652,6 +682,9 @@ void DigitalWindTunnel::refreshDisplay(void)
     ui->offset0->setValue(theParameters.value("offset0"));
     ui->offset1->setValue(theParameters.value("offset1"));
     ui->offset2->setValue(theParameters.value("offset2"));
+
+    ui->frictionVelocity->setText(QString::number(theParameters.value("frictionVelocity")));
+    ui->roughnessHeight->setText(QString::number(theParameters.value("roughnessHeight")));
 }
 
 
@@ -694,7 +727,6 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
     eventObject["EventClassification"] = "Wind";
     eventObject["type"] = "DigitalWindTunnel";
     eventObject["forceCalculationMethod"] = ui->forceComboBox->currentText();
-    eventObject["start"] = ui->startTimeBox->text().toDouble();
     //eventObject["userModesFile"]  = couplingGroup->fileName();
 
     // UI settings
@@ -735,13 +767,18 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     //Mesh Parameters set by user
 
-    //Domain Length
-    jsonObjMesh["inPad"]    = m_domainLengthInlet;  //Domain Length (Inlet)
-    jsonObjMesh["outPad"]   = m_domainLengthOutlet; //Domain Length (Outlet)
-    jsonObjMesh["lowYPad"]  = m_domainLengthYneg;   //Domain Length (-Y)
-    jsonObjMesh["highYPad"] = m_domainLengthYpos;   //Domain Length (+Y)
-    jsonObjMesh["lowZPad"]  = m_domainLengthZneg;   //Domain Length (-Z)
-    jsonObjMesh["highZPad"] = m_domainLengthZpos;   //Domain Length (+Z)
+    // Coordinate of fron bottom right corner
+    jsonObjMesh["X0"] = ui->refPointX->text().toDouble();  // X0
+    jsonObjMesh["Y0"] = ui->refPointY->text().toDouble();  // Y0
+    jsonObjMesh["Z0"] = ui->refPointZ->text().toDouble();  // Z0
+
+    // Domain Length
+    jsonObjMesh["inPad"]    = m_domainLengthInlet;  // Domain Length (Inlet)
+    jsonObjMesh["outPad"]   = m_domainLengthOutlet; // Domain Length (Outlet)
+    jsonObjMesh["lowYPad"]  = m_domainLengthYneg;   // Domain Length (-Y)
+    jsonObjMesh["highYPad"] = m_domainLengthYpos;   // Domain Length (+Y)
+    jsonObjMesh["lowZPad"]  = m_domainLengthZneg;   // Domain Length (-Z)
+    jsonObjMesh["highZPad"] = m_domainLengthZpos;   // Domain Length (+Z)
 
 //    auto subdomains = subdomainsModel->getSubdomains();
 
@@ -779,9 +816,9 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     jsonObjSimulation["processors"]        = ui->processorsBox->text().QString::toInt(&ok);       // # of processors to use
     jsonObjSimulation["solver"]            = ui->solverSelection->currentText();                  // which CFD solver to use
-    jsonObjSimulation["start"]             = ui->startTimeBox->text().QString::toDouble(&ok);     // start time for force calculation
     jsonObjSimulation["force_calculation"] = ui->forceComboBox->currentText();                    // foce calculation method
     jsonObjSimulation["building_patches"]  = ui->patchesEditBox->text();                          // list of building patches
+    jsonObjSimulation["start"]             = ui->startTimeBox->text().toDouble();
 
 
     //    jsonObjSimulation["deltaT"]     = ui->dT->text().QString::toDouble(&ok);
@@ -870,13 +907,25 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
 
+        // Coordinate of fron bottom right corner
+        ui->refPointX->setText(QString::number(jsonObjMesh["X0"].toDouble()));  // X0
+        ui->refPointY->setText(QString::number(jsonObjMesh["Y0"].toDouble()));  // Y0
+        ui->refPointZ->setText(QString::number(jsonObjMesh["Z0"].toDouble()));  // Z0
+
         //Domain Length
-        m_domainLengthInlet  = jsonObjMesh["inPad"].toDouble();     //Domain Length (Inlet)
-        m_domainLengthOutlet = jsonObjMesh["outPad"].toDouble();    //Domain Length (Outlet)
-        m_domainLengthYneg   = jsonObjMesh["lowYPad"].toDouble();   //Domain Length (-Y)
-        m_domainLengthYpos   = jsonObjMesh["highYPad"].toDouble();  //Domain Length (+Y)
-        m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   //Domain Length (-Z)
-        m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  //Domain Length (+Z)
+        m_domainLengthInlet  = jsonObjMesh["inPad"].toDouble();     // Domain Length (Inlet)
+        m_domainLengthOutlet = jsonObjMesh["outPad"].toDouble();    // Domain Length (Outlet)
+        m_domainLengthYneg   = jsonObjMesh["lowYPad"].toDouble();   // Domain Length (-Y)
+        m_domainLengthYpos   = jsonObjMesh["highYPad"].toDouble();  // Domain Length (+Y)
+        m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   // Domain Length (-Z)
+        m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  // Domain Length (+Z)
+
+        ui->domainLengthInlet->setText(QString("%1").arg(m_domainLengthInlet,0,'f',3));
+        ui->domainLengthOutlet->setText(QString("%1").arg(m_domainLengthOutlet,0,'f',3));
+        ui->domainLengthYneg->setText(QString("%1").arg(m_domainLengthYneg,0,'f',3));
+        ui->domainLengthYpos->setText(QString("%1").arg(m_domainLengthYpos,0,'f',3));
+        ui->domainLengthZneg->setText(QString("%1").arg(m_domainLengthZneg,0,'f',3));
+        ui->domainLengthZpos->setText(QString("%1").arg(m_domainLengthZpos,0,'f',3));
 
 //        //Mesh Size -- these are only loaded for debugging
 //        gridSizeBluffBody     = jsonObjMesh["meshDensity"].toDouble();    //Grid Size (on the bluff body)
@@ -911,6 +960,8 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
         m_boundaryConditionZneg = jsonObjMesh["lowZPlane"].toString();   //Boundary Condition (Z-)
         m_boundaryConditionZpos = jsonObjMesh["highZPlane"].toString();  //Boundary Condition (Z+)
 
+        update3DViewCentered();
+
     } else
         return false;
 
@@ -922,7 +973,7 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
         if(jsonObjSimulation.contains("processors"))
             ui->processorsBox->setValue(jsonObjSimulation["processors"].toInt());
         if(jsonObjSimulation.contains("start"))
-            ui->startTimeBox->setText(jsonObjSimulation["start"].toString());
+            ui->startTimeBox->setText(QString::number(jsonObjSimulation["start"].toDouble()));
         if(jsonObjSimulation.contains("force_calculation"))
             ui->forceComboBox->setCurrentText(jsonObjSimulation["force_calculation"].toString());          // foce calculation method
         if(jsonObjSimulation.contains("building_patches"))
@@ -1215,13 +1266,14 @@ void DigitalWindTunnel::on_loadReynoldsStressAndLengthScale_BTN_clicked()
 
 void DigitalWindTunnel::on_defaultCaseButton_clicked()
 {
-    QString dirname = ":/Openfoam_digital_twin";
+    QString dirname = ":/OpenFoam_digital_twin";
     ui->sourceLocationDisplay->setText(dirname);
     //m_loadFromDir.setPath(dirname);
     m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
 
     sourcePathChanged(dirname);
-    ui->dimensions_group->hide();
+    //ui->dimensions_group->hide();
+    setDefaultGeometry();
 }
 
 void DigitalWindTunnel::sourcePathChanged(QString caseDir)
@@ -1791,17 +1843,27 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
 
     out << "(" << ENDLN;
 
-    if (Uidx >= 0)
-    {
-        count = 0;
-        while (count < 2) {
-            QVector<double> oneRow;
-            for (int row=0; row<model->rowCount(); row++) {
+    count = 0;
+    while (count < 2) {
+        QVector<double> oneRow;
+        for (int row=0; row<model->rowCount(); row++) {
+
+            double U = 0.0;
+            if (Uidx >= 0) {
                 QStandardItem *item = model->item(row,Uidx);
-                out << item->data(Qt::DisplayRole).toDouble() << ENDLN;
+                U = item->data(Qt::DisplayRole).toDouble();
             }
-            count++;
+            else {
+                QStandardItem *item = model->item(row,ptIdx);
+                double height = item->data(Qt::DisplayRole).toDouble();
+                double u_fric = ui->frictionVelocity->text().toDouble();
+                double z0     = ui->roughnessHeight->text().toDouble();
+                U = ( u_fric/0.41 ) * log( 1.0 + height/z0 );
+            }
+
+            out << U << ENDLN;
         }
+        count++;
     }
 
     out << ")" << ENDLN;
@@ -1887,6 +1949,13 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     QVector<QVector<double> *> PtsData;
 
     double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
+    double modelWidth  = m_domainLengthYneg + m_domainLengthYpos;
+    // modelWidth += buildingWidth / buildingheight;  // so far unspecified; based on Fei'd sketch.
+
+    // reference point coordinates
+    double X0 = ui->refPointX->text().toDouble();
+    double Y0 = ui->refPointY->text().toDouble();
+    double Z0 = ui->refPointZ->text().toDouble();
 
     count = 0;
     while (count < 2) {
@@ -1894,8 +1963,8 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
 
         for (int row=0; row<model->rowCount(); row++) {
             oneRow = new QVector<double>;
-            oneRow->append(0.0);
-            oneRow->append(10.0*count);
+            oneRow->append(X0);
+            oneRow->append(Y0 + modelWidth*count);
             QStandardItem *item = model->item(row,ptIdx);
             double height = item->data(Qt::DisplayRole).toDouble();
             height *= m_domainLengthZpos / modelHeight;

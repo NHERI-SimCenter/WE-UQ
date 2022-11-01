@@ -53,6 +53,12 @@ boundaryField
     {
         type    symmetryPlane;
     }
+
+    building
+    {
+        type fixedValue;
+        value uniform 0;
+    }
 }
 
 // ************************************************** *********************** //

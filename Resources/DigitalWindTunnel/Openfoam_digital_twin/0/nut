@@ -52,6 +52,12 @@ boundaryField
     {
         type    symmetryPlane;
     }
+
+    building
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
 }
 
 // ************************************************************************* //

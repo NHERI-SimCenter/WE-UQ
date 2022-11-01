@@ -171,6 +171,7 @@ private:
 
     void updateUIsettings(void);
     void setDefaultParameters();
+    void setDefaultGeometry();
     bool fetchParameterMap(QMap<QString, double> &theParams);
     void sourcePathChanged(QString sourcedir);
     QString getLoadFromDir(void) { return m_loadFromDir.path(); }
