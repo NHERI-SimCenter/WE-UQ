@@ -1950,7 +1950,23 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
 
     double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
     double modelWidth  = m_domainLengthYneg + m_domainLengthYpos;
-    // modelWidth += buildingWidth / buildingheight;  // so far unspecified; based on Fei'd sketch.
+
+    //
+    // the following block would widen the model by buildingWidth / buildingHeight.
+    //
+    // ... this section requires clarification from Fei
+    //
+    if (false)
+    {
+        GeneralInformationWidget *theInfo = GeneralInformationWidget::getInstance();
+        double buildingHeight = theInfo->getHeight();
+        double buildingWidth;
+        double buildingDepth;
+        double buildingArea;
+        theInfo->getBuildingDimensions(buildingWidth, buildingDepth, buildingArea);
+        if (buildingHeight > 0.0)
+            modelWidth += buildingWidth / buildingHeight;  // so far unspecified; based on Fei'd sketch.
+    }
 
     // reference point coordinates
     double X0 = ui->refPointX->text().toDouble();
