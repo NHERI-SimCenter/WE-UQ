@@ -767,13 +767,18 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
 
     //Mesh Parameters set by user
 
-    //Domain Length
-    jsonObjMesh["inPad"]    = m_domainLengthInlet;  //Domain Length (Inlet)
-    jsonObjMesh["outPad"]   = m_domainLengthOutlet; //Domain Length (Outlet)
-    jsonObjMesh["lowYPad"]  = m_domainLengthYneg;   //Domain Length (-Y)
-    jsonObjMesh["highYPad"] = m_domainLengthYpos;   //Domain Length (+Y)
-    jsonObjMesh["lowZPad"]  = m_domainLengthZneg;   //Domain Length (-Z)
-    jsonObjMesh["highZPad"] = m_domainLengthZpos;   //Domain Length (+Z)
+    // Coordinate of fron bottom right corner
+    jsonObjMesh["X0"] = ui->refPointX->text().toDouble();  // X0
+    jsonObjMesh["Y0"] = ui->refPointY->text().toDouble();  // Y0
+    jsonObjMesh["Z0"] = ui->refPointZ->text().toDouble();  // Z0
+
+    // Domain Length
+    jsonObjMesh["inPad"]    = m_domainLengthInlet;  // Domain Length (Inlet)
+    jsonObjMesh["outPad"]   = m_domainLengthOutlet; // Domain Length (Outlet)
+    jsonObjMesh["lowYPad"]  = m_domainLengthYneg;   // Domain Length (-Y)
+    jsonObjMesh["highYPad"] = m_domainLengthYpos;   // Domain Length (+Y)
+    jsonObjMesh["lowZPad"]  = m_domainLengthZneg;   // Domain Length (-Z)
+    jsonObjMesh["highZPad"] = m_domainLengthZpos;   // Domain Length (+Z)
 
 //    auto subdomains = subdomainsModel->getSubdomains();
 
@@ -902,13 +907,18 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("mesh")) {
         QJsonObject jsonObjMesh = jsonObject["mesh"].toObject();
 
+        // Coordinate of fron bottom right corner
+        ui->refPointX->setText(QString::number(jsonObjMesh["X0"].toDouble()));  // X0
+        ui->refPointY->setText(QString::number(jsonObjMesh["Y0"].toDouble()));  // Y0
+        ui->refPointZ->setText(QString::number(jsonObjMesh["Z0"].toDouble()));  // Z0
+
         //Domain Length
-        m_domainLengthInlet  = jsonObjMesh["inPad"].toDouble();     //Domain Length (Inlet)
-        m_domainLengthOutlet = jsonObjMesh["outPad"].toDouble();    //Domain Length (Outlet)
-        m_domainLengthYneg   = jsonObjMesh["lowYPad"].toDouble();   //Domain Length (-Y)
-        m_domainLengthYpos   = jsonObjMesh["highYPad"].toDouble();  //Domain Length (+Y)
-        m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   //Domain Length (-Z)
-        m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  //Domain Length (+Z)
+        m_domainLengthInlet  = jsonObjMesh["inPad"].toDouble();     // Domain Length (Inlet)
+        m_domainLengthOutlet = jsonObjMesh["outPad"].toDouble();    // Domain Length (Outlet)
+        m_domainLengthYneg   = jsonObjMesh["lowYPad"].toDouble();   // Domain Length (-Y)
+        m_domainLengthYpos   = jsonObjMesh["highYPad"].toDouble();  // Domain Length (+Y)
+        m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   // Domain Length (-Z)
+        m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  // Domain Length (+Z)
 
         ui->domainLengthInlet->setText(QString("%1").arg(m_domainLengthInlet,0,'f',3));
         ui->domainLengthOutlet->setText(QString("%1").arg(m_domainLengthOutlet,0,'f',3));
@@ -1939,6 +1949,13 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     QVector<QVector<double> *> PtsData;
 
     double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
+    double modelWidth  = m_domainLengthYneg + m_domainLengthYpos;
+    // modelWidth += buildingWidth / buildingheight;  // so far unspecified; based on Fei'd sketch.
+
+    // reference point coordinates
+    double X0 = ui->refPointX->text().toDouble();
+    double Y0 = ui->refPointY->text().toDouble();
+    double Z0 = ui->refPointZ->text().toDouble();
 
     count = 0;
     while (count < 2) {
@@ -1946,8 +1963,8 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
 
         for (int row=0; row<model->rowCount(); row++) {
             oneRow = new QVector<double>;
-            oneRow->append(0.0);
-            oneRow->append(10.0*count);
+            oneRow->append(X0);
+            oneRow->append(Y0 + modelWidth*count);
             QStandardItem *item = model->item(row,ptIdx);
             double height = item->data(Qt::DisplayRole).toDouble();
             height *= m_domainLengthZpos / modelHeight;
