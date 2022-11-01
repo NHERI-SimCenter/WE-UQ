@@ -1266,7 +1266,7 @@ void DigitalWindTunnel::on_loadReynoldsStressAndLengthScale_BTN_clicked()
 
 void DigitalWindTunnel::on_defaultCaseButton_clicked()
 {
-    QString dirname = ":/Openfoam_digital_twin";
+    QString dirname = ":/OpenFoam_digital_twin";
     ui->sourceLocationDisplay->setText(dirname);
     //m_loadFromDir.setPath(dirname);
     m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
