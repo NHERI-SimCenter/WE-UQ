@@ -152,10 +152,10 @@ int main(int argc, char *argv[])
     QString aboutSource = ":/Resources/docs/textAboutWEUQ.html";  // this is an HTML file stored under resources
     w.setAbout(aboutTitle,aboutSource);
 
-    QString version("Version 2.2.0");
+    QString version("Version 2.3.0");
     w.setVersion(version);
 
-    QString citeText("1) Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan & Stevan Gavrilovic. (2021, May 17). NHERI-SimCenter/WE-UQ: Version 2.1.0 (Version v2.1.0). Zenodo. https://doi.org/10.5281/zenodo.3274227 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1) Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan & Stevan Gavrilovic. (2022, Oct ). NHERI-SimCenter/WE-UQ: Version 2.3.0 (Version v2.3.0). Zenodo. https://doi.org/10.5281/zenodo.3274227 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
 
 
     w.setCite(citeText);
@@ -198,13 +198,35 @@ int main(int argc, char *argv[])
     QFile file(":/styleCommon/stylesheetMAC.qss");
 #endif
 
-
     if(file.open(QFile::ReadOnly)) {
       a.setStyleSheet(file.readAll());
       file.close();
     } else {
       qDebug() << "could not open stylesheet";
     }
+
+    /* add app-specific style options */
+
+#ifdef Q_OS_WIN
+    QFile WEUQfile(":/styleSheets/WEUQWin.qss");
+#endif
+
+#ifdef Q_OS_MACOS
+    QFile WEUQfile(":/styleSheets/WEUQMac.qss");
+#endif
+
+#ifdef Q_OS_LINUX
+    QFile WEUQfile(":/styleSheets/WEUQLinux.qss");
+#endif
+
+    if(WEUQfile.open(QFile::ReadOnly)) {
+      a.setStyleSheet(a.styleSheet().append(WEUQfile.readAll()));
+      WEUQfile.close();
+    } else {
+      qDebug() << "could not open stylesheet";
+    }
+
+
 
 /*
     QFile fileCommon(":/styleCommon/common_experimental.qss");

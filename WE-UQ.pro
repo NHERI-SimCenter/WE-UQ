@@ -83,3 +83,4 @@ DISTFILES += \
 OTHER_FILES += conanfile.py azure-pipelines.yml
 
 RESOURCES += images.qrc
+

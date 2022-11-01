@@ -20,55 +20,62 @@ OpenFoamHelper::OpenFoamHelper()
 {
     thedata = nullptr;
     thevecdata = nullptr;
-    type = Type::None;
+    m_type = Type::None;
+    m_option = Options::StandardVector;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<int> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<int> &data, const OpenFoamHelper::Options option)
 {
     thedata = (QVariant *)&data;
     thevecdata = (void *)&data;
-    type = Type::QVectorInt;
+    m_type = Type::QVectorInt;
+    m_option = option;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<float> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<float> &data, const OpenFoamHelper::Options option)
 {
     thedata = (QVariant *)&data;
     thevecdata = (void *)&data;
-    type = Type::QVectorFloat;
+    m_type = Type::QVectorFloat;
+    m_option = option;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<double> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<double> &data, const OpenFoamHelper::Options option)
 {
     thedata = (QVariant *)&data;
     thevecdata = (void *)&data;
-    type = Type::QVectorDouble;
+    m_type = Type::QVectorDouble;
+    m_option = option;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<QVector<int> *> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<QVector<int> *> &data, const OpenFoamHelper::Options option)
 {
     thedata = nullptr;
     thevecdata = (void *)&data;
-    type = Type::QVectorQVectorInt;
+    m_type = Type::QVectorQVectorInt;
+    m_option = option;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<QVector<float> *> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<QVector<float> *> &data, const OpenFoamHelper::Options option)
 {
     thedata = nullptr;
     thevecdata = (void *)&data;
-    type = Type::QVectorQVectorFloat;
+    m_type = Type::QVectorQVectorFloat;
+    m_option = option;
     ans = "";
 }
 
-OpenFoamHelper::OpenFoamHelper(const QVector<QVector<double> *> &data)
+OpenFoamHelper::OpenFoamHelper(const QVector<QVector<double> *> &data, const OpenFoamHelper::Options option)
 {
     thedata = nullptr;
     thevecdata = (void *)&data;
-    type = Type::QVectorQVectorDouble;
+    m_type = Type::QVectorQVectorDouble;
+    m_option = option;
     ans = "";
 }
 
@@ -155,7 +162,7 @@ void OpenFoamHelper::streamVectorVectorInt(QTextStream & os, const OpenFoamHelpe
         N = vec->size();
     }
 
-    if (N != 6) {
+    if (helper.isStandardVector() || N != 6) {
         os << "List<vector>" << ENDLN;
     }
     else {
@@ -167,7 +174,7 @@ void OpenFoamHelper::streamVectorVectorInt(QTextStream & os, const OpenFoamHelpe
 
     foreach (QVector<int> *vec, *vecs) {
         os << "(";
-        if (vec->size() == 6) {
+        if (helper.isSpecialVector() && vec->size() == 6) {
             QVectorIterator<int> itr(*vec);
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ") ";
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ")";
@@ -194,7 +201,7 @@ void OpenFoamHelper::streamVectorVectorFloat(QTextStream & os, const OpenFoamHel
         N = vec->size();
     }
 
-    if (N != 6) {
+    if (helper.isStandardVector() || N != 6) {
         os << "List<vector>" << ENDLN;
     }
     else {
@@ -206,7 +213,7 @@ void OpenFoamHelper::streamVectorVectorFloat(QTextStream & os, const OpenFoamHel
 
     foreach (QVector<float> *vec, *vecs) {
         os << "(";
-        if (vec->size() == 6) {
+        if (helper.isSpecialVector() && vec->size() == 6) {
             QVectorIterator<float> itr(*vec);
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ") ";
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ")";
@@ -233,7 +240,7 @@ void OpenFoamHelper::streamVectorVectorDouble(QTextStream & os, const OpenFoamHe
         N = vec->size();
     }
 
-    if (N != 6) {
+    if (helper.isStandardVector() || N != 6) {
         os << "List<vector>" << ENDLN;
     }
     else {
@@ -245,7 +252,7 @@ void OpenFoamHelper::streamVectorVectorDouble(QTextStream & os, const OpenFoamHe
 
     foreach (QVector<double> *vec, *vecs) {
         os << "(";
-        if (vec->size() == 6) {
+        if (helper.isSpecialVector() && vec->size() == 6) {
             QVectorIterator<double> itr(*vec);
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ") ";
             os << "(" << itr.next() << " " << itr.next() << " " << itr.next() << ")";
@@ -273,7 +280,7 @@ QTextStream & operator << (QTextStream & os, const QVector<QVariant *> &data)
 
 QTextStream & operator << (QTextStream & os, const OpenFoamHelper &helper)
 {
-    switch (helper.type) {
+    switch (helper.m_type) {
     case OpenFoamHelper::Type::QVectorInt :
         OpenFoamHelper::streamVectorInt(os, helper) ;
         break;

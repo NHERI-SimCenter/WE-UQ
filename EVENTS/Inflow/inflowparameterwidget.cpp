@@ -68,6 +68,7 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
 {
     ui->setupUi(this);
     // ui->exportGroup->hide();
+    updateUIsettings();
     setDefaultParameters();
 
     theParameters.clear();
@@ -100,6 +101,45 @@ InflowParameterWidget::InflowParameterWidget(RandomVariablesContainer *theRandom
 InflowParameterWidget::~InflowParameterWidget()
 {
     delete ui;
+}
+
+void InflowParameterWidget::updateUIsettings(void)
+{
+
+    // tool tips
+    ui->PHI11->setToolTip("R<sub>11</sub>");
+    ui->PHI21->setToolTip("R<sub>21</sub>");
+    ui->PHI31->setToolTip("R<sub>31</sub>");
+    ui->PHI12->setToolTip("R<sub>12</sub>");
+    ui->PHI22->setToolTip("R<sub>22</sub>");
+    ui->PHI32->setToolTip("R<sub>32</sub>");
+    ui->PHI13->setToolTip("R<sub>13</sub>");
+    ui->PHI23->setToolTip("R<sub>23</sub>");
+    ui->PHI33->setToolTip("R<sub>33</sub>");
+
+    ui->L11->setToolTip("L<sup>1</sup><sub>11</sub> = <sup>x</sup>L<sub>u</sub>");
+    ui->L21->setToolTip("L<sup>2</sup><sub>11</sub> = <sup>y</sup>L<sub>u</sub>");
+    ui->L31->setToolTip("L<sup>3</sup><sub>11</sub> = <sup>z</sup>L<sub>u</sub>");
+    ui->L12->setToolTip("L<sup>1</sup><sub>22</sub> = <sup>x</sup>L<sub>v</sub>");
+    ui->L22->setToolTip("L<sup>2</sup><sub>22</sub> = <sup>y</sup>L<sub>v</sub>");
+    ui->L32->setToolTip("L<sup>3</sup><sub>22</sub> = <sup>z</sup>L<sub>v</sub>");
+    ui->L13->setToolTip("L<sup>1</sup><sub>33</sub> = <sup>x</sup>L<sub>w</sub>");
+    ui->L23->setToolTip("L<sup>2</sup><sub>33</sub> = <sup>y</sup>L<sub>w</sub>");
+    ui->L33->setToolTip("L<sup>3</sup><sub>33</sub> = <sup>z</sup>L<sub>w</sub>");
+
+    ui->alpha11->setToolTip("&alpha;<sub>11</sub>");
+    ui->alpha21->setToolTip("&alpha;<sub>21</sub>");
+    ui->alpha31->setToolTip("&alpha;<sub>31</sub>");
+    ui->alpha12->setToolTip("&alpha;<sub>12</sub>");
+    ui->alpha22->setToolTip("&alpha;<sub>22</sub>");
+    ui->alpha32->setToolTip("&alpha;<sub>32</sub>");
+    ui->alpha13->setToolTip("&alpha;<sub>13</sub>");
+    ui->alpha23->setToolTip("&alpha;<sub>23</sub>");
+    ui->alpha33->setToolTip("&alpha;<sub>33</sub>");
+
+    ui->alpha1->setToolTip("&alpha;<sub>1</sub>");
+    ui->alpha2->setToolTip("&alpha;<sub>2</sub>");
+    ui->alpha3->setToolTip("&alpha;<sub>3</sub>");
 }
 
 void InflowParameterWidget::selectSourceLocation(void)

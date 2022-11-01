@@ -16,5 +16,32 @@
         <file>Resources/CWE/Templates/dynamicMeshDict_3dof_template</file>
         <file>Resources/CWE/Templates/dynamicMeshDict_6dof_template</file>
         <file>Resources/CWE/Templates/generalizedMotionState</file>
+        <file alias="styleSheets/WEUQLinux.qss">Resources/styleSheets/WEUQLinux.qss</file>
+        <file alias="styleSheets/WEUQMac.qss">Resources/styleSheets/WEUQMac.qss</file>
+        <file alias="styleSheets/WEUQWin.qss">Resources/styleSheets/WEUQWin.qss</file>
+        <file alias="DigitalWindTunnel/Reynolds_stress_Length_scale.csv">Resources/DigitalWindTunnel/Reynolds_stress_Length_scale.csv</file>
+        <file alias="DigitalWindTunnel/windtunnel_example_data.csv">Resources/DigitalWindTunnel/windtunnel_example_data.csv</file>
+        <file alias="OpenFoam_digital_twin/0/flm">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/flm</file>
+        <file alias="OpenFoam_digital_twin/0/fmm">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/fmm</file>
+        <file alias="OpenFoam_digital_twin/0/nuSgs">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/nuSgs</file>
+        <file alias="OpenFoam_digital_twin/0/nut">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/nut</file>
+        <file alias="OpenFoam_digital_twin/0/p">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/p</file>
+        <file alias="OpenFoam_digital_twin/0/U">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/U</file>
+        <file alias="OpenFoam_digital_twin/constant/transportProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/transportProperties</file>
+        <file alias="OpenFoam_digital_twin/constant/turbulenceProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/turbulenceProperties</file>
+        <file alias="OpenFoam_digital_twin/constant/polyMesh/boundary">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/boundary</file>
+        <file alias="OpenFoam_digital_twin/constant/polyMesh/faces.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/faces.gz</file>
+        <file alias="OpenFoam_digital_twin/constant/polyMesh/neighbour.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/neighbour.gz</file>
+        <file alias="OpenFoam_digital_twin/constant/polyMesh/owner.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/owner.gz</file>
+        <file alias="OpenFoam_digital_twin/constant/polyMesh/points.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/points.gz</file>
+        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/L">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/L</file>
+        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/points">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/points</file>
+        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/R">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/R</file>
+        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/U">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/U</file>
+        <file alias="OpenFoam_digital_twin/system/blockMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/blockMeshDict</file>
+        <file alias="OpenFoam_digital_twin/system/controlDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/controlDict</file>
+        <file alias="OpenFoam_digital_twin/system/decomposeParDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/decomposeParDict</file>
+        <file alias="OpenFoam_digital_twin/system/fvSchemes">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/fvSchemes</file>
+        <file alias="OpenFoam_digital_twin/system/fvSolution">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/fvSolution</file>
     </qresource>
 </RCC>

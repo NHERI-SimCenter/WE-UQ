@@ -76,13 +76,18 @@ public:
         QVectorQVectorDouble
     };
 
+    enum class Options : int {
+        StandardVector,
+        SpecialVector
+    };
+
     OpenFoamHelper();
-    OpenFoamHelper(const QVector<int> &);
-    OpenFoamHelper(const QVector<float> &);
-    OpenFoamHelper(const QVector<double> &);
-    OpenFoamHelper(const QVector<QVector<int> *> &);
-    OpenFoamHelper(const QVector<QVector<float> *> &);
-    OpenFoamHelper(const QVector<QVector<double> *> &);
+    OpenFoamHelper(const QVector<int> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::StandardVector);
+    OpenFoamHelper(const QVector<float> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::SpecialVector);
+    OpenFoamHelper(const QVector<double> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::SpecialVector);
+    OpenFoamHelper(const QVector<QVector<int> *> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::StandardVector);
+    OpenFoamHelper(const QVector<QVector<float> *> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::SpecialVector);
+    OpenFoamHelper(const QVector<QVector<double> *> &, const OpenFoamHelper::Options option = OpenFoamHelper::Options::SpecialVector);
 
     friend QTextStream & operator << (QTextStream & os, const QVector<QVariant *> &);
     friend QTextStream & operator << (QTextStream & os, const OpenFoamHelper &);
@@ -97,17 +102,21 @@ public:
 
 private:
 
-    bool isQVectorInt(void) {return type == Type::QVectorInt; };
-    bool isQVectorFloat(void) {return type == Type::QVectorFloat; };
-    bool isQVectorDouble(void) {return type == Type::QVectorDouble; };
-    bool isQVectorQVectorInt(void) {return type == Type::QVectorQVectorInt; };
-    bool isQVectorQVectorFloat(void) {return type == Type::QVectorQVectorFloat; };
-    bool isQVectorQVectorDouble(void) {return type == Type::QVectorQVectorDouble; };
+    bool isQVectorInt(void) const {return m_type == Type::QVectorInt; };
+    bool isQVectorFloat(void) const {return m_type == Type::QVectorFloat; };
+    bool isQVectorDouble(void) const {return m_type == Type::QVectorDouble; };
+    bool isQVectorQVectorInt(void) const {return m_type == Type::QVectorQVectorInt; };
+    bool isQVectorQVectorFloat(void) const {return m_type == Type::QVectorQVectorFloat; };
+    bool isQVectorQVectorDouble(void) const {return m_type == Type::QVectorQVectorDouble; };
+
+    bool isStandardVector(void) const {return m_option == Options::StandardVector; };
+    bool isSpecialVector(void) const {return m_option == Options::SpecialVector; };
 
     QVariant *thedata;
     void *thevecdata;
 
-    Type type;
+    Type m_type;
+    Options m_option;
     QString ans;
 };
 
