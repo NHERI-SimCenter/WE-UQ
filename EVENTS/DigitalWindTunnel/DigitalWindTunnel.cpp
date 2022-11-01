@@ -378,8 +378,6 @@ DigitalWindTunnel::setupConnections()
 
 void DigitalWindTunnel::setDefaultGeometry()
 {
-    this->on_modelSelectionCBX_currentIndexChanged(0);
-
     //Domain Length
     m_domainLengthInlet  =  5.0;   //Domain Length (Inlet)
     m_domainLengthOutlet = 15.0;   //Domain Length (Outlet)
@@ -401,7 +399,7 @@ void DigitalWindTunnel::setDefaultGeometry()
 
 void DigitalWindTunnel::setDefaultParameters()
 {
-    this->on_modelSelectionCBX_currentIndexChanged(0);
+    this->on_modelSelectionCBX_currentIndexChanged(2);
 
     //Domain Length
     setDefaultGeometry();
@@ -592,6 +590,9 @@ bool DigitalWindTunnel::fetchParameterMap(QMap<QString, double> &theParams)
     theParams.insert("offset1",ui->offset1->value());
     theParams.insert("offset2",ui->offset2->value());
 
+    theParams.insert("frictionVelocity", ui->frictionVelocity->text().toDouble());
+    theParams.insert("roughnessHeight", ui->roughnessHeight->text().toDouble());
+
     return true;
 }
 
@@ -681,6 +682,9 @@ void DigitalWindTunnel::refreshDisplay(void)
     ui->offset0->setValue(theParameters.value("offset0"));
     ui->offset1->setValue(theParameters.value("offset1"));
     ui->offset2->setValue(theParameters.value("offset2"));
+
+    ui->frictionVelocity->setText(QString::number(theParameters.value("frictionVelocity")));
+    ui->roughnessHeight->setText(QString::number(theParameters.value("roughnessHeight")));
 }
 
 
