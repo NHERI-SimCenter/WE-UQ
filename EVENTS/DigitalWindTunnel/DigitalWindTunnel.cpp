@@ -1928,7 +1928,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(RData, OpenFoamHelper::Options::StandardVector);
+    out << OpenFoamHelper(RData, OpenFoamHelper::Options::StandardVectorNoHeader);
     RFile.close();
 
     // create constant/boundaryData/inlet/L file
@@ -1960,7 +1960,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(LData, OpenFoamHelper::Options::StandardVector);
+    out << OpenFoamHelper(LData, OpenFoamHelper::Options::StandardVectorNoHeader);
     LFile.close();
 
     // create constant/boundaryData/inlet/points file
@@ -2000,7 +2000,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     // reference point coordinates
     double X0 = ui->refPointX->text().toDouble();
     double Y0 = ui->refPointY->text().toDouble();
-    double Z0 = ui->refPointZ->text().toDouble();
+    //double Z0 = ui->refPointZ->text().toDouble();  // not needed
 
     count = 0;
     while (count < 2) {
@@ -2019,7 +2019,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         count++;
     }
 
-    out << OpenFoamHelper(PtsData, OpenFoamHelper::Options::StandardVector);
+    out << OpenFoamHelper(PtsData, OpenFoamHelper::Options::StandardVectorNoHeader);
     PtsFile.close();
 
     return true;
