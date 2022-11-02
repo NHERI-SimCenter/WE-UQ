@@ -56,6 +56,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDoubleSpinBox>
 #include <QRadioButton>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QFileInfoList>
 
 #include "SimulationParametersCWE.h"
 
@@ -1076,6 +1078,7 @@ DigitalWindTunnel::copyFiles(QString &dirName){
 
 
     //if (inflowCheckBox->isChecked() || couplingGroup->isChecked())
+    if (false) // old code
     {
         QDir targetDir(dirName);
 
@@ -1104,8 +1107,39 @@ DigitalWindTunnel::copyFiles(QString &dirName){
         //return inflowWidget->copyFiles(path);
         result = result && this->buildFiles(dirName);
     }
+    else // copy the content of the source folder (recursively)
+    {
+        auto sourcePath = ui->sourceLocationDisplay->text();
+        int files_copied = copyPath(sourcePath, dirName);
+        result = result & (files_copied > 0);
+    }
 
     return result;
+}
+
+int
+DigitalWindTunnel::copyPath(QString src, QString dst)
+{
+    int files_copied = 0;
+
+    QDir sdir(src);
+    QDir ddir(dst);
+    if (sdir.exists())
+    {
+
+        foreach (QString d, sdir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+            QString dst_path = dst + QDir::separator() + d;
+            ddir.mkpath(dst_path);
+            files_copied += copyPath(src+ QDir::separator() + d, dst_path);
+        }
+
+        foreach (QString f, sdir.entryList(QDir::Files)) {
+            QFile::copy(src + QDir::separator() + f, dst + QDir::separator() + f);
+            ++files_copied;
+        }
+    }
+
+    return files_copied;
 }
 
 bool

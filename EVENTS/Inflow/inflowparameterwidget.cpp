@@ -41,7 +41,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <RandomVariablesContainer.h>
 
-#include "math.h"
+#include <math.h>
 
 #include <QFileDialog>
 #include <QStandardItem>
