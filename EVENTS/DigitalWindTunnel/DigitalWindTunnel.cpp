@@ -1077,42 +1077,37 @@ DigitalWindTunnel::copyFiles(QString &dirName){
                                                         height * toMM);
 
 
-    //if (inflowCheckBox->isChecked() || couplingGroup->isChecked())
-    if (false) // old code
-    {
-        QDir targetDir(dirName);
+    auto sourcePath = ui->sourceLocationDisplay->text();
+    int files_copied = copyPath(sourcePath, dirName);
+    result = result & (files_copied > 0);
 
-        QDir constantDir(targetDir.filePath(""));
-        targetDir.mkpath("0");
-        targetDir.mkpath("system");
 
-        auto newUPath = targetDir.filePath("0/U");
-        if(QFile::exists(newUPath))
-            QFile::remove(newUPath);
+    QDir targetDir(dirName);
 
-        QFile::copy(m_originalUFilePath, newUPath);
+    QDir constantDir(targetDir.filePath(""));
+    targetDir.mkpath("0");
+    targetDir.mkpath("system");
 
-        auto newControlDictPath = targetDir.absoluteFilePath("system/controlDict");
-        if(QFile::exists(newControlDictPath))
-            QFile::remove(newControlDictPath);
+    auto newUPath = targetDir.filePath("0/U");
+    if(QFile::exists(newUPath))
+        QFile::remove(newUPath);
 
-        QFile::copy(m_originalControlDictPath, newControlDictPath);
+    QFile::copy(m_originalUFilePath, newUPath);
 
-        auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
-        if(QFile::exists(newfvSolutionPath))
-            QFile::remove(newfvSolutionPath);
+    auto newControlDictPath = targetDir.absoluteFilePath("system/controlDict");
+    if(QFile::exists(newControlDictPath))
+        QFile::remove(newControlDictPath);
 
-        QFile::copy(m_originalfvSolutionPath, newfvSolutionPath);
+    QFile::copy(m_originalControlDictPath, newControlDictPath);
 
-        //return inflowWidget->copyFiles(path);
-        result = result && this->buildFiles(dirName);
-    }
-    else // copy the content of the source folder (recursively)
-    {
-        auto sourcePath = ui->sourceLocationDisplay->text();
-        int files_copied = copyPath(sourcePath, dirName);
-        result = result & (files_copied > 0);
-    }
+    auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
+    if(QFile::exists(newfvSolutionPath))
+        QFile::remove(newfvSolutionPath);
+
+    QFile::copy(m_originalfvSolutionPath, newfvSolutionPath);
+
+    //return inflowWidget->copyFiles(path);
+    result = result && this->buildFiles(dirName);
 
     return result;
 }
