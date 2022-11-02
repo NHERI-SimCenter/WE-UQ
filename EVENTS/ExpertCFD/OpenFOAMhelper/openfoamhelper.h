@@ -78,7 +78,9 @@ public:
 
     enum class Options : int {
         StandardVector,
-        SpecialVector
+        SpecialVector,
+        StandardVectorNoHeader,
+        SpecialVectorNoHeader
     };
 
     OpenFoamHelper();
@@ -109,13 +111,14 @@ private:
     bool isQVectorQVectorFloat(void) const {return m_type == Type::QVectorQVectorFloat; };
     bool isQVectorQVectorDouble(void) const {return m_type == Type::QVectorQVectorDouble; };
 
-    bool isStandardVector(void) const {return m_option == Options::StandardVector; };
-    bool isSpecialVector(void) const {return m_option == Options::SpecialVector; };
+    bool isStandardVector(void) const {return m_option == Options::StandardVector || m_option == Options::StandardVectorNoHeader; };
+    bool isSpecialVector(void) const {return m_option == Options::SpecialVector || m_option == Options::SpecialVectorNoHeader; };
+    bool writeHeader(void) const {return m_option == Options::StandardVector || m_option == Options::SpecialVector; };
 
     QVariant *thedata;
     void *thevecdata;
 
-    Type m_type;
+    Type    m_type;
     Options m_option;
     QString ans;
 };

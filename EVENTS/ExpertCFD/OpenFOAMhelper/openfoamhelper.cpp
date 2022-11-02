@@ -111,8 +111,10 @@ void OpenFoamHelper::streamVectorInt(QTextStream & os, const OpenFoamHelper &hel
 
     int N = vec->size();
 
-    //os << "vector" << ENDLN;
-    os << N ;            // length of the vector
+    if (helper.writeHeader()) {
+        //os << "vector" << ENDLN;
+        os << N ;            // length of the vector
+    }
     os << " (";
     foreach (double val, *vec) {
         os << val << " ";
@@ -126,8 +128,10 @@ void OpenFoamHelper::streamVectorFloat(QTextStream & os, const OpenFoamHelper &h
 
     int N = vec->size();
 
-    //os << "vector" << ENDLN;
-    os << N ;            // length of the vector
+    if (helper.writeHeader()) {
+        //os << "vector" << ENDLN;
+        os << N ;            // length of the vector
+    }
     os << " (";
     foreach (float val, *vec) {
         os << val << " ";
@@ -141,8 +145,10 @@ void OpenFoamHelper::streamVectorDouble(QTextStream & os, const OpenFoamHelper &
 
     int N = vec->size();
 
-    //os << "vector" << ENDLN;
-    os << N ;            // length of the vector
+    if (helper.writeHeader()) {
+        //os << "vector" << ENDLN;
+        os << N ;            // length of the vector
+    }
     os << " (";
     foreach (double val, *vec) {
         os << val << " ";
@@ -162,14 +168,16 @@ void OpenFoamHelper::streamVectorVectorInt(QTextStream & os, const OpenFoamHelpe
         N = vec->size();
     }
 
-    if (helper.isStandardVector() || N != 6) {
-        os << "List<vector>" << ENDLN;
-    }
-    else {
-        os << "List<vector6D>" << ENDLN;
+    if (helper.writeHeader()) {
+        if (helper.isStandardVector() || N != 6) {
+            os << "List<vector>" << ENDLN;
+        }
+        else {
+            os << "List<vector6D>" << ENDLN;
+        }
+        os << len << ENDLN;            // length of the List<T>
     }
 
-    os << len << ENDLN;            // length of the List<T>
     os << "(" << ENDLN;            // start the List<T>
 
     foreach (QVector<int> *vec, *vecs) {
@@ -201,14 +209,16 @@ void OpenFoamHelper::streamVectorVectorFloat(QTextStream & os, const OpenFoamHel
         N = vec->size();
     }
 
-    if (helper.isStandardVector() || N != 6) {
-        os << "List<vector>" << ENDLN;
-    }
-    else {
-        os << "List<vector6D>" << ENDLN;
+    if (helper.writeHeader()) {
+        if (helper.isStandardVector() || N != 6) {
+            os << "List<vector>" << ENDLN;
+        }
+        else {
+            os << "List<vector6D>" << ENDLN;
+        }
+        os << len << ENDLN;            // length of the List<T>
     }
 
-    os << len << ENDLN;            // length of the List<T>
     os << "(" << ENDLN;            // start the List<T>
 
     foreach (QVector<float> *vec, *vecs) {
@@ -240,14 +250,16 @@ void OpenFoamHelper::streamVectorVectorDouble(QTextStream & os, const OpenFoamHe
         N = vec->size();
     }
 
-    if (helper.isStandardVector() || N != 6) {
-        os << "List<vector>" << ENDLN;
-    }
-    else {
-        os << "List<vector6D>" << ENDLN;
+    if (helper.writeHeader()) {
+        if (helper.isStandardVector() || N != 6) {
+            os << "List<vector>" << ENDLN;
+        }
+        else {
+            os << "List<vector6D>" << ENDLN;
+        }
+        os << len << ENDLN;            // length of the List<T>
     }
 
-    os << len << ENDLN;            // length of the List<T>
     os << "(" << ENDLN;            // start the List<T>
 
     foreach (QVector<double> *vec, *vecs) {

@@ -34,10 +34,6 @@
         <file alias="OpenFoam_digital_twin/constant/polyMesh/neighbour.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/neighbour.gz</file>
         <file alias="OpenFoam_digital_twin/constant/polyMesh/owner.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/owner.gz</file>
         <file alias="OpenFoam_digital_twin/constant/polyMesh/points.gz">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/polyMesh/points.gz</file>
-        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/L">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/L</file>
-        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/points">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/points</file>
-        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/R">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/R</file>
-        <file alias="OpenFoam_digital_twin/constant/boundaryData/inlet/U">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/boundaryData/inlet/U</file>
         <file alias="OpenFoam_digital_twin/system/blockMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/blockMeshDict</file>
         <file alias="OpenFoam_digital_twin/system/controlDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/controlDict</file>
         <file alias="OpenFoam_digital_twin/system/decomposeParDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/decomposeParDict</file>

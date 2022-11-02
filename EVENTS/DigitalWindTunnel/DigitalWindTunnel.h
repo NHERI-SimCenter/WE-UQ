@@ -179,6 +179,7 @@ private:
     bool csv2model(QString filename, QStandardItemModel &model);
     bool model2json(QStandardItemModel &model, QJsonObject &jsonObject);
     bool json2model(QJsonObject &jsonObject, QStandardItemModel &model);
+    int copyPath(QString src, QString dst);
 
     // from MeshParametersCWE
     void setComboBoxByData(QComboBox& comboBox, const QVariant& data);
