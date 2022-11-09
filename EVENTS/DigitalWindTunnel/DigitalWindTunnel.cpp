@@ -106,6 +106,13 @@ DigitalWindTunnel::DigitalWindTunnel(RandomVariablesContainer *theRandomVariable
 
     on_defaultCaseButton_clicked();
     m_loadFromDir.setPath(QDir::homePath() + QDir::separator() + "Documents");
+
+
+    QString filename(":/Resources/DigitalWindTunnel/CSV_Input_default.csv");
+    updateLoadFromDir(filename);
+    QStandardItemModel *model = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
+    csv2model(filename, *model);
+
 }
 
 DigitalWindTunnel::~DigitalWindTunnel()
