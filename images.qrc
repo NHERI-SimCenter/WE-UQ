@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>Resources/DigitalWindTunnel/CSV_Input_default.csv</file>
         <file>Resources/DEDM/wImage1.png</file>
         <file>Resources/DEDM/wImage2.png</file>
         <file>Resources/DEDM/wImage3.png</file>
