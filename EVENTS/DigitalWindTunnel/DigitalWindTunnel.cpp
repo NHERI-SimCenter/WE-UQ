@@ -1343,6 +1343,12 @@ void DigitalWindTunnel::sourcePathChanged(QString caseDir)
     couplingGroup->updateBoundaryList(m_patchesList);
 
     processBuildingPatches();
+
+    // fd - parse number of subdomains
+    QString m_decomposeFile = caseDir + "/system/decomposeParDict";
+    numSubdomain = this->parseSubdomainNumber(m_decomposeFile);
+    this->updateNumOfProcessors(numSubdomain);
+
 }
 
 void DigitalWindTunnel::updateLoadFromDir(QString filename, int levels_up)
@@ -2612,4 +2618,48 @@ void DigitalWindTunnel::processUfile()
         theModel->appendRow(new QStandardItem(s));
     }
     ui->boundarySelection->setModel(theModel);
+}
+
+// fd - adding feature: extract the number of processors from decomposeParDict
+int DigitalWindTunnel::parseSubdomainNumber(QString inFilePath)
+{
+
+    int numSubDomain = 0;
+    QFile inFile(inFilePath);
+
+    if (!inFile.open(QFile::OpenModeFlag::ReadOnly))
+        return -1;
+
+    // We need to parse the input file
+    QTextStream inFileStream(&inFile);
+    QString previousLine = "";
+    QString line = "";
+
+    while(!previousLine.contains("numberOfSubdomains", Qt::CaseSensitive) && !inFileStream.atEnd())
+    {
+        previousLine = line;
+        line = inFileStream.readLine().simplified();
+    }
+
+    // Read the number of subdomains
+    if (previousLine.contains("numberOfSubdomains", Qt::CaseSensitive))
+    {
+        QString subString = previousLine.mid(previousLine.lastIndexOf(" ")+1, previousLine.indexOf(";")-previousLine.lastIndexOf(" ")-1);
+        numSubDomain = subString.toInt();
+    }
+
+    inFile.close();
+
+    return numSubDomain;
+}
+
+// fd - update number of processors
+void DigitalWindTunnel::updateNumOfProcessors(int numProcessors)
+{
+    if (numProcessors < 2) {
+        errorMessage("Processors (read from the numSubdomain in OpenFOAM case) must be greater than 1");
+    } else {
+        ui->processorsBox->setValue(numProcessors);
+        statusMessage("Processor number updated to "+QString::number(numProcessors));
+    }
 }

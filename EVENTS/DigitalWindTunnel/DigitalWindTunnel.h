@@ -111,6 +111,8 @@ public slots:
     void clear(void) override;
     void update3DView(bool centered = false);
     void update3DViewCentered();
+    int parseSubdomainNumber(QString inFilePath);
+    void updateNumOfProcessors(int numProcessors);
 
 private slots:
     void on_sourceLocateBtn_clicked();
@@ -234,6 +236,9 @@ private:
     QByteArray  m_UFileContents;
     QByteArray  m_UFileHead = "";
     QByteArray  m_UFileTail = "";
+
+    // number of subdomain
+    int numSubdomain = 0;
 };
 
 #endif // DIGITALWINDTUNNEL_H
