@@ -824,7 +824,7 @@ DigitalWindTunnel::outputToJSON(QJsonObject &eventObject)
     QJsonObject jsonObjSimulation;
 
     jsonObjSimulation["processors"]        = ui->processorsBox->text().QString::toInt(&ok);       // # of processors to use
-    jsonObjSimulation["solver"]            = ui->solverSelection->currentText();                  // which CFD solver to use
+    jsonObjSimulation["solver"]            = QString("pisoFoam"); //ui->solverSelection->currentText();                  // which CFD solver to use
     jsonObjSimulation["force_calculation"] = ui->forceComboBox->currentText();                    // foce calculation method
     jsonObjSimulation["building_patches"]  = ui->patchesEditBox->text();                          // list of building patches
     jsonObjSimulation["start"]             = ui->startTimeBox->text().toDouble();
@@ -1677,7 +1677,8 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         qDebug() << "move" << newFile << origFile;
 
         // write the new file
-        QString solverType = ui->solverSelection->currentText();
+	//        QString solverType = ui->solverSelection->currentText();
+        QString solverType("pisofoam");	
 
         // load template file
         QFile tpl(":/Resources/CWE/Templates/fvSolution");
