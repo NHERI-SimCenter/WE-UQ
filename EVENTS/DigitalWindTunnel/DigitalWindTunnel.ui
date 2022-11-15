@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>930</width>
-        <height>2106</height>
+        <height>2100</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -196,8 +196,11 @@
              </item>
              <item row="4" column="1">
               <widget class="QSpinBox" name="processorsBox">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="minimum">
-                <number>1</number>
+                <number>2</number>
                </property>
                <property name="maximum">
                 <number>64</number>
