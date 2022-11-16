@@ -1846,9 +1846,9 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         model  = dynamic_cast<QStandardItemModel *>(ui->InflowDataView->model());
         Uidx   = 1;
         Rstart = 2;
-        Rend   = Rstart + 6;
+        Rend   = Rstart + 5; // 6 columns
         Lstart = Rend + 1;
-        Lend   = Lstart + 9;
+        Lend   = Lstart + 8;  // 9 columns
     }
     else if (ui->inflowTurbulenceParameters_CKX->isChecked()
              && ui->loadDataFromFile_RBTN->isChecked())
@@ -1856,9 +1856,9 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         model  = dynamic_cast<QStandardItemModel *>(ui->ReynoldsStressAndLengthScaleView->model());
         Uidx   = -1;
         Rstart = 1;
-        Rend   = Rstart + 6;
+        Rend   = Rstart + 5;
         Lstart = Rend + 1;
-        Lend   = Lstart + 9;
+        Lend   = Lstart + 8;
     }
     else
     {
