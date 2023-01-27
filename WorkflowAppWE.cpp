@@ -83,7 +83,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QtNetwork/QNetworkRequest>
 #include <QHostInfo>
 #include <DakotaResultsSampling.h>
-#include <Utils/PythonProgressDialog.h>
+#include <Utils/ProgramOutputDialog.h>
 #include <Utils/RelativePathResolver.h>
 
 #include <GoogleAnalytics.h>
@@ -192,7 +192,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     theGI->setDefaultProperties(1,144,360,360,37.8715,-122.2730);
 
-    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
     theDialog->appendInfoMessage("Welcome to WE-UQ");
 }
 
