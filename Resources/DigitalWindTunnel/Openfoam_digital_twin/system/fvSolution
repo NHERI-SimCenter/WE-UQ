@@ -40,21 +40,13 @@ solvers
         relTol          0;
     }
 
-    flm
+    k
     {
-        solver          PBiCG;
-        preconditioner  DILU;
-        tolerance       1e-06;
-        relTol          0;
-    };
-
-    fmm
-    {
-        solver          PBiCG;
-        preconditioner  DILU;
-        tolerance       1e-06;
-        relTol          0;
-    };
+	solver		smoothSolver;
+	smoother	GaussSeidel;
+	tolerance	1e-6;
+	relTol		0;
+    }
 }
 
 PISO
