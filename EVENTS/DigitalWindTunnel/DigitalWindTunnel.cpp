@@ -69,7 +69,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <usermodeshapes.h>
 #include "PatchesSelector.h"
 #include "ExpertCFD/OpenFoamHelper/openfoamhelper.h"
-
+#include <iostream>
 /*
  * undefine NO_FSI to enable/show the userMode Widget in CFD Basic mode
  */
@@ -129,11 +129,11 @@ void DigitalWindTunnel::updateUIsettings(void)
     model->setHorizontalHeaderItem(0, new QStandardItem("Points (mm)"));
     model->setHorizontalHeaderItem(1, new QStandardItem("meanU (m/s)"));
     model->setHorizontalHeaderItem(2, new QStandardItem("<u'u'> (m2/s2)"));
-    model->setHorizontalHeaderItem(3, new QStandardItem("<v'v'> (m2/s2)"));
-    model->setHorizontalHeaderItem(4, new QStandardItem("<w'w'> (m2/s2)"));
-    model->setHorizontalHeaderItem(5, new QStandardItem("<u'v'> (m2/s2)"));
-    model->setHorizontalHeaderItem(6, new QStandardItem("<u'w'> (m2/s2)"));
-    model->setHorizontalHeaderItem(7, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(3, new QStandardItem("<u'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(4, new QStandardItem("<u'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(5, new QStandardItem("<v'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(6, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(7, new QStandardItem("<w'w'> (m2/s2)"));
     model->setHorizontalHeaderItem(8, new QStandardItem("xLu (m)"));
     model->setHorizontalHeaderItem(9, new QStandardItem("yLu (m)"));
     model->setHorizontalHeaderItem(10, new QStandardItem("zLu (m)"));
@@ -1107,11 +1107,12 @@ DigitalWindTunnel::copyFiles(QString &dirName){
 
     QFile::copy(m_originalControlDictPath, newControlDictPath);
 
-    auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
-    if(QFile::exists(newfvSolutionPath))
-        QFile::remove(newfvSolutionPath);
+    //fd - Do not create the new fvSolution file
+//    auto newfvSolutionPath = targetDir.absoluteFilePath("system/fvSolution");
+//    if(QFile::exists(newfvSolutionPath))
+//        QFile::remove(newfvSolutionPath);
 
-    QFile::copy(m_originalfvSolutionPath, newfvSolutionPath);
+//    QFile::copy(m_originalfvSolutionPath, newfvSolutionPath);
 
     //return inflowWidget->copyFiles(path);
     result = result && this->buildFiles(dirName);
@@ -1395,6 +1396,8 @@ bool DigitalWindTunnel::csv2model(QString filename, QStandardItemModel &model)
         model.appendRow(*newRow);
     }
 
+    model.removeRow(0);
+
     csv_file.close();
 
     return true;
@@ -1659,86 +1662,87 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     // . look for solver definition for PISO && SIMPLE && PIMPLE;
     // .. add, if none found
 
-    newFile = m_newLocation.absoluteFilePath("fvSolution");
-    origFile = newFile + ".orig";
+    // fd - Do not create the new fvSolution
+//    newFile = m_newLocation.absoluteFilePath("fvSolution");
+//    origFile = newFile + ".orig";
 
-    if (QFile(newFile).exists()) {
-        qWarning() << "using the provided " << newFile;
-    }
-    else {
-        qWarning() << "creating a new " << newFile;
+//    if (QFile(newFile).exists()) {
+//        qWarning() << "using the provided " << newFile;
+//    }
+//    else {
+//        qWarning() << "creating a new " << newFile;
 
-        if (QFile(origFile).exists()) {
-            qWarning() << "overwriting " << origFile;
-            QFile::remove(origFile);
-        }
-        QFile::rename(newFile, origFile);
+//        if (QFile(origFile).exists()) {
+//            qWarning() << "overwriting " << origFile;
+//            QFile::remove(origFile);
+//        }
+//        QFile::rename(newFile, origFile);
 
-        qDebug() << "move" << newFile << origFile;
+//        qDebug() << "move" << newFile << origFile;
 
         // write the new file
-	//        QString solverType = ui->solverSelection->currentText();
-        QString solverType("pisofoam");	
+    //        QString solverType = ui->solverSelection->currentText();
+//        QString solverType("pisofoam");
 
         // load template file
-        QFile tpl(":/Resources/CWE/Templates/fvSolution");
-        tpl.open(QIODevice::ReadOnly);
-        m_TemplateContents = tpl.readAll();
-        tpl.close();
+//        QFile tpl(":/Resources/CWE/Templates/fvSolution");
+//        tpl.open(QIODevice::ReadOnly);
+//        m_TemplateContents = tpl.readAll();
+//        tpl.close();
 
-        QFile fvSol(newFile);
-        fvSol.open(QFile::WriteOnly);
-        QTextStream fvOut(&fvSol);
+//        QFile fvSol(newFile);
+//        fvSol.open(QFile::WriteOnly);
+//        QTextStream fvOut(&fvSol);
 
-        QList<QByteArray> TemplateList = m_TemplateContents.split('\n');
-        foreach (QByteArray line, TemplateList)
-        {
-            if (line.contains("__SOLVER__")) {
+//        QList<QByteArray> TemplateList = m_TemplateContents.split('\n');
+//        foreach (QByteArray line, TemplateList)
+//        {
+//            if (line.contains("__SOLVER__")) {
 
-                // substitute __SOLVER__ section
+//                // substitute __SOLVER__ section
 
-                if (solverType.toLower() == "pimplefoam") {
+//                if (solverType.toLower() == "pimplefoam") {
 
-                    fvOut << "PIMPLE" << ENDLN;
-                    fvOut << "{" << ENDLN;
-                    fvOut << "    //- Correct mesh flux option (default to true)" << ENDLN;
-                    fvOut << "    correctPhi          true;" << ENDLN << ENDLN;
+//                    fvOut << "PIMPLE" << ENDLN;
+//                    fvOut << "{" << ENDLN;
+//                    fvOut << "    //- Correct mesh flux option (default to true)" << ENDLN;
+//                    fvOut << "    correctPhi          true;" << ENDLN << ENDLN;
 
-                    fvOut << "    //- Update mesh every outer correction loop (default to true)" << ENDLN;
-                    fvOut << "    moveMeshOuterCorrectors true;" << ENDLN << ENDLN;
-                    fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << ENDLN;
-                    fvOut << "    nOuterCorrectors    1;" << ENDLN << ENDLN;
-                    fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << ENDLN;
-                    fvOut << "    nCorrectors         1;" << ENDLN << ENDLN;
-                    fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << ENDLN;
-                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                    fvOut << "}" << ENDLN;
-                }
-                else if (solverType.toLower() == "pisofoam") {
+//                    fvOut << "    //- Update mesh every outer correction loop (default to true)" << ENDLN;
+//                    fvOut << "    moveMeshOuterCorrectors true;" << ENDLN << ENDLN;
+//                    fvOut << "    //- Number of outer correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+//                    fvOut << "    nOuterCorrectors    1;" << ENDLN << ENDLN;
+//                    fvOut << "    //- Number of PISO correction loops (an integer larger than 0 and default to 1)" << ENDLN;
+//                    fvOut << "    nCorrectors         1;" << ENDLN << ENDLN;
+//                    fvOut << "    //- Number of non-orthogonal correction loops (an integer no less than 0 and default to 0)" << ENDLN;
+//                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+//                    fvOut << "}" << ENDLN;
+//                }
+//                else if (solverType.toLower() == "pisofoam") {
 
-                    fvOut << "PISO" << ENDLN;
-                    fvOut << "{" << ENDLN;
-                    fvOut << "    pRefCell            0;" << ENDLN;
-                    fvOut << "    pRefValue           0;" << ENDLN;
-                    fvOut << "    nCorrectors         0;" << ENDLN;
-                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                    fvOut << "}" << ENDLN;
-                }
-                else if (solverType.toLower() == "icofoam") {
+//                    fvOut << "PISO" << ENDLN;
+//                    fvOut << "{" << ENDLN;
+//                    fvOut << "    pRefCell            0;" << ENDLN;
+//                    fvOut << "    pRefValue           0;" << ENDLN;
+//                    fvOut << "    nCorrectors         0;" << ENDLN;
+//                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+//                    fvOut << "}" << ENDLN;
+//                }
+//                else if (solverType.toLower() == "simplefoam") {
 
-                    fvOut << "SIMPLE" << ENDLN;
-                    fvOut << "{" << ENDLN;
-                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
-                    fvOut << "}" << ENDLN;
-                }
-            }
-            else {
-                fvOut << line << ENDLN;
-            }
-        }
+//                    fvOut << "SIMPLE" << ENDLN;
+//                    fvOut << "{" << ENDLN;
+//                    fvOut << "    nNonOrthogonalCorrectors 0;" << ENDLN;
+//                    fvOut << "}" << ENDLN;
+//                }
+//            }
+//            else {
+//                fvOut << line << ENDLN;
+//            }
+//        }
 
-        fvSol.close();
-    }
+//        fvSol.close();
+//    }
 
     //
     // ... inflowProperties file
@@ -1764,30 +1768,40 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     // write the new file
     exportInflowParameterFile(newFile);
 
+    //fd - Remove inflowProperties file if the inflow boundary data is provided by users
+    if (ui->userDefinedInflow_CKX->isChecked()){
+        QFile::remove(newFile);
+    }
+
     //
     // ... U file
     //
+    //fd - Do not overwrite the U file if inflow boundary data is provided
 
-    m_newLocation = QDir(dirName);
-    if (!m_newLocation.cd("0")) {
-        m_newLocation.mkdir("0");
-        m_newLocation.cd("0");
+    if (ui->userDefinedInflow_CKX->isChecked()){
     }
+    else{
+        m_newLocation = QDir(dirName);
+        if (!m_newLocation.cd("0")) {
+            m_newLocation.mkdir("0");
+            m_newLocation.cd("0");
+        }
 
-    newFile  = m_newLocation.absoluteFilePath("U");
-    origFile = newFile + ".orig";
+        newFile  = m_newLocation.absoluteFilePath("U");
+        origFile = newFile + ".orig";
 
-    if (QFile(origFile).exists()) {
-        qWarning() << "overwriting " << origFile;
-        QFile::remove(origFile);
+        if (QFile(origFile).exists()) {
+            qWarning() << "overwriting " << origFile;
+            QFile::remove(origFile);
+        }
+        QFile::rename(newFile, origFile);
+
+        qDebug() << "move" << newFile << origFile;
+
+        // update U file
+
+        this->exportUFile(newFile);
     }
-    QFile::rename(newFile, origFile);
-
-    qDebug() << "move" << newFile << origFile;
-
-    // update U file
-
-    this->exportUFile(newFile);
 
     //
     // ... controlDict file
@@ -1848,7 +1862,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         Uidx   = 1;
         Rstart = 2;
         Rend   = Rstart + 6;
-        Lstart = Rend + 1;
+        Lstart = Rend;
         Lend   = Lstart + 9;
     }
     else if (ui->inflowTurbulenceParameters_CKX->isChecked()
@@ -1858,7 +1872,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         Uidx   = -1;
         Rstart = 1;
         Rend   = Rstart + 6;
-        Lstart = Rend + 1;
+        Lstart = Rend;
         Lend   = Lstart + 9;
     }
     else

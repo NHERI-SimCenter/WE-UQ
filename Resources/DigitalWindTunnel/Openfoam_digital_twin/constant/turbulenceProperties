@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.3.1                                 |
+|  \\    /   O peration     | Version:  3.0.1                                 |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -19,32 +19,56 @@ simulationType  LES;
 
 LES
 {
-LESModel        dynamicLagrangian;
+    LESModel            kEqn;
 
-turbulence      on;
+    delta               cubeRootVol;
 
-printCoeffs     on;
+    printCoeffs         on;
 
-delta           smooth;
+    turbulence          on;
 
-dynamicLagrangianCoeffs
-{
-    filter          simple;
-    ce              1.048;
-    theta           1.5;
-}
-
-cubeRootVolCoeffs
-{
-    deltaCoeff      1;
-}
-
-PrandtlCoeffs
-{
-    delta           cubeRootVol;
     cubeRootVolCoeffs
     {
         deltaCoeff      1;
+    }
+
+    PrandtlCoeffs
+    {
+        delta           cubeRootVol;
+        cubeRootVolCoeffs
+        {
+            deltaCoeff      1;
+        }
+        smoothCoeffs
+        {
+            delta           cubeRootVol;
+            cubeRootVolCoeffs
+            {
+                deltaCoeff      1;
+            }
+            maxDeltaRatio   1.1;
+        }
+        Cdelta           0.158;
+    }
+
+    vanDriestCoeffs
+    {
+        delta           cubeRootVol;
+        cubeRootVolCoeffs
+        {
+            deltaCoeff      1;
+        }
+        smoothCoeffs
+        {
+            delta           cubeRootVol;
+            cubeRootVolCoeffs
+            {
+                deltaCoeff      1;
+            }
+            maxDeltaRatio   1.1;
+        }
+        Aplus            26;
+        Cdelta           0.158;
     }
 
     smoothCoeffs
@@ -54,45 +78,9 @@ PrandtlCoeffs
         {
             deltaCoeff      1;
         }
-
         maxDeltaRatio   1.1;
     }
-
-    Cdelta          0.158;
 }
 
-vanDriestCoeffs
-{
-    delta           cubeRootVol;
-    cubeRootVolCoeffs
-    {
-        deltaCoeff      1;
-    }
-
-    smoothCoeffs
-    {
-        delta           cubeRootVol;
-        cubeRootVolCoeffs
-        {
-            deltaCoeff      1;
-        }
-
-        maxDeltaRatio   1.1;
-    }
-
-    Aplus           26;
-    Cdelta          0.158;
-}
-
-smoothCoeffs
-{
-    delta           cubeRootVol;
-    cubeRootVolCoeffs
-    {
-        deltaCoeff      1;
-    }
-
-    maxDeltaRatio   1.1;
-}
 
 // ************************************************************************* //

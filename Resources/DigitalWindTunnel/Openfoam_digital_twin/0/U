@@ -1,15 +1,17 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2.3.1                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|  \\    /   O peration     | Version:  2206                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
     format      ascii;
+    arch        "LSB;label=32;scalar=64";
     class       volVectorField;
+    location    "0.0001";
     object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -20,47 +22,47 @@ internalField   uniform (0 0 0);
 
 boundaryField
 {
-
-    inlet         
+    top
     {
-        type            turbulentDFMInlet;
-        filterType      exponential;
-        filterFactor    4;
-        value           $internalField;
-        periodicInZ     true;
+        type            symmetryPlane;
     }
-
-    outlet
-    {
-    	type            inletOutlet;
-    	inletValue      uniform (0 0 0);
-    	value           $internalField;
-    }
-
     bottom
     {
         type            noSlip;
     }
-
-    top
+    inlet
     {
-        type    symmetryPlane;
+        type            turbulentDFMInlet;
+        filterType      exponential;
+        filterFactor    4;
+        gridFactor      1;
+        value           $internalField;
+        periodicInZ     false;
+        perodicInY      false;
+        cleanRestart    false;
+        calculateU      false;
+        calculateL      false;
+        calculateR      false;
     }
-    
-    leftWall
+    outlet
     {
-        type    symmetryPlane;
+        type            inletOutlet;
+        inletValue      uniform (0 0 0);
+        value           uniform (0 0 0);
     }
-
     rightWall
     {
-        type    symmetryPlane;
+        type            symmetryPlane;
     }
-
-    building
+    leftWall
     {
-        type    noSlip;
+        type            symmetryPlane;
+    }
+    cube
+    {
+        type            noSlip;
     }
 }
+
 
 // ************************************************************************* //

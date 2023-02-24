@@ -203,7 +203,7 @@
                 <number>2</number>
                </property>
                <property name="maximum">
-                <number>64</number>
+                <number>1000</number>
                </property>
               </widget>
              </item>
@@ -216,6 +216,18 @@
              </item>
              <item row="3" column="1">
               <widget class="QComboBox" name="solverSelection">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+               <property name="currentText">
+                <string>pisoFoam</string>
+               </property>
+               <property name="maxVisibleItems">
+                <number>10</number>
+               </property>
                <item>
                 <property name="text">
                  <string>pimpleFoam</string>
