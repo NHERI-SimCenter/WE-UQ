@@ -39,6 +39,8 @@
             "EventClassification": "Wind",
             "FilterMethod": 0,
             "InflowConditions": false,
+	    "LengthScale": 0.0025,
+	    "VelocityScale": 0.2,
             "L11": 1,
             "L12": 1,
             "L13": 1,
@@ -133,7 +135,7 @@
         "modalRayleighTangentRatio": 0,
         "numModesModal": 1,
         "rayleighTangent": "Initial",
-        "secondMode": 0,
+        "secondMode": 20,
         "solver": "Umfpack"
     },
     "StructuralInformation": {

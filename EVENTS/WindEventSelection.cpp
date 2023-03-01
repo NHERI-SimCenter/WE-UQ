@@ -64,7 +64,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <WindTunnelExperiment.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
 #include <Inflow/inflowparameterwidget.h>
-#include "Utils/PythonProgressDialog.h"
+#include "Utils/ProgramOutputDialog.h"
 
 #include <UserDefinedApplication.h>
 //#include <BasicCFD.h>
@@ -307,19 +307,19 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
 
 void
 WindEventSelection::sendStatusMessage(QString message) {
-    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
     theDialog->appendInfoMessage(message);
 }
 
 void
 WindEventSelection::sendErrorMessage(QString message) {
-    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
     theDialog->appendErrorMessage(message);
 }
 
 void
 WindEventSelection::sendFatalMessage(QString message) {
-    PythonProgressDialog *theDialog=PythonProgressDialog::getInstance();
+    ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
     theDialog->appendErrorMessage(message);
 }
 
