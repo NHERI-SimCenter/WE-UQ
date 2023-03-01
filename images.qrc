@@ -28,6 +28,7 @@
         <file alias="OpenFoam_digital_twin/0/U">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/U</file>
         <file alias="OpenFoam_digital_twin/constant/transportProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/transportProperties</file>
         <file alias="OpenFoam_digital_twin/constant/turbulenceProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/turbulenceProperties</file>
+        <file alias="OpenFoam_digital_twin/constant/triSurface/cube.stl">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/triSurface/cube.stl</file>
         <file alias="OpenFoam_digital_twin/system/blockMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/blockMeshDict</file>
         <file alias="OpenFoam_digital_twin/system/snappyHexMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/snappyHexMeshDict</file>
         <file alias="OpenFoam_digital_twin/system/controlDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/controlDict</file>
