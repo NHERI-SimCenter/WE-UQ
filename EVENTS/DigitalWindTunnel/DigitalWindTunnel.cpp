@@ -395,12 +395,12 @@ void DigitalWindTunnel::setDefaultGeometry()
     m_domainLengthZneg   =  0.0;   //Domain Length (-Z)
     m_domainLengthZpos   =  5.0;   //Domain Length (+Z)
 
-    ui->domainLengthInlet->setText(QString("%1").arg(m_domainLengthInlet,0,'f',3));
-    ui->domainLengthOutlet->setText(QString("%1").arg(m_domainLengthOutlet,0,'f',3));
-    ui->domainLengthYneg->setText(QString("%1").arg(m_domainLengthYneg,0,'f',3));
-    ui->domainLengthYpos->setText(QString("%1").arg(m_domainLengthYpos,0,'f',3));
-    ui->domainLengthZneg->setText(QString("%1").arg(m_domainLengthZneg,0,'f',3));
-    ui->domainLengthZpos->setText(QString("%1").arg(m_domainLengthZpos,0,'f',3));
+    ui->domainLengthInlet->setText(QString::number(m_domainLengthInlet,'f',3));
+    ui->domainLengthOutlet->setText(QString::number(m_domainLengthOutlet,'f',3));
+    ui->domainLengthYneg->setText(QString::number(m_domainLengthYneg,'f',3));
+    ui->domainLengthYpos->setText(QString::number(m_domainLengthYpos,'f',3));
+    ui->domainLengthZneg->setText(QString::number(m_domainLengthZneg,'f',3));
+    ui->domainLengthZpos->setText(QString::number(m_domainLengthZpos,'f',3));
 
     update3DView();
 }
@@ -929,12 +929,12 @@ DigitalWindTunnel::inputFromJSON(QJsonObject &jsonObject)
         m_domainLengthZneg   = jsonObjMesh["lowZPad"].toDouble();   // Domain Length (-Z)
         m_domainLengthZpos   = jsonObjMesh["highZPad"].toDouble();  // Domain Length (+Z)
 
-        ui->domainLengthInlet->setText(QString("%1").arg(m_domainLengthInlet,0,'f',3));
-        ui->domainLengthOutlet->setText(QString("%1").arg(m_domainLengthOutlet,0,'f',3));
-        ui->domainLengthYneg->setText(QString("%1").arg(m_domainLengthYneg,0,'f',3));
-        ui->domainLengthYpos->setText(QString("%1").arg(m_domainLengthYpos,0,'f',3));
-        ui->domainLengthZneg->setText(QString("%1").arg(m_domainLengthZneg,0,'f',3));
-        ui->domainLengthZpos->setText(QString("%1").arg(m_domainLengthZpos,0,'f',3));
+        ui->domainLengthInlet->setText(QString::number(m_domainLengthInlet,'f',3));
+        ui->domainLengthOutlet->setText(QString::number(m_domainLengthOutlet,'f',3));
+        ui->domainLengthYneg->setText(QString::number(m_domainLengthYneg,'f',3));
+        ui->domainLengthYpos->setText(QString::number(m_domainLengthYpos,'f',3));
+        ui->domainLengthZneg->setText(QString::number(m_domainLengthZneg,'f',3));
+        ui->domainLengthZpos->setText(QString::number(m_domainLengthZpos,'f',3));
 
 //        //Mesh Size -- these are only loaded for debugging
 //        gridSizeBluffBody     = jsonObjMesh["meshDensity"].toDouble();    //Grid Size (on the bluff body)
