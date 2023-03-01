@@ -39,7 +39,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>930</width>
+        <width>915</width>
         <height>2100</height>
        </rect>
       </property>
@@ -984,7 +984,7 @@
              <item row="8" column="1" colspan="4">
               <widget class="QStackedWidget" name="modelParametersStack">
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="parametersManualEntry">
                 <property name="minimumSize">
@@ -1137,6 +1137,9 @@
                       <property name="decimals">
                        <number>3</number>
                       </property>
+                      <property name="minimum">
+                       <double>-99.989999999999995</double>
+                      </property>
                       <property name="singleStep">
                        <double>0.010000000000000</double>
                       </property>
@@ -1147,6 +1150,9 @@
                       <property name="decimals">
                        <number>3</number>
                       </property>
+                      <property name="minimum">
+                       <double>-99.989999999999995</double>
+                      </property>
                       <property name="singleStep">
                        <double>0.010000000000000</double>
                       </property>
@@ -1156,6 +1162,9 @@
                      <widget class="QDoubleSpinBox" name="alpha3">
                       <property name="decimals">
                        <number>3</number>
+                      </property>
+                      <property name="minimum">
+                       <double>-99.989999999999995</double>
                       </property>
                       <property name="singleStep">
                        <double>0.010000000000000</double>

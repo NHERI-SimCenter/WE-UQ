@@ -149,11 +149,11 @@ void DigitalWindTunnel::updateUIsettings(void)
 
     model->setHorizontalHeaderItem(0, new QStandardItem("Points (mm)"));
     model->setHorizontalHeaderItem(1, new QStandardItem("<u'u'> (m2/s2)"));
-    model->setHorizontalHeaderItem(2, new QStandardItem("<v'v'> (m2/s2)"));
-    model->setHorizontalHeaderItem(3, new QStandardItem("<w'w'> (m2/s2)"));
-    model->setHorizontalHeaderItem(4, new QStandardItem("<u'v'> (m2/s2)"));
-    model->setHorizontalHeaderItem(5, new QStandardItem("<u'w'> (m2/s2)"));
-    model->setHorizontalHeaderItem(6, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(2, new QStandardItem("<u'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(3, new QStandardItem("<u'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(4, new QStandardItem("<v'v'> (m2/s2)"));
+    model->setHorizontalHeaderItem(5, new QStandardItem("<v'w'> (m2/s2)"));
+    model->setHorizontalHeaderItem(6, new QStandardItem("<w'w'> (m2/s2)"));
     model->setHorizontalHeaderItem(7, new QStandardItem("xLu (m)"));
     model->setHorizontalHeaderItem(8, new QStandardItem("yLu (m)"));
     model->setHorizontalHeaderItem(9, new QStandardItem("zLu (m)"));
@@ -389,9 +389,9 @@ void DigitalWindTunnel::setDefaultGeometry()
 {
     //Domain Length
     m_domainLengthInlet  =  5.0;   //Domain Length (Inlet)
-    m_domainLengthOutlet = 15.0;   //Domain Length (Outlet)
-    m_domainLengthYneg   =  5.0;   //Domain Length (-Y)
-    m_domainLengthYpos   =  5.0;   //Domain Length (+Y)
+    m_domainLengthOutlet =  5.0;   //Domain Length (Outlet)
+    m_domainLengthYneg   =  1.5;   //Domain Length (-Y)
+    m_domainLengthYpos   =  1.5;   //Domain Length (+Y)
     m_domainLengthZneg   =  0.0;   //Domain Length (-Z)
     m_domainLengthZpos   =  5.0;   //Domain Length (+Z)
 
@@ -1662,7 +1662,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     // . look for solver definition for PISO && SIMPLE && PIMPLE;
     // .. add, if none found
 
-    // fd - Do not create the new fvSolution
+    // fd - Use fvSolution provided by users as it contains the user-defined turbulence parameters
 //    newFile = m_newLocation.absoluteFilePath("fvSolution");
 //    origFile = newFile + ".orig";
 
@@ -2006,7 +2006,7 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
     QVector<QVector<double> *> PtsData;
 
     double modelHeight = model->item(model->rowCount()-1,ptIdx)->data(Qt::DisplayRole).toDouble();
-    double modelWidth  = m_domainLengthYneg + m_domainLengthYpos;
+    double modelWidth  = m_domainLengthYpos-0.01;
 
     //
     // the following block would widen the model by buildingWidth / buildingHeight.
@@ -2313,7 +2313,6 @@ void DigitalWindTunnel::exportUFile(QString fileName)
                 out << "        calculateR         true;" << ENDLN;
             }
 
-
             if (theMap.contains("type"))         theMap.remove("type");
             if (theMap.contains("filterType"))   theMap.remove("filterType");
             if (theMap.contains("filterFactor")) theMap.remove("filterFactor");
@@ -2324,6 +2323,9 @@ void DigitalWindTunnel::exportUFile(QString fileName)
             if (theMap.contains("periodicInY"))  theMap.remove("periodicInY");
             if (theMap.contains("periodicInZ"))  theMap.remove("periodicInZ");
             if (theMap.contains("cleanRestart")) theMap.remove("cleanRestart");
+            if (theMap.contains("calculateU"))   theMap.remove("calculateU");
+            if (theMap.contains("calculateL"))   theMap.remove("calculateL");
+            if (theMap.contains("calculateR"))   theMap.remove("calculateR");
 
             foreach (QString s, theMap.keys() )
             {
