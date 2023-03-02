@@ -2037,11 +2037,11 @@ bool DigitalWindTunnel::buildFiles(QString &dirName)
         for (int row=0; row<model->rowCount(); row++) {
             oneRow = new QVector<double>;
             oneRow->append(X0);
-            oneRow->append(Y0 + modelWidth*count);
             QStandardItem *item = model->item(row,ptIdx);
             double height = item->data(Qt::DisplayRole).toDouble();
             height *= m_domainLengthZpos / modelHeight;
             oneRow->append(height);
+            oneRow->append(Y0 + modelWidth*count);
             PtsData.append(oneRow);
         }
         count++;
