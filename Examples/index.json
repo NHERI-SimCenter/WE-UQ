@@ -112,7 +112,48 @@
         "UM.1.1.1",
         "UM.1.1"
       ]
-    }
+    },
+    "weuq-0011": {
+      "id": "weuq-0011",
+      "base": "weuq-0011",
+      "title": "Digital Wind Tunnel",
+      "published": "2022-03-06T21:26:53.946381-08:00\"",
+      "doc": [
+        "weuq-0011/postprocess.py",
+        "weuq-0011/README.rst",
+        "weuq-0011/figures/User-interface",
+        "weuq-0011/figures/9story-RES-USER.png",
+        "weuq-0011/figures/9story-RES6.png",
+        "weuq-0011/figures/9story-RES-Reliability.png",
+        "weuq-0011/3Story.tcl",
+        "weuq-0011/figures/9story-UQ-Reliability.png",
+        "weuq-0011/figures/weuq-0007-FEM.png",
+        "weuq-0011/postprocess.tcl",
+        "weuq-0011/figures/9story-RES1.png",
+        "weuq-0011/figures/weuq-0007-UQ.png",
+        "weuq-0011/figures/9story-EDP-USER.png",
+        "weuq-0011/figures/weuq-0007-EVT.png",
+        "weuq-0011/figures/3story.png",
+        "weuq-0011/figures/weuq-0007-GI.png",
+        "weuq-0011/figures/9story-RES2.png",
+        "weuq-0011/recorder.tcl",
+        "weuq-0011/figures/9story-RV.png",
+        "weuq-0011/figures/9story-EDP-Reliability.png",
+        "weuq-0011/figures/weuq-0007-SIM.png"
+      ],
+      "entry_point": "weuq-0011/./input.json",
+      "summary": "This study uses WE-UQ's built-in interface to run a CFD simulation with the user-defined inflow conditions.",
+      "logo": "figures/3story.png",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    } 
   },
   "categories": {
     "Difficulty": {
@@ -125,5 +166,7 @@
       "OpenSees-Simulation": "OpenSees",
       "OpenSeesPy-Simulation": "OpenSeesPy"
     }
-  }
+  },
+
+
 }
