@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
     QCoreApplication::setApplicationVersion("2.3.0");
-    //GoogleAnalytics::SetTrackingId("UA-121615795-1");
+    // GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
 
@@ -154,9 +154,8 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1) Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan, Fei Ding, Stevan Gavrilovic, & Wael Elhaddad. (2023). NHERI-SimCenter/WE-UQ: Version 2.2.0 (v2.2.0). Zenodo. https://doi.org/10.5281/zenodo.7706443 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
-
-
+    QString citeText("1) Frank McKenna, Peter Mackenzie-Helnwein, Jiawei Wan, Fei Ding, Wael Elhaddad, & Stevan Gavrilovic. (2023). NHERI-SimCenter/WE-UQ: Version 2.3.0 (v2.3.0). Zenodo. https://doi.org/10.5281/zenodo.7706617 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    
     w.setCite(citeText);
 
     // QString manualURL("https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community//SimCenter/Software/WE_UQ/");
