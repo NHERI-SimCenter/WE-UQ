@@ -72,8 +72,8 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("2.2.0");
-    // GoogleAnalytics::SetTrackingId("UA-121615795-1");
+    QCoreApplication::setApplicationVersion("2.3.0");
+    //GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
 
