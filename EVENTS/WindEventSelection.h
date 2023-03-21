@@ -83,15 +83,17 @@ private:
    QStackedWidget *theStackedWidget;
    SimCenterAppWidget *theCurrentEvent;
 
-   SimCenterAppWidget *theDEDM_HRP_Widget;
-   SimCenterAppWidget *theLowRiseTPU_Widget;
    SimCenterAppWidget *theStochasticModel;
-   SimCenterAppWidget *theExistingEvents;
    SimCenterAppWidget *CFDExpertEventWidget;
    SimCenterAppWidget *CFDBeginnerEventWidget;
    SimCenterAppWidget *CFDTemplateEventWidget;
-   SimCenterAppWidget *theWindTunnelExperiment;
    SimCenterAppWidget *theDigitalWindTunnel;
+   SimCenterAppWidget *theIsolatedBuildingCFD;
+   SimCenterAppWidget *theDEDM_HRP_Widget;
+   SimCenterAppWidget *theLowRiseTPU_Widget;
+   SimCenterAppWidget *theWindTunnelExperiment;
+   SimCenterAppWidget *theExistingEvents;
+
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };

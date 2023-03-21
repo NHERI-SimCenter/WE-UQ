@@ -22,20 +22,23 @@
         <file alias="styleSheets/WEUQWin.qss">Resources/styleSheets/WEUQWin.qss</file>
         <file alias="DigitalWindTunnel/Reynolds_stress_Length_scale.csv">Resources/DigitalWindTunnel/Reynolds_stress_Length_scale.csv</file>
         <file alias="DigitalWindTunnel/windtunnel_example_data.csv">Resources/DigitalWindTunnel/windtunnel_example_data.csv</file>
-        <file alias="OpenFoam_digital_twin/0/k">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/k</file>
-        <file alias="OpenFoam_digital_twin/0/nut">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/nut</file>
-        <file alias="OpenFoam_digital_twin/0/p">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/p</file>
-        <file alias="OpenFoam_digital_twin/0/U">Resources/DigitalWindTunnel/OpenFoam_digital_twin/0/U</file>
-        <file alias="OpenFoam_digital_twin/constant/transportProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/transportProperties</file>
-        <file alias="OpenFoam_digital_twin/constant/turbulenceProperties">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/turbulenceProperties</file>
-        <file alias="OpenFoam_digital_twin/constant/triSurface/cube.stl">Resources/DigitalWindTunnel/OpenFoam_digital_twin/constant/triSurface/cube.stl</file>
-        <file alias="OpenFoam_digital_twin/system/blockMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/blockMeshDict</file>
-        <file alias="OpenFoam_digital_twin/system/snappyHexMeshDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/snappyHexMeshDict</file>
-        <file alias="OpenFoam_digital_twin/system/controlDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/controlDict</file>
-        <file alias="OpenFoam_digital_twin/system/decomposeParDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/decomposeParDict</file>
-        <file alias="OpenFoam_digital_twin/system/fvSchemes">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/fvSchemes</file>
-        <file alias="OpenFoam_digital_twin/system/fvSolution">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/fvSolution</file>
-        <file alias="OpenFoam_digital_twin/system/surfaceFeaturesDict">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/surfaceFeaturesDict</file>
-        <file alias="OpenFoam_digital_twin/system/probes">Resources/DigitalWindTunnel/OpenFoam_digital_twin/system/probes</file>
+        <file alias="OpenFoam_digital_twin/0/k">Resources/DigitalWindTunnel/Openfoam_digital_twin/0/k</file>
+        <file alias="OpenFoam_digital_twin/0/nut">Resources/DigitalWindTunnel/Openfoam_digital_twin/0/nut</file>
+        <file alias="Openfoam_digital_twin/0/p">Resources/DigitalWindTunnel/Openfoam_digital_twin/0/p</file>
+        <file alias="Openfoam_digital_twin/0/U">Resources/DigitalWindTunnel/Openfoam_digital_twin/0/U</file>
+        <file alias="OpenFoam_digital_twin/constant/transportProperties">Resources/DigitalWindTunnel/Openfoam_digital_twin/constant/transportProperties</file>
+        <file alias="OpenFoam_digital_twin/constant/turbulenceProperties">Resources/DigitalWindTunnel/Openfoam_digital_twin/constant/turbulenceProperties</file>
+        <file alias="OpenFoam_digital_twin/constant/triSurface/cube.stl">Resources/DigitalWindTunnel/Openfoam_digital_twin/constant/triSurface/cube.stl</file>
+        <file alias="OpenFoam_digital_twin/system/blockMeshDict">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/blockMeshDict</file>
+        <file alias="OpenFoam_digital_twin/system/snappyHexMeshDict">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/snappyHexMeshDict</file>
+        <file alias="OpenFoam_digital_twin/system/controlDict">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/controlDict</file>
+        <file alias="OpenFoam_digital_twin/system/decomposeParDict">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/decomposeParDict</file>
+        <file alias="OpenFoam_digital_twin/system/fvSchemes">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/fvSchemes</file>
+        <file alias="OpenFoam_digital_twin/system/fvSolution">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/fvSolution</file>
+        <file alias="OpenFoam_digital_twin/system/surfaceFeaturesDict">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/surfaceFeaturesDict</file>
+        <file alias="OpenFoam_digital_twin/system/probes">Resources/DigitalWindTunnel/Openfoam_digital_twin/system/probes</file>
+        <file>Resources/IsolatedBuildingCFD/buildingGeometry.svg</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/blockMeshDemoMeshView.png</file>
+        <file>Resources/IsolatedBuildingCFD/buildingGeometry.png</file>
     </qresource>
 </RCC>
