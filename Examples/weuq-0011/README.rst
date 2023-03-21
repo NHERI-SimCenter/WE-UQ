@@ -1,7 +1,7 @@
 .. _weuq-0011:
 
 Digital Wind Tunnel
-===================================
+===================
 
 +----------------+-------------------------+
 | Problem files  | :weuq-0011:`/`          |
@@ -77,7 +77,7 @@ Alternatively, users can run a CFD simulation using the benchmark CFD model embe
 
 
 Inflow configurations in the Digital Wind Tunnel
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 After the mesh generation and basic configurations for CFD modeling have been established, it is crucial to generate inflow turbulence that conforms to the desired atmospheric boundary layer flows. This step is essential in setting up a CFD model that can accurately simulate atmospheric flows across a broad spectrum of length and time scales. One common approach to generating inflow turbulence is to use synthetic inflow generation, which involves synthesizing turbulent fluctuations at the inflow boundary based on statistical properties of the turbulence. 
 
@@ -105,13 +105,14 @@ In the context of *direct specification*, the Digital Wind Tunnel allows users t
 .. _table_directinput:
 
 .. table:: Inputs of inflow parameters through *direct specification*
-    :align: center
+	   :align: center
+
+    +-----------------+------------------------+---------------------------------------+-------------------------------+
+    | Column 1 points | Column 2 mean velocity | Columns 3 to 8 Reynolds STress Tensor | Columns 9 to 17 Length Scales |
+    +=================+========================+=======================================+===============================+
+    |                 |                        |                                       |                               |
+    +-----------------+------------------------+---------------------------------------+-------------------------------+
     
-    +-----------------+------------------------+-------------------------------------+-----------------------------+
-    | Column 1 points | Column 2 mean velocity | Column 3 - 8 Reynolds stress tensor | Column 9 - 17 Length scales |
-    +=================+========================+=====================================+=============================|
-    | ...             | ...                    | ...                                 | ...                         |
-    +-----------------+------------------------+-------------------------------------+-----------------------------+
 
 Users can upload the table with the *.csv* format by pressing the **Browse** button in the section of **Model Parameters**.
 

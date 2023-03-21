@@ -119,28 +119,20 @@
       "title": "Digital Wind Tunnel",
       "published": "2022-03-06T21:26:53.946381-08:00\"",
       "doc": [
-        "weuq-0011/README.rst",
-<<<<<<< HEAD
-        "weuq-0011/figures/User-interface.png",
-        "weuq-0011/figures/DWTsketch.png",
-        "weuq-0011/figures/TInF_function.png",
-        "weuq-0011/figures/table.png",
-        "weuq-0011/figures/Mesh.png"
+          "weuq-0011/README.rst",	  
+          "weuq-0011/figures/UFWindTunnel.png",
+          "weuq-0011/figures/openfoam_structure.png",
+          "weuq-0011/figures/DWTsketch.png",
+          "weuq-0011/figures/User-interface.png",	  
+          "weuq-0011/figures/Direct_table.png",
+          "weuq-0011/figures/Mesh.png",	  
+          "weuq-0011/figures/table.png",
+          "weuq-0011/figures/TInF_function.png"
+          "weuq-0011/figures/Post-processsing.png"	  
       ],
       "entry_point": "weuq-0011/./input.json",
       "summary": "This study uses WE-UQ's built-in interface 'Digital Wind Tunnel' to run a CFD simulation.",
       "logo": "figures/DWTsketch.png",
-=======
-        "weuq-0011/figures/DWT.png",
-        "weuq-0011/figures/Mesh.png",
-        "weuq-0011/figures/TInF_function.png",
-        "weuq-0011/figures/User-interface.png",
-        "weuq-0011/table.png"
-      ],
-      "entry_point": "weuq-0011/./input.json",
-      "summary": "This study uses WE-UQ's built-in interface to run a CFD simulation with the user-defined inflow conditions.",
-      "logo": "figures/DWT.png",
->>>>>>> upstream/master
       "categories": {
         "Difficulty": "0",
         "Simulation": "OpenSees-Simulation"
@@ -163,7 +155,5 @@
       "OpenSees-Simulation": "OpenSees",
       "OpenSeesPy-Simulation": "OpenSeesPy"
     }
-  },
-
-
+  }
 }
