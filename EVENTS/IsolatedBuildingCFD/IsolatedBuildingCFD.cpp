@@ -75,22 +75,23 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     layout = new QVBoxLayout();
 
-//    QPushButton *theLogo = new QPushButton("");
-//    QPixmap pixmap(":/Resources/LowRise/IsolatedBuildingCFD.png");
-//    theLogo->setIcon(pixmap);
-//    theLogo->setIconSize(pixmap.rect().size()*.5);
-//    theLogo->setFixedSize(pixmap.rect().size()*.5);
-//    width = pixmap.rect().size().width();
+    mainGroup = new QWidget();
+    mainLayout = new QGridLayout();
 
-    buildingAndDomainInformationGroup = new QGroupBox("Building and Domain Information", this);
-    buildingAndDomainInformationLayout = new QHBoxLayout();
+    generalDescriptionGroup = new QGroupBox("General Description");
+    generalDescriptionLayout = new QHBoxLayout();
 
-    buildingInformationGroup = new QGroupBox("", this);
-    buildingInformationLayout = new QGridLayout(); //QVBoxLayout();
+    buildingAndDomainInformationGroup = new QWidget();
+    buildingAndDomainInformationLayout = new QGridLayout();
 
-    domainInformationGroup = new QGroupBox("", this);
-    domainInformationLayout = new QGridLayout(); //QVBoxLayout();
+    coordinateSystemGroup = new QGroupBox("Coordinate System");
+    coordinateSystemLayout = new QGridLayout();
 
+    buildingInformationGroup = new QGroupBox("Building Geometry");
+    buildingInformationLayout = new QGridLayout();
+
+    domainInformationGroup = new QGroupBox("Domain Dimentions");
+    domainInformationLayout = new QGridLayout();
 
     theBuildingButton = new QPushButton();
 //    QPixmap pixmapFlat(":/Resources/IsolatedBuilding/buildingGeometry.svg");
@@ -102,230 +103,171 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     buildingInformationLayout->addWidget(theBuildingButton,0,0,5,1,Qt::AlignVCenter);
 
     QLabel *buildingWidthLabel = new QLabel("Building Width:");
-    buildingWidth = new QLineEdit();
-    buildingWidth->setText("45.72");
-
-    //roofType->addItem("Gable");
+    buildingWidthWidget = new QLineEdit();
+    buildingWidthWidget->setText("45.72");
 
     QLabel *buildingDepthLabel = new QLabel("Building Depth:");
-    buildingDepth = new QLineEdit();
-    buildingDepth->setText("30.48");
-
+    buildingDepthWidget = new QLineEdit();
+    buildingDepthWidget->setText("30.48");
 
     QLabel *buildingHeightLabel = new QLabel("Building Height:");
-    buildingHeight = new QLineEdit();
-    buildingHeight->setText("182.88");
+    buildingHeightWidget = new QLineEdit();
+    buildingHeightWidget->setText("182.88");
 
     QLabel *geometricScaleLabel = new QLabel("Geometric Scale:");
-    geometricScale = new QLineEdit();
-    geometricScale->setText("400.0");
+    geometricScaleWidget = new QLineEdit();
+    geometricScaleWidget->setText("400.0");
 
     QLabel *windDirectionLabel = new QLabel("Wind Direction:");
     QLabel *angleUnit = new QLabel("degrees");
-    windDirection = new QSpinBox;
-    windDirection->setRange(0, 90);
-    windDirection->setSingleStep(10);
+    windDirectionWidget = new QSpinBox;
+    windDirectionWidget->setRange(0, 90);
+    windDirectionWidget->setSingleStep(10);
 
-    QLabel *domainLengthLabel = new QLabel("Domain Length(x-axis):");
-    domainLength = new QLineEdit();
-    domainLength->setText("20H");
+    QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
+    domainLengthWidget = new QLineEdit();
+    domainLengthWidget->setText("20");
 
-    QLabel *domainWidthLabel = new QLabel("Domain Width(y-axis):");
-    domainWidth = new QLineEdit();
-    domainWidth->setText("10H");
+    QLabel *domainWidthLabel = new QLabel("Domain Width (Y-axis):");
+    domainWidthWidget = new QLineEdit();
+    domainWidthWidget->setText("10");
 
-    QLabel *domainHeightLabel = new QLabel("Domain Height(z-axis):");
-    domainHeight = new QLineEdit();
-    domainHeight->setText("5H");
+    QLabel *domainHeightLabel = new QLabel("Domain Height (Z-axis):");
+    domainHeightWidget = new QLineEdit();
+    domainHeightWidget->setText("5");
+
+    QLabel *fetchDistanceLabel = new QLabel("Fetch Distance (X-axis):");
+    fetchDistanceWidget = new QLineEdit();
+    fetchDistanceWidget->setText("5");
+
+    QLabel *useCOSTDimLabel = new QLabel("COST Recommendation:");
+    useCOSTDimWidget = new QCheckBox();
+    useCOSTDimWidget->setChecked(false);
+
+    QLabel *originOptionsLabel = new QLabel("Position of Reference Point: ");
+    QLabel *originCoordinateLabel = new QLabel("Reference Point:");
+    QLabel *originXLabel = new QLabel("X<sub>o</sub>:");
+    QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");
+    QLabel *originZLabel = new QLabel("Z<sub>o</sub>:");
+
+    originOptions  = new QComboBox();
+    originOptions->addItem("Building Center");
+    originOptions->addItem("Bottom Left Corner");
+    originOptions->addItem("Custom");
+
+    originXWidget = new QLineEdit();
+    originYWidget = new QLineEdit();
+    originZWidget = new QLineEdit();
+
+    originXWidget->setText("5");
+    originYWidget->setText("5");
+    originZWidget->setText("0");
+
+    QLabel *domainSizeNoteLabel = new QLabel("**Domain size is provided relative to the building height**");
+
+    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The procedure involves: "
+                                                 "\n --> Define building geometry "
+                                                 "\n --> Generate mesh using snappyHexMesh tool "
+                                                 "\n --> Define boundary condition and wind characterstics  "
+                                                 "\n --> Setup turbulence model "
+                                                 "\n --> Specify numerical setup "
+                                                 "\n --> Run simulation "
+                                                 "\n --> Post-process");
+
+
+    generalDescriptionLayout->addWidget(generalDescriptionLabel);
+
 
     buildingInformationLayout->addWidget(buildingWidthLabel,0,1);
-    buildingInformationLayout->addWidget(buildingWidth,0,3);
+    buildingInformationLayout->addWidget(buildingWidthWidget,0,3);
 
     buildingInformationLayout->addWidget(buildingDepthLabel,1,1);
-    buildingInformationLayout->addWidget(buildingDepth,1,3);
+    buildingInformationLayout->addWidget(buildingDepthWidget,1,3);
 
     buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
-    buildingInformationLayout->addWidget(buildingHeight,2,3);
+    buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
 
     buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
-    buildingInformationLayout->addWidget(geometricScale,3,3);
+    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
 
     buildingInformationLayout->addWidget(windDirectionLabel, 4, 1);
-    buildingInformationLayout->addWidget(windDirection, 4, 3);
+    buildingInformationLayout->addWidget(windDirectionWidget, 4, 3);
     buildingInformationLayout->addWidget(angleUnit, 4, 4);
 
-    domainInformationLayout->addWidget(domainLengthLabel,0,4);
-    domainInformationLayout->addWidget(domainLength,0,5);
 
-    domainInformationLayout->addWidget(domainWidthLabel,1,4);
-    domainInformationLayout->addWidget(domainWidth,1,5);
+    domainInformationLayout->addWidget(domainLengthLabel,0,0);
+    domainInformationLayout->addWidget(domainLengthWidget,0,1);
 
-    domainInformationLayout->addWidget(domainHeightLabel,2,4);
-    domainInformationLayout->addWidget(domainHeight,2,5);
+    domainInformationLayout->addWidget(domainWidthLabel,1,0);
+    domainInformationLayout->addWidget(domainWidthWidget,1,1);
 
+    domainInformationLayout->addWidget(domainHeightLabel,2,0);
+    domainInformationLayout->addWidget(domainHeightWidget,2,1);
+
+    domainInformationLayout->addWidget(fetchDistanceLabel,3,0);
+    domainInformationLayout->addWidget(fetchDistanceWidget,3,1);
+
+    domainInformationLayout->addWidget(useCOSTDimLabel,5,0);
+    domainInformationLayout->addWidget(useCOSTDimWidget,5,1);
+
+
+    coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
+    coordinateSystemLayout->addWidget(originOptions,0,1);
+    coordinateSystemLayout->addWidget(originCoordinateLabel,1,0, Qt::AlignRight);
+    coordinateSystemLayout->addWidget(originXLabel,1,1, Qt::AlignRight);
+    coordinateSystemLayout->addWidget(originXWidget,1,2, Qt::AlignLeft);
+    coordinateSystemLayout->addWidget(originYLabel,1,3, Qt::AlignLeft);
+    coordinateSystemLayout->addWidget(originYWidget,1,4, Qt::AlignLeft);
+    coordinateSystemLayout->addWidget(originZLabel,1,5, Qt::AlignLeft);
+    coordinateSystemLayout->addWidget(originZWidget,1,6, Qt::AlignLeft);
+
+
+    generalDescriptionGroup->setLayout(generalDescriptionLayout);
     buildingInformationGroup->setLayout(buildingInformationLayout);
     domainInformationGroup->setLayout(domainInformationLayout);
+    coordinateSystemGroup->setLayout(coordinateSystemLayout);
+
+    buildingAndDomainInformationLayout->addWidget(buildingInformationGroup, 0, 0);
+    buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
+    buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
 
 
-    buildingAndDomainInformationLayout->addWidget(buildingInformationGroup);
-    buildingAndDomainInformationLayout->addWidget(domainInformationGroup);
     buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
 
 
-//    buildingAndDomainInformationLayout->addLayout(buildingInformationLayout);
-//    buildingAndDomainInformationLayout->addLayout(domainInformationLayout);
-
-
-//    buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
-
-//    buildingAndDomainInformationLayout->addItem(buildingInformationLayout, 0, 0);
-//    buildingAndDomainInformationLayout->addItem(domainInformationLayout, 0, 1);
-
-
-    /*---------------------------------------------------------------------------*\
-        Controls for snappyHexMesh
-    \*---------------------------------------------------------------------------*/
+    //Controls for snappyHexMesh
     snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
 
+    mainLayout->addWidget(generalDescriptionGroup);
+    mainLayout->addWidget(buildingAndDomainInformationGroup);
+    mainLayout->addWidget(coordinateSystemGroup);
+    mainLayout->addWidget(snappyHexMesh);
 
-    //snappyHexMeshBox = new QGroupBox("SnappyHexMesh", this);
+    mainGroup->setLayout(mainLayout);
 
-//    QWidget* snappyHexMeshGroup = new QWidget(this);
-
-//    QGroupBox* snappyHexMeshGroup = new QGroupBox("SnappyHexMesh", this);
-
-//    QVBoxLayout* snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
-
-
-//    snappyHexMeshGroup->setLayout(snappyHexMeshLayout);
-
-//    QLabel* snappyHexMeshTitle = new QLabel("SnappyHexMesh");
-//    snappyHexMeshTitle->setStyleSheet("font-weight: bold; color: black");
-
-//    snappyHexMeshLayout->addWidget(snappyHexMeshTitle);
-
-
-//    snappyHexMeshTab = new QTabWidget(this);
-
-//    snappyHexMeshLayout->addWidget(snappyHexMeshTab);
-
-
-//    // Add background mesh (block mesh) Tab
-//    QWidget* backgroundMeshWidget = new QWidget();
-//    QGridLayout* backgroundMeshLayout = new QGridLayout(backgroundMeshWidget);
-
-//    QLabel *directionLabel = new QLabel("Direction");
-//    QLabel *numberOfCellsLabel = new QLabel("Number of Cells");
-//    QLabel *meshSizeLabel = new QLabel("Mesh Size");
-
-//    directionLabel->setStyleSheet("font-weight: bold; color: black");
-//    numberOfCellsLabel->setStyleSheet("font-weight: bold; color: black");
-//    meshSizeLabel->setStyleSheet("font-weight: bold; color: black");
-
-
-//    QLabel *xAxisLabel = new QLabel("X-axis");
-//    QLabel *yAxisLabel = new QLabel("Y-axis");
-//    QLabel *zAxisLabel = new QLabel("Z-axis");
-
-//    backgroundMeshLayout->addWidget(directionLabel,1,1);
-//    backgroundMeshLayout->addWidget(numberOfCellsLabel,1,2);
-//    backgroundMeshLayout->addWidget(meshSizeLabel,1,3);
-
-//    backgroundMeshLayout->addWidget(xAxisLabel,2,1);
-//    backgroundMeshLayout->addWidget(yAxisLabel,3,1);
-//    backgroundMeshLayout->addWidget(zAxisLabel,4,1);
-
-
-
-//    backgroundMeshWidget->setLayout(backgroundMeshLayout);
-//    snappyHexMeshTab->addTab(backgroundMeshWidget, "Background Mesh");
-
-
-//    // Add regional refinment (box refinment) Tab
-//    QWidget* regionalRefinmentWidget = new QWidget();
-//    QGridLayout* regionalRefinmentLayout = new QGridLayout(regionalRefinmentWidget);
-//    regionalRefinmentWidget->setLayout(regionalRefinmentLayout);
-//    snappyHexMeshTab->addTab(regionalRefinmentWidget, "Regional Refinments");
-
-//    // Add surface refinment Tab
-//    QWidget* surfaceRefinmentWidget = new QWidget();
-//    QGridLayout* surfaceRefinmentLayout = new QGridLayout(surfaceRefinmentWidget);
-//    surfaceRefinmentWidget->setLayout(surfaceRefinmentLayout);
-//    snappyHexMeshTab->addTab(surfaceRefinmentWidget, "Surface Refinments");
-
-//    // Add edge refinment Tab
-//    QWidget* edgeRefinmentWidget = new QWidget();
-//    QGridLayout* edgeRefinmentLayout = new QGridLayout(edgeRefinmentWidget);
-//    edgeRefinmentWidget->setLayout(edgeRefinmentLayout);
-//    snappyHexMeshTab->addTab(edgeRefinmentWidget, "Edge Refinments");
-
-//    // Add prism layer Tab
-//    QWidget* prismLayerWidget = new QWidget();
-//    QGridLayout* prismLayerLayout = new QGridLayout(prismLayerWidget);
-//    prismLayerWidget->setLayout(prismLayerLayout);
-//    snappyHexMeshTab->addTab(prismLayerWidget, "Prism Layers");
-
-
-//    snappyHexMeshTab->setVisible(false);
-//    snappyHexMeshTab->setStyleSheet("QTabBar {font-size: 10pt}");
-//    snappyHexMeshTab->setContentsMargins(0,0,0,0);
-
-
-//    QGroupBox* baseMesh = new QGroupBox("Background Mesh", this);
-
-
-    //snappyHexMeshLayout = new QGridLayout();
-    //snappyHexMeshBox->setLayout(snappyHexMeshLayout);
-
-
-
-
-
-//    QGroupBox* windSpeedBox = new QGroupBox("Wind Speed", this);
-//    QGridLayout *windLayout = new QGridLayout();
-
-//    QLabel *labelSpeed = new QLabel("Wind Speed");
-//    windSpeed = new LineEditRV(theRandomVariableIW);
-//    windSpeed->setText("50.0");
-//    windSpeed->setAlignment(Qt::AlignRight);
-//    windSpeed->setToolTip("Mean Wind Speed at 10m height in m/s");
-//    QLabel *speedUnit = new QLabel("m/s");
-//    windLayout->addWidget(labelSpeed,0,0);
-//    windLayout->setColumnStretch(1,1);
-//    windLayout->addWidget(windSpeed,0,2);
-//    windLayout->addWidget(speedUnit,0,3);
-
-//    windSpeedBox->setLayout(windLayout);
-
-//    layout->addWidget(theLogo);
-//    layout->addWidget(buildingInformationGroup);
-    layout->addWidget(buildingAndDomainInformationGroup);
-//    layout->addLayout(buildingAndDomainInformationLayout,1);
-    layout->addWidget(snappyHexMesh);
-    //    layout->addWidget(snappyHexMeshGroup);
-//    layout->addWidget(snappyHexMeshTab);
-    //    layout->addWidget(windSpeedBox);
-    //    layout->addWidget(windSpeedBox);
-
-    layout->addStretch();
-
-//    buildingAndDomainInformationLayout->setwi setMaximumWidth(windowWidth/2);
     buildingAndDomainInformationGroup->setMaximumWidth(windowWidth);
-//    domainInformationGroup->setMaximumWidth(windowWidth/2);
-//    snappyHexMeshTab->setMaximumWidth(windowWidth);
-//    snappyHexMeshGroup->setMaximumWidth(windowWidth);
-//    windSpeedBox->setMaximumWidth(windowWidth);
-/*
-    layout->setSpacing(10);
-    layout->setMargin(0);
+    generalDescriptionGroup->setMaximumWidth(windowWidth);
+    coordinateSystemGroup->setMaximumWidth(windowWidth);
+
+//    buildingAndDomainInformationLayout->setMargin(20);
     layout->addStretch();
 
-    layout->setMargin(0);
-    layout->addStretch();
-    */
 
     //    connect(the1x1RadioButton, SIGNAL(toggled(bool)), this, SLOT(oneByOneToggled(bool)));
 //    connect(roofType,SIGNAL(currentIndexChanged(int)), this, SLOT(onRoofTypeChanged(int)));
+//    this->setLayout(layout);
+
+
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setLineWidth(1);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+//    scrollArea->setWidget(mainGroup);
+
+    mainLayout->addWidget(scrollArea);
+
+    layout->addWidget(mainGroup);
     this->setLayout(layout);
 
     //
@@ -338,10 +280,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     connect(theGI,SIGNAL(buildingDimensionsChanged(double,double,double)), this, SLOT(onBuildingDimensionChanged(double,double,double)));
     connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
 
-    height=theGI->getHeight();
+    buildingHeight = theGI->getHeight();
     double area;
-    theGI->getBuildingDimensions(breadth, depth, area);
-    this->onBuildingDimensionChanged(breadth, depth, area);
+    theGI->getBuildingDimensions(buildingWidth, buildingDepth, area);
+    this->onBuildingDimensionChanged(buildingWidth, buildingDepth, area);
 }
 
 
@@ -402,16 +344,16 @@ IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["type"]="IsolatedBuildingCFD";
 
     jsonObject["EventClassification"]="Wind";
-    jsonObject["buildingWidth"]= buildingWidth->text().toDouble();
-    jsonObject["buildingDepth"]= buildingDepth->text().toDouble();
-    jsonObject["buildingHeight"]= buildingHeight->text().toDouble();
+    jsonObject["buildingWidth"]= buildingWidthWidget->text().toDouble();
+    jsonObject["buildingDepth"]= buildingDepthWidget->text().toDouble();
+    jsonObject["buildingHeight"]= buildingHeightWidget->text().toDouble();
 //    jsonObject["heightBreadth"]= heightBreadth->currentText();
 //    jsonObject["depthBreadth"]= depthBreadth->currentText();
-    jsonObject["geometricScale"]= geometricScale->text().toDouble();
-    jsonObject["windDirection"] = windDirection->value();
+    jsonObject["geometricScale"]= geometricScaleWidget->text().toDouble();
+    jsonObject["windDirection"] = windDirectionWidget->value();
 
     //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
-   windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
+   windSpeedWidget->outputToJSON(jsonObject, QString("windSpeed"));
 
     return true;
 }
@@ -425,28 +367,28 @@ IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     if (jsonObject.contains("buildingWidth")) {
       QJsonValue theValue = jsonObject["buildingWidth"];
       QString selection = theValue.toString();
-      buildingWidth->setText(selection);
+      buildingWidthWidget->setText(selection);
     } else
       return false;
 
     if (jsonObject.contains("buildingDepth")) {
       QJsonValue theValue = jsonObject["buildingDepth"];
       QString selection = theValue.toString();
-      buildingDepth->setText(selection);
+      buildingDepthWidget->setText(selection);
     } else
       return false;
 
     if (jsonObject.contains("buildingHeight")) {
       QJsonValue theValue = jsonObject["buildingHeight"];
       QString selection = theValue.toString();
-      buildingHeight->setText(selection);
+      buildingHeightWidget->setText(selection);
     } else
       return false;
 
     if (jsonObject.contains("geometricScale")) {
       QJsonValue theValue = jsonObject["geometricScale"];
       QString selection = theValue.toString();
-      geometricScale->setText(selection);
+      geometricScaleWidget->setText(selection);
     } else
       return false;
 
@@ -457,14 +399,14 @@ IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
       double speed = theValue.toDouble();
       windSpeed->setText(QString::number(speed));
       */
-      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
+      windSpeedWidget->inputFromJSON(jsonObject,QString("windSpeed"));
     } else
       return false;
 
     if (jsonObject.contains("windDirection")) {
       QJsonValue theValue = jsonObject["windDirection"];
       int angle = theValue.toInt();
-      windDirection->setValue(angle);
+      windDirectionWidget->setValue(angle);
     } else
       return false;
 
@@ -514,8 +456,8 @@ IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
  void
  IsolatedBuildingCFD::onBuildingDimensionChanged(double w, double d, double area){
      Q_UNUSED(area);
-     breadth = w;
-     depth = d;
+     buildingWidth = w;
+     buildingDepth = d;
 //     double ratioHtoB = height/breadth;
 //     if (ratioHtoB < .375) {
 //         heightBreadth->setCurrentIndex(0);

@@ -60,7 +60,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QFileInfoList>
 
 #include "SimulationParametersCWE.h"
-
 #include "CustomizedItemModel.h"
 #include "RandomVariablesContainer.h"
 #include "GeneralInformationWidget.h"

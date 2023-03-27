@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "SnappyHexMeshWidget.h"
+#include "BoundaryConditionsWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>

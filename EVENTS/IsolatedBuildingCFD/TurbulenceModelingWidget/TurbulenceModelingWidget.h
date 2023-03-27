@@ -1,5 +1,5 @@
-#ifndef ISOLATED_BUILDING_CFD_H
-#define ISOLATED_BUILDING_CFD_H
+#ifndef SNAPPY_HEX_MESH_WIDGET_H
+#define SNAPPY_HEX_MESH_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -37,104 +37,62 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: abiy
+// Written by: Abiy
 
 #include <SimCenterAppWidget.h>
 
-
-//Forward declaration
 class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
-class SnappyHexMeshWidget;
 class QVBoxLayout;
-class QHBoxLayout;
 class QSpinBox;
 class QLineEdit;
-class QTabWidget;
 class LineEditRV;
+class QTabWidget;
 class QGroupBox;
 class QPushButton;
-class QCheckBox;
 
-
-class IsolatedBuildingCFD : public SimCenterAppWidget
+class SnappyHexMeshWidget: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~IsolatedBuildingCFD();
+    explicit SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~SnappyHexMeshWidget();
 
-    bool outputToJSON(QJsonObject &rvObject);
-    bool inputFromJSON(QJsonObject &rvObject);
-    bool outputAppDataToJSON(QJsonObject &rvObject);
-    bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &dirName);
+//    bool outputToJSON(QJsonObject &rvObject);
+//    bool inputFromJSON(QJsonObject &rvObject);
+//    bool outputAppDataToJSON(QJsonObject &rvObject);
+//    bool inputAppDataFromJSON(QJsonObject &rvObject);
+//    bool copyFiles(QString &dirName);
 
 signals:
 
 public slots:
    void clear(void);
-   void onBuildingDimensionChanged(double width, double depth, double area);
-   void onNumFloorsOrHeightChanged(int numFloor, double height);
+//   void onBuildingDimensionChanged(double width, double depth, double area);
+//   void onNumFloorsOrHeightChanged(int numFloor, double height);
 
-   void onRoofTypeChanged(int type);
+//   void onRoofTypeChanged(int type);
 
 private:
-   double buildingWidth;
-   double buildingDepth;
-   double buildingHeight;
-
-   double domainLength;
-   double domainWidth;
-   double domainHeight;
-   double fetchDistance;
+   double breadth;
+   double depth;
+   double height;
 
    QVBoxLayout  *layout;
-   QWidget      *femSpecific;
-   QLineEdit    *buildingWidthWidget;
-   QLineEdit    *buildingDepthWidget;
-   QLineEdit    *buildingHeightWidget;
-   QLineEdit    *geometricScaleWidget;
-   QSpinBox     *windDirectionWidget;
-   QPushButton  *theBuildingButton;
+   QTabWidget   *snappyHexMeshTab;
 
-   QLineEdit    *domainLengthWidget;
-   QLineEdit    *domainWidthWidget;
-   QLineEdit    *domainHeightWidget;
+   QLineEdit    *xAxisNumCells;
+   QLineEdit    *yAxisNumCells;
+   QLineEdit    *zAxisNumCells;
+   QLineEdit    *xAxisMeshSize;
+   QLineEdit    *yAxisMeshSize;
+   QLineEdit    *zAxisMeshSize;
 
-   QLineEdit    *fetchDistanceWidget;
+   QPushButton *calcBackgroundMesh;
 
-   QCheckBox    *useCOSTDimWidget;
 
-   QComboBox*   originOptions;
-
-   QLineEdit   *originXWidget;
-   QLineEdit   *originYWidget;
-   QLineEdit   *originZWidget;
-
-   LineEditRV   *windSpeedWidget;
-
-   QGroupBox    *generalDescriptionGroup;
-   QHBoxLayout  *generalDescriptionLayout;
-
-   QGroupBox    *buildingInformationGroup;
-   QGridLayout  *buildingInformationLayout;
-
-   QGroupBox    *domainInformationGroup;
-   QGridLayout  *domainInformationLayout;
-
-   QGroupBox    *coordinateSystemGroup;
-   QGridLayout  *coordinateSystemLayout;
-
-   QWidget      *buildingAndDomainInformationGroup;
-   QGridLayout  *buildingAndDomainInformationLayout;
-
-   QWidget      *mainGroup;
-   QGridLayout  *mainLayout;
-
-   SnappyHexMeshWidget  *snappyHexMesh;
 
 
    RandomVariablesContainer *theRandomVariablesContainer;
