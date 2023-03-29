@@ -66,7 +66,16 @@ public:
     explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
-    bool outputToJSON(QJsonObject &rvObject);
+    bool exportBuildingGeometryToJSON();
+    bool generateBuildingSTLGeometry();
+
+    bool createBlockMeshMeshDict();
+    bool createSnappyHexMeshDict();
+
+    bool runBlockMesh();
+    bool runSnappyHexMesh();
+    bool checkMesh();
+
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
@@ -78,6 +87,7 @@ public slots:
    void clear(void);
    void onBuildingDimensionChanged(double width, double depth, double area);
    void onNumFloorsOrHeightChanged(int numFloor, double height);
+   void onGenerateGeometryClicked();
 
    void onRoofTypeChanged(int type);
 
@@ -93,6 +103,8 @@ private:
 
    QVBoxLayout  *layout;
    QWidget      *femSpecific;
+   QLineEdit    *caseDirectoryPathWidget;
+
    QLineEdit    *buildingWidthWidget;
    QLineEdit    *buildingDepthWidget;
    QLineEdit    *buildingHeightWidget;
@@ -119,6 +131,9 @@ private:
    QGroupBox    *generalDescriptionGroup;
    QHBoxLayout  *generalDescriptionLayout;
 
+   QGroupBox    *caseDirectoryGroup;
+   QGridLayout  *caseDirectoryLayout;
+
    QGroupBox    *buildingInformationGroup;
    QGridLayout  *buildingInformationLayout;
 
@@ -141,4 +156,4 @@ private:
    QStringList varNamesAndValues;
 };
 
-#endif // LOW_RISE_TPU_H
+#endif // ISOLATED_BUILDING_CFD_H

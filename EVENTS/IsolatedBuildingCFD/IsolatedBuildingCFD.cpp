@@ -37,17 +37,19 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: abiy
 
 #include "IsolatedBuildingCFD.h"
+#include "ModularPython.h"
 #include "SnappyHexMeshWidget/SnappyHexMeshWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonDocument>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDebug>
 #include <QFileDialog>
 #include <QPushButton>
-#include <sectiontitle.h>
+#include <SectionTitle.h>
 #include <QFileInfo>
 #include <QMovie>
 #include <QPixmap>
@@ -61,7 +63,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-
+#include <QDebug>
+#include <QMessageBox>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
@@ -81,6 +84,9 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     generalDescriptionGroup = new QGroupBox("General Description");
     generalDescriptionLayout = new QHBoxLayout();
 
+    caseDirectoryGroup = new QGroupBox("Case Directory");
+    caseDirectoryLayout = new QGridLayout();
+
     buildingAndDomainInformationGroup = new QWidget();
     buildingAndDomainInformationLayout = new QGridLayout();
 
@@ -94,7 +100,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     domainInformationLayout = new QGridLayout();
 
     theBuildingButton = new QPushButton();
-//    QPixmap pixmapFlat(":/Resources/IsolatedBuilding/buildingGeometry.svg");
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
 
     theBuildingButton->setIcon(pixmapFlat);
@@ -144,7 +149,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     useCOSTDimWidget = new QCheckBox();
     useCOSTDimWidget->setChecked(false);
 
-    QLabel *originOptionsLabel = new QLabel("Position of Reference Point: ");
+    QLabel *originOptionsLabel = new QLabel("Location of Reference Point: ");
     QLabel *originCoordinateLabel = new QLabel("Reference Point:");
     QLabel *originXLabel = new QLabel("X<sub>o</sub>:");
     QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");
@@ -163,6 +168,12 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     originYWidget->setText("5");
     originZWidget->setText("0");
 
+    QLabel *casePathLabel = new QLabel("Path: ");
+    QPushButton* browseButton  = new QPushButton("Browse");
+
+    caseDirectoryPathWidget = new QLineEdit ();
+    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+
     QLabel *domainSizeNoteLabel = new QLabel("**Domain size is provided relative to the building height**");
 
     QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The procedure involves: "
@@ -175,7 +186,13 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
                                                  "\n --> Post-process");
 
 
+
+
     generalDescriptionLayout->addWidget(generalDescriptionLabel);
+
+    caseDirectoryLayout->addWidget(casePathLabel, 0, 0);
+    caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
+    caseDirectoryLayout->addWidget(browseButton, 0, 2);
 
 
     buildingInformationLayout->addWidget(buildingWidthLabel,0,1);
@@ -223,6 +240,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
+    caseDirectoryGroup->setLayout(caseDirectoryLayout);
     buildingInformationGroup->setLayout(buildingInformationLayout);
     domainInformationGroup->setLayout(domainInformationLayout);
     coordinateSystemGroup->setLayout(coordinateSystemLayout);
@@ -239,15 +257,17 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
 
     mainLayout->addWidget(generalDescriptionGroup);
+    mainLayout->addWidget(caseDirectoryGroup);
     mainLayout->addWidget(buildingAndDomainInformationGroup);
     mainLayout->addWidget(coordinateSystemGroup);
     mainLayout->addWidget(snappyHexMesh);
 
     mainGroup->setLayout(mainLayout);
 
-    buildingAndDomainInformationGroup->setMaximumWidth(windowWidth);
-    generalDescriptionGroup->setMaximumWidth(windowWidth);
-    coordinateSystemGroup->setMaximumWidth(windowWidth);
+//    buildingAndDomainInformationGroup->setMaximumWidth(windowWidth);
+//    generalDescriptionGroup->setMaximumWidth(windowWidth);
+//    coordinateSystemGroup->setMaximumWidth(windowWidth);
+    mainGroup->setMaximumWidth(windowWidth);
 
 //    buildingAndDomainInformationLayout->setMargin(20);
     layout->addStretch();
@@ -258,16 +278,16 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 //    this->setLayout(layout);
 
 
-    QScrollArea *scrollArea = new QScrollArea();
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setLineWidth(1);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-
+//    QScrollArea *scrollArea = new QScrollArea();
+//    scrollArea->setWidgetResizable(true);
+//    scrollArea->setLineWidth(1);
+//    scrollArea->setFrameShape(QFrame::NoFrame);
 //    scrollArea->setWidget(mainGroup);
-
-    mainLayout->addWidget(scrollArea);
+//    mainLayout->addWidget(scrollArea);
 
     layout->addWidget(mainGroup);
+
+
     this->setLayout(layout);
 
     //
@@ -284,6 +304,20 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     double area;
     theGI->getBuildingDimensions(buildingWidth, buildingDepth, area);
     this->onBuildingDimensionChanged(buildingWidth, buildingDepth, area);
+
+
+    QPushButton *buttonGeom = new QPushButton("Generate Geometry");
+    QPushButton *buttonBlock = new QPushButton("Generate BlockMesh");
+    QPushButton *buttonSnappy = new QPushButton("Generate SnappyHexMesh");
+
+    generalDescriptionLayout->addWidget(buttonGeom);
+    generalDescriptionLayout->addWidget(buttonBlock);
+    generalDescriptionLayout->addWidget(buttonSnappy);
+
+    connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
+
+    connect(buttonGeom,SIGNAL(clicked()), this, SLOT(onGenerateGeometryClicked()));
+
 }
 
 
@@ -291,6 +325,41 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 {
 
 }
+
+void
+IsolatedBuildingCFD::onGenerateGeometryClicked()
+{
+    exportBuildingGeometryToJSON();
+
+    generateBuildingSTLGeometry();
+}
+
+bool IsolatedBuildingCFD::generateBuildingSTLGeometry()
+{
+
+    QString stlPath = caseDirectoryPathWidget->text() + "constant/geometry/";
+    QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
+    QString scriptPath = "/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonProcessors/create_building_stl.py";
+
+//    QStringList args = {workingDir, workingDir};
+//    ModularPython *geomPy = new ModularPython(workingDir, this);
+//    geomPy->run(scriptPath, args);
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << jsonPath << stlPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished();
+
+    return true;
+}
+
+
 
 void
 IsolatedBuildingCFD::onRoofTypeChanged(int roofSelection) {
@@ -338,22 +407,32 @@ void IsolatedBuildingCFD::clear(void)
 
 
 bool
-IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
+IsolatedBuildingCFD::exportBuildingGeometryToJSON()
 {
     // just need to send the class type here.. type needed in object in case user screws up
-    jsonObject["type"]="IsolatedBuildingCFD";
 
+    QJsonObject jsonObject;
+
+
+    jsonObject["type"]="IsolatedBuildingCFD";
     jsonObject["EventClassification"]="Wind";
     jsonObject["buildingWidth"]= buildingWidthWidget->text().toDouble();
     jsonObject["buildingDepth"]= buildingDepthWidget->text().toDouble();
     jsonObject["buildingHeight"]= buildingHeightWidget->text().toDouble();
-//    jsonObject["heightBreadth"]= heightBreadth->currentText();
-//    jsonObject["depthBreadth"]= depthBreadth->currentText();
     jsonObject["geometricScale"]= geometricScaleWidget->text().toDouble();
     jsonObject["windDirection"] = windDirectionWidget->value();
 
-    //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
-   windSpeedWidget->outputToJSON(jsonObject, QString("windSpeed"));
+    //Replace with the unit system from "General Information" window
+    jsonObject["lengthUnit"] = "meter";
+    jsonObject["angleUnit"] = "degree";
+
+
+    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/buildingDescription.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
 
     return true;
 }

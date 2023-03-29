@@ -1,0 +1,156 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#includeEtc "caseDicts/mesh/generation/snappyHexMeshDict.cfg"
+
+castellatedMesh on;
+snap            on;
+addLayers       on;
+
+geometry
+{
+    building
+    {
+        type triSurfaceMesh;
+        file "building.stl";
+    }
+
+    box1
+    {
+        type searchableBox;
+        min  (-3.00  -1.75  0.00);
+        max  ( 4.00   1.75  2.25);
+    }
+    box2
+    {
+        type searchableBox;
+        min  (-3.00  -1.25  0.00);
+        max  ( 3.00   1.25  1.75);
+    }
+    box3
+    {
+        type searchableBox;
+        min  (-3.00  -0.75  0.00);
+        max  ( 2.00   0.75  1.25);
+    }
+    box4
+    {
+        type searchableBox;
+        min  (-0.35  -0.40  0.00);
+        max  ( 1.00   0.40  0.85);
+    }
+    box5
+    {
+        type searchableBox;
+        min  (-0.20  -0.25  0.00);
+        max  ( 0.60   0.25  0.65);
+    }
+    box6
+    {
+        type triSurfaceMesh;
+        file "building.stl";
+    }
+};
+
+castellatedMeshControls
+{
+    nCellsBetweenLevels 5;
+
+    features
+    (
+      { file  "building.eMesh"; level 8; }
+    );
+
+    refinementSurfaces
+    {
+        building
+        {
+            level (7 7);
+            patchInfo { type wall; }
+        }
+    }
+
+    refinementRegions
+    {
+        box1
+        {
+            mode    inside;
+            level   1;
+        }
+        box2
+        {
+            mode    inside;
+            level   2;
+        }
+        box3
+        {
+            mode    inside;
+            level   3;
+        }
+        box4
+        {
+            mode    inside;
+            level   4;
+        }
+        box5
+        {
+            mode    inside;
+            level   5;
+        }
+        box6
+        {
+            mode    distance;
+            levels  ((0.04 6));
+        }
+    }
+
+    insidePoint (1 1 1);
+}
+
+snapControls
+{
+    explicitFeatureSnap    true;
+    implicitFeatureSnap    true; //false;
+}
+
+addLayersControls
+{
+    layers
+    {
+        "building"
+        {
+            nSurfaceLayers 10;
+        }
+    }
+
+    relativeSizes       true;
+    expansionRatio      1.15;
+    finalLayerThickness 0.15;
+    minThickness        1e-3;
+}
+
+meshQualityControls
+{}
+
+writeFlags
+(
+    // scalarLevels
+    // layerSets
+    // layerFields
+);
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //
