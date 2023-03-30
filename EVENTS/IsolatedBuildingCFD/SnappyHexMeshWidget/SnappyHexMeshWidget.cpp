@@ -267,67 +267,67 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     //-----------------------------------------------------------------
 
-    // Add regional refinment (box refinment) Tab
-    QWidget* regionalRefinmentWidget = new QWidget();
-    QGridLayout* regionalRefinmentLayout = new QGridLayout(regionalRefinmentWidget);
+    // Add regional Refinement (box Refinement) Tab
+    QWidget* regionalRefinementWidget = new QWidget();
+    QGridLayout* regionalRefinementLayout = new QGridLayout(regionalRefinementWidget);
 
     int numCols = 8;
     int numRows = 4;
 
 
-    QTableWidget* refinmentBoxesTable = new QTableWidget(numRows, numCols);
+    QTableWidget* RefinementBoxesTable = new QTableWidget(numRows, numCols);
 
     QStringList headerTitles = {"Name", "Level", "X-min", "Y-min", "Z-min", "X-max", "Y-max", "Z-max"};
-    refinmentBoxesTable->setHorizontalHeaderLabels(headerTitles);
+    RefinementBoxesTable->setHorizontalHeaderLabels(headerTitles);
 
     for (int i=0; i < numCols; i++)
     {
-       refinmentBoxesTable->setColumnWidth(i, refinmentBoxesTable->size().width()/numCols);
+       RefinementBoxesTable->setColumnWidth(i, RefinementBoxesTable->size().width()/numCols);
 
        for (int j=0; j < numRows; j++)
        {
-        refinmentBoxesTable->setItem(j, i, new QTableWidgetItem(""));
+        RefinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
        }
 
     }
 
     for (int i=0; i < numRows; i++)
     {
-        refinmentBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
-        refinmentBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
+        RefinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
+        RefinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
     }
 
     //Box # 1
-    refinmentBoxesTable->item(0, 2)->setText("-6.60");
-    refinmentBoxesTable->item(0, 3)->setText("-4.00");
-    refinmentBoxesTable->item(0, 4)->setText("0.00");
-    refinmentBoxesTable->item(0, 5)->setText("8.75");
-    refinmentBoxesTable->item(0, 6)->setText("-4.00");
-    refinmentBoxesTable->item(0, 7)->setText("6.60");
+    RefinementBoxesTable->item(0, 2)->setText("-6.60");
+    RefinementBoxesTable->item(0, 3)->setText("-4.00");
+    RefinementBoxesTable->item(0, 4)->setText("0.00");
+    RefinementBoxesTable->item(0, 5)->setText("8.75");
+    RefinementBoxesTable->item(0, 6)->setText("-4.00");
+    RefinementBoxesTable->item(0, 7)->setText("6.60");
 
     //Box # 2
-    refinmentBoxesTable->item(1, 2)->setText("-6.60");
-    refinmentBoxesTable->item(1, 3)->setText("-3.00");
-    refinmentBoxesTable->item(1, 4)->setText("0.00");
-    refinmentBoxesTable->item(1, 5)->setText("8.75");
-    refinmentBoxesTable->item(1, 6)->setText("-3.00");
-    refinmentBoxesTable->item(1, 7)->setText("6.60");
+    RefinementBoxesTable->item(1, 2)->setText("-6.60");
+    RefinementBoxesTable->item(1, 3)->setText("-3.00");
+    RefinementBoxesTable->item(1, 4)->setText("0.00");
+    RefinementBoxesTable->item(1, 5)->setText("8.75");
+    RefinementBoxesTable->item(1, 6)->setText("-3.00");
+    RefinementBoxesTable->item(1, 7)->setText("6.60");
 
     //Box # 3
-    refinmentBoxesTable->item(2, 2)->setText("-6.60");
-    refinmentBoxesTable->item(2, 3)->setText("-1.75");
-    refinmentBoxesTable->item(2, 4)->setText("0.00");
-    refinmentBoxesTable->item(2, 5)->setText("8.75");
-    refinmentBoxesTable->item(2, 6)->setText("-1.75");
-    refinmentBoxesTable->item(2, 7)->setText("6.60");
+    RefinementBoxesTable->item(2, 2)->setText("-6.60");
+    RefinementBoxesTable->item(2, 3)->setText("-1.75");
+    RefinementBoxesTable->item(2, 4)->setText("0.00");
+    RefinementBoxesTable->item(2, 5)->setText("8.75");
+    RefinementBoxesTable->item(2, 6)->setText("-1.75");
+    RefinementBoxesTable->item(2, 7)->setText("6.60");
 
     //Box # 4
-    refinmentBoxesTable->item(3, 2)->setText("-6.60");
-    refinmentBoxesTable->item(3, 3)->setText("-1.00");
-    refinmentBoxesTable->item(3, 4)->setText("0.00");
-    refinmentBoxesTable->item(3, 5)->setText("8.75");
-    refinmentBoxesTable->item(3, 6)->setText("-1.00");
-    refinmentBoxesTable->item(3, 7)->setText("6.60");
+    RefinementBoxesTable->item(3, 2)->setText("-6.60");
+    RefinementBoxesTable->item(3, 3)->setText("-1.00");
+    RefinementBoxesTable->item(3, 4)->setText("0.00");
+    RefinementBoxesTable->item(3, 5)->setText("8.75");
+    RefinementBoxesTable->item(3, 6)->setText("-1.00");
+    RefinementBoxesTable->item(3, 7)->setText("6.60");
 
     QPushButton* addRegionButton = new QPushButton("Add Region");
     QPushButton* removeRegionButton = new QPushButton("Remove Region");
@@ -340,104 +340,104 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     addRemoveRegionLayout->addWidget(removeRegionButton);
     addRemoveRegionLayout->addWidget(checkRegionsButton);
 
-    regionalRefinmentLayout->addWidget(refinmentBoxesTable,0,0);
-    regionalRefinmentLayout->addWidget(addRemoveRegionGroup,1,0);
+    regionalRefinementLayout->addWidget(RefinementBoxesTable,0,0);
+    regionalRefinementLayout->addWidget(addRemoveRegionGroup,1,0);
 
 
-    regionalRefinmentWidget->setLayout(regionalRefinmentLayout);
-    snappyHexMeshTab->addTab(regionalRefinmentWidget, "Regional Refinments");
+    regionalRefinementWidget->setLayout(regionalRefinementLayout);
+    snappyHexMeshTab->addTab(regionalRefinementWidget, "Regional Refinements");
 
     //-------------------------------------------------------------------------------
-    // Add surface refinment Tab
-    QWidget* surfaceRefinmentWidget = new QWidget();
-    QGridLayout* surfaceRefinmentLayout = new QGridLayout(surfaceRefinmentWidget);
+    // Add surface Refinement Tab
+    QWidget* surfaceRefinementWidget = new QWidget();
+    QGridLayout* surfaceRefinementLayout = new QGridLayout(surfaceRefinementWidget);
 
-//    surfaceRefinmentWidget->setMaximumHeight(100);
-    surfaceRefinmentLayout->setHorizontalSpacing(widgetGap);
+//    surfaceRefinementWidget->setMaximumHeight(100);
+    surfaceRefinementLayout->setHorizontalSpacing(widgetGap);
 
-    QLabel *addSurfaceRefinmentLabel = new QLabel("Add Surface Refinment:");
+    QLabel *addSurfaceRefinementLabel = new QLabel("Add Surface Refinement:");
     QLabel *surfaceNameLabel = new QLabel("Surface Name:");
-    QLabel *refinmentLevelLabel = new QLabel("Refinment Level:");
-    QLabel *refinmentDistanceLabel = new QLabel("Refinment Distance:");
+    QLabel *RefinementLevelLabel = new QLabel("Refinement Level:");
+    QLabel *RefinementDistanceLabel = new QLabel("Refinement Distance:");
 
-    QCheckBox* addSurfaceRefinment = new QCheckBox();
-    addSurfaceRefinment->setChecked(true);
+    QCheckBox* addSurfaceRefinement = new QCheckBox();
+    addSurfaceRefinement->setChecked(true);
 
     QComboBox* surfaceName  = new QComboBox();
     surfaceName->addItem("Building Surface");
     surfaceName->addItem("Ground Surface");
 
-    QSpinBox* surfaceRefinmentLevel = new QSpinBox();
-    surfaceRefinmentLevel->setRange(5, 100);
-    surfaceRefinmentLevel->setSingleStep(1);
+    QSpinBox* surfaceRefinementLevel = new QSpinBox();
+    surfaceRefinementLevel->setRange(5, 100);
+    surfaceRefinementLevel->setSingleStep(1);
 
-    QLineEdit* refinmentDistance = new QLineEdit();
-    refinmentDistance->setText("0.5");
+    QLineEdit* RefinementDistance = new QLineEdit();
+    RefinementDistance->setText("0.5");
 
     QPushButton *surfaceMeshDemoView = new QPushButton("");
-    QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinmentDemoView.png");
+    QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
     surfaceMeshDemoView->setIcon(surfaceMeshPixmap);
     surfaceMeshDemoView->setIconSize(surfaceMeshPixmap.rect().size()*.25);
     surfaceMeshDemoView->setFixedSize(surfaceMeshPixmap.rect().size()*.25);
 
-    surfaceRefinmentLayout->addWidget(addSurfaceRefinmentLabel, 0, 0);
-    surfaceRefinmentLayout->addWidget(surfaceNameLabel, 1, 0);
-    surfaceRefinmentLayout->addWidget(refinmentLevelLabel, 2, 0);
-    surfaceRefinmentLayout->addWidget(refinmentDistanceLabel, 3, 0);
+    surfaceRefinementLayout->addWidget(addSurfaceRefinementLabel, 0, 0);
+    surfaceRefinementLayout->addWidget(surfaceNameLabel, 1, 0);
+    surfaceRefinementLayout->addWidget(RefinementLevelLabel, 2, 0);
+    surfaceRefinementLayout->addWidget(RefinementDistanceLabel, 3, 0);
 
-    surfaceRefinmentLayout->addWidget(addSurfaceRefinment, 0, 1);
-    surfaceRefinmentLayout->addWidget(surfaceName, 1, 1);
-    surfaceRefinmentLayout->addWidget(surfaceRefinmentLevel, 2, 1);
-    surfaceRefinmentLayout->addWidget(refinmentDistance, 3, 1);
+    surfaceRefinementLayout->addWidget(addSurfaceRefinement, 0, 1);
+    surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
+    surfaceRefinementLayout->addWidget(surfaceRefinementLevel, 2, 1);
+    surfaceRefinementLayout->addWidget(RefinementDistance, 3, 1);
 
-    surfaceRefinmentLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    surfaceRefinementLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
-    surfaceRefinmentWidget->setLayout(surfaceRefinmentLayout);
-    snappyHexMeshTab->addTab(surfaceRefinmentWidget, "Surface Refinments");
+    surfaceRefinementWidget->setLayout(surfaceRefinementLayout);
+    snappyHexMeshTab->addTab(surfaceRefinementWidget, "Surface Refinements");
 
     //-------------------------------------------------------------------------------
 
-    // Add edge refinment Tab
-    QWidget* edgeRefinmentWidget = new QWidget();
-    QGridLayout* edgeRefinmentLayout = new QGridLayout(edgeRefinmentWidget);
+    // Add edge Refinement Tab
+    QWidget* edgeRefinementWidget = new QWidget();
+    QGridLayout* edgeRefinementLayout = new QGridLayout(edgeRefinementWidget);
 
-    edgeRefinmentLayout->setHorizontalSpacing(widgetGap);
+    edgeRefinementLayout->setHorizontalSpacing(widgetGap);
 
 
-    QLabel *addEdgeRefinmentLabel = new QLabel("Add Edge Refinment:");
-    QLabel *edgeNameLabel = new QLabel("Refinment Edge:");
-    QLabel *edgeRefinmentLevelLabel = new QLabel("Refinment Level:");
+    QLabel *addEdgeRefinementLabel = new QLabel("Add Edge Refinement:");
+    QLabel *edgeNameLabel = new QLabel("Refinement Edge:");
+    QLabel *edgeRefinementLevelLabel = new QLabel("Refinement Level:");
 
-    QCheckBox* addEdgeRefinment = new QCheckBox();
-    addEdgeRefinment->setChecked(true);
+    QCheckBox* addEdgeRefinement = new QCheckBox();
+    addEdgeRefinement->setChecked(true);
 
     QComboBox* edgeName  = new QComboBox();
     edgeName->addItem("Building Edges");
 
-    QSpinBox* edgeRefinmentLevel = new QSpinBox();
-    edgeRefinmentLevel->setRange(5, 100);
-    edgeRefinmentLevel->setSingleStep(1);
+    QSpinBox* edgeRefinementLevel = new QSpinBox();
+    edgeRefinementLevel->setRange(5, 100);
+    edgeRefinementLevel->setSingleStep(1);
 
     QPushButton *edgeMeshDemoView = new QPushButton("");
-    QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinmentDemoView.svg");
+    QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinementDemoView.svg");
     edgeMeshDemoView->setIcon(edgeMeshPixmap);
     edgeMeshDemoView->setIconSize(edgeMeshPixmap.rect().size()*.25);
     edgeMeshDemoView->setFixedSize(edgeMeshPixmap.rect().size()*.25);
 
-    edgeRefinmentLayout->addWidget(addEdgeRefinmentLabel, 0, 0);
-    edgeRefinmentLayout->addWidget(edgeNameLabel, 1, 0);
-    edgeRefinmentLayout->addWidget(edgeRefinmentLevelLabel, 2, 0);
+    edgeRefinementLayout->addWidget(addEdgeRefinementLabel, 0, 0);
+    edgeRefinementLayout->addWidget(edgeNameLabel, 1, 0);
+    edgeRefinementLayout->addWidget(edgeRefinementLevelLabel, 2, 0);
 
-    edgeRefinmentLayout->addWidget(addEdgeRefinment, 0, 1);
-    edgeRefinmentLayout->addWidget(edgeName, 1, 1);
-    edgeRefinmentLayout->addWidget(edgeRefinmentLevel, 2, 1);
+    edgeRefinementLayout->addWidget(addEdgeRefinement, 0, 1);
+    edgeRefinementLayout->addWidget(edgeName, 1, 1);
+    edgeRefinementLayout->addWidget(edgeRefinementLevel, 2, 1);
 
-    edgeRefinmentLayout->addWidget(edgeMeshDemoView,0,2,3,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    edgeRefinementLayout->addWidget(edgeMeshDemoView,0,2,3,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
-    edgeRefinmentWidget->setLayout(edgeRefinmentLayout);
-    snappyHexMeshTab->addTab(edgeRefinmentWidget, "Edge Refinments");
+    edgeRefinementWidget->setLayout(edgeRefinementLayout);
+    snappyHexMeshTab->addTab(edgeRefinementWidget, "Edge Refinements");
 
     //-------------------------------------------------------------------------------
 

@@ -97,7 +97,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     buildingInformationGroup = new QGroupBox("Building Geometry");
     buildingInformationLayout = new QGridLayout();
 
-    domainInformationGroup = new QGroupBox("Domain Dimentions");
+    domainInformationGroup = new QGroupBox("Domain Dimensions");
     domainInformationLayout = new QGridLayout();
 
     theBuildingButton = new QPushButton();
@@ -292,10 +292,19 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 //    scrollArea->setWidget(mainGroup);
 //    mainLayout->addWidget(scrollArea);
 
-    layout->addWidget(mainGroup);
+    QScrollArea *sa = new QScrollArea;
+    sa->setWidgetResizable(true);
+    sa->setLineWidth(0);
+    sa->setFrameShape(QFrame::NoFrame);
+
+//    layout->addWidget(mainGroup);
+    sa->setWidget(mainGroup);
 
 
+//    this->setLayout(layout);
     this->setLayout(layout);
+
+
 
     //
     // get GeneralInfo
@@ -409,9 +418,6 @@ bool IsolatedBuildingCFD::runBlockMesh()
 {
 
     QString casePath = caseDirectoryPathWidget->text();
-
-    QString program = "/opt/openfoam10/platforms/linux64GccDPInt32Opt/bin/blockMesh";
-
     QStringList commands;
 
     commands << "source /opt/openfoam10/etc/bashrc; blockMesh; checkMesh";
@@ -515,7 +521,7 @@ bool IsolatedBuildingCFD::exportBackgroundMeshParametersToJSON()
 {
     // Exports information needed for background mesh generation to JSON file.
     // This information includes:
-    //      - domain dimentions
+    //      - domain dimensions
     //      - meshing information
     //      - boundary types
 
