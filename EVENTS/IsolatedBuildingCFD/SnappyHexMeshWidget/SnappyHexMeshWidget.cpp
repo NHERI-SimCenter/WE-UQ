@@ -165,10 +165,12 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     QLabel *directionLabel = new QLabel("Direction");
     QLabel *numberOfCellsLabel = new QLabel("Number of Cells");
-    QLabel *meshSizeLabel = new QLabel("Mesh Size");
+    QLabel *meshGradingLabel = new QLabel("Mesh Grading");
+    QLabel *meshSizeLabel = new QLabel("Grid Size");
 
     directionLabel->setStyleSheet("font-weight: bold; color: black");
     numberOfCellsLabel->setStyleSheet("font-weight: bold; color: black");
+    meshGradingLabel->setStyleSheet("font-weight: bold; color: black");
     meshSizeLabel->setStyleSheet("font-weight: bold; color: black");
 
     QLabel *xAxisLabel = new QLabel("X-axis");
@@ -178,46 +180,52 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     xAxisNumCells = new QLineEdit();
     xAxisNumCells->setText("40");
     xAxisNumCells->setValidator(new QIntValidator);
-//    xAxisNumCells->setAlignment(Qt::AlignLeft);
     xAxisNumCells->setToolTip("Number of cells in x-direction");
-//    xAxisNumCells->setMaximumWidth(gridWidth);
 
     yAxisNumCells = new QLineEdit();
     yAxisNumCells->setText("20");
     yAxisNumCells->setValidator(new QIntValidator);
-//    yAxisNumCells->setAlignment(Qt::AlignLeft);
     yAxisNumCells->setToolTip("Number of cells in y-direction");
-//    yAxisNumCells->setMaximumWidth(gridWidth);
 
     zAxisNumCells = new QLineEdit();
     zAxisNumCells->setText("10");
     zAxisNumCells->setValidator(new QIntValidator);
-//    zAxisNumCells->setAlignment(Qt::AlignLeft);
     zAxisNumCells->setToolTip("Number of cells in z-direction");
-//    zAxisNumCells->setMaximumWidth(gridWidth);
+
+
+    xMeshGrading = new QSpinBox();
+    xMeshGrading->setSingleStep(1);
+    xMeshGrading->setMinimum(1);
+    xMeshGrading->setToolTip("Mesh grading in x-direction");
+
+    yMeshGrading = new QSpinBox();
+    yMeshGrading->setSingleStep(1);
+    yMeshGrading->setMinimum(1);
+    yMeshGrading->setToolTip("Mesh grading in y-direction");
+
+    zMeshGrading = new QSpinBox();
+    zMeshGrading->setSingleStep(1);
+    zMeshGrading->setMinimum(1);
+    zMeshGrading->setToolTip("Mesh grading in z-direction");
+
 
     xAxisMeshSize = new QLineEdit();
     xAxisMeshSize->setText("10");
-//    xAxisMeshSize->setAlignment(Qt::AlignLeft);
     xAxisMeshSize->setToolTip("Mesh size in x-direction");
-//    xAxisMeshSize->setMaximumWidth(gridWidth);
 
     yAxisMeshSize = new QLineEdit();
     yAxisMeshSize->setText("10");
-//    yAxisMeshSize->setAlignment(Qt::AlignLeft);
     yAxisMeshSize->setToolTip("Mesh size in y-direction");
-//    yAxisMeshSize->setMaximumWidth(gridWidth);
 
     zAxisMeshSize = new QLineEdit();
     zAxisMeshSize->setText("10");
-//    zAxisMeshSize->setAlignment(Qt::AlignLeft);
     zAxisMeshSize->setToolTip("Mesh size in z-direction");
-//    zAxisMeshSize->setMaximumWidth(gridWidth);
 
 
     backgroundMeshLayout->addWidget(directionLabel,0,0,Qt::AlignCenter);
     backgroundMeshLayout->addWidget(numberOfCellsLabel,0,1,Qt::AlignCenter);
-    backgroundMeshLayout->addWidget(meshSizeLabel,0,2,Qt::AlignCenter);
+    backgroundMeshLayout->addWidget(meshGradingLabel,0,2,Qt::AlignCenter);
+    backgroundMeshLayout->addWidget(meshSizeLabel,0,3,Qt::AlignCenter);
 
     backgroundMeshLayout->addWidget(xAxisLabel,1,0);
     backgroundMeshLayout->addWidget(yAxisLabel,2,0);
@@ -227,11 +235,15 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     backgroundMeshLayout->addWidget(yAxisNumCells,2,1);
     backgroundMeshLayout->addWidget(zAxisNumCells,3,1);
 
-    backgroundMeshLayout->addWidget(xAxisMeshSize,1,2);
-    backgroundMeshLayout->addWidget(yAxisMeshSize,2,2);
-    backgroundMeshLayout->addWidget(zAxisMeshSize,3,2);
+    backgroundMeshLayout->addWidget(xMeshGrading,1,2);
+    backgroundMeshLayout->addWidget(yMeshGrading,2,2);
+    backgroundMeshLayout->addWidget(zMeshGrading,3,2);
 
-    int widgetGap = 50;
+    backgroundMeshLayout->addWidget(xAxisMeshSize,1,3);
+    backgroundMeshLayout->addWidget(yAxisMeshSize,2,3);
+    backgroundMeshLayout->addWidget(zAxisMeshSize,3,3);
+
+    int widgetGap = 25;
     backgroundMeshLayout->setHorizontalSpacing(widgetGap);
 //    backgroundMeshLayout->setVerticalSpacing(widgetGap);
 
@@ -244,11 +256,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     blockMeshDemoView->setIconSize(pixmap.rect().size()*.35);
     blockMeshDemoView->setFixedSize(pixmap.rect().size()*.35);
 
-    backgroundMeshLayout->addWidget(blockMeshDemoView,1,3,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    backgroundMeshLayout->addWidget(blockMeshDemoView,1,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
     QPushButton *blockMeshCalculate = new QPushButton("Calculate Mesh Size");
-    backgroundMeshLayout->addWidget(blockMeshCalculate,4,0,1,3, Qt::AlignRight);
+    backgroundMeshLayout->addWidget(blockMeshCalculate,4,1,1,3, Qt::AlignRight);
 
     backgroundMeshWidget->setLayout(backgroundMeshLayout);
     snappyHexMeshTab->addTab(backgroundMeshWidget, "Background Mesh");

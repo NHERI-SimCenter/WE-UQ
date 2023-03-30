@@ -15,21 +15,21 @@ FoamFile
 
 backgroundMesh
 {
-	xMin		-2.2860;
-	yMin		-2.2860;
-	zMin		0.0000;
-	xMax		6.8580;
-	yMax		2.2860;
-	zMax		2.2860;
-	xCells		40;
-	yCells		20;
-	zCells		10;
-	xGrading	1.0000;
-	yGrading	1.0000;
-	zGrading	1.0000;
+    xMin       -3.0; 
+    xMax    	9.0;
+    yMin       -3.0;
+    yMax    	3.0;
+    zMin    	0.0;
+    zMax    	3.0;
+    xCells  	40;
+    yCells  	20;
+    zCells  	10;
+    xGrading  	1;
+    yGrading  	1;
+    zGrading  	2;
 }
 
-convertToMeters 1.0000;
+convertToMeters 1;
 
 vertices
 (

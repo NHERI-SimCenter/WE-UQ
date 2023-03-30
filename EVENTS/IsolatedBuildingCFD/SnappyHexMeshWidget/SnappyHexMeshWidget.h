@@ -52,9 +52,12 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
+class IsolatedBuildingCFD;
 
 class SnappyHexMeshWidget: public SimCenterAppWidget
 {
+    friend class IsolatedBuildingCFD;
+
     Q_OBJECT
 public:
     explicit SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
@@ -81,22 +84,27 @@ private:
    double height;
 
    QVBoxLayout  *layout;
-   QTabWidget   *snappyHexMeshTab;
 
    QLineEdit    *xAxisNumCells;
    QLineEdit    *yAxisNumCells;
    QLineEdit    *zAxisNumCells;
+
    QLineEdit    *xAxisMeshSize;
    QLineEdit    *yAxisMeshSize;
    QLineEdit    *zAxisMeshSize;
 
+   QSpinBox     *xMeshGrading;
+   QSpinBox     *yMeshGrading;
+   QSpinBox     *zMeshGrading;
+
+
    QPushButton *calcBackgroundMesh;
-
-
-
-
+   QTabWidget   *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
+
+public:
+
 };
 
-#endif // LOW_RISE_TPU_H
+#endif // SNAPPY_HEX_MESH_WIDGET_H

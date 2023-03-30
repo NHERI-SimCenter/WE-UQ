@@ -5,7 +5,13 @@
     "buildingHeight": 182.88,
     "buildingWidth": 45.72,
     "geometricScale": 400,
-    "lengthUnit": "meter",
+    "lengthUnit": "m",
+    "origin": [
+        0,
+        0,
+        0
+    ],
+    "relativeDimensions": true,
     "type": "IsolatedBuildingCFD",
     "windDirection": 0
 }

@@ -62,13 +62,15 @@ class QCheckBox;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
+
 public:
     explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
     bool exportBuildingGeometryToJSON();
-    bool generateBuildingSTLGeometry();
+    bool exportBackgroundMeshParametersToJSON();
 
+    bool generateBuildingSTLGeometry();
     bool createBlockMeshMeshDict();
     bool createSnappyHexMeshDict();
 
@@ -88,6 +90,7 @@ public slots:
    void onBuildingDimensionChanged(double width, double depth, double area);
    void onNumFloorsOrHeightChanged(int numFloor, double height);
    void onGenerateGeometryClicked();
+   void onRunBlockMeshClicked();
 
    void onRoofTypeChanged(int type);
 
@@ -116,8 +119,9 @@ private:
    QLineEdit    *domainWidthWidget;
    QLineEdit    *domainHeightWidget;
 
-   QLineEdit    *fetchDistanceWidget;
+   QLineEdit    *fetchLengthWidget;
 
+   QCheckBox    *relativeDimensionsWidget;
    QCheckBox    *useCOSTDimWidget;
 
    QComboBox*   originOptions;
