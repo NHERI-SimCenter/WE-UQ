@@ -44,33 +44,75 @@
       "description": "Name of the STL surface representing the building geometry.",
       "type": "string"
     },
-    "castellatedMesh": {
-      "description": "Use castellated mesh or not, needs to be turned on for a good quality mesh.",
-      "type": "boolean"
-    },
-    "snapToSurface": {
-      "description": "If turned on the mesh is snapped to the STL surface, needs to be turned on for a good quality mesh.",
-      "type": "boolean"
-    },
-    "addEdgeRefinement": {
-      "description": "Adds refinements over the building edge if turned on.",
-      "type": "boolean"
-    },
-    "addLayers": {
-      "description": "Add prism layers on building surface or not.",
-      "type": "boolean"
-    },
-    "numLayers": {
-      "description": "Number of prism layers to be added.",
-      "type": "integer"
-    },
-    "nCellsBetweenLevels": {
+    "numCellsBetweenLevels": {
       "description": "Number of buffer layers between different levels.",
       "type": "integer"
     },
     "resolveFeatureAngle": {
       "description": "Feature resolution angle to capture sharp angles.",
       "type": "number"
+    },
+    "numProcessors": {
+      "description": "Number of processors for snappyHexMesh generation.",
+      "type": "integer"
+    },
+    "xMin": {
+      "description": "Minimum x coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "yMin": {
+      "description": "Minimum y coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "zMin": {
+      "description": "Minimum z coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "xMin": {
+      "description": "Minimum x coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "yMax": {
+      "description": "Minimum y coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "zMax": {
+      "description": "Minimum z coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "addSurfaceRefinement": {
+      "description": "Adds surface refinements over building surface if turned on.",
+      "type": "boolean"
+    },
+    "addEdgeRefinement": {
+      "description": "Adds refinements over the building edge if turned on.",
+      "type": "boolean"
+    },
+    "addSurfaceLayers": {
+      "description": "Add prism layers on building surface or not.",
+      "type": "boolean"
+    },
+    "numSurfaceLayers": {
+      "description": "Number of surface(prism) layers to be added.",
+      "type": "integer"
     },
     "insidePoint": {
       "description": "A point that will always remains inside the mesh(not surfaces) even after refinement.",

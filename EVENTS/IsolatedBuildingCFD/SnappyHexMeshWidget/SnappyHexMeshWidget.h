@@ -47,6 +47,7 @@ class QComboBox;
 class QGridLayout;
 class QVBoxLayout;
 class QSpinBox;
+class QCheckBox;
 class QLineEdit;
 class LineEditRV;
 class QTabWidget;
@@ -85,18 +86,35 @@ private:
 
    QVBoxLayout  *layout;
 
+   QGroupBox    *snappyHexMeshGroup;
+   QVBoxLayout  *snappyHexMeshLayout;
+
+   QGroupBox    *generalOptionsGroup;
+   QGridLayout  *generalOptionsLayout;
+
+   //Blockground mesh
    QLineEdit    *xAxisNumCells;
    QLineEdit    *yAxisNumCells;
    QLineEdit    *zAxisNumCells;
-
    QLineEdit    *xAxisMeshSize;
    QLineEdit    *yAxisMeshSize;
    QLineEdit    *zAxisMeshSize;
-
    QSpinBox     *xMeshGrading;
    QSpinBox     *yMeshGrading;
    QSpinBox     *zMeshGrading;
 
+   //General options
+   QSpinBox     *numCellsBetweenLevels;
+   QSpinBox     *resolveFeatureAngle;
+   QSpinBox     *numProcessors;
+
+   //Regional refinements
+
+   //Surface refinments
+   QCheckBox* addSurfaceRefinement;
+   QComboBox* surfaceName;
+   QSpinBox* surfaceRefinementLevel ;
+   QLineEdit* refinementDistance;
 
    QPushButton *calcBackgroundMesh;
    QTabWidget   *snappyHexMeshTab;

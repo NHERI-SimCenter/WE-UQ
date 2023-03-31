@@ -177,7 +177,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPushButton* browseButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit ();
-    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Domain size is provided relative to the building height**");
 
@@ -193,7 +193,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
 
-//    generalDescriptionLayout->addWidget(generalDescriptionLabel);
+    generalDescriptionLayout->addWidget(generalDescriptionLabel);
 
     caseDirectoryLayout->addWidget(casePathLabel, 0, 0);
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
@@ -277,7 +277,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     mainGroup->setMaximumWidth(windowWidth);
 
 //    buildingAndDomainInformationLayout->setMargin(20);
-    layout->addStretch();
 
 
     //    connect(the1x1RadioButton, SIGNAL(toggled(bool)), this, SLOT(oneByOneToggled(bool)));
@@ -285,23 +284,15 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 //    this->setLayout(layout);
 
 
-//    QScrollArea *scrollArea = new QScrollArea();
-//    scrollArea->setWidgetResizable(true);
-//    scrollArea->setLineWidth(1);
-//    scrollArea->setFrameShape(QFrame::NoFrame);
-//    scrollArea->setWidget(mainGroup);
-//    mainLayout->addWidget(scrollArea);
+    QScrollArea *scrollArea = new QScrollArea();
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setLineWidth(1);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setWidget(mainGroup);
+    scrollArea->setMaximumWidth(windowWidth + 25);
 
-    QScrollArea *sa = new QScrollArea;
-    sa->setWidgetResizable(true);
-    sa->setLineWidth(0);
-    sa->setFrameShape(QFrame::NoFrame);
+    layout->addWidget(scrollArea);
 
-//    layout->addWidget(mainGroup);
-    sa->setWidget(mainGroup);
-
-
-//    this->setLayout(layout);
     this->setLayout(layout);
 
 
@@ -352,7 +343,7 @@ void IsolatedBuildingCFD::onGenerateGeometryClicked()
 
 void IsolatedBuildingCFD::onRunBlockMeshClicked()
 {
-    exportBackgroundMeshParametersToJSON();
+    exportBlockMeshParametersToJSON();
 
     createBlockMeshMeshDict();
 
@@ -364,7 +355,7 @@ bool IsolatedBuildingCFD::generateBuildingSTLGeometry()
 
     QString stlPath = caseDirectoryPathWidget->text() + "constant/geometry/";
     QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
-    QString scriptPath = "/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_building_stl_geometry.py";
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_building_stl_geometry.py";
 
 //    QStringList args = {workingDir, workingDir};
 //    ModularPython *geomPy = new ModularPython(workingDir, this);
@@ -379,7 +370,7 @@ bool IsolatedBuildingCFD::generateBuildingSTLGeometry()
 
     process->start(program, arguments);
 
-    process->waitForFinished();
+    process->waitForFinished(-1);
 
     process->close();
 
@@ -393,9 +384,9 @@ bool IsolatedBuildingCFD::generateBuildingSTLGeometry()
 bool IsolatedBuildingCFD::createBlockMeshMeshDict()
 {
 
-    QString scriptPath = "/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_block_mesh_dictionary.py";
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_block_mesh_dictionary.py";
     QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
-    QString templatePath = "/home/abiy/SimCenter/sourceCodes/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts/";
+    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts/";
     QString outputPath = caseDirectoryPathWidget->text() + "system/";
 
     QString program = "/home/abiy/anaconda3/bin/python3.9";
@@ -437,8 +428,8 @@ bool IsolatedBuildingCFD::runBlockMesh()
     return true;
 }
 
-void
-IsolatedBuildingCFD::onRoofTypeChanged(int roofSelection) {
+void IsolatedBuildingCFD::onRoofTypeChanged(int roofSelection)
+{
 
 //    // remove old pitch & delete
 //    windTunnelGeometryLayout->removeWidget(pitch);
@@ -482,8 +473,7 @@ void IsolatedBuildingCFD::clear(void)
 
 
 
-bool
-IsolatedBuildingCFD::exportBuildingGeometryToJSON()
+bool IsolatedBuildingCFD::exportBuildingGeometryToJSON()
 {
     // just need to send the class type here.. type needed in object in case user screws up
 
@@ -517,7 +507,7 @@ IsolatedBuildingCFD::exportBuildingGeometryToJSON()
     return true;
 }
 
-bool IsolatedBuildingCFD::exportBackgroundMeshParametersToJSON()
+bool IsolatedBuildingCFD::exportBlockMeshParametersToJSON()
 {
     // Exports information needed for background mesh generation to JSON file.
     // This information includes:
@@ -560,7 +550,7 @@ bool IsolatedBuildingCFD::exportBackgroundMeshParametersToJSON()
     jsonObject["lengthUnit"] = "m";
 
 
-    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/backgroundMeshParameters.json");
+    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/blockMeshParameters.json");
     jsonFile.open(QFile::WriteOnly);
 
     QJsonDocument jsonDoc = QJsonDocument(jsonObject);
@@ -570,8 +560,66 @@ bool IsolatedBuildingCFD::exportBackgroundMeshParametersToJSON()
     return true;
 }
 
-bool
-IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
+bool IsolatedBuildingCFD::exportSnappyMeshParametersToJSON()
+{
+    // Exports information needed for snappyHexMesh generation to JSON file.
+    // This information includes:
+    //      - domain dimensions
+    //      - meshing information
+    //      - Refinment info
+    //      - Prism layer
+
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
+
+    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
+    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
+    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
+    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
+    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
+    jsonObject["geometricScale"] = geometricScaleWidget->text().toDouble();
+    jsonObject["relativeDimensions"] = relativeDimensionsWidget->isChecked();
+
+    QJsonArray originPoint  = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
+    jsonObject["origin"] = originPoint;
+
+    jsonObject["xNumCells"] = snappyHexMesh->xAxisNumCells->text().toDouble();
+    jsonObject["yNumCells"] = snappyHexMesh->yAxisNumCells->text().toDouble();
+    jsonObject["zNumCells"] = snappyHexMesh->zAxisNumCells->text().toDouble();
+    jsonObject["xGrading"] = snappyHexMesh->xMeshGrading->value();
+    jsonObject["yGrading"] = snappyHexMesh->yMeshGrading->value();
+    jsonObject["zGrading"] = snappyHexMesh->zMeshGrading->value();
+    jsonObject["buildingSTLName"] = "building";
+    jsonObject["numCellsBetweenLevels"] = snappyHexMesh->numCellsBetweenLevels->value();
+    jsonObject["resolveFeatureAngle"] = snappyHexMesh->resolveFeatureAngle->value();
+    jsonObject["numProcessors"] = snappyHexMesh->numProcessors->value();
+
+    jsonObject["addSurfaceRefinement"] = snappyHexMesh->addSurfaceRefinement->isChecked();
+    jsonObject["addSurfaceRefinement"] = snappyHexMesh->addSurfaceRefinement->isChecked();
+
+
+    //jsonObject["addEdgeRefinement"] = snappyHexMesh->add
+
+
+
+    //Replace with the unit system from "General Information" window
+    jsonObject["lengthUnit"] = "m";
+
+
+    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/snappyHexMeshParameters.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}
+
+bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
@@ -625,8 +673,7 @@ IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool
-IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
+bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     //
     // per API, need to add name of application to be called in AppLication
@@ -640,16 +687,14 @@ IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     return true;
 }
-bool
-IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
+bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
     Q_UNUSED(jsonObject);
     return true;
 }
 
 
- bool
- IsolatedBuildingCFD::copyFiles(QString &destDir) {
+bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
      QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
@@ -664,8 +709,7 @@ IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
      return result;
  }
 
- void
- IsolatedBuildingCFD::onBuildingDimensionChanged(double w, double d, double area){
+void IsolatedBuildingCFD::onBuildingDimensionChanged(double w, double d, double area){
      Q_UNUSED(area);
      buildingWidth = w;
      buildingDepth = d;
@@ -687,8 +731,7 @@ IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 //     else
 //         depthBreadth->setCurrentIndex(2);
  }
- void
- IsolatedBuildingCFD::onNumFloorsOrHeightChanged(int numFloor, double h){
+void IsolatedBuildingCFD::onNumFloorsOrHeightChanged(int numFloor, double h){
 //     Q_UNUSED(numFloor);
 //     height = h;
 //     double ratioHtoB = height/breadth;

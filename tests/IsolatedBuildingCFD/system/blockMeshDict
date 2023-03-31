@@ -24,7 +24,7 @@ backgroundMesh
 	xCells		40;
 	yCells		20;
 	zCells		10;
-	xGrading	4.0000;
+	xGrading	1.0000;
 	yGrading	1.0000;
 	zGrading	1.0000;
 }

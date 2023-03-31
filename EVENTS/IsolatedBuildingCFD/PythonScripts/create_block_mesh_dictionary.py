@@ -20,7 +20,7 @@ import numpy as np
 def create_block_mesh_dict(input_json_path, template_dict_path, output_dict_path):
 
     #Read JSON data
-    json_file = open(input_json_path + "/backgroundMeshParameters.json")
+    json_file = open(input_json_path + "/blockMeshParameters.json")
       
     # Returns JSON object as a dictionary
     domain_data = json.load(json_file)

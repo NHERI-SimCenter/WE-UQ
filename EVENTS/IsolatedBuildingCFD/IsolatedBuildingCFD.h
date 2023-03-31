@@ -68,7 +68,8 @@ public:
     ~IsolatedBuildingCFD();
 
     bool exportBuildingGeometryToJSON();
-    bool exportBackgroundMeshParametersToJSON();
+    bool exportBlockMeshParametersToJSON();
+    bool exportSnappyMeshParametersToJSON();
 
     bool generateBuildingSTLGeometry();
     bool createBlockMeshMeshDict();

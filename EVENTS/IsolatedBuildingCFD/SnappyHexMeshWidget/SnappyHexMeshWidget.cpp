@@ -148,16 +148,66 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     //snappyHexMeshBox = new QGroupBox("SnappyHexMesh", this);
 
 //    QWidget* snappyHexMeshGroup = new QWidget(this);
+    int widgetGap = 25;
 
-    QGroupBox* snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
+    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
+    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
 
-    QVBoxLayout* snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
+    generalOptionsGroup = new QGroupBox("General Options", this);
+    generalOptionsLayout = new QGridLayout();
+
     snappyHexMeshGroup->setLayout(snappyHexMeshLayout);
+    generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
 
-    snappyHexMeshLayout->addWidget(snappyHexMeshTab);    
+    snappyHexMeshLayout->addWidget(generalOptionsGroup);
+    snappyHexMeshLayout->addWidget(snappyHexMeshTab);
 
+    // Add general Options group
+    QLabel *numCellsBetweenLevelsLabel = new QLabel("Number of Cells Between Levels:");
+    QLabel *resolveFeatureAngleLabel = new QLabel("Feature Resolution Angle:");
+    QLabel *castellatedMeshLabel = new QLabel("Castellated Mesh:");
+    QLabel *numProcessorsLabel = new QLabel("Number of Processors:");
+    QLabel *degreesLabel = new QLabel("degrees");
+
+    numCellsBetweenLevels = new QSpinBox();
+    numCellsBetweenLevels->setSingleStep(1);
+    numCellsBetweenLevels->setMinimum(1);
+    numCellsBetweenLevels->setValue(5);
+    numCellsBetweenLevels->setToolTip("Number of buffer layers between different levels.");
+
+    resolveFeatureAngle = new QSpinBox();
+    resolveFeatureAngle->setSingleStep(10);
+    resolveFeatureAngle->setRange(0, 180);
+    resolveFeatureAngle->setValue(30);
+    resolveFeatureAngle->setToolTip("Feature resolution angle to capture sharp angles.");
+
+//    castellatedMesh = new QCheckBox();
+//    castellatedMesh->setChecked(true);
+//    resolveFeatureAngle->setToolTip("Use castellated mesh or not angle to capture sharp angles.");
+
+
+    numProcessors = new QSpinBox();
+    numProcessors->setSingleStep(1);
+    numProcessors->setValue(4);
+    numProcessors->setRange(1, 8);
+    numProcessors->setToolTip("Number of processors for snappyHexMesh.");
+
+//    generalOptionsLayout->addWidget(castellatedMeshLabel, 0, 0);
+//    generalOptionsLayout->addWidget(castellatedMesh, 0, 1);
+
+    generalOptionsLayout->addWidget(numCellsBetweenLevelsLabel, 0, 0);
+    generalOptionsLayout->addWidget(numCellsBetweenLevels, 0, 1);
+
+    generalOptionsLayout->addWidget(resolveFeatureAngleLabel, 1, 0);
+    generalOptionsLayout->addWidget(resolveFeatureAngle, 1, 1);
+    generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
+
+    generalOptionsLayout->addWidget(numProcessorsLabel, 0, 3);
+    generalOptionsLayout->addWidget(numProcessors, 0, 4);
+
+//    generalOptionsLayout->setHorizontalSpacing(widgetGap);
 
     // Add background mesh (block mesh) Tab
     QWidget* backgroundMeshWidget = new QWidget();
@@ -243,7 +293,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     backgroundMeshLayout->addWidget(yAxisMeshSize,2,3);
     backgroundMeshLayout->addWidget(zAxisMeshSize,3,3);
 
-    int widgetGap = 25;
     backgroundMeshLayout->setHorizontalSpacing(widgetGap);
 //    backgroundMeshLayout->setVerticalSpacing(widgetGap);
 
@@ -274,7 +323,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     int numCols = 8;
     int numRows = 4;
 
-
     QTableWidget* RefinementBoxesTable = new QTableWidget(numRows, numCols);
 
     QStringList headerTitles = {"Name", "Level", "X-min", "Y-min", "Z-min", "X-max", "Y-max", "Z-max"};
@@ -288,9 +336,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
        {
         RefinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
        }
-
     }
-
     for (int i=0; i < numRows; i++)
     {
         RefinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
@@ -360,19 +406,19 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     QLabel *RefinementLevelLabel = new QLabel("Refinement Level:");
     QLabel *RefinementDistanceLabel = new QLabel("Refinement Distance:");
 
-    QCheckBox* addSurfaceRefinement = new QCheckBox();
+    addSurfaceRefinement = new QCheckBox();
     addSurfaceRefinement->setChecked(true);
 
-    QComboBox* surfaceName  = new QComboBox();
+    surfaceName  = new QComboBox();
     surfaceName->addItem("Building Surface");
     surfaceName->addItem("Ground Surface");
 
-    QSpinBox* surfaceRefinementLevel = new QSpinBox();
+    surfaceRefinementLevel = new QSpinBox();
     surfaceRefinementLevel->setRange(5, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
-    QLineEdit* RefinementDistance = new QLineEdit();
-    RefinementDistance->setText("0.5");
+    refinementDistance = new QLineEdit();
+    refinementDistance->setText("0.5");
 
     QPushButton *surfaceMeshDemoView = new QPushButton("");
     QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
@@ -388,7 +434,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     surfaceRefinementLayout->addWidget(addSurfaceRefinement, 0, 1);
     surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
     surfaceRefinementLayout->addWidget(surfaceRefinementLevel, 2, 1);
-    surfaceRefinementLayout->addWidget(RefinementDistance, 3, 1);
+    surfaceRefinementLayout->addWidget(refinementDistance, 3, 1);
 
     surfaceRefinementLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 

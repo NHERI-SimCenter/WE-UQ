@@ -40,10 +40,10 @@
         <file>Resources/IsolatedBuildingCFD/buildingGeometry.svg</file>
         <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/blockMeshDemoMeshView.png</file>
         <file>Resources/IsolatedBuildingCFD/buildingGeometry.png</file>
-        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinmentDemoView.png</file>
-        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinmentDemoView.svg</file>
-        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinmentDemoView2.svg</file>
-        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinmentDemoView.svg</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.svg</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView2.svg</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinementDemoView.svg</file>
         <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png</file>
         <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.svg</file>
     </qresource>

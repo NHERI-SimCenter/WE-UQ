@@ -13,5 +13,5 @@
     ],
     "relativeDimensions": true,
     "type": "IsolatedBuildingCFD",
-    "windDirection": 45
+    "windDirection": 0
 }

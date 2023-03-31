@@ -20,7 +20,7 @@
     "relativeDimensions": true,
     "topBoundaryType": "patch",
     "type": "IsolatedBuildingCFD",
-    "xGrading": 4,
+    "xGrading": 1,
     "xNumCells": 40,
     "yGrading": 1,
     "yNumCells": 20,
