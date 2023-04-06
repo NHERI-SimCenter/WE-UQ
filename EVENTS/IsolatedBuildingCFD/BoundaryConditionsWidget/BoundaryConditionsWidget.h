@@ -1,5 +1,5 @@
-#ifndef SNAPPY_HEX_MESH_WIDGET_H
-#define SNAPPY_HEX_MESH_WIDGET_H
+#ifndef BOUNDARY_CONDITIONS_WIDGET_H
+#define BOUNDARY_CONDITIONS_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -53,12 +53,12 @@ class QTabWidget;
 class QGroupBox;
 class QPushButton;
 
-class SnappyHexMeshWidget: public SimCenterAppWidget
+class BoundaryConditionsWidget: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~SnappyHexMeshWidget();
+    explicit BoundaryConditionsWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~BoundaryConditionsWidget();
 
 //    bool outputToJSON(QJsonObject &rvObject);
 //    bool inputFromJSON(QJsonObject &rvObject);
@@ -81,22 +81,15 @@ private:
    double height;
 
    QVBoxLayout  *layout;
-   QTabWidget   *snappyHexMeshTab;
 
-   QLineEdit    *xAxisNumCells;
-   QLineEdit    *yAxisNumCells;
-   QLineEdit    *zAxisNumCells;
-   QLineEdit    *xAxisMeshSize;
-   QLineEdit    *yAxisMeshSize;
-   QLineEdit    *zAxisMeshSize;
-
-   QPushButton *calcBackgroundMesh;
-
-
-
+   QComboBox    *inletBCType;
+   QComboBox    *outletBCType;
+   QComboBox    *sidesBCType;
+   QComboBox    *topBCType;
+   QComboBox    *groundBCType;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 };
 
-#endif // LOW_RISE_TPU_H
+#endif // BOUNDARY_CONDITIONS_WIDGET_H

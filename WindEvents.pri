@@ -24,8 +24,8 @@ SOURCES += \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget/SnappyHexMeshWidget.cpp \
-#    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget/BoundaryConditionsWidget.cpp \
-#    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget/TurbulenceModelingWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget/BoundaryConditionsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget/TurbulenceModelingWidget.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -71,8 +71,8 @@ HEADERS  += \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget/SnappyHexMeshWidget.h \
-#    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget/BoundaryConditionsWidget.h \
-#    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget/TurbulenceModelingWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget/BoundaryConditionsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget/TurbulenceModelingWidget.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \

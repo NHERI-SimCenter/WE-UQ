@@ -40,6 +40,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "ModularPython.h"
 #include "QVector3D"
 #include "SnappyHexMeshWidget/SnappyHexMeshWidget.h"
+#include "BoundaryConditionsWidget/BoundaryConditionsWidget.h"
+#include "TurbulenceModelingWidget/TurbulenceModelingWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -263,11 +265,19 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     //Controls for snappyHexMesh
     snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
 
+    //Controle for turbulence modeling
+    turbulenceModeling = new TurbulenceModelingWidget(theRandomVariablesContainer);
+
+    //Controls for boundary conditions
+    boundaryConditions = new BoundaryConditionsWidget(theRandomVariablesContainer);
+
     mainLayout->addWidget(generalDescriptionGroup);
     mainLayout->addWidget(caseDirectoryGroup);
     mainLayout->addWidget(buildingAndDomainInformationGroup);
     mainLayout->addWidget(coordinateSystemGroup);
     mainLayout->addWidget(snappyHexMesh);
+    mainLayout->addWidget(turbulenceModeling);
+    mainLayout->addWidget(boundaryConditions);
 
     mainGroup->setLayout(mainLayout);
 

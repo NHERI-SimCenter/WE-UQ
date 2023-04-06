@@ -48,6 +48,8 @@ class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
 class SnappyHexMeshWidget;
+class BoundaryConditionsWidget;
+class TurbulenceModelingWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -155,6 +157,8 @@ private:
    QGridLayout  *mainLayout;
 
    SnappyHexMeshWidget  *snappyHexMesh;
+   BoundaryConditionsWidget  *boundaryConditions;
+   TurbulenceModelingWidget  *turbulenceModeling;
 
 
    RandomVariablesContainer *theRandomVariablesContainer;

@@ -167,7 +167,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     // Add general Options group
     QLabel *numCellsBetweenLevelsLabel = new QLabel("Number of Cells Between Levels:");
     QLabel *resolveFeatureAngleLabel = new QLabel("Feature Resolution Angle:");
-    QLabel *castellatedMeshLabel = new QLabel("Castellated Mesh:");
     QLabel *numProcessorsLabel = new QLabel("Number of Processors:");
     QLabel *degreesLabel = new QLabel("degrees");
 
@@ -175,7 +174,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     numCellsBetweenLevels->setSingleStep(1);
     numCellsBetweenLevels->setMinimum(1);
     numCellsBetweenLevels->setValue(5);
-    numCellsBetweenLevels->setToolTip("Number of buffer layers between different levels.");
+    numCellsBetweenLevels->setToolTip("Number of buffer layers between different refinment levels.");
 
     resolveFeatureAngle = new QSpinBox();
     resolveFeatureAngle->setSingleStep(10);

@@ -1,5 +1,5 @@
-#ifndef SNAPPY_HEX_MESH_WIDGET_H
-#define SNAPPY_HEX_MESH_WIDGET_H
+#ifndef TURBULENCE_MODELINNG_WIDGET_H
+#define TURBULENCE_MODELINNG_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -45,20 +45,22 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
+class QStackedWidget;
 class QVBoxLayout;
 class QSpinBox;
 class QLineEdit;
+class QTextEdit;
 class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
 
-class SnappyHexMeshWidget: public SimCenterAppWidget
+class TurbulenceModelingWidget: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~SnappyHexMeshWidget();
+    explicit TurbulenceModelingWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~TurbulenceModelingWidget();
 
 //    bool outputToJSON(QJsonObject &rvObject);
 //    bool inputFromJSON(QJsonObject &rvObject);
@@ -70,28 +72,30 @@ signals:
 
 public slots:
    void clear(void);
-//   void onBuildingDimensionChanged(double width, double depth, double area);
-//   void onNumFloorsOrHeightChanged(int numFloor, double height);
-
-//   void onRoofTypeChanged(int type);
+   void turbModelTypeChanged(const QString &arg1);
+   void RANSModelTypeChanged(const QString &arg1);
+   void LESModelTypeChanged(const QString &arg1);
 
 private:
    double breadth;
    double depth;
    double height;
 
-   QVBoxLayout  *layout;
-   QTabWidget   *snappyHexMeshTab;
+   QVBoxLayout      *layout;
 
-   QLineEdit    *xAxisNumCells;
-   QLineEdit    *yAxisNumCells;
-   QLineEdit    *zAxisNumCells;
-   QLineEdit    *xAxisMeshSize;
-   QLineEdit    *yAxisMeshSize;
-   QLineEdit    *zAxisMeshSize;
+   QComboBox        *turbModelOptions;
+   QComboBox        *RANSOptions;
+   QComboBox        *LESOptions;
+   QComboBox        *DESOptions;
 
-   QPushButton *calcBackgroundMesh;
+   QWidget          *RANSWidget;
+   QWidget          *DESWidget;
+   QWidget          *LESWidget;
 
+   QTextEdit        *RANSModelCoeffs;
+   QTextEdit        *LESModelCoeffs;
+   QTextEdit        *DESModelCoeffs;
+   QStackedWidget   *stackedTurbModelWidget;
 
 
 
@@ -99,4 +103,4 @@ private:
    QStringList varNamesAndValues;
 };
 
-#endif // LOW_RISE_TPU_H
+#endif // TURBULENCE_MODELINNG_WIDGET_H
