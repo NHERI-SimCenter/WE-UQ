@@ -81,7 +81,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     QGridLayout* boundaryConditionsLayout = new QGridLayout(boundaryConditionsGroup);
     boundaryConditionsGroup->setLayout(boundaryConditionsLayout);
 
-    QLabel *patchNameLabel = new QLabel("Patch Name");
+    QLabel *patchNameLabel = new QLabel("Face Name");
     QLabel *boundaryConditionTypeLabel = new QLabel("Boundary Condition");
 
     patchNameLabel->setStyleSheet("font-weight: bold; color: black");
@@ -103,7 +103,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     groundBCType->addItem("nutkAtmRoughWallFunction");
 
     outletBCType  = new QComboBox();
-    outletBCType->addItem("FixedPressureOutlet");
+    outletBCType->addItem("zeroPressureOutlet");
 
     sidesBCType  = new QComboBox();
     sidesBCType->addItem("Slip");
@@ -124,7 +124,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     domainButton->setFixedSize(pixmapFlat.rect().size()*.25);
 
 //    boundaryConditionsLayout->addWidget(domainButton,1,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-    boundaryConditionsLayout->addWidget(domainButton,0,0,6,1); // Qt::AlignVCenter
+    boundaryConditionsLayout->addWidget(domainButton,0,0,6,1, Qt::AlignRight); // Qt::AlignVCenter
 
 
     boundaryConditionsLayout->addWidget(patchNameLabel, 0, 1, Qt::AlignRight);
@@ -149,6 +149,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     boundaryConditionsLayout->addWidget(sidesBCType, 4, 2);
     boundaryConditionsLayout->addWidget(topBCType, 5, 2);
 
+    boundaryConditionsLayout->setHorizontalSpacing(25);
 
 
     //-----------------------------------------------------------------
