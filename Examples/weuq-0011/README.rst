@@ -172,4 +172,6 @@ After the CFD model is set up, the next step is to run the CFD simulations. Pres
 
    Post-processing tools for visualizing and validating the inflow turbulence profiles.
 
+To further process the velocity profiles downstream, users can utilize the OpenFOAM embedded sampling functions such as *probe* to gather the velocity data and validate the profile. Additionally, users can refer to the `Jupyter Notebooks project <https://www.designsafe-ci.org/data/browser/public/designsafe.storage.published/PRJ-3918/>`_ published in DesignSafe to visualize and plot the velocity profile downstream.
+
 .. [#Catarelli2020] Catarelli, R. A., Fernández-Cabán, P. L., Masters, F. J., Bridge, J. A., Gurley, K. R., & Matyas, C. J. (2020). Automated terrain generation for precise atmospheric boundary layer simulation in the wind tunnel. Journal of Wind Engineering and Industrial Aerodynamics, 207, 104276.
