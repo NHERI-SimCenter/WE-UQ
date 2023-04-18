@@ -46,14 +46,17 @@ class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
 class QVBoxLayout;
+class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 class QLineEdit;
 class LineEditRV;
 class QTabWidget;
+class QTableWidget;
 class QGroupBox;
 class QPushButton;
 class IsolatedBuildingCFD;
+class QDoubleSpinBox;
 
 class SnappyHexMeshWidget: public SimCenterAppWidget
 {
@@ -74,10 +77,9 @@ signals:
 
 public slots:
    void clear(void);
-//   void onBuildingDimensionChanged(double width, double depth, double area);
-//   void onNumFloorsOrHeightChanged(int numFloor, double height);
-
-//   void onRoofTypeChanged(int type);
+   void onAddRegionClicked();
+   void onRemoveRegionClicked();
+//   void onCheckRegionClicked();
 
 private:
    double breadth;
@@ -91,6 +93,10 @@ private:
 
    QGroupBox    *generalOptionsGroup;
    QGridLayout  *generalOptionsLayout;
+
+
+   QGroupBox    *runMeshGroup;
+   QHBoxLayout  *runMeshLayout;
 
    //Blockground mesh
    QLineEdit    *xAxisNumCells;
@@ -109,14 +115,25 @@ private:
    QSpinBox     *numProcessors;
 
    //Regional refinements
+   QTableWidget *refinementBoxesTable;
 
    //Surface refinments
-   QCheckBox* addSurfaceRefinement;
-   QComboBox* surfaceName;
-   QSpinBox* surfaceRefinementLevel ;
-   QLineEdit* refinementDistance;
+   QCheckBox    *addSurfaceRefinement;
+   QComboBox    *surfaceName;
+   QSpinBox     *surfaceRefinementLevel ;
+   QLineEdit    *surfaceRefinementDistance;
 
-   QPushButton *calcBackgroundMesh;
+   //Add edge refinment
+   QCheckBox    *addEdgeRefinement;
+   QSpinBox     *edgeRefinementLevel;
+
+   //Add prism layers
+   QCheckBox        *addPrismLayers;
+   QSpinBox         *numberOfPrismLayers;
+   QDoubleSpinBox   *prismLayerExpantionRatio;
+   QDoubleSpinBox   *finalPrismLayerThickness;
+
+   QPushButton  *calcBackgroundMesh;
    QTabWidget   *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

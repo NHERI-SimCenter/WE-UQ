@@ -47,5 +47,6 @@
         <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.svg</file>
         <file>Resources/IsolatedBuildingCFD/boundaryConditions.png</file>
         <file>Resources/IsolatedBuildingCFD/boundaryConditions.svg</file>
+        <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png</file>
     </qresource>
 </RCC>

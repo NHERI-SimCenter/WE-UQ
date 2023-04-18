@@ -1,0 +1,75 @@
+{
+    "EventClassification": "Wind",
+    "addEdgeRefinement": true,
+    "addPrismLayers": true,
+    "addSurfaceRefinement": true,
+    "buildingHeight": 182.88,
+    "buildingSTLName": "building",
+    "domainHeight": 5,
+    "domainLength": 20,
+    "domainWidth": 10,
+    "edgeRefinementLevel": 5,
+    "fetchLength": 5,
+    "finalPrismLayerThickness": 0.5,
+    "geometricScale": 400,
+    "lengthUnit": "m",
+    "numCellsBetweenLevels": 5,
+    "numProcessors": 4,
+    "numberOfPrismLayers": 5,
+    "origin": [
+        0,
+        0,
+        0
+    ],
+    "prismLayerExpantionRatio": 1.15,
+    "prismLayerSurfaceName": "building",
+    "refinementBoxes": [
+        [
+            "Box1",
+            1,
+            -6.6,
+            -4,
+            0,
+            8.75,
+            -4,
+            6.6
+        ],
+        [
+            "Box2",
+            2,
+            -6.6,
+            -3,
+            0,
+            8.75,
+            -3,
+            6.6
+        ],
+        [
+            "Box3",
+            3,
+            -6.6,
+            -1.75,
+            0,
+            8.75,
+            -1.75,
+            6.6
+        ],
+        [
+            "Box4",
+            4,
+            -6.6,
+            -1,
+            0,
+            8.75,
+            -1,
+            6.6
+        ]
+    ],
+    "refinementEdgeName": "building",
+    "refinementSurfaceName": "building",
+    "relativeDimensions": true,
+    "resolveFeatureAngle": 30,
+    "surfaceRefinementDistance": 0.5,
+    "surfaceRefinementLevel": 5,
+    "type": "IsolatedBuildingCFD"
+}

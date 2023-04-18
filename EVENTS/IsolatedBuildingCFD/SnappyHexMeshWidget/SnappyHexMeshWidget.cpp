@@ -54,7 +54,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RandomVariablesContainer.h>
 #include <QRadioButton>
 #include <QButtonGroup>
-
+#include <QMessageBox>
 #include <QComboBox>
 #include <QSpinBox>
 #include <QGroupBox>
@@ -70,84 +70,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
-//    femSpecific = 0;
     int windowWidth = 800;
 
     layout = new QVBoxLayout();
 
-//    QPushButton *theLogo = new QPushButton("");
-////    QPixmap pixmap(":/Resources/LowRise/IsolatedBuildingCFD.png");
-////    theLogo->setIcon(pixmap);
-////    theLogo->setIconSize(pixmap.rect().size()*.5);
-////    theLogo->setFixedSize(pixmap.rect().size()*.5);
-////    width = pixmap.rect().size().width();
-
-//    windTunnelGeometryBox = new QGroupBox("Wind Tunnel Building Geometry", this);
-//    windTunnelGeometryLayout = new QGridLayout(); //QVBoxLayout();
-
-//    //QVBoxLayout *layout1 = new QVBoxLayout();
-//    theBuildingButton = new QPushButton();
-//    QPixmap pixmapFlat(":/Resources/LowRise/lowriseFlat.png");
-
-//    theBuildingButton->setIcon(pixmapFlat);
-//    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.5);
-//    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.5);
-//    windTunnelGeometryLayout->addWidget(theBuildingButton,0,0,5,1,Qt::AlignVCenter);
-
-//    QLabel *labelRoofType = new QLabel("Roof Type");
-//    roofType = new QComboBox;
-//    roofType->addItem("Flat");
-    //roofType->addItem("Gable");
-
-//    QLabel *labelHeightBreadth = new QLabel("Height/Width");
-//    heightBreadth = new QComboBox;
-//    heightBreadth->addItem("1:4");
-//    heightBreadth->addItem("2:4");
-//    heightBreadth->addItem("3:4");
-//    heightBreadth->addItem("4:4");
-
-//    QLabel *labelDepthBreadth = new QLabel("Depth/Width");
-//    depthBreadth = new QComboBox;
-//    depthBreadth->addItem("2:2");
-//    depthBreadth->addItem("3:2");
-//    depthBreadth->addItem("5:2");
-
-//    QLabel *labelPitch = new QLabel("Roof Pitch");
-//    pitch = new QComboBox;
-//    pitch->addItem("0.0");
-
-//    QLabel *labelIncidenceAngle = new QLabel("Angle of Incidence");
-//    QLabel *angleUnit = new QLabel("degrees");
-//    incidenceAngle = new QSpinBox;
-//    incidenceAngle->setRange(0, 90);
-//    incidenceAngle->setSingleStep(15);
-
-//    windTunnelGeometryLayout->addWidget(labelRoofType,0,1);
-//    windTunnelGeometryLayout->addWidget(roofType,0,3);
-
-//    windTunnelGeometryLayout->addWidget(labelHeightBreadth,1,1);
-//    windTunnelGeometryLayout->addWidget(heightBreadth,1,3);
-
-//    windTunnelGeometryLayout->addWidget(labelDepthBreadth,2,1);
-//    windTunnelGeometryLayout->addWidget(depthBreadth,2,3);
-
-//    windTunnelGeometryLayout->addWidget(labelPitch,3,1);
-//    windTunnelGeometryLayout->addWidget(pitch,3,3);
-
-//    windTunnelGeometryLayout->addWidget(labelIncidenceAngle, 4, 1);
-//    windTunnelGeometryLayout->addWidget(incidenceAngle, 4, 3);
-//    windTunnelGeometryLayout->addWidget(angleUnit, 4, 4);
-
-//    //windTunnelGeometryLayout->addWidget(dummyLabel,6,1);
-//    windTunnelGeometryBox->setLayout(windTunnelGeometryLayout);
-
-    /*---------------------------------------------------------------------------*\
-        Controls for snappyHexMesh
-    \*---------------------------------------------------------------------------*/
-
-    //snappyHexMeshBox = new QGroupBox("SnappyHexMesh", this);
-
-//    QWidget* snappyHexMeshGroup = new QWidget(this);
     int widgetGap = 25;
 
     snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
@@ -156,7 +82,10 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     generalOptionsGroup = new QGroupBox("General Options", this);
     generalOptionsLayout = new QGridLayout();
 
-    snappyHexMeshGroup->setLayout(snappyHexMeshLayout);
+    runMeshGroup = new QGroupBox("Run Mesh", this);
+    runMeshLayout = new QHBoxLayout();
+    runMeshGroup->setLayout(runMeshLayout);
+
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
@@ -322,57 +251,57 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     int numCols = 8;
     int numRows = 4;
 
-    QTableWidget* RefinementBoxesTable = new QTableWidget(numRows, numCols);
+    refinementBoxesTable = new QTableWidget(numRows, numCols);
 
     QStringList headerTitles = {"Name", "Level", "X-min", "Y-min", "Z-min", "X-max", "Y-max", "Z-max"};
-    RefinementBoxesTable->setHorizontalHeaderLabels(headerTitles);
+    refinementBoxesTable->setHorizontalHeaderLabels(headerTitles);
 
     for (int i=0; i < numCols; i++)
     {
-       RefinementBoxesTable->setColumnWidth(i, RefinementBoxesTable->size().width()/numCols);
+       refinementBoxesTable->setColumnWidth(i, refinementBoxesTable->size().width()/numCols);
 
        for (int j=0; j < numRows; j++)
        {
-        RefinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
+        refinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
        }
     }
     for (int i=0; i < numRows; i++)
     {
-        RefinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
-        RefinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
+        refinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
+        refinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
     }
 
     //Box # 1
-    RefinementBoxesTable->item(0, 2)->setText("-6.60");
-    RefinementBoxesTable->item(0, 3)->setText("-4.00");
-    RefinementBoxesTable->item(0, 4)->setText("0.00");
-    RefinementBoxesTable->item(0, 5)->setText("8.75");
-    RefinementBoxesTable->item(0, 6)->setText("-4.00");
-    RefinementBoxesTable->item(0, 7)->setText("6.60");
+    refinementBoxesTable->item(0, 2)->setText("-6.60");
+    refinementBoxesTable->item(0, 3)->setText("-4.00");
+    refinementBoxesTable->item(0, 4)->setText("0.00");
+    refinementBoxesTable->item(0, 5)->setText("8.75");
+    refinementBoxesTable->item(0, 6)->setText("-4.00");
+    refinementBoxesTable->item(0, 7)->setText("6.60");
 
     //Box # 2
-    RefinementBoxesTable->item(1, 2)->setText("-6.60");
-    RefinementBoxesTable->item(1, 3)->setText("-3.00");
-    RefinementBoxesTable->item(1, 4)->setText("0.00");
-    RefinementBoxesTable->item(1, 5)->setText("8.75");
-    RefinementBoxesTable->item(1, 6)->setText("-3.00");
-    RefinementBoxesTable->item(1, 7)->setText("6.60");
+    refinementBoxesTable->item(1, 2)->setText("-6.60");
+    refinementBoxesTable->item(1, 3)->setText("-3.00");
+    refinementBoxesTable->item(1, 4)->setText("0.00");
+    refinementBoxesTable->item(1, 5)->setText("8.75");
+    refinementBoxesTable->item(1, 6)->setText("-3.00");
+    refinementBoxesTable->item(1, 7)->setText("6.60");
 
     //Box # 3
-    RefinementBoxesTable->item(2, 2)->setText("-6.60");
-    RefinementBoxesTable->item(2, 3)->setText("-1.75");
-    RefinementBoxesTable->item(2, 4)->setText("0.00");
-    RefinementBoxesTable->item(2, 5)->setText("8.75");
-    RefinementBoxesTable->item(2, 6)->setText("-1.75");
-    RefinementBoxesTable->item(2, 7)->setText("6.60");
+    refinementBoxesTable->item(2, 2)->setText("-6.60");
+    refinementBoxesTable->item(2, 3)->setText("-1.75");
+    refinementBoxesTable->item(2, 4)->setText("0.00");
+    refinementBoxesTable->item(2, 5)->setText("8.75");
+    refinementBoxesTable->item(2, 6)->setText("-1.75");
+    refinementBoxesTable->item(2, 7)->setText("6.60");
 
     //Box # 4
-    RefinementBoxesTable->item(3, 2)->setText("-6.60");
-    RefinementBoxesTable->item(3, 3)->setText("-1.00");
-    RefinementBoxesTable->item(3, 4)->setText("0.00");
-    RefinementBoxesTable->item(3, 5)->setText("8.75");
-    RefinementBoxesTable->item(3, 6)->setText("-1.00");
-    RefinementBoxesTable->item(3, 7)->setText("6.60");
+    refinementBoxesTable->item(3, 2)->setText("-6.60");
+    refinementBoxesTable->item(3, 3)->setText("-1.00");
+    refinementBoxesTable->item(3, 4)->setText("0.00");
+    refinementBoxesTable->item(3, 5)->setText("8.75");
+    refinementBoxesTable->item(3, 6)->setText("-1.00");
+    refinementBoxesTable->item(3, 7)->setText("6.60");
 
     QPushButton* addRegionButton = new QPushButton("Add Region");
     QPushButton* removeRegionButton = new QPushButton("Remove Region");
@@ -385,7 +314,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     addRemoveRegionLayout->addWidget(removeRegionButton);
     addRemoveRegionLayout->addWidget(checkRegionsButton);
 
-    regionalRefinementLayout->addWidget(RefinementBoxesTable,0,0);
+    connect(addRegionButton,SIGNAL(clicked()), this, SLOT(onAddRegionClicked()));
+    connect(removeRegionButton,SIGNAL(clicked()), this, SLOT(onRemoveRegionClicked()));
+
+
+    regionalRefinementLayout->addWidget(refinementBoxesTable,0,0);
     regionalRefinementLayout->addWidget(addRemoveRegionGroup,1,0);
 
 
@@ -402,22 +335,22 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     QLabel *addSurfaceRefinementLabel = new QLabel("Add Surface Refinement:");
     QLabel *surfaceNameLabel = new QLabel("Surface Name:");
-    QLabel *RefinementLevelLabel = new QLabel("Refinement Level:");
-    QLabel *RefinementDistanceLabel = new QLabel("Refinement Distance:");
+    QLabel *refinementLevelLabel = new QLabel("Refinement Level:");
+    QLabel *refinementDistanceLabel = new QLabel("Refinement Distance:");
 
     addSurfaceRefinement = new QCheckBox();
     addSurfaceRefinement->setChecked(true);
 
     surfaceName  = new QComboBox();
-    surfaceName->addItem("Building Surface");
-    surfaceName->addItem("Ground Surface");
+    surfaceName->addItem("Building");
+    surfaceName->addItem("Ground");
 
     surfaceRefinementLevel = new QSpinBox();
     surfaceRefinementLevel->setRange(5, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
-    refinementDistance = new QLineEdit();
-    refinementDistance->setText("0.5");
+    surfaceRefinementDistance = new QLineEdit();
+    surfaceRefinementDistance->setText("0.5");
 
     QPushButton *surfaceMeshDemoView = new QPushButton("");
     QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
@@ -427,13 +360,13 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     surfaceRefinementLayout->addWidget(addSurfaceRefinementLabel, 0, 0);
     surfaceRefinementLayout->addWidget(surfaceNameLabel, 1, 0);
-    surfaceRefinementLayout->addWidget(RefinementLevelLabel, 2, 0);
-    surfaceRefinementLayout->addWidget(RefinementDistanceLabel, 3, 0);
+    surfaceRefinementLayout->addWidget(refinementLevelLabel, 2, 0);
+    surfaceRefinementLayout->addWidget(refinementDistanceLabel, 3, 0);
 
     surfaceRefinementLayout->addWidget(addSurfaceRefinement, 0, 1);
     surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
     surfaceRefinementLayout->addWidget(surfaceRefinementLevel, 2, 1);
-    surfaceRefinementLayout->addWidget(refinementDistance, 3, 1);
+    surfaceRefinementLayout->addWidget(surfaceRefinementDistance, 3, 1);
 
     surfaceRefinementLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
@@ -454,13 +387,13 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     QLabel *edgeNameLabel = new QLabel("Refinement Edge:");
     QLabel *edgeRefinementLevelLabel = new QLabel("Refinement Level:");
 
-    QCheckBox* addEdgeRefinement = new QCheckBox();
+    addEdgeRefinement = new QCheckBox();
     addEdgeRefinement->setChecked(true);
 
     QComboBox* edgeName  = new QComboBox();
     edgeName->addItem("Building Edges");
 
-    QSpinBox* edgeRefinementLevel = new QSpinBox();
+    edgeRefinementLevel = new QSpinBox();
     edgeRefinementLevel->setRange(5, 100);
     edgeRefinementLevel->setSingleStep(1);
 
@@ -494,25 +427,29 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     QLabel *addPrismLayersLabel = new QLabel("Add Prism Layers:");
     QLabel *surfaceNamePLLabel = new QLabel("Surface Name:");
-    QLabel *numberOfLayersLabel = new QLabel("Number of Layers:");
-    QLabel *expantionRatioLabel = new QLabel("Expantion Ratio:");
-    QLabel *lastLayerThicknessLabel = new QLabel("Last Layer Thickness:");
+    QLabel *numberOfPrismLayersLabel = new QLabel("Number of Layers:");
+    QLabel *prismLayerExpantionRatioLabel = new QLabel("Expantion Ratio:");
+    QLabel *finalLayerThicknessLabel = new QLabel("Final Layer Thickness:");
 
-    QCheckBox* addPrismLayers = new QCheckBox();
+    addPrismLayers = new QCheckBox();
     addPrismLayers->setChecked(true);
 
     QComboBox* prismLayerSurfaceName  = new QComboBox();
     prismLayerSurfaceName->addItem("Building Surface");
 
-    QSpinBox* numberOfLayers = new QSpinBox();
-    numberOfLayers->setRange(5, 100);
-    numberOfLayers->setSingleStep(1);
+    numberOfPrismLayers = new QSpinBox();
+    numberOfPrismLayers->setRange(5, 100);
+    numberOfPrismLayers->setSingleStep(1);
 
-    QLineEdit* expantionRatio = new QLineEdit();
-    expantionRatio->setText("1.15");
+    prismLayerExpantionRatio = new QDoubleSpinBox();
+    prismLayerExpantionRatio->setRange(1.0, 1.5);
+    prismLayerExpantionRatio->setValue(1.15);
+    prismLayerExpantionRatio->setSingleStep(0.05);
 
-    QLineEdit* lastLayerThickness = new QLineEdit();
-    lastLayerThickness->setText("0.5");
+    finalPrismLayerThickness = new QDoubleSpinBox();
+    finalPrismLayerThickness->setRange(0.0, 1.0);
+    finalPrismLayerThickness->setValue(0.5);
+    finalPrismLayerThickness->setSingleStep(0.1);
 
     QPushButton *prismLayersDemoView = new QPushButton("");
     QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png");
@@ -522,21 +459,41 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     prismLayerLayout->addWidget(addPrismLayersLabel, 0, 0);
     prismLayerLayout->addWidget(surfaceNamePLLabel, 1, 0);
-    prismLayerLayout->addWidget(numberOfLayersLabel, 2, 0);
-    prismLayerLayout->addWidget(expantionRatioLabel, 3, 0);
-    prismLayerLayout->addWidget(lastLayerThicknessLabel, 4, 0);
+    prismLayerLayout->addWidget(numberOfPrismLayersLabel, 2, 0);
+    prismLayerLayout->addWidget(prismLayerExpantionRatioLabel, 3, 0);
+    prismLayerLayout->addWidget(finalLayerThicknessLabel, 4, 0);
 
     prismLayerLayout->addWidget(addPrismLayers, 0, 1);
     prismLayerLayout->addWidget(prismLayerSurfaceName, 1, 1);
-    prismLayerLayout->addWidget(numberOfLayers, 2, 1);
-    prismLayerLayout->addWidget(expantionRatio, 3, 1);
-    prismLayerLayout->addWidget(lastLayerThickness, 4, 1);
+    prismLayerLayout->addWidget(numberOfPrismLayers, 2, 1);
+    prismLayerLayout->addWidget(prismLayerExpantionRatio, 3, 1);
+    prismLayerLayout->addWidget(finalPrismLayerThickness, 4, 1);
 
     prismLayerLayout->addWidget(prismLayersDemoView,0,2,5,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
     prismLayerWidget->setLayout(prismLayerLayout);
     snappyHexMeshTab->addTab(prismLayerWidget, "Prism Layers");
+
+
+    //=============================================================================
+
+    QPushButton *runBlockMeshButton = new QPushButton("Run blockMesh");
+    QPushButton *runSnappyMeshButton = new QPushButton("Run snappyHexMesh");
+    QPushButton *checkMeshButton = new QPushButton("Run checkMesh");
+
+    runMeshLayout->addWidget(runBlockMeshButton);
+    runMeshLayout->addWidget(runSnappyMeshButton);
+    runMeshLayout->addWidget(checkMeshButton);
+
+    snappyHexMeshLayout->addWidget(runMeshGroup);
+
+
+//    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onGenerateGeometryClicked()));
+//    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
+
+
+    //=============================================================================
 
     layout->addWidget(snappyHexMeshGroup);
 
@@ -559,199 +516,23 @@ SnappyHexMeshWidget::~SnappyHexMeshWidget()
 
 }
 
-//void
-//SnappyHexMesh::onRoofTypeChanged(int roofSelection) {
-
-//    // remove old pitch & delete
-//    windTunnelGeometryLayout->removeWidget(pitch);
-//    delete pitch;
-
-
-//    // create new one
-//    if (roofSelection == 0) {
-
-//        pitch = new QComboBox;
-//        pitch->addItem("0.0");
-
-//        QPixmap pixmapFlat(":/Resources/LowRise/lowriseFlat.png");
-//        theBuildingButton->setIcon(pixmapFlat);
-
-//    } else {
-
-//        pitch = new QComboBox;
-//        pitch->addItem("4.8");
-//        pitch->addItem("9.4");
-//        pitch->addItem("14.0");
-//        pitch->addItem("18.4");
-//        pitch->addItem("21.8");
-//        pitch->addItem("26.7");
-//        pitch->addItem("30.0");
-//        pitch->addItem("45.0");
-
-//        QPixmap pixmapGable(":/Resources/LowRise/lowriseGable.png");
-//        theBuildingButton->setIcon(pixmapGable);
-
-//    }
-//    // add
-//    windTunnelGeometryLayout->addWidget(pitch,3,3);
-//    qDebug() << "ADDED NEW";
-//}
-
 void SnappyHexMeshWidget::clear(void)
 {
 
 }
 
+void SnappyHexMeshWidget::onAddRegionClicked()
+{
+    refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
+}
 
 
-//bool
-//SnappyHexMesh::outputToJSON(QJsonObject &jsonObject)
-//{
-//    // just need to send the class type here.. type needed in object in case user screws up
-//    jsonObject["type"]="SnappyHexMesh";
+void SnappyHexMeshWidget::onRemoveRegionClicked()
+{
+    QItemSelectionModel *selected = refinementBoxesTable->selectionModel();
 
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["roofType"]= roofType->currentText();
-//    jsonObject["heightBreadth"]= heightBreadth->currentText();
-//    jsonObject["depthBreadth"]= depthBreadth->currentText();
-//    jsonObject["pitch"]= pitch->currentText();
-//    jsonObject["incidenceAngle"] = incidenceAngle->value();
-
-//    //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
-//   windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
-
-//    return true;
-//}
-
-
-//bool
-//SnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
-//{
-//    this->clear();
-
-//    if (jsonObject.contains("roofType")) {
-//      QJsonValue theValue = jsonObject["roofType"];
-//      QString selection = theValue.toString();
-//      roofType->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("heightBreadth")) {
-//      QJsonValue theValue = jsonObject["heightBreadth"];
-//      QString selection = theValue.toString();
-//      heightBreadth->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("depthBreadth")) {
-//      QJsonValue theValue = jsonObject["dethBreadth"];
-//      QString selection = theValue.toString();
-//      depthBreadth->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("pitch")) {
-//      QJsonValue theValue = jsonObject["pitch"];
-//      QString selection = theValue.toString();
-//      pitch->setCurrentText(selection);
-//    } else
-//      return false;
-
-
-//    if (jsonObject.contains("windSpeed")) {
-//      /*
-//      QJsonValue theValue = jsonObject["windSpeed"];
-//      double speed = theValue.toDouble();
-//      windSpeed->setText(QString::number(speed));
-//      */
-//      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("incidenceAngle")) {
-//      QJsonValue theValue = jsonObject["incidenceAngle"];
-//      int angle = theValue.toInt();
-//      incidenceAngle->setValue(angle);
-//    } else
-//      return false;
-
-
-//    return true;
-//}
-
-//bool
-//SnappyHexMesh::outputAppDataToJSON(QJsonObject &jsonObject) {
-
-//    //
-//    // per API, need to add name of application to be called in AppLication
-//    // and all data to be used in ApplicationDate
-//    //
-
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["Application"] = "SnappyHexMesh";
-//    QJsonObject dataObj;
-//    jsonObject["ApplicationData"] = dataObj;
-
-//    return true;
-//}
-//bool
-//SnappyHexMesh::inputAppDataFromJSON(QJsonObject &jsonObject) {
-
-//    Q_UNUSED(jsonObject);
-//    return true;
-//}
-
-
-// bool
-// SnappyHexMesh::copyFiles(QString &destDir) {
-
-//     QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-//             + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
-//             + QString("SnappyHexMesh") + QDir::separator() + QString("SnappyHexMesh.py");
-
-//     bool result = this->copyFile(name1, destDir);
-//     if (result == false) {
-//         QString errorMessage; errorMessage = "SnappyHexMesh - failed to copy file: " + name1 + "to: " + destDir;
-//         emit sendFatalMessage(errorMessage);
-//         qDebug() << errorMessage;
-//     }
-//     return result;
-// }
-
-// void
-// SnappyHexMesh::onBuildingDimensionChanged(double w, double d, double area){
-//     Q_UNUSED(area);
-//     breadth = w;
-//     depth = d;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
-
-//     double ratioDtoB = depth/breadth;
-//     if (ratioDtoB < 1.25)
-//          depthBreadth->setCurrentIndex(0);
-//     else if (ratioDtoB < 2.0)
-//         depthBreadth->setCurrentIndex(1);
-//     else
-//         depthBreadth->setCurrentIndex(2);
-// }
-// void
-// SnappyHexMesh::onNumFloorsOrHeightChanged(int numFloor, double h){
-//     Q_UNUSED(numFloor);
-//     height = h;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
-// }
+    if(selected->hasSelection())
+    {
+        refinementBoxesTable->removeRow(selected->selectedRows()[0].row());
+    }
+}

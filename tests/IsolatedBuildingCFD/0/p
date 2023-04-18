@@ -31,12 +31,27 @@ boundaryField
         value           uniform 0;
     }
 
-    wall
+    ground 
+    {
+        type            zeroGradient;
+    }
+    top 
+    {
+        type            zeroGradient;
+    }
+    front 
+    {
+        type            symmetry;
+    }
+    back 
+    {
+        type            symmetry;
+    }
+    building 
     {
         type            zeroGradient;
     }
 
-    #includeEtc "caseDicts/setConstraintTypes"
 }
 
 // ************************************************************************* //

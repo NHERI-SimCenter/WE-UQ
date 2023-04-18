@@ -33,12 +33,29 @@ boundaryField
         value           uniform (0 0 0);
     }
 
-    wall
+    ground 
     {
         type            noSlip;
     }
+    
+    top    
+    {
+        type            slip;
+    }
 
-    #includeEtc "caseDicts/setConstraintTypes"
+    front    
+    {
+        type            symmetry;
+    }
+    back    
+    {
+        type            symmetry;
+    }
+    
+    building 
+    {
+        type            noSlip;
+    }
 }
 
 // ************************************************************************* //

@@ -99,21 +99,21 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     inletBCType->addItem("TInf");
 
     groundBCType  = new QComboBox();
-    groundBCType->addItem("No-slip");
+    groundBCType->addItem("noSlip");
     groundBCType->addItem("nutkAtmRoughWallFunction");
 
     outletBCType  = new QComboBox();
     outletBCType->addItem("zeroPressureOutlet");
 
     sidesBCType  = new QComboBox();
-    sidesBCType->addItem("Slip");
-    sidesBCType->addItem("Symmetry");
-    sidesBCType->addItem("No-slip");
+    sidesBCType->addItem("slip");
+    sidesBCType->addItem("symmetry");
+    sidesBCType->addItem("noSlip");
 
     topBCType  = new QComboBox();
-    topBCType->addItem("Slip");
-    topBCType->addItem("Symmetry");
-    topBCType->addItem("No-slip");
+    topBCType->addItem("slip");
+    topBCType->addItem("symmetry");
+    topBCType->addItem("noSlip");
 
 
     QPushButton* domainButton = new QPushButton();
@@ -154,12 +154,12 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
 
     //-----------------------------------------------------------------
 
-    // Add regional refinment (box refinment) Tab
-    QWidget* regionalRefinmentWidget = new QWidget();
-    QGridLayout* regionalRefinmentLayout = new QGridLayout(regionalRefinmentWidget);
+//    // Add regional refinment (box refinment) Tab
+//    QWidget* regionalRefinmentWidget = new QWidget();
+//    QGridLayout* regionalRefinmentLayout = new QGridLayout(regionalRefinmentWidget);
 
-    int numCols = 8;
-    int numRows = 4;
+//    int numCols = 8;
+//    int numRows = 4;
 
 
 

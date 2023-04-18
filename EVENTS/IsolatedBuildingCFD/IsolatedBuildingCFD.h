@@ -50,6 +50,7 @@ class QGridLayout;
 class SnappyHexMeshWidget;
 class BoundaryConditionsWidget;
 class TurbulenceModelingWidget;
+class SimCenterVTKRenderingWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -59,7 +60,6 @@ class LineEditRV;
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
-
 
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
@@ -94,8 +94,7 @@ public slots:
    void onNumFloorsOrHeightChanged(int numFloor, double height);
    void onGenerateGeometryClicked();
    void onRunBlockMeshClicked();
-
-   void onRoofTypeChanged(int type);
+   void onRunSnappyHexMeshClicked();
 
 private:
    double buildingWidth;
@@ -107,7 +106,19 @@ private:
    double domainHeight;
    double fetchDistance;
 
-   QVBoxLayout  *layout;
+
+   QHBoxLayout  *mainWindowLayout;
+
+   QVBoxLayout  *inputWindowLayout;
+   QGroupBox    *inputWindowGroup;
+
+   QVBoxLayout  *visWindowLayout;
+   QGroupBox    *visWindowGroup;
+//   vtkSmartPointer<vtkQtTableView> visQVtkTableView; //vtkTableView object
+//   QVTKRenderWidget *visQVtkWidget;// rendering object
+//   QWidget *visQWidget; //QWidget to be promoted
+
+
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
 
@@ -153,10 +164,11 @@ private:
    QWidget      *buildingAndDomainInformationGroup;
    QGridLayout  *buildingAndDomainInformationLayout;
 
-   QWidget      *mainGroup;
-   QGridLayout  *mainLayout;
+   QWidget      *inputFormsGroup;
+   QGridLayout  *inputFormsLayout;
 
    SnappyHexMeshWidget  *snappyHexMesh;
+   SimCenterVTKRenderingWidget *visWidget;
    BoundaryConditionsWidget  *boundaryConditions;
    TurbulenceModelingWidget  *turbulenceModeling;
 
