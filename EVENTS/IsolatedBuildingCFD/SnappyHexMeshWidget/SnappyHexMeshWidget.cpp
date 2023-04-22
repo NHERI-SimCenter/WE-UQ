@@ -36,6 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
+#include "IsolatedBuildingCFD/IsolatedBuildingCFD.h"
 #include "SnappyHexMeshWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
@@ -61,6 +62,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
+#include <QProcess>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
@@ -96,6 +101,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     // Add general Options group
     QLabel *numCellsBetweenLevelsLabel = new QLabel("Number of Cells Between Levels:");
     QLabel *resolveFeatureAngleLabel = new QLabel("Feature Resolution Angle:");
+    QLabel *runInParalellLabel = new QLabel("Run Mesh in Parallel:");
     QLabel *numProcessorsLabel = new QLabel("Number of Processors:");
     QLabel *degreesLabel = new QLabel("degrees");
 
@@ -116,14 +122,20 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 //    resolveFeatureAngle->setToolTip("Use castellated mesh or not angle to capture sharp angles.");
 
 
+    runInParallel = new QCheckBox();
+    runInParallel->setChecked(false);
+    runInParallel->setToolTip("Run snappyHexMesh in parallel or not.");
+
     numProcessors = new QSpinBox();
     numProcessors->setSingleStep(1);
     numProcessors->setValue(4);
     numProcessors->setRange(1, 8);
     numProcessors->setToolTip("Number of processors for snappyHexMesh.");
 
-//    generalOptionsLayout->addWidget(castellatedMeshLabel, 0, 0);
-//    generalOptionsLayout->addWidget(castellatedMesh, 0, 1);
+
+    numProcessorsLabel->setEnabled(runInParallel->isChecked());
+    numProcessors->setEnabled(runInParallel->isChecked());
+
 
     generalOptionsLayout->addWidget(numCellsBetweenLevelsLabel, 0, 0);
     generalOptionsLayout->addWidget(numCellsBetweenLevels, 0, 1);
@@ -132,8 +144,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     generalOptionsLayout->addWidget(resolveFeatureAngle, 1, 1);
     generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
 
-    generalOptionsLayout->addWidget(numProcessorsLabel, 0, 3);
-    generalOptionsLayout->addWidget(numProcessors, 0, 4);
+    generalOptionsLayout->addWidget(runInParalellLabel, 0, 3);
+    generalOptionsLayout->addWidget(runInParallel, 0, 4);
+
+    generalOptionsLayout->addWidget(numProcessorsLabel, 1, 3);
+    generalOptionsLayout->addWidget(numProcessors, 1, 4);
 
 //    generalOptionsLayout->setHorizontalSpacing(widgetGap);
 
@@ -171,17 +186,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     zAxisNumCells->setToolTip("Number of cells in z-direction");
 
 
-    xMeshGrading = new QSpinBox();
+    xMeshGrading = new QDoubleSpinBox();
     xMeshGrading->setSingleStep(1);
     xMeshGrading->setMinimum(1);
     xMeshGrading->setToolTip("Mesh grading in x-direction");
 
-    yMeshGrading = new QSpinBox();
+    yMeshGrading = new QDoubleSpinBox();
     yMeshGrading->setSingleStep(1);
     yMeshGrading->setMinimum(1);
     yMeshGrading->setToolTip("Mesh grading in y-direction");
 
-    zMeshGrading = new QSpinBox();
+    zMeshGrading = new QDoubleSpinBox();
     zMeshGrading->setSingleStep(1);
     zMeshGrading->setMinimum(1);
     zMeshGrading->setToolTip("Mesh grading in z-direction");
@@ -236,8 +251,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     backgroundMeshLayout->addWidget(blockMeshDemoView,1,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
-    QPushButton *blockMeshCalculate = new QPushButton("Calculate Mesh Size");
-    backgroundMeshLayout->addWidget(blockMeshCalculate,4,1,1,3, Qt::AlignRight);
+    calcBackgroundMesh = new QPushButton("Calculate Mesh Size");
+    backgroundMeshLayout->addWidget(calcBackgroundMesh,4,1,1,3, Qt::AlignRight);
 
     backgroundMeshWidget->setLayout(backgroundMeshLayout);
     snappyHexMeshTab->addTab(backgroundMeshWidget, "Background Mesh");
@@ -271,37 +286,45 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
         refinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
     }
 
+//    //Box # 1
+//    refinementBoxesTable->item(0, 2)->setText("-6.60");
+//    refinementBoxesTable->item(0, 3)->setText("-4.00");
+//    refinementBoxesTable->item(0, 4)->setText("0.00");
+//    refinementBoxesTable->item(0, 5)->setText("8.75");
+//    refinementBoxesTable->item(0, 6)->setText("4.00");
+//    refinementBoxesTable->item(0, 7)->setText("4.00");
+
     //Box # 1
     refinementBoxesTable->item(0, 2)->setText("-6.60");
-    refinementBoxesTable->item(0, 3)->setText("-4.00");
+    refinementBoxesTable->item(0, 3)->setText("-2.75");
     refinementBoxesTable->item(0, 4)->setText("0.00");
-    refinementBoxesTable->item(0, 5)->setText("8.75");
-    refinementBoxesTable->item(0, 6)->setText("-4.00");
-    refinementBoxesTable->item(0, 7)->setText("6.60");
+    refinementBoxesTable->item(0, 5)->setText("6.65");
+    refinementBoxesTable->item(0, 6)->setText("2.75");
+    refinementBoxesTable->item(0, 7)->setText("3.75");
 
     //Box # 2
     refinementBoxesTable->item(1, 2)->setText("-6.60");
-    refinementBoxesTable->item(1, 3)->setText("-3.00");
+    refinementBoxesTable->item(1, 3)->setText("-1.64");
     refinementBoxesTable->item(1, 4)->setText("0.00");
-    refinementBoxesTable->item(1, 5)->setText("8.75");
-    refinementBoxesTable->item(1, 6)->setText("-3.00");
-    refinementBoxesTable->item(1, 7)->setText("6.60");
+    refinementBoxesTable->item(1, 5)->setText("4.37");
+    refinementBoxesTable->item(1, 6)->setText("1.64");
+    refinementBoxesTable->item(1, 7)->setText("2.75");
 
     //Box # 3
-    refinementBoxesTable->item(2, 2)->setText("-6.60");
-    refinementBoxesTable->item(2, 3)->setText("-1.75");
+    refinementBoxesTable->item(2, 2)->setText("-0.77");
+    refinementBoxesTable->item(2, 3)->setText("-0.87");
     refinementBoxesTable->item(2, 4)->setText("0.00");
-    refinementBoxesTable->item(2, 5)->setText("8.75");
-    refinementBoxesTable->item(2, 6)->setText("-1.75");
-    refinementBoxesTable->item(2, 7)->setText("6.60");
+    refinementBoxesTable->item(2, 5)->setText("2.19");
+    refinementBoxesTable->item(2, 6)->setText("0.87");
+    refinementBoxesTable->item(2, 7)->setText("1.75");
 
     //Box # 4
-    refinementBoxesTable->item(3, 2)->setText("-6.60");
-    refinementBoxesTable->item(3, 3)->setText("-1.00");
+    refinementBoxesTable->item(3, 2)->setText("-0.44");
+    refinementBoxesTable->item(3, 3)->setText("-0.55");
     refinementBoxesTable->item(3, 4)->setText("0.00");
-    refinementBoxesTable->item(3, 5)->setText("8.75");
-    refinementBoxesTable->item(3, 6)->setText("-1.00");
-    refinementBoxesTable->item(3, 7)->setText("6.60");
+    refinementBoxesTable->item(3, 5)->setText("1.31");
+    refinementBoxesTable->item(3, 6)->setText("0.55");
+    refinementBoxesTable->item(3, 7)->setText("1.35");
 
     QPushButton* addRegionButton = new QPushButton("Add Region");
     QPushButton* removeRegionButton = new QPushButton("Remove Region");
@@ -346,11 +369,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     surfaceName->addItem("Ground");
 
     surfaceRefinementLevel = new QSpinBox();
-    surfaceRefinementLevel->setRange(5, 100);
+    surfaceRefinementLevel->setRange(numRows + 1, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
     surfaceRefinementDistance = new QLineEdit();
-    surfaceRefinementDistance->setText("0.5");
+    surfaceRefinementDistance->setText("0.10");
 
     QPushButton *surfaceMeshDemoView = new QPushButton("");
     QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
@@ -390,11 +413,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     addEdgeRefinement = new QCheckBox();
     addEdgeRefinement->setChecked(true);
 
-    QComboBox* edgeName  = new QComboBox();
-    edgeName->addItem("Building Edges");
+    refinementEdgeName  = new QComboBox();
+    refinementEdgeName->addItem("Building Edges");
 
     edgeRefinementLevel = new QSpinBox();
-    edgeRefinementLevel->setRange(5, 100);
+    edgeRefinementLevel->setRange(numRows + 2, 100);
     edgeRefinementLevel->setSingleStep(1);
 
     QPushButton *edgeMeshDemoView = new QPushButton("");
@@ -408,7 +431,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     edgeRefinementLayout->addWidget(edgeRefinementLevelLabel, 2, 0);
 
     edgeRefinementLayout->addWidget(addEdgeRefinement, 0, 1);
-    edgeRefinementLayout->addWidget(edgeName, 1, 1);
+    edgeRefinementLayout->addWidget(refinementEdgeName, 1, 1);
     edgeRefinementLayout->addWidget(edgeRefinementLevel, 2, 1);
 
     edgeRefinementLayout->addWidget(edgeMeshDemoView,0,2,3,1,Qt::AlignVCenter); // Qt::AlignVCenter
@@ -426,7 +449,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
 
     QLabel *addPrismLayersLabel = new QLabel("Add Prism Layers:");
-    QLabel *surfaceNamePLLabel = new QLabel("Surface Name:");
+    QLabel *prismLayerSurfaceNameLabel = new QLabel("Surface Name:");
     QLabel *numberOfPrismLayersLabel = new QLabel("Number of Layers:");
     QLabel *prismLayerExpantionRatioLabel = new QLabel("Expantion Ratio:");
     QLabel *finalLayerThicknessLabel = new QLabel("Final Layer Thickness:");
@@ -434,7 +457,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     addPrismLayers = new QCheckBox();
     addPrismLayers->setChecked(true);
 
-    QComboBox* prismLayerSurfaceName  = new QComboBox();
+    prismLayerSurfaceName  = new QComboBox();
     prismLayerSurfaceName->addItem("Building Surface");
 
     numberOfPrismLayers = new QSpinBox();
@@ -448,8 +471,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     finalPrismLayerThickness = new QDoubleSpinBox();
     finalPrismLayerThickness->setRange(0.0, 1.0);
-    finalPrismLayerThickness->setValue(0.5);
-    finalPrismLayerThickness->setSingleStep(0.1);
+    finalPrismLayerThickness->setValue(0.25);
+    finalPrismLayerThickness->setSingleStep(0.05);
 
     QPushButton *prismLayersDemoView = new QPushButton("");
     QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png");
@@ -458,7 +481,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     prismLayersDemoView->setFixedSize(prismLayersPixmap.rect().size()*.25);
 
     prismLayerLayout->addWidget(addPrismLayersLabel, 0, 0);
-    prismLayerLayout->addWidget(surfaceNamePLLabel, 1, 0);
+    prismLayerLayout->addWidget(prismLayerSurfaceNameLabel, 1, 0);
     prismLayerLayout->addWidget(numberOfPrismLayersLabel, 2, 0);
     prismLayerLayout->addWidget(prismLayerExpantionRatioLabel, 3, 0);
     prismLayerLayout->addWidget(finalLayerThicknessLabel, 4, 0);
@@ -480,17 +503,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     QPushButton *runBlockMeshButton = new QPushButton("Run blockMesh");
     QPushButton *runSnappyMeshButton = new QPushButton("Run snappyHexMesh");
-    QPushButton *checkMeshButton = new QPushButton("Run checkMesh");
+    QPushButton *runCheckMeshButton = new QPushButton("Run checkMesh");
 
     runMeshLayout->addWidget(runBlockMeshButton);
     runMeshLayout->addWidget(runSnappyMeshButton);
-    runMeshLayout->addWidget(checkMeshButton);
+    runMeshLayout->addWidget(runCheckMeshButton);
 
     snappyHexMeshLayout->addWidget(runMeshGroup);
 
 
-//    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onGenerateGeometryClicked()));
-//    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
+    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
+    //    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
 
 
     //=============================================================================
@@ -503,11 +526,18 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
 
     this->setLayout(layout);
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshClicked()));
 
-    height=theGI->getHeight();
-    double area;
-    theGI->getBuildingDimensions(breadth, depth, area);
+    connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
+    connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
+    connect(addEdgeRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddEdgeRefinementChecked(int)));
+    connect(addPrismLayers, SIGNAL(stateChanged(int)), this, SLOT(onAddPrismLayersChecked(int)));
+
+
+    connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
+    connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
+    connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
+
 }
 
 
@@ -521,11 +551,462 @@ void SnappyHexMeshWidget::clear(void)
 
 }
 
+void SnappyHexMeshWidget::onRunBlockMeshClicked()
+{
+    statusMessage("Generating background mesh with blockMesh");
+    statusMessage("Creating blockMesh dictionary ...");
+
+    exportBlockMeshParametersToJSON();
+    createBlockMeshDict();
+
+    statusMessage("Running blockMesh ...");
+
+    runBlockMeshCommand();
+}
+
+void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
+{
+    onRunBlockMeshClicked();
+
+    statusMessage("Generating snappyHexMesh");
+    statusMessage("Creating snappyHexMesh dictionary ...");
+
+    exportSnappyMeshParametersToJSON();
+    createSnappyHexMeshDict();
+
+    //Create building STL Geometry
+    exportBuildingGeometryToJSON();
+    generateBuildingSTLGeometry();
+
+    statusMessage("Extracting building surface features ...");
+
+    runExtractSurfaceFeaturesCommand();
+
+    statusMessage("Running snappyHexMesh ...");
+
+    runSnappyHexMeshCommand();
+
+}
+
+void SnappyHexMeshWidget::onRunCheckMeshClicked()
+{
+    statusMessage("Checking mesh ... ");
+    runCheckMeshCommand();
+}
+
+
+bool SnappyHexMeshWidget::createBlockMeshDict()
+{
+
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_block_mesh_dictionary.py";
+    QString jsonPath = mainModel->caseDir() + "constant/simCenter/";
+    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+    QString outputPath = mainModel->caseDir() + "system/";
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << jsonPath << templatePath << outputPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished();
+
+    process->close();
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::createSnappyHexMeshDict()
+{
+
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_snappy_hex_mesh_dictionary.py";
+    QString jsonPath = mainModel->caseDir() + "constant/simCenter/";
+    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+    QString outputPath = mainModel->caseDir() + "system/";
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << jsonPath << templatePath << outputPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished(-1);
+
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
+
+    process->close();
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::generateBuildingSTLGeometry()
+{
+
+    QString stlPath = mainModel->caseDir() + "constant/geometry/";
+    QString jsonPath = mainModel->caseDir() + "constant/simCenter/";
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_building_stl_geometry.py";
+
+//    QStringList args = {workingDir, workingDir};
+//    ModularPython *geomPy = new ModularPython(workingDir, this);
+//    geomPy->run(scriptPath, args);
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << jsonPath << stlPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished(-1);
+
+    process->close();
+
+    statusMessage("Generated STL geometry of the building");
+    statusMessage("\t\tData saved to: " + stlPath + "\n");
+
+    return true;
+}
+
+
+bool SnappyHexMeshWidget::runBlockMeshCommand()
+{
+
+    QString casePath = mainModel->caseDir();
+    QStringList commands;
+
+    commands << "source /opt/openfoam10/etc/bashrc; blockMesh";
+
+    QProcess *process = new QProcess(this);
+
+    process->setWorkingDirectory(casePath);
+    process->start("bash", QStringList() << "-c" << commands);
+    process->waitForFinished(-1);
+
+    statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+
+    process->close();
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
+{
+
+    QString casePath = mainModel->caseDir();
+    QStringList commands;
+
+    commands << "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
+
+    QProcess *process = new QProcess(this);
+
+    process->setWorkingDirectory(casePath);
+    process->start("bash", QStringList() << "-c" << commands);
+    process->waitForFinished(-1);
+
+    statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+
+    process->close();
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
+{
+
+    QString casePath = mainModel->caseDir();
+    QStringList commands;
+
+    commands << "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
+
+    QProcess *process = new QProcess(this);
+
+    process->setWorkingDirectory(casePath);
+    process->start("bash", QStringList() << "-c" << commands);
+
+//    QTime dieTime= QTime::currentTime().addSecs(10);
+
+//    while (QTime::currentTime() < dieTime)
+//    {
+//        statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    }
+
+    process->waitForFinished(-1);
+
+    QMessageBox msgBox;
+    msgBox.setText("Mesh generation completed!");
+    msgBox.exec();
+
+    statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+
+    process->close();
+
+    return true;
+}
+
+
+bool SnappyHexMeshWidget::runCheckMeshCommand()
+{
+
+    QString casePath = mainModel->caseDir();
+    QStringList commands;
+
+    commands << "source /opt/openfoam10/etc/bashrc; checkMesh";
+
+    QProcess *process = new QProcess(this);
+
+    process->setWorkingDirectory(casePath);
+    process->start("bash", QStringList() << "-c" << commands);
+
+
+    process->waitForFinished(-1);
+
+//    QMessageBox msgBox;
+//    msgBox.setText("Mesh generation completed!");
+//    msgBox.exec();
+
+    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+
+    process->close();
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::exportBuildingGeometryToJSON()
+{
+    // just need to send the class type here.. type needed in object in case user screws up
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
+    jsonObject["buildingWidth"]= mainModel->buildingWidth();
+    jsonObject["buildingDepth"]= mainModel->buildingDepth();
+    jsonObject["buildingHeight"]= mainModel->buildingHeight();
+    jsonObject["geometricScale"]= mainModel->geometricScale();
+    jsonObject["windDirection"] = mainModel->windDirection();
+    jsonObject["normalizationType"] = mainModel->normalizationType();
+
+    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
+    jsonObject["origin"] = originPoint;
+
+    //Replace with the unit system from "General Information" window
+    jsonObject["lengthUnit"] = "m";
+    jsonObject["angleUnit"] = "degree";
+
+
+    QFile jsonFile(mainModel->caseDir() + "constant/simCenter/buildingParameters.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}
+
+
+bool SnappyHexMeshWidget::exportBlockMeshParametersToJSON()
+{
+    // Exports information needed for background mesh generation to JSON file.
+    // This information includes:
+    //      - domain dimensions
+    //      - meshing information
+    //      - boundary types
+
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
+
+    jsonObject["domainLength"] = mainModel->domainLength();
+    jsonObject["domainWidth"] = mainModel->domainWidth();
+    jsonObject["domainHeight"] = mainModel->domainHeight();
+    jsonObject["fetchLength"] = mainModel->fetchLength();
+    jsonObject["buildingHeight"] = mainModel->buildingHeight();
+    jsonObject["geometricScale"] = mainModel->geometricScale();
+    jsonObject["normalizationType"] = mainModel->normalizationType();
+
+    QJsonArray originPoint = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
+    jsonObject["origin"] = originPoint;
+
+    jsonObject["xNumCells"] = xAxisNumCells->text().toDouble();
+    jsonObject["yNumCells"] = yAxisNumCells->text().toDouble();
+    jsonObject["zNumCells"] = zAxisNumCells->text().toDouble();
+    jsonObject["xGrading"] = xMeshGrading->value();
+    jsonObject["yGrading"] = yMeshGrading->value();
+    jsonObject["zGrading"] = zMeshGrading->value();
+    jsonObject["inletBoundaryType"] = "patch";
+    jsonObject["outletBoundaryType"] = "patch";
+    jsonObject["groundBoundaryType"] = "wall";
+    jsonObject["topBoundaryType"] = "patch";
+    jsonObject["frontBoundaryType"] = "symmetry";
+    jsonObject["backBoundaryType"] = "symmetry";
+
+
+    //Replace with the unit system from "General Information" window
+    jsonObject["lengthUnit"] = "m";
+
+
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/blockMeshParameters.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}
+
+bool SnappyHexMeshWidget::exportSnappyMeshParametersToJSON()
+{
+    // Exports information needed for snappyHexMesh generation to JSON file.
+    // This information includes:
+    //      - domain dimensions
+    //      - meshing information
+    //      - Refinment info
+    //      - Prism layer
+
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
+
+    jsonObject["domainLength"] = mainModel->domainLength();
+    jsonObject["domainWidth"] = mainModel->domainWidth();
+    jsonObject["domainHeight"] = mainModel->domainHeight();
+    jsonObject["fetchLength"] = mainModel->fetchLength();
+    jsonObject["buildingHeight"] = mainModel->buildingHeight();
+    jsonObject["geometricScale"] = mainModel->geometricScale();
+    jsonObject["normalizationType"] = mainModel->normalizationType();
+
+    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
+    jsonObject["origin"] = originPoint;
+
+    jsonObject["buildingSTLName"] = "building";
+    jsonObject["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
+    jsonObject["resolveFeatureAngle"] = resolveFeatureAngle->value();
+    jsonObject["numProcessors"] = numProcessors->value();
+
+    //Add regional refinment
+    const int nRegions = refinementBoxesTable->rowCount();
+
+    QJsonArray regions;
+
+    for (int row = 0; row < nRegions; row++)
+    {
+
+        QJsonArray box;
+
+        QJsonValue name = refinementBoxesTable->item(row, 0)->text();
+        QJsonValue level = refinementBoxesTable->item(row, 1)->text().toDouble();
+
+        QJsonValue xMin = refinementBoxesTable->item(row, 2)->text().toDouble();
+        QJsonValue yMin = refinementBoxesTable->item(row, 3)->text().toDouble();
+        QJsonValue zMin = refinementBoxesTable->item(row, 4)->text().toDouble();
+
+        QJsonValue xMax = refinementBoxesTable->item(row, 5)->text().toDouble();
+        QJsonValue yMax = refinementBoxesTable->item(row, 6)->text().toDouble();
+        QJsonValue zMax = refinementBoxesTable->item(row, 7)->text().toDouble();
+
+        box.append(name);
+        box.append(level);
+        box.append(xMin);
+        box.append(yMin);
+        box.append(zMin);
+        box.append(xMax);
+        box.append(yMax);
+        box.append(zMax);
+
+        regions.append(box);
+    }
+
+    jsonObject["refinementBoxes"] = regions;
+
+
+    //Add surface refinment
+    jsonObject["addSurfaceRefinement"] = addSurfaceRefinement->isChecked();
+    jsonObject["surfaceRefinementLevel"] = surfaceRefinementLevel->value();
+    jsonObject["surfaceRefinementDistance"] = surfaceRefinementDistance->text().toDouble();
+    jsonObject["refinementSurfaceName"] = "building";
+
+
+    //Add edge refinment
+    jsonObject["addEdgeRefinement"] = addEdgeRefinement->isChecked();
+    jsonObject["edgeRefinementLevel"] = edgeRefinementLevel->value();
+    jsonObject["refinementEdgeName"] = "building";
+
+    //Add prism layers
+    jsonObject["addPrismLayers"] = addPrismLayers->isChecked();
+    jsonObject["numberOfPrismLayers"] = numberOfPrismLayers->value();
+    jsonObject["numberOfPrismLayers"] = numberOfPrismLayers->value();
+    jsonObject["prismLayerExpantionRatio"] = prismLayerExpantionRatio->value();
+    jsonObject["finalPrismLayerThickness"] = finalPrismLayerThickness->value();
+    jsonObject["prismLayerSurfaceName"] = "building";
+
+    //Replace with the unit system from "General Information" window
+    jsonObject["lengthUnit"] = "m";
+
+
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/snappyHexMeshParameters.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}
+
+
+void SnappyHexMeshWidget::onCalculateBackgroundMeshClicked()
+{
+    xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
+    yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
+    zAxisMeshSize->setText(QString::number(mainModel->domainHeight()/zAxisNumCells->text().toDouble()));
+}
+
+void SnappyHexMeshWidget::onRunInParallelChecked(int)
+{
+    numProcessors->setEnabled(runInParallel->isChecked()) ;
+}
+
+void SnappyHexMeshWidget::onAddSurfaceRefinementChecked(int)
+{
+    surfaceRefinementDistance->setEnabled(addSurfaceRefinement->isChecked()) ;
+    surfaceRefinementLevel->setEnabled(addSurfaceRefinement->isChecked()) ;
+    surfaceName->setEnabled(addSurfaceRefinement->isChecked());
+}
+
+void SnappyHexMeshWidget::onAddEdgeRefinementChecked(int)
+{
+    edgeRefinementLevel->setEnabled(addEdgeRefinement->isChecked()) ;
+    refinementEdgeName->setEnabled(addEdgeRefinement->isChecked()) ;
+}
+
+void SnappyHexMeshWidget::onAddPrismLayersChecked(int)
+{
+    numberOfPrismLayers->setEnabled(addPrismLayers->isChecked());
+    finalPrismLayerThickness->setEnabled(addPrismLayers->isChecked());
+    prismLayerExpantionRatio->setEnabled(addPrismLayers->isChecked());
+    prismLayerSurfaceName->setEnabled(addPrismLayers->isChecked());
+}
+
 void SnappyHexMeshWidget::onAddRegionClicked()
 {
     refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
 }
-
 
 void SnappyHexMeshWidget::onRemoveRegionClicked()
 {

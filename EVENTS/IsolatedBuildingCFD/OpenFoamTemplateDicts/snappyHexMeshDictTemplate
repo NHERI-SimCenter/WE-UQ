@@ -18,25 +18,6 @@ castellatedMesh on;
 snap            on;
 addLayers       on;
 
-//Important parameters
-snappyParams
-{
-    buildingSTLName		"building.stl";
-    nCellsBetweenLevels 	5; 
-    resolveFeatureAngle 	60;    
-    insidePoint			(1.0 1.0 1.0);
-    refinementSurfaceName	"building";
-    surfaceRefinementDistance	0.5;    
-    surfaceRefinementLevel	5;
-    refinementEdgeName		"building";
-    edgeRefinementLevel		6;
-    prismLayerSurfaceName	"building";
-    nSurfaceLayers 		5;
-    relativeSizes       	true;
-    expansionRatio      	1.15;
-    finalLayerThickness 	0.15;
-}
-
 // Geometry. Definition of all surfaces. All surfaces are of class
 // searchableSurface.
 // Surfaces are used
@@ -45,18 +26,6 @@ snappyParams
 // - to 'snap' the mesh boundary to the surface
 geometry
 {
-    building
-    {
-        type triSurfaceMesh;
-        file $!snappyParams/buildingSTLName;
-    }
-  
-    buildingBox
-    {
-        type triSurfaceMesh;
-        file $!snappyParams/buildingSTLName;
-    }
-    
 };
 
 // Settings for the castellatedMesh generation.
@@ -104,10 +73,6 @@ castellatedMeshControls
     // This is a featureEdgeMesh, read from constant/geometry for now.
     features
     (
-      { 
-      	file  "building.eMesh"; 
-      	level 8; 
-      }
     );
 
     // Surface based refinement
@@ -120,19 +85,6 @@ castellatedMeshControls
     // angle > resolveFeatureAngle get refined up to the maximum level.
     refinementSurfaces
     {
-	// Surface-wise min and max refinement level
-        building
-        {
-            // Surface-wise min and max refinement level
-            level (7 7);
-            
-            // Optional specification of patch type (default is wall). No
-            // constraint types (cyclic, symmetry) etc. are allowed.
-            patchInfo 
-            { 
-            	type wall; 
-            }
-        }
     }
 
     // Region-wise refinement
@@ -149,17 +101,6 @@ castellatedMeshControls
     // - outside. Same but cells outside.
     refinementRegions
     {
-        box1
-        {
-            mode    inside;
-            level   1;
-        }
-
-        buildingBox
-        {
-            mode    distance;
-            levels  ((0.04 6));
-        }
     }
 
     // Mesh selection
@@ -219,10 +160,6 @@ addLayersControls
     // Per final patch (so not geometry!) the layer information
     layers
     {
-        $!snappyParams/prismLayerSurfaceName
-        {
-            nSurfaceLayers $!snappyParams/nSurfaceLayers;
-        }
     }
     
     // Are the thickness parameters below relative to the undistorted

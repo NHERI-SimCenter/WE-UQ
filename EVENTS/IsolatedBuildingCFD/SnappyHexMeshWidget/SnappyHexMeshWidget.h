@@ -73,18 +73,43 @@ public:
 //    bool inputAppDataFromJSON(QJsonObject &rvObject);
 //    bool copyFiles(QString &dirName);
 
+    bool exportBuildingGeometryToJSON();
+    bool exportBlockMeshParametersToJSON();
+    bool exportSnappyMeshParametersToJSON();
+
+    bool generateBuildingSTLGeometry();
+    bool createBlockMeshDict();
+    bool createSnappyHexMeshDict();
+
+    bool runBlockMeshCommand();
+    bool runExtractSurfaceFeaturesCommand();
+    bool runSnappyHexMeshCommand();
+    bool runCheckMeshCommand();
+
 signals:
 
 public slots:
    void clear(void);
+
+   void onRunBlockMeshClicked();
+   void onRunSnappyHexMeshClicked();
+   void onRunCheckMeshClicked();
+
+   void onCalculateBackgroundMeshClicked();
    void onAddRegionClicked();
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();
+   void onRunInParallelChecked(int);
+   void onAddPrismLayersChecked(int);
+   void onAddSurfaceRefinementChecked(int);
+   void onAddEdgeRefinementChecked(int);
+
+
+
 
 private:
-   double breadth;
-   double depth;
-   double height;
+
+   IsolatedBuildingCFD  *mainModel;
 
    QVBoxLayout  *layout;
 
@@ -99,20 +124,21 @@ private:
    QHBoxLayout  *runMeshLayout;
 
    //Blockground mesh
-   QLineEdit    *xAxisNumCells;
-   QLineEdit    *yAxisNumCells;
-   QLineEdit    *zAxisNumCells;
-   QLineEdit    *xAxisMeshSize;
-   QLineEdit    *yAxisMeshSize;
-   QLineEdit    *zAxisMeshSize;
-   QSpinBox     *xMeshGrading;
-   QSpinBox     *yMeshGrading;
-   QSpinBox     *zMeshGrading;
+   QLineEdit        *xAxisNumCells;
+   QLineEdit        *yAxisNumCells;
+   QLineEdit        *zAxisNumCells;
+   QLineEdit        *xAxisMeshSize;
+   QLineEdit        *yAxisMeshSize;
+   QLineEdit        *zAxisMeshSize;
+   QDoubleSpinBox   *xMeshGrading;
+   QDoubleSpinBox   *yMeshGrading;
+   QDoubleSpinBox   *zMeshGrading;
 
    //General options
    QSpinBox     *numCellsBetweenLevels;
    QSpinBox     *resolveFeatureAngle;
    QSpinBox     *numProcessors;
+   QCheckBox     *runInParallel;
 
    //Regional refinements
    QTableWidget *refinementBoxesTable;
@@ -120,21 +146,23 @@ private:
    //Surface refinments
    QCheckBox    *addSurfaceRefinement;
    QComboBox    *surfaceName;
-   QSpinBox     *surfaceRefinementLevel ;
+   QSpinBox     *surfaceRefinementLevel;
    QLineEdit    *surfaceRefinementDistance;
 
    //Add edge refinment
    QCheckBox    *addEdgeRefinement;
    QSpinBox     *edgeRefinementLevel;
+   QComboBox    *refinementEdgeName;
 
    //Add prism layers
    QCheckBox        *addPrismLayers;
    QSpinBox         *numberOfPrismLayers;
    QDoubleSpinBox   *prismLayerExpantionRatio;
    QDoubleSpinBox   *finalPrismLayerThickness;
+   QComboBox        *prismLayerSurfaceName;
 
-   QPushButton  *calcBackgroundMesh;
-   QTabWidget   *snappyHexMeshTab;
+   QPushButton      *calcBackgroundMesh;
+   QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 

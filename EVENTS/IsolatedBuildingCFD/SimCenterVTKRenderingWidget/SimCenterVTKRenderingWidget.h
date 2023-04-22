@@ -55,6 +55,7 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
+class QSlider;
 class vtkDataSetMapper;
 class vtkActor;
 class vtkOpenFOAMReader;
@@ -75,14 +76,20 @@ public slots:
    void clear(void);
    void surfaceRepresentationChanged(const QString &arg1);
    void onReloadCaseClicked();
+   void onTransparencyChanged(const int value);
    void readMesh();
 
 private:
    QVBoxLayout  *layout;
    QGridLayout  *menueLayout;
    QGroupBox    *menueGroup;
+
+   QGridLayout  *visLayout;
+   QGroupBox    *visGroup;
+
    QComboBox    *surfaceRepresentation;
    QPushButton  *reloadCase;
+   QSlider      *transparency;
 
    QVTKRenderWidget *qvtkWidget;
    vtkUnstructuredGrid* block0;

@@ -16,19 +16,7 @@ FoamFile
 // Which of the steps to run
 castellatedMesh on;
 snap            on;
-addLayers       on;
-
-snappyParams
-{
-    nCellsBetweenLevels 5; 
-    resolveFeatureAngle 60;    
-    
-    nSurfaceLayers 	5;
-    relativeSizes       true;
-    expansionRatio      1.15;
-    finalLayerThickness 0.15;
-    insidePoint		(1 1 1);
-}
+addLayers	on;
 
 // Geometry. Definition of all surfaces. All surfaces are of class
 // searchableSurface.
@@ -40,44 +28,32 @@ geometry
 {
     building
     {
-        type triSurfaceMesh;
-        file "building.stl";
+         type triSurfaceMesh;
+         file "building.stl";
     }
-
-    box1
+    Box1
     {
-        type searchableBox;
-        min  (-3.00  -1.75  0.00);
-        max  ( 4.00   1.75  2.25);
+         type searchableBox;
+         min (-3.0175 -1.2573 0.0000);
+         max (3.0404 1.2573 1.7145);
     }
-    box2
+    Box2
     {
-        type searchableBox;
-        min  (-3.00  -1.25  0.00);
-        max  ( 3.00   1.25  1.75);
+         type searchableBox;
+         min (-3.0175 -0.7498 0.0000);
+         max (1.9980 0.7498 1.2573);
     }
-    box3
+    Box3
     {
-        type searchableBox;
-        min  (-3.00  -0.75  0.00);
-        max  ( 2.00   0.75  1.25);
+         type searchableBox;
+         min (-0.3520 -0.3978 0.0000);
+         max (1.0013 0.3978 0.8001);
     }
-    box4
+    Box4
     {
-        type searchableBox;
-        min  (-0.35  -0.40  0.00);
-        max  ( 1.00   0.40  0.85);
-    }
-    box5
-    {
-        type searchableBox;
-        min  (-0.20  -0.25  0.00);
-        max  ( 0.60   0.25  0.65);
-    }
-    box6
-    {
-        type triSurfaceMesh;
-        file "building.stl";
+         type searchableBox;
+         min (-0.2012 -0.2515 0.0000);
+         max (0.5989 0.2515 0.6172);
     }
 };
 
@@ -90,14 +66,14 @@ castellatedMeshControls
     // If local number of cells is >= maxLocalCells on any processor
     // switches from from refinement followed by balancing
     // (current method) to (weighted) balancing before refinement.
-    maxLocalCells 100000;
+    maxLocalCells 1000000;
 
     // Overall cell limit (approximately). Refinement will stop immediately
     // upon reaching this number so a refinement level might not complete.
     // Note that this is the number of cells before removing the part which
     // is not 'visible' from the keepPoint. The final number of cells might
     // actually be a lot less.
-    maxGlobalCells 2000000;
+    maxGlobalCells 20000000;
 
     // The surface refinement loop might spend lots of iterations refining just a
     // few cells. This setting will cause refinement to stop if <= minimumRefine
@@ -114,10 +90,10 @@ castellatedMeshControls
     // Number of buffer layers between different levels.
     // 1 means normal 2:1 refinement restriction, larger means slower
     // refinement.
-    nCellsBetweenLevels $!snappyParams/nCellsBetweenLevels;
+    nCellsBetweenLevels 5;
     
     // Resolve sharp angles
-    resolveFeatureAngle $!snappyParams/resolveFeatureAngle;
+    resolveFeatureAngle 30;
 
     // Explicit feature edge refinement
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,7 +102,10 @@ castellatedMeshControls
     // This is a featureEdgeMesh, read from constant/geometry for now.
     features
     (
-      { file  "building.eMesh"; level 8; }
+         {
+             file "building.eMesh";
+             level 6;
+         }
     );
 
     // Surface based refinement
@@ -139,19 +118,14 @@ castellatedMeshControls
     // angle > resolveFeatureAngle get refined up to the maximum level.
     refinementSurfaces
     {
-	// Surface-wise min and max refinement level
-        building
-        {
-            // Surface-wise min and max refinement level
-            level (7 7);
-            
-            // Optional specification of patch type (default is wall). No
-            // constraint types (cyclic, symmetry) etc. are allowed.
-            patchInfo 
-            { 
-            	type wall; 
-            }
-        }
+         building
+         {
+             level (5 5);
+             patchInfo
+             {
+                 type wall;
+             }
+         }
     }
 
     // Region-wise refinement
@@ -168,36 +142,31 @@ castellatedMeshControls
     // - outside. Same but cells outside.
     refinementRegions
     {
-        box1
-        {
-            mode    inside;
-            level   1;
-        }
-        box2
-        {
-            mode    inside;
-            level   2;
-        }
-        box3
-        {
-            mode    inside;
-            level   3;
-        }
-        box4
-        {
-            mode    inside;
-            level   4;
-        }
-        box5
-        {
-            mode    inside;
-            level   5;
-        }
-        box6
-        {
-            mode    distance;
-            levels  ((0.04 6));
-        }
+         Box1
+         {
+             mode   inside;
+             level  1;
+         }
+         Box2
+         {
+             mode   inside;
+             level  2;
+         }
+         Box3
+         {
+             mode   inside;
+             level  3;
+         }
+         Box4
+         {
+             mode   inside;
+             level  4;
+         }
+         building
+         {
+             mode   distance;
+             levels  ((0.0457 5));
+         }
     }
 
     // Mesh selection
@@ -208,7 +177,7 @@ castellatedMeshControls
     // section reachable from the insidePoint is kept.
     // NOTE: This point should never be on a face, always inside a cell, even
     // after refinement.
-    insidePoint $!snappyParams/insidePoint;
+    insidePoint (-1.1430 0.0000 0.4572);
     
     // Whether any faceZones (as specified in the refinementSurfaces)
     // are only on the boundary of corresponding cellZones or also allow
@@ -257,24 +226,24 @@ addLayersControls
     // Per final patch (so not geometry!) the layer information
     layers
     {
-        "building"
-        {
-            nSurfaceLayers $!snappyParams/nSurfaceLayers;
-        }
+         "building"
+         {
+             nSurfaceLayers 5;
+         }
     }
     
     // Are the thickness parameters below relative to the undistorted
     // size of the refined cell outside layer (true) or absolute sizes (false)
-    relativeSizes      	$!snappyParams/relativeSizes;
+    relativeSizes on;
     
     // Expansion factor for layer mesh
-    expansionRatio      $!snappyParams/expansionRatio;
+    expansionRatio 1.1500;
     
     // Wanted thickness of final added cell layer. If multiple layers
     // is the thickness of the layer furthest away from the wall.
     // Relative to undistorted size of cell outside layer.
     // See relativeSizes parameter.
-    finalLayerThickness $!snappyParams/finalLayerThickness;
+    finalLayerThickness 0.2500;
     
     // Minimum thickness of cell layer. If for any reason layer
     // cannot be above minThickness do not add layer.
@@ -339,6 +308,7 @@ meshQualityControls
 
     //- Max skewness allowed. Set to <0 to disable.
     maxBoundarySkewness 20;
+    
     maxInternalSkewness 4;
 
     //- Max concaveness allowed. Is angle (in degrees) below which concavity

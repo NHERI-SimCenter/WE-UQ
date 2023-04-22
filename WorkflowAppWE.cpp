@@ -107,9 +107,9 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     //
     theRVs = RandomVariablesContainer::getInstance();
     theGI = GeneralInformationWidget::getInstance();
-    theSIM = new SIM_Selection(true, false);
+    theSIM = new SIM_Selection(true, true);
     theEventSelection = new WindEventSelection(theRVs, theService);
-    theAnalysisSelection = new FEA_Selection(false);    
+    theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
     theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivity);

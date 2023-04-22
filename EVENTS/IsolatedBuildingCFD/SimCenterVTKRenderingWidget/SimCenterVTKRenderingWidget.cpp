@@ -48,6 +48,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPushButton>
 #include <SectionTitle.h>
 #include <QFileInfo>
+#include <QSlider>
 #include <QMovie>
 #include <QPixmap>
 #include <QIcon>
@@ -104,37 +105,52 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(RandomVariablesContaine
     menueGroup = new QGroupBox();
     menueGroup->setLayout(menueLayout);
 
+    visGroup = new QGroupBox();
+    visLayout = new QGridLayout();
+    visGroup->setLayout(visLayout);
+
     qvtkWidget = new QVTKRenderWidget();
 
 
     QLabel *surfaceRepresentationLabel = new QLabel("Representation: ");
+    QLabel *transparencyLabel = new QLabel("Transparency: ");
 
     surfaceRepresentation = new QComboBox();
-    surfaceRepresentation->addItem("SurfaceWithEdge");
+    surfaceRepresentation->addItem("SurfaceWithGrid");
     surfaceRepresentation->addItem("Surface");
     surfaceRepresentation->addItem("Wireframe");
 
+
+    transparency = new QSlider(Qt::Orientation::Horizontal);
+    transparency->setRange(0, 100);
+    transparency->setValue(0);
+    transparency->setMaximumWidth(150);
+//    transparency->setMaximumSize(QSize());
+
+
     reloadCase = new QPushButton("Reload");
 
-
-    menueLayout->addWidget(surfaceRepresentationLabel,0,0, Qt::AlignRight);
-    menueLayout->addWidget(surfaceRepresentation,0,1, Qt::AlignLeft);
-    menueLayout->addWidget(reloadCase,0,3);
+    menueLayout->addWidget(surfaceRepresentationLabel, 0, 0, Qt::AlignRight);
+    menueLayout->addWidget(surfaceRepresentation, 0, 1, Qt::AlignLeft);
+    menueLayout->addWidget(reloadCase, 0, 2, Qt::AlignCenter);
+    menueLayout->addWidget(transparencyLabel, 0, 3, Qt::AlignRight);
+    menueLayout->addWidget(transparency, 0, 4, Qt::AlignLeft);
 
     readMesh();
 
     qvtkWidget->setMinimumSize(QSize(350, 600));
+    visLayout->addWidget(qvtkWidget);
+    visGroup->setStyleSheet("border: 2px solid red");
+    visLayout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(menueGroup);
+    layout->addWidget(visGroup);
 
-   layout->addWidget(menueGroup);
-   layout->addWidget(qvtkWidget);
 
+    this->setLayout(layout);
 
-
-   this->setLayout(layout);
-
-   connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
-   connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
-
+    connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
+    connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
+    connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
 }
 
 
@@ -157,7 +173,7 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
         actor->GetProperty()->SetColor(0, 0, 0);
 
     }
-    else if (arg1 == "SurfaceWithEdge")
+    else if (arg1 == "SurfaceWithGrid")
     {
         actor->GetProperty()->SetRepresentationToSurface();
         actor->GetProperty()->SetEdgeVisibility(true);
@@ -171,7 +187,7 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
     }
     else
     {
-        qDebug() << "ERROR .. Turbulence model selection .. type unknown: " << arg1;
+        qDebug() << "ERROR .. Surface representation .. type unknown: " << arg1;
     }
 
     // this is needed for some reason if Basic was last selected item!
@@ -179,12 +195,18 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
     renderWindow->Render();
 }
 
+void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
+{
+    actor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
+    renderWindow->Render();
+}
 
 void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 {
     readMesh();
     renderWindow->Render();
 }
+
 void SimCenterVTKRenderingWidget::readMesh()
 {
 
@@ -211,6 +233,7 @@ void SimCenterVTKRenderingWidget::readMesh()
     mapper = vtkSmartPointer<vtkDataSetMapper>::New();
     mapper->SetInputData(block0);
     mapper->SetScalarVisibility(false);
+    actor->GetProperty()->SetRepresentationToSurface();
     //    mapper->SetScalarRange(block0->GetScalarRange());
 
     // Actor in scene
@@ -225,7 +248,6 @@ void SimCenterVTKRenderingWidget::readMesh()
     // Add Actor to renderer
     renderer->AddActor(actor);
     renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
     //   ren->SetBackground(.2, .4, .5);
     //   ren->SetBackground("#64B5F6");
     //    ren->SetBackground(.0, .0, .0);
@@ -235,4 +257,7 @@ void SimCenterVTKRenderingWidget::readMesh()
     // VTK/Qt wedded
     qvtkWidget->setRenderWindow(renderWindow);
     qvtkWidget->renderWindow()->AddRenderer(renderer);
+    renderWindow->BordersOn();
+
+    surfaceRepresentation->setCurrentIndex(0);
 }

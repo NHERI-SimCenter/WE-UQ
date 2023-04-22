@@ -36,11 +36,12 @@ def create_stl_file(input_path, output_path):
     D = convert_to_meters*bldg_data['buildingDepth']/scale
     H = convert_to_meters*bldg_data['buildingHeight']/scale
     
-    relative_dimensions = bldg_data['relativeDimensions']
+    normalization_type = bldg_data['normalizationType']
+
     origin = np.array(bldg_data['origin'])
     wind_dxn = bldg_data['windDirection']
 
-    if relative_dimensions:
+    if normalization_type == "Relative":
         origin = origin*H
     
 

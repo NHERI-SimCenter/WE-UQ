@@ -11,13 +11,13 @@
     "groundBoundaryType": "wall",
     "inletBoundaryType": "patch",
     "lengthUnit": "m",
+    "normalizationType": "Relative",
     "origin": [
         0,
         0,
         0
     ],
     "outletBoundaryType": "patch",
-    "relativeDimensions": true,
     "topBoundaryType": "patch",
     "type": "IsolatedBuildingCFD",
     "xGrading": 1,

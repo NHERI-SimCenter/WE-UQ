@@ -89,18 +89,15 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
 
     QLabel *inletLabel = new QLabel("Inlet:");
     QLabel *outletLabel = new QLabel("Outlet:");
-    QLabel *groundLabel = new QLabel("Ground:");
     QLabel *sidesLabel = new QLabel("Sides:");
     QLabel *topLabel = new QLabel("Top:");
+    QLabel *groundLabel = new QLabel("Ground:");
+    QLabel *buildingLabel = new QLabel("Building:");
 
     inletBCType  = new QComboBox();
     inletBCType->addItem("Uniform");
     inletBCType->addItem("ABL Mean");
     inletBCType->addItem("TInf");
-
-    groundBCType  = new QComboBox();
-    groundBCType->addItem("noSlip");
-    groundBCType->addItem("nutkAtmRoughWallFunction");
 
     outletBCType  = new QComboBox();
     outletBCType->addItem("zeroPressureOutlet");
@@ -115,6 +112,13 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     topBCType->addItem("symmetry");
     topBCType->addItem("noSlip");
 
+    groundBCType  = new QComboBox();
+    groundBCType->addItem("noSlip");
+    groundBCType->addItem("wallFunction");
+
+    buildingBCType  = new QComboBox();
+    buildingBCType->addItem("noSlip");
+    buildingBCType->addItem("wallFunction");
 
     QPushButton* domainButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/boundaryConditions.png");
@@ -124,7 +128,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     domainButton->setFixedSize(pixmapFlat.rect().size()*.25);
 
 //    boundaryConditionsLayout->addWidget(domainButton,1,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-    boundaryConditionsLayout->addWidget(domainButton,0,0,6,1, Qt::AlignRight); // Qt::AlignVCenter
+    boundaryConditionsLayout->addWidget(domainButton,0,0,7,1, Qt::AlignRight); // Qt::AlignVCenter
 
 
     boundaryConditionsLayout->addWidget(patchNameLabel, 0, 1, Qt::AlignRight);
@@ -138,16 +142,18 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
 //    boundaryConditionsLayout->addWidget(topLabel, 5, 1);
 
     boundaryConditionsLayout->addWidget(inletLabel, 1, 1, Qt::AlignRight);
-    boundaryConditionsLayout->addWidget(groundLabel, 2, 1, Qt::AlignRight);
-    boundaryConditionsLayout->addWidget(outletLabel, 3, 1, Qt::AlignRight);
-    boundaryConditionsLayout->addWidget(sidesLabel, 4, 1, Qt::AlignRight);
-    boundaryConditionsLayout->addWidget(topLabel, 5, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(outletLabel, 2, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(sidesLabel, 3, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(topLabel, 4, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(groundLabel, 5, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(buildingLabel, 6, 1, Qt::AlignRight);
 
     boundaryConditionsLayout->addWidget(inletBCType, 1, 2);
-    boundaryConditionsLayout->addWidget(groundBCType, 2, 2);
-    boundaryConditionsLayout->addWidget(outletBCType, 3, 2);
-    boundaryConditionsLayout->addWidget(sidesBCType, 4, 2);
-    boundaryConditionsLayout->addWidget(topBCType, 5, 2);
+    boundaryConditionsLayout->addWidget(outletBCType, 2, 2);
+    boundaryConditionsLayout->addWidget(sidesBCType, 3, 2);
+    boundaryConditionsLayout->addWidget(topBCType, 4, 2);
+    boundaryConditionsLayout->addWidget(groundBCType, 5, 2);
+    boundaryConditionsLayout->addWidget(buildingBCType, 6, 2);
 
     boundaryConditionsLayout->setHorizontalSpacing(25);
 

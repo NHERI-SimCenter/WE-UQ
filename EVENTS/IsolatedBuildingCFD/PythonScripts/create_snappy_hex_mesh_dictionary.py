@@ -35,7 +35,7 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
     Ly = domain_data['domainWidth']
     Lz = domain_data['domainHeight']
     Lf = domain_data['fetchLength']
-    relative_dimensions = domain_data['relativeDimensions']
+    normalization_type = domain_data['normalizationType']
     origin = np.array(domain_data['origin'])
     length_unit = domain_data['lengthUnit']
     
@@ -55,20 +55,25 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
     edge_refinement_level = domain_data['edgeRefinementLevel']
     refinement_edge_name = domain_data['refinementEdgeName']
     
-    add_prismLayers = domain_data['addPrismLayers']
+    add_prism_layers = domain_data['addPrismLayers']
+    number_of_prism_layers = domain_data['numberOfPrismLayers']
     prism_layer_expantion_ratio = domain_data['prismLayerExpantionRatio']
-    final_prismLayer_thickness = domain_data['finalPrismLayerThickness']
+    final_prism_layer_thickness = domain_data['finalPrismLayerThickness']
     prism_layer_surface_name = domain_data['prismLayerSurfaceName']
-    prism_layer_relative_size = "on"
-    
-    inside_point  = [1.0, 1.0, 1.0]
+    prism_layer_relative_size = "on"  
 
-    if relative_dimensions:
+    if normalization_type == "Relative":
         Lx = Lx*H
         Ly = Ly*H
         Lz = Lz*H
         Lf = Lf*H
         origin = origin*H
+
+        for i in range(len(refinement_boxes)):
+            for j in range(2, 8, 1):
+                refinement_boxes[i][j] = refinement_boxes[i][j]*H
+                
+        surface_refinement_distance = surface_refinement_distance*H
     
     x_min = -Lf - origin[0]
     y_min = -Ly/2.0 - origin[1]
@@ -76,7 +81,10 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
 
     x_max = x_min + Lx
     y_max = y_min + Ly
-    z_max = z_min + Lz
+    z_max = z_min + Lz    
+    
+    inside_point  = [x_min + Lf/2.0, (y_min + y_max)/2.0, H]
+
 
     #Open the template blockMeshDict (OpenFOAM file) for manipulation
     dict_file = open(template_dict_path + "/snappyHexMeshDictTemplate", "r")
@@ -85,54 +93,133 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
     dict_lines = dict_file.readlines()
     dict_file.close()
     
-    dict_lines[18] = "addLayers\t{};\n".format(add_prismLayers)
-
-    dict_lines[23] = "    buildingSTLName\t\t\"{}.stl\";\n".format(building_stl_name)
-
-    dict_lines[24] = "    nCellsBetweenLevels\t\t{:d};\n".format(num_cells_between_levels)
-    dict_lines[25] = "    resolveFeatureAngle\t\t{:d};\n".format(resolve_feature_angle)    
-    dict_lines[26] = "    insidePoint\t\t\t({:.4f} {:.4f} {:.4f});\n".format(inside_point[0], inside_point[1], inside_point[2])
     
-    dict_lines[27] = "    refinementSurfaceName\t\"{}\";\n".format(refinement_surface_name)
-    dict_lines[28] = "    surfaceRefinementDistance\t{:.4f};\n".format(surface_refinement_distance)
-    dict_lines[29] = "    surfaceRefinementLevel\t{:d};\n".format(surface_refinement_level)
+    #Write 'addLayers' switch    
+    start_index = foam.find_keyword_line(dict_lines, "addLayers")
+    dict_lines[start_index] = "addLayers\t{};\n".format("on" if add_prism_layers else "off")
+
+
+
+    ###################### Edit Geometry Section ##############################
     
-    dict_lines[30] = "    refinementEdgeName\t\t\"{}\";\n".format(refinement_edge_name)
-    dict_lines[31] = "    edgeRefinementLevel\t\t{:d};\n".format(edge_refinement_level)
-
-    dict_lines[32] = "    prismLayerSurfaceName\t\"{}\";\n".format(prism_layer_surface_name)
-    dict_lines[33] = "    nSurfaceLayers\t\t{:d};\n".format(resolve_feature_angle)
-    dict_lines[34] = "    relativeSizes\t\t{};\n".format(prism_layer_relative_size)
-    dict_lines[35] = "    expansionRatio\t\t{:.4f};\n".format(prism_layer_expantion_ratio)
-    dict_lines[36] = "    finalLayerThickness\t\t{:.4f};\n".format(final_prismLayer_thickness)
-
- 
-    # dict_lines[100] = "\t file  \"{}.eMesh\"; \n".format(refinement_edge_name)
-    # dict_lines[101] = "\t level {:d};\n".format(edge_refinement_level)
-
-
-    # convert_to_meters = 1.0
-
-    # if length_unit=='m':
-    #     convert_to_meters = 1.0
-    # elif length_unit=='cm':
-    #     convert_to_meters = 0.01
-    # elif length_unit=='mm':
-    #     convert_to_meters = 0.001
-    # elif length_unit=='ft':
-    #     convert_to_meters = 0.3048
-    # elif length_unit=='in':
-    #     convert_to_meters = 0.0254
-
-    # dict_lines[31] = "convertToMeters {:.4f};\n".format(convert_to_meters)
-    # dict_lines[61] = "        type {};\n".format(inlet_type)
-    # dict_lines[70] = "        type {};\n".format(outlet_type)
-    # dict_lines[79] = "        type {};\n".format(ground_type)
-    # dict_lines[88] = "        type {};\n".format(top_type)
-    # dict_lines[97] = "        type {};\n".format(front_type)
-    # dict_lines[106] = "        type {};\n".format(back_type)
-
+    #Add refinment box geometry
+    start_index = foam.find_keyword_line(dict_lines, "geometry") + 2 
+    added_part = ""
+    n_boxes  = len(refinement_boxes)
+    for i in range(n_boxes):
+        added_part += "    {}\n".format(refinement_boxes[i][0])
+        added_part += "    {\n"
+        added_part += "         type searchableBox;\n"
+        added_part += "         min ({:.4f} {:.4f} {:.4f});\n".format(refinement_boxes[i][2], refinement_boxes[i][3], refinement_boxes[i][4])
+        added_part += "         max ({:.4f} {:.4f} {:.4f});\n".format(refinement_boxes[i][5], refinement_boxes[i][6], refinement_boxes[i][7])
+        added_part += "    }\n"
+        
+    dict_lines.insert(start_index, added_part)
+       
+    #Add building stl geometry
+    start_index = foam.find_keyword_line(dict_lines, "geometry") + 2 
+    added_part = ""
+    added_part += "    {}\n".format(building_stl_name)
+    added_part += "    {\n"
+    added_part += "         type triSurfaceMesh;\n"
+    added_part += "         file \"{}.stl\";\n".format(building_stl_name)
+    added_part += "    }\n"
     
+    dict_lines.insert(start_index, added_part)
+    
+    
+    ################# Edit castellatedMeshControls Section ####################
+
+    #Write 'nCellsBetweenLevels'     
+    start_index = foam.find_keyword_line(dict_lines, "nCellsBetweenLevels")
+    dict_lines[start_index] = "    nCellsBetweenLevels {:d};\n".format(num_cells_between_levels)
+
+    #Write 'resolveFeatureAngle'     
+    start_index = foam.find_keyword_line(dict_lines, "resolveFeatureAngle")
+    dict_lines[start_index] = "    resolveFeatureAngle {:d};\n".format(resolve_feature_angle)
+
+    #Write 'insidePoint'     
+    start_index = foam.find_keyword_line(dict_lines, "insidePoint")
+    dict_lines[start_index] = "    insidePoint ({:.4f} {:.4f} {:.4f});\n".format(inside_point[0], inside_point[1], inside_point[2])
+
+    #Add refinment edge 
+    if add_edge_refinement: 
+        start_index = foam.find_keyword_line(dict_lines, "features") + 2 
+        added_part  = ""
+        added_part += "         {\n"
+        added_part += "             file \"{}.eMesh\";\n".format(refinement_edge_name)
+        added_part += "             level {};\n".format(edge_refinement_level)
+        added_part += "         }\n"
+        
+        dict_lines.insert(start_index, added_part)
+        
+    #Add refinment surface
+    if add_surface_refinement:         
+        start_index = foam.find_keyword_line(dict_lines, "refinementSurfaces") + 2 
+        added_part = ""
+        added_part += "         {}\n".format(refinement_surface_name)
+        added_part += "         {\n"
+        added_part += "             level ({} {});\n".format(surface_refinement_level, surface_refinement_level)
+        added_part += "             patchInfo\n"
+        added_part += "             {\n"
+        added_part += "                 type wall;\n"
+        added_part += "             }\n"
+        added_part += "         }\n"
+        
+        dict_lines.insert(start_index, added_part)
+        
+    #Add surface refinment around the building as a refinment region
+    if surface_refinement_level > refinement_boxes[-1][1]:
+        added_part = ""
+        added_part += "         {}\n".format(refinement_surface_name)
+        added_part += "         {\n"
+        added_part += "             mode   distance;\n"
+        added_part += "             levels  (({:.4f} {}));\n".format(surface_refinement_distance, surface_refinement_level)
+        added_part += "         }\n"
+                    
+        start_index = foam.find_keyword_line(dict_lines, "refinementRegions") + 2 
+        dict_lines.insert(start_index, added_part)
+    
+    #Add box refinments 
+    added_part = ""
+    for i in range(n_boxes):
+        added_part += "         {}\n".format(refinement_boxes[i][0])
+        added_part += "         {\n"
+        added_part += "             mode   inside;\n"
+        added_part += "             level  {};\n".format(refinement_boxes[i][1])
+        added_part += "         }\n"
+                
+    start_index = foam.find_keyword_line(dict_lines, "refinementRegions") + 2 
+    dict_lines.insert(start_index, added_part)
+    
+    
+    ####################### Edit PrismLayer Section ##########################
+    
+    #Add surface layers (prism layers)
+    added_part = ""
+    added_part += "         \"{}\"\n".format(prism_layer_surface_name)
+    added_part += "         {\n"
+    added_part += "             nSurfaceLayers {};\n".format(number_of_prism_layers)
+    added_part += "         }\n"
+    
+    start_index = foam.find_keyword_line(dict_lines, "layers") + 2 
+    dict_lines.insert(start_index, added_part)
+
+    #Write 'relativeSizes'     
+    start_index = foam.find_keyword_line(dict_lines, "relativeSizes")
+    dict_lines[start_index] = "    relativeSizes {};\n".format(prism_layer_relative_size)
+
+    #Write 'expansionRatio'     
+    start_index = foam.find_keyword_line(dict_lines, "expansionRatio")
+    dict_lines[start_index] = "    expansionRatio {:.4f};\n".format(prism_layer_expantion_ratio)
+    
+    #Write 'finalLayerThickness'     
+    start_index = foam.find_keyword_line(dict_lines, "finalLayerThickness")
+    dict_lines[start_index] = "    finalLayerThickness {:.4f};\n".format(final_prism_layer_thickness)    
+    
+    
+    
+    #Write edited dict to file
     write_file_name = output_dict_path + "/snappyHexMeshDict"
     
     if os.path.exists(write_file_name):

@@ -2676,6 +2676,6 @@ void DigitalWindTunnel::updateNumOfProcessors(int numProcessors)
         errorMessage("Processors (read from the numSubdomain in OpenFOAM case) must be greater than 1");
     } else {
         ui->processorsBox->setValue(numProcessors);
-        statusMessage("Processor number updated to "+QString::number(numProcessors));
+        statusMessage("Processor number updated to " + QString::number(numProcessors));
     }
 }

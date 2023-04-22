@@ -87,6 +87,7 @@ private:
    QComboBox    *sidesBCType;
    QComboBox    *topBCType;
    QComboBox    *groundBCType;
+   QComboBox    *buildingBCType;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

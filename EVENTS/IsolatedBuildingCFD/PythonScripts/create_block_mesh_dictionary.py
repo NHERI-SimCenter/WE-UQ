@@ -45,11 +45,11 @@ def create_block_mesh_dict(input_json_path, template_dict_path, output_dict_path
     front_type = domain_data['frontBoundaryType']
     back_type = domain_data['backBoundaryType']
     
-    relative_dimensions = domain_data['relativeDimensions']
+    normalization_type = domain_data['normalizationType']
     origin = np.array(domain_data['origin'])
     length_unit = domain_data['lengthUnit']
 
-    if relative_dimensions:
+    if normalization_type == "Relative":
         Lx = Lx*H
         Ly = Ly*H
         Lz = Lz*H

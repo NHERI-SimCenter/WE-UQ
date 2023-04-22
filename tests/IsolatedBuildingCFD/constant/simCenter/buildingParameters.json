@@ -6,12 +6,12 @@
     "buildingWidth": 45.72,
     "geometricScale": 400,
     "lengthUnit": "m",
+    "normalizationType": "Relative",
     "origin": [
         0,
         0,
         0
     ],
-    "relativeDimensions": true,
     "type": "IsolatedBuildingCFD",
     "windDirection": 0
 }

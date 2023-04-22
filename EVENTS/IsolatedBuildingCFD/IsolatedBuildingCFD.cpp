@@ -37,12 +37,13 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: abiy
 
 #include "IsolatedBuildingCFD.h"
-#include "ModularPython.h"
 #include "QVector3D"
-#include "SnappyHexMeshWidget/SnappyHexMeshWidget.h"
-#include "BoundaryConditionsWidget/BoundaryConditionsWidget.h"
-#include "TurbulenceModelingWidget/TurbulenceModelingWidget.h"
-#include "SimCenterVTKRenderingWidget/SimCenterVTKRenderingWidget.h"
+#include "SnappyHexMeshWidget.h"
+#include "BoundaryConditionsWidget.h"
+#include "TurbulenceModelingWidget.h"
+#include "SimCenterVTKRenderingWidget.h"
+#include "NumericalSetupWidget.h"
+#include "NumericalSetupWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -94,6 +95,9 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     generalDescriptionGroup = new QGroupBox("General Description");
     generalDescriptionLayout = new QHBoxLayout();
 
+    generalSettingGroup = new QGroupBox("Dimentions and Scale");
+    generalSettingLayout = new QGridLayout();
+
     caseDirectoryGroup = new QGroupBox("Case Directory");
     caseDirectoryLayout = new QGridLayout();
 
@@ -115,7 +119,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     theBuildingButton->setIcon(pixmapFlat);
     theBuildingButton->setIconSize(pixmapFlat.rect().size()*.35);
     theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.35);
-    buildingInformationLayout->addWidget(theBuildingButton,0,0,5,1,Qt::AlignVCenter);
+    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 4, 1, Qt::AlignVCenter);
 
     QLabel *buildingWidthLabel = new QLabel("Building Width:");
     buildingWidthWidget = new QLineEdit();
@@ -159,9 +163,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     useCOSTDimWidget = new QCheckBox();
     useCOSTDimWidget->setChecked(false);
 
-    QLabel *relativeDimensionsLabel = new QLabel("Relative Dimensions:");
-    relativeDimensionsWidget = new QCheckBox();
-    relativeDimensionsWidget->setChecked(true);
+    QLabel *normalizationTypeLabel = new QLabel("Input Dimension Normalization:");
+    normalizationTypeWidget = new QComboBox();
+    normalizationTypeWidget->addItem("Relative");
+    normalizationTypeWidget->addItem("Absolute");
 
     QLabel *originOptionsLabel = new QLabel("Location of Reference Point: ");
     QLabel *originCoordinateLabel = new QLabel("Reference Point:");
@@ -169,7 +174,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");
     QLabel *originZLabel = new QLabel("Z<sub>o</sub>:");
 
-    originOptions  = new QComboBox();
+    originOptions = new QComboBox();
     originOptions->addItem("Building Center");
     originOptions->addItem("Bottom Left Corner");
     originOptions->addItem("Custom");
@@ -185,10 +190,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QLabel *casePathLabel = new QLabel("Path: ");
     QPushButton* browseButton  = new QPushButton("Browse");
 
-    caseDirectoryPathWidget = new QLineEdit ();
+    caseDirectoryPathWidget = new QLineEdit();
     caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
 
-    QLabel *domainSizeNoteLabel = new QLabel("**Domain size is provided relative to the building height**");
+    QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
     QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The procedure involves: "
                                                  "\n --> Define building geometry "
@@ -208,6 +213,11 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseButton, 0, 2);
 
+    generalSettingLayout->addWidget(normalizationTypeLabel, 0, 0);
+    generalSettingLayout->addWidget(normalizationTypeWidget, 0, 1);
+
+    generalSettingLayout->addWidget(geometricScaleLabel, 0, 2, Qt::AlignRight);
+    generalSettingLayout->addWidget(geometricScaleWidget, 0, 3, Qt::AlignLeft);
 
     buildingInformationLayout->addWidget(buildingWidthLabel,0,1);
     buildingInformationLayout->addWidget(buildingWidthWidget,0,3);
@@ -218,12 +228,12 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
     buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
 
-    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
-    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
+//    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
+//    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
 
-    buildingInformationLayout->addWidget(windDirectionLabel, 4, 1);
-    buildingInformationLayout->addWidget(windDirectionWidget, 4, 3);
-    buildingInformationLayout->addWidget(angleUnit, 4, 4);
+    buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
+    buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
+    buildingInformationLayout->addWidget(angleUnit, 3, 4);
 
 
     domainInformationLayout->addWidget(domainLengthLabel,0,0);
@@ -241,8 +251,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     domainInformationLayout->addWidget(useCOSTDimLabel,5,0);
     domainInformationLayout->addWidget(useCOSTDimWidget,5,1);
 
-    domainInformationLayout->addWidget(relativeDimensionsLabel,6,0);
-    domainInformationLayout->addWidget(relativeDimensionsWidget,6,1);
+//    domainInformationLayout->addWidget(relativeDimensionsLabel,6,0);
+//    domainInformationLayout->addWidget(relativeDimensionsWidget,6,1);
+
+
 
     coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
     coordinateSystemLayout->addWidget(originOptions,0,1);
@@ -256,6 +268,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
+    generalSettingGroup->setLayout(generalSettingLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
     buildingInformationGroup->setLayout(buildingInformationLayout);
     domainInformationGroup->setLayout(domainInformationLayout);
@@ -271,6 +284,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     //Controls for snappyHexMesh
     snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
+    snappyHexMesh->mainModel = this;
 
     //Controle for turbulence modeling
     turbulenceModeling = new TurbulenceModelingWidget(theRandomVariablesContainer);
@@ -278,13 +292,20 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     //Controls for boundary conditions
     boundaryConditions = new BoundaryConditionsWidget(theRandomVariablesContainer);
 
+
+    //Controls for numerical setup
+    numericalSetup = new NumericalSetupWidget(theRandomVariablesContainer);
+    numericalSetup->mainModel = this;
+
     inputFormsLayout->addWidget(generalDescriptionGroup);
+    inputFormsLayout->addWidget(generalSettingGroup);
     inputFormsLayout->addWidget(caseDirectoryGroup);
     inputFormsLayout->addWidget(buildingAndDomainInformationGroup);
     inputFormsLayout->addWidget(coordinateSystemGroup);
     inputFormsLayout->addWidget(snappyHexMesh);
     inputFormsLayout->addWidget(turbulenceModeling);
     inputFormsLayout->addWidget(boundaryConditions);
+    inputFormsLayout->addWidget(numericalSetup);
 
     inputFormsGroup->setLayout(inputFormsLayout);
 
@@ -331,31 +352,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     // connnect some signals and slots to capture building dimensions changing to update selections
     // set initial selections
     //
-
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    connect(theGI,SIGNAL(buildingDimensionsChanged(double,double,double)), this, SLOT(onBuildingDimensionChanged(double,double,double)));
-    connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
-
-    buildingHeight = theGI->getHeight();
-    double area;
-    theGI->getBuildingDimensions(buildingWidth, buildingDepth, area);
-    this->onBuildingDimensionChanged(buildingWidth, buildingDepth, area);
-
-
-    QPushButton *buttonGeom = new QPushButton("Generate Geometry");
-    QPushButton *buttonBlock = new QPushButton("Generate BlockMesh");
-    QPushButton *buttonSnappy = new QPushButton("Generate SnappyHexMesh");
-
-    generalDescriptionLayout->addWidget(buttonGeom);
-    generalDescriptionLayout->addWidget(buttonBlock);
-    generalDescriptionLayout->addWidget(buttonSnappy);
-
-    connect(theGI,SIGNAL(numStoriesOrHeightChanged(int,double)), this, SLOT(onNumFloorsOrHeightChanged(int,double)));
-
-    connect(buttonGeom,SIGNAL(clicked()), this, SLOT(onGenerateGeometryClicked()));
-    connect(buttonBlock,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
-    connect(buttonSnappy,SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
-
 }
 
 
@@ -364,333 +360,10 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 }
 
-void IsolatedBuildingCFD::onGenerateGeometryClicked()
-{
-    exportBuildingGeometryToJSON();
-
-    generateBuildingSTLGeometry();
-}
-
-void IsolatedBuildingCFD::onRunBlockMeshClicked()
-{
-    exportBlockMeshParametersToJSON();
-
-    createBlockMeshMeshDict();
-
-    runBlockMesh();
-}
-
-void IsolatedBuildingCFD::onRunSnappyHexMeshClicked()
-{
-    exportSnappyMeshParametersToJSON();
-
-    createSnappyHexMeshDict();
-}
-
-bool IsolatedBuildingCFD::generateBuildingSTLGeometry()
-{
-
-    QString stlPath = caseDirectoryPathWidget->text() + "constant/geometry/";
-    QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_building_stl_geometry.py";
-
-//    QStringList args = {workingDir, workingDir};
-//    ModularPython *geomPy = new ModularPython(workingDir, this);
-//    geomPy->run(scriptPath, args);
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << stlPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished(-1);
-
-    process->close();
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput());
-//    msgBox.exec();
-
-    return true;
-}
-
-bool IsolatedBuildingCFD::createBlockMeshMeshDict()
-{
-
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_block_mesh_dictionary.py";
-    QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
-    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
-    QString outputPath = caseDirectoryPathWidget->text() + "system/";
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished();
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
-
-    process->close();
-
-    return true;
-}
-
-bool IsolatedBuildingCFD::createSnappyHexMeshDict()
-{
-
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_snappy_hex_mesh_dictionary.py";
-    QString jsonPath = caseDirectoryPathWidget->text() + "constant/simCenter/";
-    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
-    QString outputPath = caseDirectoryPathWidget->text() + "system/";
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished();
-
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
-
-    process->close();
-
-    return true;
-}
-
-bool IsolatedBuildingCFD::runBlockMesh()
-{
-
-    QString casePath = caseDirectoryPathWidget->text();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; blockMesh; checkMesh";
-
-    QProcess *process = new QProcess(this);
-
-    process->setWorkingDirectory(casePath);
-    process->start("bash", QStringList() << "-c" << commands);
-    process->waitForFinished(-1);
-
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
-
-    process->close();
-
-    return true;
-}
-
 
 void IsolatedBuildingCFD::clear(void)
 {
 
-}
-
-
-
-bool IsolatedBuildingCFD::exportBuildingGeometryToJSON()
-{
-    // just need to send the class type here.. type needed in object in case user screws up
-
-    QJsonObject jsonObject;
-
-
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
-    jsonObject["buildingWidth"]= buildingWidthWidget->text().toDouble();
-    jsonObject["buildingDepth"]= buildingDepthWidget->text().toDouble();
-    jsonObject["buildingHeight"]= buildingHeightWidget->text().toDouble();
-    jsonObject["geometricScale"]= geometricScaleWidget->text().toDouble();
-    jsonObject["windDirection"] = windDirectionWidget->value();
-    jsonObject["relativeDimensions"] = relativeDimensionsWidget->isChecked();
-
-    QJsonArray originPoint  = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
-    jsonObject["origin"] = originPoint;
-
-    //Replace with the unit system from "General Information" window
-    jsonObject["lengthUnit"] = "m";
-    jsonObject["angleUnit"] = "degree";
-
-
-    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/buildingParameters.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
-
-    return true;
-}
-
-bool IsolatedBuildingCFD::exportBlockMeshParametersToJSON()
-{
-    // Exports information needed for background mesh generation to JSON file.
-    // This information includes:
-    //      - domain dimensions
-    //      - meshing information
-    //      - boundary types
-
-
-    QJsonObject jsonObject;
-
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
-
-    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
-    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
-    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
-    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
-    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
-    jsonObject["geometricScale"] = geometricScaleWidget->text().toDouble();
-    jsonObject["relativeDimensions"] = relativeDimensionsWidget->isChecked();
-
-    QJsonArray originPoint  = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
-    jsonObject["origin"] = originPoint;
-
-    jsonObject["xNumCells"] = snappyHexMesh->xAxisNumCells->text().toDouble();
-    jsonObject["yNumCells"] = snappyHexMesh->yAxisNumCells->text().toDouble();
-    jsonObject["zNumCells"] = snappyHexMesh->zAxisNumCells->text().toDouble();
-    jsonObject["xGrading"] = snappyHexMesh->xMeshGrading->value();
-    jsonObject["yGrading"] = snappyHexMesh->yMeshGrading->value();
-    jsonObject["zGrading"] = snappyHexMesh->zMeshGrading->value();
-    jsonObject["inletBoundaryType"] = "patch";
-    jsonObject["outletBoundaryType"] = "patch";
-    jsonObject["groundBoundaryType"] = "wall";
-    jsonObject["topBoundaryType"] = "patch";
-    jsonObject["frontBoundaryType"] = "symmetry";
-    jsonObject["backBoundaryType"] = "symmetry";
-
-
-    //Replace with the unit system from "General Information" window
-    jsonObject["lengthUnit"] = "m";
-
-
-    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/blockMeshParameters.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
-
-    return true;
-}
-
-bool IsolatedBuildingCFD::exportSnappyMeshParametersToJSON()
-{
-    // Exports information needed for snappyHexMesh generation to JSON file.
-    // This information includes:
-    //      - domain dimensions
-    //      - meshing information
-    //      - Refinment info
-    //      - Prism layer
-
-
-    QJsonObject jsonObject;
-
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
-
-    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
-    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
-    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
-    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
-    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
-    jsonObject["geometricScale"] = geometricScaleWidget->text().toDouble();
-    jsonObject["relativeDimensions"] = relativeDimensionsWidget->isChecked();
-
-    QJsonArray originPoint  = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
-    jsonObject["origin"] = originPoint;
-
-    jsonObject["buildingSTLName"] = "building";
-    jsonObject["numCellsBetweenLevels"] = snappyHexMesh->numCellsBetweenLevels->value();
-    jsonObject["resolveFeatureAngle"] = snappyHexMesh->resolveFeatureAngle->value();
-    jsonObject["numProcessors"] = snappyHexMesh->numProcessors->value();
-
-    //Add regional refinment
-    const int nRegions = snappyHexMesh->refinementBoxesTable->rowCount();
-
-    QJsonArray regions;
-
-    for (int row = 0; row < nRegions; row++)
-    {
-
-        QJsonArray box;
-
-        QJsonValue name = snappyHexMesh->refinementBoxesTable->item(row, 0)->text();
-        QJsonValue level = snappyHexMesh->refinementBoxesTable->item(row, 1)->text().toDouble();
-
-        QJsonValue xMin = snappyHexMesh->refinementBoxesTable->item(row, 2)->text().toDouble();
-        QJsonValue yMin = snappyHexMesh->refinementBoxesTable->item(row, 3)->text().toDouble();
-        QJsonValue zMin = snappyHexMesh->refinementBoxesTable->item(row, 4)->text().toDouble();
-
-        QJsonValue xMax = snappyHexMesh->refinementBoxesTable->item(row, 5)->text().toDouble();
-        QJsonValue yMax = snappyHexMesh->refinementBoxesTable->item(row, 6)->text().toDouble();
-        QJsonValue zMax = snappyHexMesh->refinementBoxesTable->item(row, 7)->text().toDouble();
-
-        box.append(name);
-        box.append(level);
-        box.append(xMin);
-        box.append(yMin);
-        box.append(zMin);
-        box.append(xMax);
-        box.append(yMax);
-        box.append(zMax);
-
-        regions.append(box);
-    }
-
-    jsonObject["refinementBoxes"] = regions;
-
-
-    //Add surface refinment
-    jsonObject["addSurfaceRefinement"] = snappyHexMesh->addSurfaceRefinement->isChecked();
-    jsonObject["surfaceRefinementLevel"] = snappyHexMesh->surfaceRefinementLevel->value();
-    jsonObject["surfaceRefinementDistance"] = snappyHexMesh->surfaceRefinementDistance->text().toDouble();
-    jsonObject["refinementSurfaceName"] = "building";
-
-
-    //Add edge refinment
-    jsonObject["addEdgeRefinement"] = snappyHexMesh->addEdgeRefinement->isChecked();
-    jsonObject["edgeRefinementLevel"] = snappyHexMesh->edgeRefinementLevel->value();
-    jsonObject["refinementEdgeName"] = "building";
-
-    //Add prism layers
-    jsonObject["addPrismLayers"] = snappyHexMesh->addPrismLayers->isChecked();
-    jsonObject["numberOfPrismLayers"] = snappyHexMesh->numberOfPrismLayers->value();
-    jsonObject["numberOfPrismLayers"] = snappyHexMesh->numberOfPrismLayers->value();
-    jsonObject["prismLayerExpantionRatio"] = snappyHexMesh->prismLayerExpantionRatio->value();
-    jsonObject["finalPrismLayerThickness"] = snappyHexMesh->finalPrismLayerThickness->value();
-    jsonObject["prismLayerSurfaceName"] = "building";
-
-    //Replace with the unit system from "General Information" window
-    jsonObject["lengthUnit"] = "m";
-
-
-    QFile jsonFile(caseDirectoryPathWidget->text() + "constant/simCenter/snappyHexMeshParameters.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
-
-    return true;
 }
 
 bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
@@ -783,38 +456,68 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
      return result;
  }
 
-void IsolatedBuildingCFD::onBuildingDimensionChanged(double w, double d, double area){
-     Q_UNUSED(area);
-     buildingWidth = w;
-     buildingDepth = d;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
 
-//     double ratioDtoB = depth/breadth;
-//     if (ratioDtoB < 1.25)
-//          depthBreadth->setCurrentIndex(0);
-//     else if (ratioDtoB < 2.0)
-//         depthBreadth->setCurrentIndex(1);
-//     else
-//         depthBreadth->setCurrentIndex(2);
- }
-void IsolatedBuildingCFD::onNumFloorsOrHeightChanged(int numFloor, double h){
-//     Q_UNUSED(numFloor);
-//     height = h;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
- }
+double IsolatedBuildingCFD::domainLength()
+{
+    return domainLengthWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::domainWidth()
+{
+    return domainWidthWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::domainHeight()
+{
+    return domainHeightWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::fetchLength()
+{
+    return fetchLengthWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::buildingWidth()
+{
+    return buildingWidthWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::buildingDepth()
+{
+    return buildingDepthWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::buildingHeight()
+{
+    return buildingHeightWidget->text().toDouble();
+}
+
+
+double IsolatedBuildingCFD::geometricScale()
+{
+    return geometricScaleWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::windDirection()
+{
+    return windDirectionWidget->text().toDouble();
+}
+
+QVector<double> IsolatedBuildingCFD::coordSysOrigin()
+{
+    QVector<double> origin = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
+
+    return origin;
+}
+
+const QString IsolatedBuildingCFD::normalizationType()
+{
+    return normalizationTypeWidget->currentText();
+}
+
+const QString IsolatedBuildingCFD::caseDir()
+{
+    return caseDirectoryPathWidget->text();
+}
+
+

@@ -51,6 +51,7 @@ class SnappyHexMeshWidget;
 class BoundaryConditionsWidget;
 class TurbulenceModelingWidget;
 class SimCenterVTKRenderingWidget;
+class NumericalSetupWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -60,7 +61,7 @@ class LineEditRV;
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
-
+class WindCharacteristicsWidget;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -69,55 +70,51 @@ public:
     explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
-    bool exportBuildingGeometryToJSON();
-    bool exportBlockMeshParametersToJSON();
-    bool exportSnappyMeshParametersToJSON();
 
-    bool generateBuildingSTLGeometry();
-    bool createBlockMeshMeshDict();
-    bool createSnappyHexMeshDict();
-
-    bool runBlockMesh();
-    bool runSnappyHexMesh();
-    bool checkMesh();
-
+    //Methods
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
 
+
+    //Properties
+    double domainLength();
+    double domainWidth();
+    double domainHeight();
+    double fetchLength();
+
+    double buildingWidth();
+    double buildingDepth();
+    double buildingHeight();
+
+    double geometricScale();
+    double windDirection();
+
+    QVector<double> coordSysOrigin();
+
+    const QString normalizationType();
+    const QString caseDir();
+
 signals:
 
 public slots:
    void clear(void);
-   void onBuildingDimensionChanged(double width, double depth, double area);
-   void onNumFloorsOrHeightChanged(int numFloor, double height);
-   void onGenerateGeometryClicked();
-   void onRunBlockMeshClicked();
-   void onRunSnappyHexMeshClicked();
+//   void onGenerateGeometryClicked();
+//   void onRunBlockMeshClicked();
+//   void onRunSnappyHexMeshClicked();
 
 private:
-   double buildingWidth;
-   double buildingDepth;
-   double buildingHeight;
-
-   double domainLength;
-   double domainWidth;
-   double domainHeight;
-   double fetchDistance;
-
-
    QHBoxLayout  *mainWindowLayout;
 
    QVBoxLayout  *inputWindowLayout;
    QGroupBox    *inputWindowGroup;
 
+//   QGroupBox    *snappyHexMeshGroup;
+//   QVBoxLayout  *snappyHexMeshLayout;
+
    QVBoxLayout  *visWindowLayout;
    QGroupBox    *visWindowGroup;
-//   vtkSmartPointer<vtkQtTableView> visQVtkTableView; //vtkTableView object
-//   QVTKRenderWidget *visQVtkWidget;// rendering object
-//   QWidget *visQWidget; //QWidget to be promoted
-
 
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
@@ -135,7 +132,6 @@ private:
 
    QLineEdit    *fetchLengthWidget;
 
-   QCheckBox    *relativeDimensionsWidget;
    QCheckBox    *useCOSTDimWidget;
 
    QComboBox*   originOptions;
@@ -148,6 +144,11 @@ private:
 
    QGroupBox    *generalDescriptionGroup;
    QHBoxLayout  *generalDescriptionLayout;
+
+   QGroupBox    *generalSettingGroup;
+   QGridLayout  *generalSettingLayout;
+   QComboBox    *normalizationTypeWidget;
+
 
    QGroupBox    *caseDirectoryGroup;
    QGridLayout  *caseDirectoryLayout;
@@ -168,10 +169,11 @@ private:
    QGridLayout  *inputFormsLayout;
 
    SnappyHexMeshWidget  *snappyHexMesh;
+   WindCharacteristicsWidget  *windCharacteristics;
    SimCenterVTKRenderingWidget *visWidget;
    BoundaryConditionsWidget  *boundaryConditions;
    TurbulenceModelingWidget  *turbulenceModeling;
-
+   NumericalSetupWidget  *numericalSetup;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
