@@ -66,7 +66,7 @@ class WindCharacteristicsWidget: public SimCenterAppWidget
 
     Q_OBJECT
 public:
-    explicit WindCharacteristicsWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit WindCharacteristicsWidget(IsolatedBuildingCFD *parent = 0);
     ~WindCharacteristicsWidget();
 
     bool exportBuildingGeometryToJSON();
@@ -76,7 +76,7 @@ signals:
 
 public slots:
    void clear(void);
-//   void solverTypeChanged(const QString &arg1);
+   void onCalculateReynoldsNumber();
 //   void timeStepOptionChanged(const bool arg1);
 
 
@@ -96,17 +96,13 @@ private:
    QLineEdit        *kinematicViscosity;
    QLineEdit        *reynoldsNumber;
    QLineEdit        *aerodynamicRoughnessLength;
+   QPushButton      *calculateReynoldsNumber;
 
    QLabel           *roofHeightWindSpeedLabel;
    QLabel           *airDensityLabel;
    QLabel           *kinematicViscosityLabel;
    QLabel           *reynoldsNumberLabel;
    QLabel           *aerodynamicRoughnessLengthLabel;
-
-
-
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
 
 public:
 

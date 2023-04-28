@@ -52,6 +52,8 @@ class BoundaryConditionsWidget;
 class TurbulenceModelingWidget;
 class SimCenterVTKRenderingWidget;
 class NumericalSetupWidget;
+class WindCharacteristicsWidget;
+class ResultMonitoringWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -61,7 +63,6 @@ class LineEditRV;
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
-class WindCharacteristicsWidget;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -87,6 +88,7 @@ public:
     double buildingWidth();
     double buildingDepth();
     double buildingHeight();
+    int numberOfFloors();
 
     double geometricScale();
     double windDirection();
@@ -168,12 +170,13 @@ private:
    QWidget      *inputFormsGroup;
    QGridLayout  *inputFormsLayout;
 
-   SnappyHexMeshWidget  *snappyHexMesh;
-   WindCharacteristicsWidget  *windCharacteristics;
-   SimCenterVTKRenderingWidget *visWidget;
-   BoundaryConditionsWidget  *boundaryConditions;
-   TurbulenceModelingWidget  *turbulenceModeling;
-   NumericalSetupWidget  *numericalSetup;
+   WindCharacteristicsWidget    *windCharacteristics;
+   SnappyHexMeshWidget          *snappyHexMesh;
+   SimCenterVTKRenderingWidget  *visWidget;
+   BoundaryConditionsWidget     *boundaryConditions;
+   TurbulenceModelingWidget     *turbulenceModeling;
+   NumericalSetupWidget         *numericalSetup;
+   ResultMonitoringWidget       *resultMonitoring;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

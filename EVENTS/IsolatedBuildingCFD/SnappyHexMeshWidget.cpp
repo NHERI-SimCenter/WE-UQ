@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD/IsolatedBuildingCFD.h"
+#include "IsolatedBuildingCFD.h"
 #include "SnappyHexMeshWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
@@ -537,7 +537,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
-
 }
 
 

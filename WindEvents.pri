@@ -29,6 +29,7 @@ SOURCES += \
     $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -79,6 +80,7 @@ HEADERS  += \
     $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \

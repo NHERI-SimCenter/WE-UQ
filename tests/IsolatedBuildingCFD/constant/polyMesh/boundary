@@ -20,47 +20,47 @@ FoamFile
     {
         type            patch;
         nFaces          950;
-        startFace       853917;
+        startFace       849914;
     }
     outlet
     {
         type            patch;
         nFaces          200;
-        startFace       854867;
+        startFace       850864;
     }
     ground
     {
         type            wall;
         inGroups        List<word> 1(wall);
-        nFaces          6624;
-        startFace       855067;
+        nFaces          6588;
+        startFace       851064;
     }
     top
     {
         type            patch;
         nFaces          800;
-        startFace       861691;
+        startFace       857652;
     }
     front
     {
         type            symmetry;
         inGroups        List<word> 1(symmetry);
         nFaces          400;
-        startFace       862491;
+        startFace       858452;
     }
     back
     {
         type            symmetry;
         inGroups        List<word> 1(symmetry);
         nFaces          400;
-        startFace       862891;
+        startFace       858852;
     }
     building
     {
         type            wall;
         inGroups        List<word> 1(wall);
-        nFaces          8778;
-        startFace       863291;
+        nFaces          7174;
+        startFace       859252;
     }
 )
 

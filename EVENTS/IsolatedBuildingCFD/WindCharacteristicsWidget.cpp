@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD/IsolatedBuildingCFD.h"
 #include "WindCharacteristicsWidget.h"
+#include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -72,8 +72,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 //#include <InputWidgetParameters.h>
 
-WindCharacteristicsWidget::WindCharacteristicsWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
     int windowWidth = 800;
 
@@ -81,63 +81,81 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(RandomVariablesContainer *t
 
     int widgetGap = 25;
 
-    windCharacteristicsGroup = new QGroupBox("Numerical Setup", this);
+    windCharacteristicsGroup = new QGroupBox("Wind Characteristics", this);
     windCharacteristicsLayout = new QGridLayout();
     windCharacteristicsGroup->setLayout(windCharacteristicsLayout);
     windCharacteristicsGroup->setMaximumWidth(windowWidth);
+    windCharacteristicsLayout->setHorizontalSpacing(widgetGap);
 
 
     //==================================================================
     //              Wind Characterstics
     //==================================================================
+//    QLabel *lengthUnitLabel = new QLabel("m");
 
     roofHeightWindSpeedLabel = new QLabel("Roof Height Wind Speed:");
-    aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length:");
+    aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length (m):");
     airDensityLabel = new QLabel("Air Density:");
     kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");
     reynoldsNumberLabel = new QLabel("Reynolds Number:");
 
     roofHeightWindSpeed = new QLineEdit();
     roofHeightWindSpeed->setText("10.0");
+    roofHeightWindSpeed->setValidator(new QDoubleValidator());
     roofHeightWindSpeed->setToolTip("Wind speed at building height in model scale");
 
     aerodynamicRoughnessLength = new QLineEdit();
-    aerodynamicRoughnessLength->setText("10.0");
+    aerodynamicRoughnessLength->setText("0.03");
+    aerodynamicRoughnessLength->setValidator(new QDoubleValidator());
     aerodynamicRoughnessLength->setToolTip("Aerodynamic roughness length of the surrounding terrain in full scale");
 
     airDensity = new QLineEdit();
     airDensity->setText("1.225");
+    airDensity->setValidator(new QDoubleValidator());
     airDensity->setToolTip("Density of air near the building location");
 
     kinematicViscosity = new QLineEdit();
-    kinematicViscosity->setText("1.225");
+    QDoubleValidator* val =  new QDoubleValidator();
+    val->setNotation(QDoubleValidator::ScientificNotation);
+    kinematicViscosity->setValidator(val);
+    kinematicViscosity->setText("1.5e-5");
     kinematicViscosity->setToolTip("Kinematic viscosity of the air(viscosity/density)");
 
+
     reynoldsNumber = new QLineEdit();
-    reynoldsNumber->setText("1.225");
+    reynoldsNumber->setText("1e5");
+    reynoldsNumber->setValidator(val);
+    reynoldsNumber->setEnabled(false);
     reynoldsNumber->setToolTip("Reynolds number based on roof height wind speed and building height");
+
+
+    calculateReynoldsNumber = new QPushButton("Calculate");
 
 
     windCharacteristicsLayout->addWidget(roofHeightWindSpeedLabel, 0, 0);
     windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 1, 0);
     windCharacteristicsLayout->addWidget(airDensityLabel, 2, 0);
-    windCharacteristicsLayout->addWidget(kinematicViscosityLabel, 3, 0);
-    windCharacteristicsLayout->addWidget(reynoldsNumberLabel, 4, 0);
 
-    windCharacteristicsLayout->addWidget(roofHeightWindSpeed, 0, 2);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 1, 2);
-    windCharacteristicsLayout->addWidget(airDensity, 2, 2);
-    windCharacteristicsLayout->addWidget(kinematicViscosity, 3, 2);
-    windCharacteristicsLayout->addWidget(reynoldsNumber, 4, 2);
+    windCharacteristicsLayout->addWidget(roofHeightWindSpeed, 0, 1);
+    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 1, 1);
+//    windCharacteristicsLayout->addWidget(lengthUnitLabel, 1, 2,Qt::AlignLeft);
+    windCharacteristicsLayout->addWidget(airDensity, 2, 1);
+
+
+    windCharacteristicsLayout->addWidget(kinematicViscosityLabel, 0, 2);
+    windCharacteristicsLayout->addWidget(reynoldsNumberLabel, 1, 2);
+    windCharacteristicsLayout->addWidget(kinematicViscosity, 0, 3);
+    windCharacteristicsLayout->addWidget(reynoldsNumber, 1, 3);
+    windCharacteristicsLayout->addWidget(calculateReynoldsNumber, 1, 4);
 
     layout->addWidget(windCharacteristicsGroup);
 
     this->setLayout(layout);
 
     //Add signals
-//    connect(solverType, SIGNAL(currentIndexChanged(QString)), this, SLOT(solverTypeChanged(QString)));
-//    connect(adjustTimeStep, SIGNAL(toggled(bool)), this, SLOT(timeStepOptionChanged(bool)));
+    connect(calculateReynoldsNumber, SIGNAL(clicked()), this, SLOT(onCalculateReynoldsNumber()));
 
+    onCalculateReynoldsNumber();
 }
 
 
@@ -149,6 +167,15 @@ WindCharacteristicsWidget::~WindCharacteristicsWidget()
 void WindCharacteristicsWidget::clear(void)
 {
 
+}
+
+void WindCharacteristicsWidget::onCalculateReynoldsNumber()
+{
+    double h = mainModel->buildingHeight()/mainModel->geometricScale();
+    double Uh = roofHeightWindSpeed->text().toDouble();
+    double kv = kinematicViscosity->text().toDouble();
+
+    reynoldsNumber->setText(QString::number(Uh*h/kv));
 }
 
 //void WindCharacteristicsWidget::solverTypeChanged(const QString &arg1)

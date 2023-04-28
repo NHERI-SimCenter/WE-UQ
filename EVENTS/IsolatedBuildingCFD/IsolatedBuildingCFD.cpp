@@ -43,7 +43,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "TurbulenceModelingWidget.h"
 #include "SimCenterVTKRenderingWidget.h"
 #include "NumericalSetupWidget.h"
-#include "NumericalSetupWidget.h"
+#include "WindCharacteristicsWidget.h"
+#include "ResultMonitoringWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -281,6 +282,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
 
+    //Controls for wind characteristics setup
+    windCharacteristics = new WindCharacteristicsWidget(this);
 
     //Controls for snappyHexMesh
     snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
@@ -297,15 +300,21 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     numericalSetup = new NumericalSetupWidget(theRandomVariablesContainer);
     numericalSetup->mainModel = this;
 
+    //Add result monitoring widget
+    resultMonitoring = new ResultMonitoringWidget(this);
+
+
     inputFormsLayout->addWidget(generalDescriptionGroup);
     inputFormsLayout->addWidget(generalSettingGroup);
     inputFormsLayout->addWidget(caseDirectoryGroup);
     inputFormsLayout->addWidget(buildingAndDomainInformationGroup);
     inputFormsLayout->addWidget(coordinateSystemGroup);
+    inputFormsLayout->addWidget(windCharacteristics);
     inputFormsLayout->addWidget(snappyHexMesh);
     inputFormsLayout->addWidget(turbulenceModeling);
     inputFormsLayout->addWidget(boundaryConditions);
     inputFormsLayout->addWidget(numericalSetup);
+    inputFormsLayout->addWidget(resultMonitoring);
 
     inputFormsGroup->setLayout(inputFormsLayout);
 
@@ -316,9 +325,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 //    buildingAndDomainInformationLayout->setMargin(20);
 
 
-    //    connect(the1x1RadioButton, SIGNAL(toggled(bool)), this, SLOT(oneByOneToggled(bool)));
-//    connect(roofType,SIGNAL(currentIndexChanged(int)), this, SLOT(onRoofTypeChanged(int)));
-//    this->setLayout(layout);
 
     inputWindowGroup->setLayout(inputWindowLayout);
 
@@ -490,6 +496,11 @@ double IsolatedBuildingCFD::buildingDepth()
 double IsolatedBuildingCFD::buildingHeight()
 {
     return buildingHeightWidget->text().toDouble();
+}
+int IsolatedBuildingCFD::numberOfFloors()
+{
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    return theGI->getNumFloors();
 }
 
 
