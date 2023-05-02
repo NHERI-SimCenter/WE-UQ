@@ -147,6 +147,7 @@ LIBS += -L/usr/local/lib \
         -lvtkRenderingOpenGL2-9.2 \
         -lvtkIOGeometry-9.2 \
         -lvtkViewsQt-9.2 \
+        -lvtkIOLegacy-9.2 \
         -lvtksys-9.2
 
 QT += widgets

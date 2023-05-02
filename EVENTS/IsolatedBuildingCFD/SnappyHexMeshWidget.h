@@ -64,14 +64,8 @@ class SnappyHexMeshWidget: public SimCenterAppWidget
 
     Q_OBJECT
 public:
-    explicit SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit SnappyHexMeshWidget(IsolatedBuildingCFD *parent = 0);
     ~SnappyHexMeshWidget();
-
-//    bool outputToJSON(QJsonObject &rvObject);
-//    bool inputFromJSON(QJsonObject &rvObject);
-//    bool outputAppDataToJSON(QJsonObject &rvObject);
-//    bool inputAppDataFromJSON(QJsonObject &rvObject);
-//    bool copyFiles(QString &dirName);
 
     bool exportBuildingGeometryToJSON();
     bool exportBlockMeshParametersToJSON();

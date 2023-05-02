@@ -54,19 +54,17 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
+class IsolatedBuildingCFD;
 
 class TurbulenceModelingWidget: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit TurbulenceModelingWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit TurbulenceModelingWidget(IsolatedBuildingCFD *parent = 0);
     ~TurbulenceModelingWidget();
 
-//    bool outputToJSON(QJsonObject &rvObject);
-//    bool inputFromJSON(QJsonObject &rvObject);
-//    bool outputAppDataToJSON(QJsonObject &rvObject);
-//    bool inputAppDataFromJSON(QJsonObject &rvObject);
-//    bool copyFiles(QString &dirName);
+    bool writeToJSON();
+
 
 signals:
 
@@ -77,9 +75,7 @@ public slots:
    void LESModelTypeChanged(const QString &arg1);
 
 private:
-   double breadth;
-   double depth;
-   double height;
+   IsolatedBuildingCFD  *mainModel;
 
    QVBoxLayout      *layout;
 

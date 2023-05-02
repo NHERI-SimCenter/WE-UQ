@@ -69,6 +69,8 @@ public:
     explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
     ~ResultMonitoringWidget();
 
+    bool writeToJSON();
+
 
 signals:
 
@@ -114,6 +116,7 @@ private:
    QComboBox            *floorHeightOptions;
 
    QLineEdit            *floorHeight;
+   QSpinBox             *numStories;
    QLineEdit            *centerOfRotationX;
    QLineEdit            *centerOfRotationY;
    QLineEdit            *centerOfRotationZ;

@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD/IsolatedBuildingCFD.h"
+#include "IsolatedBuildingCFD.h"
 #include "NumericalSetupWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
@@ -66,25 +66,17 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
-
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
-//#include <InputWidgetParameters.h>
-
-NumericalSetupWidget::NumericalSetupWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
-    int windowWidth = 800;
-
     layout = new QVBoxLayout();
-
-    int widgetGap = 25;
 
     numericalSetupGroup = new QGroupBox("Numerical Setup", this);
     numericalSetupLayout = new QVBoxLayout();
     numericalSetupGroup->setLayout(numericalSetupLayout);
-    numericalSetupGroup->setMaximumWidth(windowWidth);
 
     solverSelectionGroup = new QGroupBox("Solver Selection", this);
     solverSelectionLayout = new QGridLayout();
@@ -265,30 +257,27 @@ void NumericalSetupWidget::timeStepOptionChanged(const bool arg1)
     }
 }
 
-bool NumericalSetupWidget::exportBuildingGeometryToJSON()
+
+bool NumericalSetupWidget::writeToJSON()
 {
-    // just need to send the class type here.. type needed in object in case user screws up
+    // Writes physical parameters boundary information to JSON file.
 
     QJsonObject jsonObject;
 
     jsonObject["type"]="IsolatedBuildingCFD";
     jsonObject["EventClassification"]="Wind";
-    jsonObject["buildingWidth"]= mainModel->buildingWidth();
-    jsonObject["buildingDepth"]= mainModel->buildingDepth();
-    jsonObject["buildingHeight"]= mainModel->buildingHeight();
-    jsonObject["geometricScale"]= mainModel->geometricScale();
-    jsonObject["windDirection"] = mainModel->windDirection();
-    jsonObject["normalizationType"] = mainModel->normalizationType();
 
-    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-    jsonObject["origin"] = originPoint;
-
-    //Replace with the unit system from "General Information" window
-    jsonObject["lengthUnit"] = "m";
-    jsonObject["angleUnit"] = "degree";
+    jsonObject["solverType"] = solverType->currentText();
+    jsonObject["numNonOrthogonalCorrectors"] = numNonOrthogonalCorrectors->value();
+    jsonObject["numCorrectors"] = numCorrectors->value();
+    jsonObject["numOuterCorrectors"] = numOuterCorrectors->value();
+    jsonObject["duration"] = duration->text().toDouble();
+    jsonObject["timeStep"] = timeStep->text().toDouble();
+    jsonObject["maxCourantNumber"] = maxCourantNumber->value();
+    jsonObject["adjustTimeStep"] = adjustTimeStep->isChecked();
 
 
-    QFile jsonFile(mainModel->caseDir() + "constant/simCenter/buildingParameters.json");
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/numericalSetup.json");
     jsonFile.open(QFile::WriteOnly);
 
     QJsonDocument jsonDoc = QJsonDocument(jsonObject);
@@ -297,3 +286,4 @@ bool NumericalSetupWidget::exportBuildingGeometryToJSON()
 
     return true;
 }
+

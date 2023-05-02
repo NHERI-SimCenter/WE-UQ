@@ -37,6 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include "TurbulenceModelingWidget.h"
+#include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -63,20 +64,17 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
-//#include <InputWidgetParameters.h>
 
-TurbulenceModelingWidget::TurbulenceModelingWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
-//    femSpecific = 0;
-    int windowWidth = 800;
-
     layout = new QVBoxLayout();
-
 
     QGroupBox* turbModelGroup = new QGroupBox("Turbulence Modeling", this);
     QGridLayout* turbModelLayout = new QGridLayout();
@@ -194,14 +192,8 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(RandomVariablesContainer *the
     //============================= ******* ===============================//
 
     layout->addWidget(turbModelGroup);
-
     this->setLayout(layout);
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-
-    height=theGI->getHeight();
-    double area;
-    theGI->getBuildingDimensions(breadth, depth, area);
 }
 
 
@@ -296,4 +288,31 @@ void TurbulenceModelingWidget::LESModelTypeChanged(const QString &arg1)
 
     RANSWidget->repaint();
 }
+
+
+bool TurbulenceModelingWidget::writeToJSON()
+{
+    // Writes turbulence modeling options RANS, LES and DES.
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
+
+    jsonObject["simulationType"] = turbModelOptions->currentText();
+    jsonObject["RANSModelType"] = RANSOptions->currentText();
+    jsonObject["LESModelType"] = LESOptions->currentText();
+    jsonObject["DESModelType"] = DESOptions->currentText();
+
+
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/turbulenceModeling.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}
+
 

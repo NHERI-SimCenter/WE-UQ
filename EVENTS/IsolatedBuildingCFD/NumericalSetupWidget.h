@@ -66,10 +66,10 @@ class NumericalSetupWidget: public SimCenterAppWidget
 
     Q_OBJECT
 public:
-    explicit NumericalSetupWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit NumericalSetupWidget(IsolatedBuildingCFD *parent = 0);
     ~NumericalSetupWidget();
 
-    bool exportBuildingGeometryToJSON();
+    bool writeToJSON();
 
 
 signals:

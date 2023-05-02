@@ -72,11 +72,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 //#include <InputWidgetParameters.h>
 
-SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
-    int windowWidth = 800;
-
     layout = new QVBoxLayout();
 
     int widgetGap = 25;
@@ -519,10 +517,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget(RandomVariablesContainer *theRandomVari
     //=============================================================================
 
     layout->addWidget(snappyHexMeshGroup);
-
-
-    snappyHexMeshTab->setMaximumWidth(windowWidth);
-    snappyHexMeshGroup->setMaximumWidth(windowWidth);
 
     this->setLayout(layout);
 

@@ -1,0 +1,10 @@
+{
+    "EventClassification": "Wind",
+    "buildingBoundaryCondition": "noSlip",
+    "groundBoundaryCondition": "noSlip",
+    "inletBoundaryCondition": "Uniform",
+    "outletBoundaryCondition": "zeroPressureOutlet",
+    "sidesBoundaryCondition": "slip",
+    "topBoundaryCondition": "slip",
+    "type": "IsolatedBuildingCFD"
+}

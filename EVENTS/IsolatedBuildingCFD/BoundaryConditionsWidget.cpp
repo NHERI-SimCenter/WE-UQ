@@ -37,6 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include "BoundaryConditionsWidget.h"
+#include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -54,27 +55,23 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <RandomVariablesContainer.h>
 #include <QRadioButton>
 #include <QButtonGroup>
-
 #include <QComboBox>
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
-//#include <InputWidgetParameters.h>
-
-BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
-//    femSpecific = 0;
-    int windowWidth = 800;
 
     layout = new QVBoxLayout();
-
 
     QGroupBox* boundaryConditionsGroup = new QGroupBox("Boundary Conditions", this);
 
@@ -96,7 +93,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
 
     inletBCType  = new QComboBox();
     inletBCType->addItem("Uniform");
-    inletBCType->addItem("ABL Mean");
+    inletBCType->addItem("MeanABL");
     inletBCType->addItem("TInf");
 
     outletBCType  = new QComboBox();
@@ -158,29 +155,10 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(RandomVariablesContainer *the
     boundaryConditionsLayout->setHorizontalSpacing(25);
 
 
-    //-----------------------------------------------------------------
-
-//    // Add regional refinment (box refinment) Tab
-//    QWidget* regionalRefinmentWidget = new QWidget();
-//    QGridLayout* regionalRefinmentLayout = new QGridLayout(regionalRefinmentWidget);
-
-//    int numCols = 8;
-//    int numRows = 4;
-
-
-
-
     //-------------------------------------------------------------------------------
     layout->addWidget(boundaryConditionsGroup);
 
-
     this->setLayout(layout);
-
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-
-    height=theGI->getHeight();
-    double area;
-    theGI->getBuildingDimensions(breadth, depth, area);
 }
 
 
@@ -189,199 +167,33 @@ BoundaryConditionsWidget::~BoundaryConditionsWidget()
 
 }
 
-//void
-//SnappyHexMesh::onRoofTypeChanged(int roofSelection) {
-
-//    // remove old pitch & delete
-//    windTunnelGeometryLayout->removeWidget(pitch);
-//    delete pitch;
-
-
-//    // create new one
-//    if (roofSelection == 0) {
-
-//        pitch = new QComboBox;
-//        pitch->addItem("0.0");
-
-//        QPixmap pixmapFlat(":/Resources/LowRise/lowriseFlat.png");
-//        theBuildingButton->setIcon(pixmapFlat);
-
-//    } else {
-
-//        pitch = new QComboBox;
-//        pitch->addItem("4.8");
-//        pitch->addItem("9.4");
-//        pitch->addItem("14.0");
-//        pitch->addItem("18.4");
-//        pitch->addItem("21.8");
-//        pitch->addItem("26.7");
-//        pitch->addItem("30.0");
-//        pitch->addItem("45.0");
-
-//        QPixmap pixmapGable(":/Resources/LowRise/lowriseGable.png");
-//        theBuildingButton->setIcon(pixmapGable);
-
-//    }
-//    // add
-//    windTunnelGeometryLayout->addWidget(pitch,3,3);
-//    qDebug() << "ADDED NEW";
-//}
-
 void BoundaryConditionsWidget::clear(void)
 {
 
 }
 
+bool BoundaryConditionsWidget::writeToJSON()
+{
+    // Writes physical parameters boundary information to JSON file.
 
+    QJsonObject jsonObject;
 
-//bool
-//SnappyHexMesh::outputToJSON(QJsonObject &jsonObject)
-//{
-//    // just need to send the class type here.. type needed in object in case user screws up
-//    jsonObject["type"]="SnappyHexMesh";
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
 
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["roofType"]= roofType->currentText();
-//    jsonObject["heightBreadth"]= heightBreadth->currentText();
-//    jsonObject["depthBreadth"]= depthBreadth->currentText();
-//    jsonObject["pitch"]= pitch->currentText();
-//    jsonObject["incidenceAngle"] = incidenceAngle->value();
+    jsonObject["inletBoundaryCondition"] = inletBCType->currentText();
+    jsonObject["outletBoundaryCondition"] = outletBCType->currentText();
+    jsonObject["topBoundaryCondition"] = topBCType->currentText();
+    jsonObject["sidesBoundaryCondition"] = sidesBCType->currentText();
+    jsonObject["groundBoundaryCondition"] = groundBCType->currentText();
+    jsonObject["buildingBoundaryCondition"] = buildingBCType->currentText();
 
-//    //    jsonObject["windSpeed"]=windSpeed->text().toDouble();
-//   windSpeed->outputToJSON(jsonObject, QString("windSpeed"));
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/boundaryConditions.json");
+    jsonFile.open(QFile::WriteOnly);
 
-//    return true;
-//}
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
 
+    jsonFile.write(jsonDoc.toJson());
 
-//bool
-//SnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
-//{
-//    this->clear();
-
-//    if (jsonObject.contains("roofType")) {
-//      QJsonValue theValue = jsonObject["roofType"];
-//      QString selection = theValue.toString();
-//      roofType->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("heightBreadth")) {
-//      QJsonValue theValue = jsonObject["heightBreadth"];
-//      QString selection = theValue.toString();
-//      heightBreadth->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("depthBreadth")) {
-//      QJsonValue theValue = jsonObject["dethBreadth"];
-//      QString selection = theValue.toString();
-//      depthBreadth->setCurrentText(selection);
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("pitch")) {
-//      QJsonValue theValue = jsonObject["pitch"];
-//      QString selection = theValue.toString();
-//      pitch->setCurrentText(selection);
-//    } else
-//      return false;
-
-
-//    if (jsonObject.contains("windSpeed")) {
-//      /*
-//      QJsonValue theValue = jsonObject["windSpeed"];
-//      double speed = theValue.toDouble();
-//      windSpeed->setText(QString::number(speed));
-//      */
-//      windSpeed->inputFromJSON(jsonObject,QString("windSpeed"));
-//    } else
-//      return false;
-
-//    if (jsonObject.contains("incidenceAngle")) {
-//      QJsonValue theValue = jsonObject["incidenceAngle"];
-//      int angle = theValue.toInt();
-//      incidenceAngle->setValue(angle);
-//    } else
-//      return false;
-
-
-//    return true;
-//}
-
-//bool
-//SnappyHexMesh::outputAppDataToJSON(QJsonObject &jsonObject) {
-
-//    //
-//    // per API, need to add name of application to be called in AppLication
-//    // and all data to be used in ApplicationDate
-//    //
-
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["Application"] = "SnappyHexMesh";
-//    QJsonObject dataObj;
-//    jsonObject["ApplicationData"] = dataObj;
-
-//    return true;
-//}
-//bool
-//SnappyHexMesh::inputAppDataFromJSON(QJsonObject &jsonObject) {
-
-//    Q_UNUSED(jsonObject);
-//    return true;
-//}
-
-
-// bool
-// SnappyHexMesh::copyFiles(QString &destDir) {
-
-//     QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-//             + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
-//             + QString("SnappyHexMesh") + QDir::separator() + QString("SnappyHexMesh.py");
-
-//     bool result = this->copyFile(name1, destDir);
-//     if (result == false) {
-//         QString errorMessage; errorMessage = "SnappyHexMesh - failed to copy file: " + name1 + "to: " + destDir;
-//         emit sendFatalMessage(errorMessage);
-//         qDebug() << errorMessage;
-//     }
-//     return result;
-// }
-
-// void
-// SnappyHexMesh::onBuildingDimensionChanged(double w, double d, double area){
-//     Q_UNUSED(area);
-//     breadth = w;
-//     depth = d;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
-
-//     double ratioDtoB = depth/breadth;
-//     if (ratioDtoB < 1.25)
-//          depthBreadth->setCurrentIndex(0);
-//     else if (ratioDtoB < 2.0)
-//         depthBreadth->setCurrentIndex(1);
-//     else
-//         depthBreadth->setCurrentIndex(2);
-// }
-// void
-// SnappyHexMesh::onNumFloorsOrHeightChanged(int numFloor, double h){
-//     Q_UNUSED(numFloor);
-//     height = h;
-//     double ratioHtoB = height/breadth;
-//     if (ratioHtoB < .375) {
-//         heightBreadth->setCurrentIndex(0);
-//     } else if (ratioHtoB < .675) {
-//         heightBreadth->setCurrentIndex(1);
-//     } else if (ratioHtoB < .875) {
-//         heightBreadth->setCurrentIndex(2);
-//     } else
-//         heightBreadth->setCurrentIndex(3);
-// }
+    return true;
+}

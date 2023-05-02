@@ -69,7 +69,7 @@ public:
     explicit WindCharacteristicsWidget(IsolatedBuildingCFD *parent = 0);
     ~WindCharacteristicsWidget();
 
-    bool exportBuildingGeometryToJSON();
+    bool writeToJSON();
 
 
 signals:

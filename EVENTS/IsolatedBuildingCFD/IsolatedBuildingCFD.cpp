@@ -79,7 +79,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     femSpecific = 0;
-    int windowWidth = 800;
+    const int windowWidth = 850;
 
     mainWindowLayout = new QHBoxLayout();
 
@@ -143,6 +143,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     windDirectionWidget = new QSpinBox;
     windDirectionWidget->setRange(0, 90);
     windDirectionWidget->setSingleStep(10);
+    windDirectionWidget->setValue(45);
 
     QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
     domainLengthWidget = new QLineEdit();
@@ -286,19 +287,16 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     windCharacteristics = new WindCharacteristicsWidget(this);
 
     //Controls for snappyHexMesh
-    snappyHexMesh = new SnappyHexMeshWidget(theRandomVariablesContainer);
-    snappyHexMesh->mainModel = this;
+    snappyHexMesh = new SnappyHexMeshWidget(this);
 
     //Controle for turbulence modeling
-    turbulenceModeling = new TurbulenceModelingWidget(theRandomVariablesContainer);
+    turbulenceModeling = new TurbulenceModelingWidget(this);
 
     //Controls for boundary conditions
-    boundaryConditions = new BoundaryConditionsWidget(theRandomVariablesContainer);
-
+    boundaryConditions = new BoundaryConditionsWidget(this);
 
     //Controls for numerical setup
-    numericalSetup = new NumericalSetupWidget(theRandomVariablesContainer);
-    numericalSetup->mainModel = this;
+    numericalSetup = new NumericalSetupWidget(this);
 
     //Add result monitoring widget
     resultMonitoring = new ResultMonitoringWidget(this);
@@ -333,20 +331,19 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     scrollArea->setLineWidth(1);
     scrollArea->setFrameShape(QFrame::NoFrame);
     scrollArea->setWidget(inputFormsGroup);
-    scrollArea->setMaximumWidth(windowWidth + 25);
+    scrollArea->setMaximumWidth(windowWidth + 50);
 
     inputWindowLayout->addWidget(scrollArea);
 
     mainWindowLayout->addWidget(inputWindowGroup);
-    inputFormsGroup->setMaximumWidth(windowWidth-30);
-    inputWindowGroup->setMaximumWidth(windowWidth);
+    inputFormsGroup->setMaximumWidth(windowWidth - 100);
 
     //==========================================================================
 
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
-    visWidget = new SimCenterVTKRenderingWidget (theRandomVariablesContainer);
+    visWidget = new SimCenterVTKRenderingWidget (this);
 
     visWindowLayout->addWidget(visWidget);
 
@@ -358,6 +355,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     // connnect some signals and slots to capture building dimensions changing to update selections
     // set initial selections
     //
+
+    runCFD = new QPushButton("Run CFD");
+    generalDescriptionLayout->addWidget(runCFD);
+    connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
 }
 
 
@@ -366,6 +367,14 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 }
 
+void IsolatedBuildingCFD::onRunCFDClicked(void)
+{
+    windCharacteristics->writeToJSON();
+    boundaryConditions->writeToJSON();
+    turbulenceModeling->writeToJSON();
+    numericalSetup->writeToJSON();
+    resultMonitoring->writeToJSON();
+}
 
 void IsolatedBuildingCFD::clear(void)
 {

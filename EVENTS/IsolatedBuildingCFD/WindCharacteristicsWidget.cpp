@@ -75,8 +75,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
-    int windowWidth = 800;
-
     layout = new QVBoxLayout();
 
     int widgetGap = 25;
@@ -84,7 +82,6 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     windCharacteristicsGroup = new QGroupBox("Wind Characteristics", this);
     windCharacteristicsLayout = new QGridLayout();
     windCharacteristicsGroup->setLayout(windCharacteristicsLayout);
-    windCharacteristicsGroup->setMaximumWidth(windowWidth);
     windCharacteristicsLayout->setHorizontalSpacing(widgetGap);
 
 
@@ -178,82 +175,28 @@ void WindCharacteristicsWidget::onCalculateReynoldsNumber()
     reynoldsNumber->setText(QString::number(Uh*h/kv));
 }
 
-//void WindCharacteristicsWidget::solverTypeChanged(const QString &arg1)
-//{
-//    if (arg1 == "simpleFoam")
-//    {
-//        numCorrectors->setEnabled(false);
-//        numCorrectorsLabel->setEnabled(false);
+bool WindCharacteristicsWidget::writeToJSON()
+{
+    // Writes wind characterstics (flow properties) JSON file.
 
-//        numOuterCorrectors->setEnabled(false);
-//        numOuterCorrectorsLabel->setEnabled(false);
-//    }
-//    else if (arg1 == "pisoFoam")
-//    {
-//        numCorrectors->setEnabled(true);
-//        numCorrectorsLabel->setEnabled(true);
+    QJsonObject jsonObject;
 
-//        numOuterCorrectors->setEnabled(false);
-//        numOuterCorrectorsLabel->setEnabled(false);
-//    }
-//    else if(arg1 == "pimpleFoam")
-//    {
-//        numCorrectors->setEnabled(true);
-//        numCorrectorsLabel  ->setEnabled(true);
+    jsonObject["type"]="IsolatedBuildingCFD";
+    jsonObject["EventClassification"]="Wind";
 
-//        numOuterCorrectors->setEnabled(true);
-//        numOuterCorrectorsLabel->setEnabled(true);
-//    }
-//    else
-//    {
-//        qDebug() << "ERROR .. solver selection.. type unknown: " << arg1;
-//    }
-//}
-
-//void WindCharacteristicsWidget::timeStepOptionChanged(const bool arg1)
-//{
-//    if (adjustTimeStep->isChecked() && solverType->currentText()=="pimpleFoam")
-//    {
-//        maxCourantNumber->setEnabled(true);
-//        maxCourantNumberLabel->setEnabled(true);
-//    }
-//    else
-//    {
-//        maxCourantNumber->setEnabled(false);
-//        maxCourantNumberLabel->setEnabled(false);
-//        constTimeStep->setChecked(true);
-//    }
-//}
-
-//bool WindCharacteristicsWidget::exportBuildingGeometryToJSON()
-//{
-//    // just need to send the class type here.. type needed in object in case user screws up
-
-//    QJsonObject jsonObject;
-
-//    jsonObject["type"]="IsolatedBuildingCFD";
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["buildingWidth"]= mainModel->buildingWidth();
-//    jsonObject["buildingDepth"]= mainModel->buildingDepth();
-//    jsonObject["buildingHeight"]= mainModel->buildingHeight();
-//    jsonObject["geometricScale"]= mainModel->geometricScale();
-//    jsonObject["windDirection"] = mainModel->windDirection();
-//    jsonObject["normalizationType"] = mainModel->normalizationType();
-
-//    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-//    jsonObject["origin"] = originPoint;
-
-//    //Replace with the unit system from "General Information" window
-//    jsonObject["lengthUnit"] = "m";
-//    jsonObject["angleUnit"] = "degree";
+    jsonObject["roofHeightWindSpeed"] = roofHeightWindSpeed->text().toDouble();
+    jsonObject["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
+    jsonObject["kinematicViscosity"] = kinematicViscosity->text().toDouble();
+    jsonObject["airDensity"] = airDensity->text().toDouble();
+    jsonObject["buildingHeight"] = mainModel->buildingHeight()/mainModel->geometricScale();
 
 
-//    QFile jsonFile(mainModel->caseDir() + "constant/simCenter/buildingParameters.json");
-//    jsonFile.open(QFile::WriteOnly);
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/windCharacteristics.json");
+    jsonFile.open(QFile::WriteOnly);
 
-//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
 
-//    jsonFile.write(jsonDoc.toJson());
+    jsonFile.write(jsonDoc.toJson());
 
-//    return true;
-//}
+    return true;
+}

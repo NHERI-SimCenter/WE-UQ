@@ -37,6 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include "SimCenterVTKRenderingWidget.h"
+#include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -91,13 +92,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
-
 #include <vtkRegressionTestImage.h>
 #include <vtkTestUtilities.h>
 
 
-SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
-    : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
+SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
 
@@ -114,12 +114,16 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(RandomVariablesContaine
 
     QLabel *surfaceRepresentationLabel = new QLabel("Representation: ");
     QLabel *transparencyLabel = new QLabel("Transparency: ");
+    QLabel *viewLabel = new QLabel("View: ");
 
     surfaceRepresentation = new QComboBox();
     surfaceRepresentation->addItem("SurfaceWithGrid");
     surfaceRepresentation->addItem("Surface");
     surfaceRepresentation->addItem("Wireframe");
 
+    viewObject = new QComboBox();
+    viewObject->addItem("Domain");
+    viewObject->addItem("Building-surface");
 
     transparency = new QSlider(Qt::Orientation::Horizontal);
     transparency->setRange(0, 100);
@@ -130,17 +134,18 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(RandomVariablesContaine
 
     reloadCase = new QPushButton("Reload");
 
-    menueLayout->addWidget(surfaceRepresentationLabel, 0, 0, Qt::AlignRight);
-    menueLayout->addWidget(surfaceRepresentation, 0, 1, Qt::AlignLeft);
-    menueLayout->addWidget(reloadCase, 0, 2, Qt::AlignCenter);
-    menueLayout->addWidget(transparencyLabel, 0, 3, Qt::AlignRight);
-    menueLayout->addWidget(transparency, 0, 4, Qt::AlignLeft);
+    menueLayout->addWidget(viewObject, 0, 0, Qt::AlignRight);
+    menueLayout->addWidget(surfaceRepresentationLabel, 0, 1, Qt::AlignRight);
+    menueLayout->addWidget(surfaceRepresentation, 0, 2, Qt::AlignLeft);
+    menueLayout->addWidget(reloadCase, 0, 3, Qt::AlignCenter);
+    menueLayout->addWidget(transparencyLabel, 0, 4, Qt::AlignRight);
+    menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
 
     readMesh();
 
     qvtkWidget->setMinimumSize(QSize(350, 600));
     visLayout->addWidget(qvtkWidget);
-    visGroup->setStyleSheet("border: 2px solid red");
+    visGroup->setStyleSheet("border: 2px solid black");
     visLayout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(menueGroup);
     layout->addWidget(visGroup);
@@ -151,6 +156,10 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(RandomVariablesContaine
     connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
+
+    //Set default transparency to 10%
+    transparency->setValue(10);
+    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 }
 
 
@@ -226,7 +235,6 @@ void SimCenterVTKRenderingWidget::readMesh()
     //   block0->GetCellData()->SetActiveVectors("U");
     //    std::cout << "Scalar range: " << block0->GetCellData()->GetScalars()->GetRange()[0] << ", "
     //              << block0->GetCellData()->GetScalars()->GetRange()[1] << std::endl;
-
 
 
     //Create mapper

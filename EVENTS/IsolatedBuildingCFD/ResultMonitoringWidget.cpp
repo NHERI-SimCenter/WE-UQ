@@ -94,25 +94,22 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVTKRenderWidget.h>
 #include <vtkRegressionTestImage.h>
 #include <vtkTestUtilities.h>
+#include <vtkSimplePointsReader.h>
 #include <QVector3D>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
-
-//#include <InputWidgetParameters.h>
+#include <QFile>
+#include <QTextStream>
+#include <QtMath>
 
 ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
-    int windowWidth = 800;
-
     layout = new QVBoxLayout();
-
-    int widgetGap = 25;
 
     resultMonitoringGroup = new QGroupBox("Result Monitoring");
     resultMonitoringLayout = new QVBoxLayout();
     resultMonitoringGroup->setLayout(resultMonitoringLayout);
-    resultMonitoringGroup->setMaximumWidth(windowWidth);
 
     monitorIntegratedLoadGroup = new QGroupBox("Story Loads");
     monitorIntegratedLoadLayout = new QGridLayout();
@@ -159,6 +156,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     QLabel* floorHeightOptionsLabel = new QLabel("Floor Height Specification: ");
     QLabel* floorHeightLabel = new QLabel("Floor to Floor Height: ");
+    QLabel* numStoriesLabel = new QLabel("Number of Stories: ");
     QLabel* storyLoadWriteIntervalLabel = new QLabel("Write Interval: ");
     QLabel* centerOfRotationLabel = new QLabel("Center of Rotation:");
     QLabel* centerOfRotationXLabel = new QLabel("X");
@@ -178,6 +176,13 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     writeIterval->setValue(5);
     writeIterval->setEnabled(true);
     writeIterval->setToolTip("Writing interval as a multiple of time step");
+
+    numStories = new QSpinBox();
+    numStories->setSingleStep(1);
+    numStories->setMinimum(1);
+    numStories->setValue(60);
+    numStories->setEnabled(false);
+    numStories->setToolTip("Number of stories in the building");
 
 
     floorHeight = new QLineEdit();
@@ -203,22 +208,24 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     monitorIntegratedLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
     monitorIntegratedLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
-    monitorIntegratedLoadLayout->addWidget(floorHeightLabel, 1, 0);
-    monitorIntegratedLoadLayout->addWidget(floorHeight, 1, 1, 1, 4);
-    monitorIntegratedLoadLayout->addWidget(storyLoadWriteIntervalLabel, 2, 0);
-    monitorIntegratedLoadLayout->addWidget(writeIterval, 2, 1, 1, 4);
+    monitorIntegratedLoadLayout->addWidget(numStoriesLabel, 1, 0);
+    monitorIntegratedLoadLayout->addWidget(numStories, 1, 1, 1, 4);
+    monitorIntegratedLoadLayout->addWidget(floorHeightLabel, 2, 0);
+    monitorIntegratedLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
+    monitorIntegratedLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
+    monitorIntegratedLoadLayout->addWidget(writeIterval, 3, 1, 1, 4);
 
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 3, 1, Qt::AlignLeft);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 3, 3, Qt::AlignRight);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 3, 5, Qt::AlignRight);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 4, 5, Qt::AlignRight);
 
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 3, 0);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 3, 2);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 3, 4);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 3, 6);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 4, 0);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 4, 2);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
+    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
 
 //    monitorIntegratedLoadLayout->addWidget(monitorBaseLoadLabel, 4, 0);
-    monitorIntegratedLoadLayout->addWidget(monitorBaseLoad, 4, 0);
+    monitorIntegratedLoadLayout->addWidget(monitorBaseLoad, 5, 0);
 
     resultMonitoringLayout->addWidget(monitorIntegratedLoadGroup);
 
@@ -298,6 +305,13 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
 
+
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+
+
+//    sto
+//    numb =theGI->getHeight();
+
 }
 
 
@@ -353,9 +367,7 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     QList<QVector3D> points = calculatePointCoordinates(nW, nD, nH);
 
     int numCols = 3; // x, y and z
-    int numRows = points.count(); //acount points on each face of the building (sides and top)
-
-    cerr << "Print no. rows  = " << numRows << endl;
+    int numRows = points.size(); //acount points on each face of the building (sides and top)
 
     QTableWidget *samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
     samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
@@ -397,9 +409,12 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
 
     QVTKRenderWidget *qvtkWidget;
-    vtkSmartPointer<vtkSTLReader> reader;
-    vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-    vtkNew<vtkActor> actor;// Actor in scene
+    vtkSmartPointer<vtkSTLReader> buildingReader;
+    vtkSmartPointer<vtkDataSetMapper> buildingMapper; //mapper
+    vtkNew<vtkActor> buildingActor;// Actor in scene
+    vtkSmartPointer<vtkSimplePointsReader> pointsReader;
+    vtkSmartPointer<vtkDataSetMapper> pointsMapper; //mapper
+    vtkNew<vtkActor> pointsActor;// Actor in scene
     vtkNew<vtkRenderer> renderer; // VTK Renderer
     vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
 
@@ -409,23 +424,42 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
 
     // Setup reader
-    reader = vtkSmartPointer<vtkSTLReader>::New();
-    reader->SetFileName("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/constant/geometry/building.stl");
-    reader->Update();
+    buildingReader = vtkSmartPointer<vtkSTLReader>::New();
+    buildingReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+    buildingReader->Update();
 
     //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(reader->GetOutput());
-    mapper->SetScalarVisibility(false);
-    actor->GetProperty()->SetRepresentationToSurface();
+    buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    buildingMapper->SetInputData(buildingReader->GetOutput());
+    buildingMapper->SetScalarVisibility(false);
 
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+    //Set up actor
+    buildingActor->GetProperty()->SetRepresentationToSurface();
+    buildingActor->SetMapper(buildingMapper);
+    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+
+    //point reader
+    pointsReader = vtkSmartPointer<vtkSimplePointsReader>::New();
+    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->Update();
+
+    //point mapper
+    pointsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    pointsMapper->SetInputData(pointsReader->GetOutput());
+    pointsMapper->SetScalarVisibility(false);
+
+    //Set up actor
+    pointsActor->GetProperty()->SetRepresentationToSurface();
+    pointsActor->SetMapper(pointsMapper);
+    pointsActor->GetProperty()->SetColor(1.0, 0, 0);
+    pointsActor->GetProperty()->SetPointSize(10);
+    pointsActor->GetProperty()->RenderPointsAsSpheresOn();
 
 
     // VTK Renderer
     // Add Actor to renderer
-    renderer->AddActor(actor);
+    renderer->AddActor(buildingActor);
+    renderer->AddActor(pointsActor);
     renderer->SetBackground(1.0, 1.0, 1.0);
 
     // VTK/Qt wedded
@@ -455,9 +489,11 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, i
     float z = 0.0;
     float tol = 1.0e-6; //tolerance to keep it just away from the face
 
-    double W = mainModel->buildingWidth()*mainModel->geometricScale();
-    double D = mainModel->buildingDepth()*mainModel->geometricScale();
-    double H = mainModel->buildingHeight()*mainModel->geometricScale();
+    double W = mainModel->buildingWidth()/mainModel->geometricScale();
+    double D = mainModel->buildingDepth()/mainModel->geometricScale();
+    double H = mainModel->buildingHeight()/mainModel->geometricScale();
+
+    double angle = qDegreesToRadians(mainModel->windDirection());
 
 
     float dW = W/(nWidth + 1.0e-10);
@@ -514,16 +550,72 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, i
 
     //Top face of the building
     z = H + tol;
-    for (int i=0; i < nWidth; i++)
+    for (int i=0; i < nDepth; i++)
     {
-        x = -0.5*W + 0.5*dW + i*dW;
-        for (int j=0; j < nDepth; j++)
+        x = -0.5*D + 0.5*dD + i*dD;
+
+        for (int j=0; j < nWidth; j++)
         {
-            y = -0.5*D + 0.5*dD + j*dD;
+            y = -0.5*W + 0.5*dW + j*dW;
+
             points.append(QVector3D(x, y, z));
         }
     }
 
-    return points;
+    QList<QVector3D> transPoints;
+
+    for (int i=0; i < points.size(); i++)
+    {
+        x = qCos(angle)*points[i].x() - qSin(angle)*points[i].y();
+        y = qSin(angle)*points[i].x() + qCos(angle)*points[i].y();
+        z = points[i].z();
+
+        transPoints.append(QVector3D(x, y, z));
+    }
+
+
+    //Write to a file
+    QString fileName = mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt";
+    QFile file(fileName);
+
+    file.remove();
+
+    if (file.open(QIODevice::ReadWrite))
+    {
+        QTextStream stream(&file);
+
+        for (int i=0; i < transPoints.size()-1; i++)
+        {
+            stream << transPoints[i].x() << "\t" <<transPoints[i].y() << "\t" << transPoints[i].z() << Qt::endl;
+        }
+        stream << transPoints.last().x() << "\t" <<transPoints.last().y() << "\t" << transPoints.last().z();
+    }
+
+    file.close();
+
+    return transPoints;
 }
 
+bool ResultMonitoringWidget::writeToJSON()
+{
+    // Writes wind load monitoring options JSON file.
+
+    QJsonObject jsonObject;
+
+    jsonObject["type"] = "IsolatedBuildingCFD";
+    jsonObject["EventClassification"] = "Wind";
+
+    jsonObject["numStories"] = numStories->value();
+    jsonObject["floorHeight"] = floorHeight->text().toDouble();
+//    jsonObject["roofHeightWindSpeed"] = numStories->value();
+
+
+//    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/resultMonitoring.json");
+//    jsonFile.open(QFile::WriteOnly);
+
+//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+//    jsonFile.write(jsonDoc.toJson());
+
+    return true;
+}

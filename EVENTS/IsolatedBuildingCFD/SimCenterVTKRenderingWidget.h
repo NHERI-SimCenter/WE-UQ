@@ -60,6 +60,7 @@ class vtkDataSetMapper;
 class vtkActor;
 class vtkOpenFOAMReader;
 class vtkUnstructuredGrid;
+class IsolatedBuildingCFD;
 
 class SimCenterVTKRenderingWidget: public SimCenterAppWidget
 {
@@ -67,7 +68,7 @@ class SimCenterVTKRenderingWidget: public SimCenterAppWidget
     Q_OBJECT
 
 public:
-    explicit SimCenterVTKRenderingWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
     ~SimCenterVTKRenderingWidget();
 
 signals:
@@ -80,6 +81,8 @@ public slots:
    void readMesh();
 
 private:
+   IsolatedBuildingCFD  *mainModel;
+
    QVBoxLayout  *layout;
    QGridLayout  *menueLayout;
    QGroupBox    *menueGroup;
@@ -88,6 +91,7 @@ private:
    QGroupBox    *visGroup;
 
    QComboBox    *surfaceRepresentation;
+   QComboBox    *viewObject;
    QPushButton  *reloadCase;
    QSlider      *transparency;
 

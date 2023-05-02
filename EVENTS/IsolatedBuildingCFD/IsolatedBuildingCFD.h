@@ -102,6 +102,8 @@ signals:
 
 public slots:
    void clear(void);
+   void onRunCFDClicked(void);
+
 //   void onGenerateGeometryClicked();
 //   void onRunBlockMeshClicked();
 //   void onRunSnappyHexMeshClicked();
@@ -180,6 +182,9 @@ private:
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
+
+   QPushButton  *runCFD;
+
 };
 
 #endif // ISOLATED_BUILDING_CFD_H

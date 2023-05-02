@@ -52,33 +52,25 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
+class IsolatedBuildingCFD;
 
 class BoundaryConditionsWidget: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit BoundaryConditionsWidget(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit BoundaryConditionsWidget(IsolatedBuildingCFD *parent = 0);
     ~BoundaryConditionsWidget();
 
-//    bool outputToJSON(QJsonObject &rvObject);
-//    bool inputFromJSON(QJsonObject &rvObject);
-//    bool outputAppDataToJSON(QJsonObject &rvObject);
-//    bool inputAppDataFromJSON(QJsonObject &rvObject);
-//    bool copyFiles(QString &dirName);
+    bool writeToJSON();
+
 
 signals:
 
 public slots:
    void clear(void);
-//   void onBuildingDimensionChanged(double width, double depth, double area);
-//   void onNumFloorsOrHeightChanged(int numFloor, double height);
-
-//   void onRoofTypeChanged(int type);
 
 private:
-   double breadth;
-   double depth;
-   double height;
+   IsolatedBuildingCFD  *mainModel;
 
    QVBoxLayout  *layout;
 
