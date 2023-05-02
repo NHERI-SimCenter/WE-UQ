@@ -307,7 +307,7 @@ def write_nut_file(input_json_path, template_dict_path, output_dict_path):
     
     dict_lines.insert(start_index, added_part)
     
-    ###################### Back BC ##############################  
+    ###################### Back BC ################################  
     
     start_index = foam.find_keyword_line(dict_lines, "back") + 2 
     added_part = ""
