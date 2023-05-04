@@ -6,7 +6,7 @@
       "inputFile": "weuq-0001/src/input.json"
     },	
     {
-      "name": "E2: 9 Story Building Sampling wth User Defined Output",
+      "name": "E2: 9 Story Building Sampling with User Defined Output",
       "description": "",
       "inputFile": "weuq-0002/src/input.json"
     },
@@ -14,6 +14,11 @@
       "name": "E3: 3 Story Sensitivity Analysis",
       "description": "",
       "inputFile": "weuq-0007/src/input.json"
+    },
+    {
+      "name": "E4: Stochastic Wind Force Regenerator using Experimental Data",
+      "description": "",
+      "inputFile": "weuq-0012/src/input.json"
     }
   ]
 }
