@@ -1,0 +1,432 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "ExperimentalWindForces",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "DefaultValues": {
+        "driverFile": "driver",
+        "edpFiles": [
+            "EDP.json"
+        ],
+        "filenameAIM": "AIM.json",
+        "filenameDL": "BIM.json",
+        "filenameEDP": "EDP.json",
+        "filenameEVENT": "EVENT.json",
+        "filenameSAM": "SAM.json",
+        "filenameSIM": "SIM.json",
+        "rvFiles": [
+            "AIM.json",
+            "SAM.json",
+            "EVENT.json",
+            "SIM.json"
+        ],
+        "workflowInput": "scInput.json",
+        "workflowOutput": "EDP.json"
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "filename": "Forces_ANG000_phase1.json",
+            "filepath": "{Current_Dir}/Forces_ANG000_phase1.json",
+            "fullScaleDuration": 1600,
+            "fullScaleSpeed": 30,
+            "modePercent": 25,
+            "modelScale": 200,
+            "overlapPerc": 50,
+            "seed": 42,
+            "type": "ExperimentalWindForces",
+            "windowSize": 4
+        }
+    ],
+    "GeneralInformation": {
+        "NumberOfStories": 25,
+        "PlanArea": 7200,
+        "StructureType": "RM1",
+        "YearBuilt": 1990,
+        "depth": 120,
+        "height": 100,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "",
+        "planArea": 7200,
+        "stories": 25,
+        "units": {
+            "force": "N",
+            "length": "m",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 60
+    },
+    "Modeling": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 1000000,
+        "Fyy": 1000000,
+        "Krz": 1000000,
+        "Kx": 100000000,
+        "Ky": 100000000,
+        "ModelData": [
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 800000000,
+                "ky": 800000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 800000000,
+                "ky": 800000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 800000000,
+                "ky": 800000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 800000000,
+                "ky": 800000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 800000000,
+                "ky": 800000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 500000000,
+                "ky": 500000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 400000000,
+                "ky": 400000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 400000000,
+                "ky": 400000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 400000000,
+                "ky": 400000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 300000000,
+                "ky": 300000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 300000000,
+                "ky": 300000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 300000000,
+                "ky": 300000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 250000000,
+                "ky": 250000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 250000000,
+                "ky": 250000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 170000000,
+                "ky": 170000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 170000000,
+                "ky": 170000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 120000000,
+                "ky": 120000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 120000000,
+                "ky": 120000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 120000000,
+                "ky": 120000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 1000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 4,
+                "kx": 70000000,
+                "ky": 70000000,
+                "weight": 10000000
+            }
+        ],
+        "dampingRatio": 0.02,
+        "height": 4,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 25,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": 10000000
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": -1,
+        "rayleighTangent": "Initial",
+        "secondMode": -1,
+        "solver": "Umfpack"
+    },
+    "UQ": {
+        "parallelExecution": false,
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 5,
+            "seed": 716
+        },
+        "saveWorkDir": true,
+        "uqType": "Forward Propagation"
+    },
+    "correlationMatrix": [
+        1
+    ],
+    "localAppDir": "C:/Users/SimCenter/Sangri/SimCenterBackendApplications",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "inputType": "Parameters",
+            "mean": 10,
+            "name": "dummy",
+            "refCount": 0,
+            "stdDev": 5,
+            "value": "RV.dummy",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "C:/Users/SimCenter/Sangri/SimCenterBackendApplications",
+    "runType": "runningLocal",
+    "workingDir": "C:/Users/SimCenter/Documents/WE-UQ/LocalWorkDir"
+}
