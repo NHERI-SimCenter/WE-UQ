@@ -62,6 +62,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <DEDM_HRP.h>
 #include <LowRiseTPU.h>
 #include <WindTunnelExperiment.h>
+#include <ExperimentalWindForces.h>
+#include <WindForceSpectrum.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
 #include <Inflow/inflowparameterwidget.h>
 #include "Utils/ProgramOutputDialog.h"
@@ -98,6 +100,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("LowRiseTPU"));
     eventSelection->addItem(tr("Wind Tunnel Experiment"));
     eventSelection->addItem(tr("Existing"));
+    eventSelection->addItem(tr("Experimental Wind Forces"));
+    eventSelection->addItem(tr("Wind Force Spectrum (CPSD)"));
 
     eventSelection->setItemData(0, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
     eventSelection->setItemData(1, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
@@ -107,6 +111,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->setItemData(5, "Forces using TPU Wind Tunnel Datasets", Qt::ToolTipRole);
     eventSelection->setItemData(6, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
     eventSelection->setItemData(7, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
+    eventSelection->setItemData(8, "Experimental Wind Forces", Qt::ToolTipRole);
+    eventSelection->setItemData(9, "Wind Force Spectrum (Cross Power Spectrum Density)", Qt::ToolTipRole);
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
@@ -152,6 +158,14 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theDigitalWindTunnel = new DigitalWindTunnel(theRandomVariablesContainer);
     theStackedWidget->addWidget(theDigitalWindTunnel);
+
+    theExperimentalWindForces = new ExperimentalWindForces(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theExperimentalWindForces);
+
+    theWindForceSpectrum = new WindForceSpectrum(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theWindForceSpectrum);
+
+
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
@@ -225,6 +239,10 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 6;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
         index = 7;
+    } else if ((type == QString("Experimental Wind Forces")) || (type == QString("ExperimentalWindForces"))) {
+        index = 8;
+    } else if ((type == QString("Wind Force Spectrum (CPSD)")) || (type == QString("WindForceSpectrum"))) {
+        index = 9;
     }
     else {
         return false;
@@ -286,14 +304,24 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theWindTunnelExperiment;
     }
 
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(6);
+        theCurrentEvent = theExistingEvents;
+    }
+
     else if(arg1 == "CFD - Digital Wind Tunnel") {
         theStackedWidget->setCurrentIndex(7);
         theCurrentEvent = theDigitalWindTunnel;
     }
 
-    else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(6);
-        theCurrentEvent = theExistingEvents;
+    else if(arg1 == "Experimental Wind Forces") {
+        theStackedWidget->setCurrentIndex(8);
+        theCurrentEvent = theExperimentalWindForces;
+    }
+
+    else if(arg1 == "Wind Force Spectrum (CPSD)") {
+        theStackedWidget->setCurrentIndex(9);
+        theCurrentEvent = theWindForceSpectrum;
     }
 
     else {

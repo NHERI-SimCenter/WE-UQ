@@ -802,7 +802,7 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     }
 
 
-    statusMessage("SetUp Done .. Now starting application");
+    //statusMessage("SetUp Done .. Now starting application");
 
     emit setUpForApplicationRunDone(tmpDirectory, inputFile);
 }
