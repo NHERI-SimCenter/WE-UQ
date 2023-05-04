@@ -37,7 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: fmckenna, Sang-ri
 
 #include <SimCenterAppWidget.h>
 #include <WindForceSpectrum.h>

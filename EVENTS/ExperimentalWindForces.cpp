@@ -71,6 +71,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 //#include <InputWidgetParameters.h>
 
+// Written: fmckenna, Sang-ri
+
 ExperimentalWindForces::ExperimentalWindForces(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {

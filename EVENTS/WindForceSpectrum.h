@@ -37,7 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: fmckenna, sangri
 
 #include <SimCenterAppWidget.h>
 #include <GeneralInformationWidget.h>

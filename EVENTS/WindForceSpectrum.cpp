@@ -34,7 +34,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: fmckenna, Sang-ri
 
 #include "WindForceSpectrum.h"
 #include "SC_DoubleLineEdit.h"
