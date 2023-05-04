@@ -48,6 +48,7 @@ SOURCES += \
     $$PWD/EVENTS/BasicCFD/MeshParametersCWE.cpp \
     $$PWD/EVENTS/BasicCFD/SimulationParametersCWE.cpp \
     $$PWD/EVENTS/LowRiseTPU.cpp \
+    $$PWD/EVENTS/HighRiseTPU.cpp \    
     $$PWD/EVENTS/WindTunnelExperiment.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/WittigSinha.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/StochasticWindInput.cpp \
@@ -93,6 +94,7 @@ HEADERS  += \
     $$PWD/EVENTS/BasicCFD/MeshParametersCWE.h \
     $$PWD/EVENTS/BasicCFD/SimulationParametersCWE.h \
     $$PWD/EVENTS/LowRiseTPU.h \
+    $$PWD/EVENTS/HighRiseTPU.h \    
     $$PWD/EVENTS/StochasticWindModel/include/WittigSinha.h \
     $$PWD/EVENTS/StochasticWindModel/include/StochasticWindInput.h \
     $$PWD/EVENTS/ExpertCFD/Analysis/filemetadata.h \
