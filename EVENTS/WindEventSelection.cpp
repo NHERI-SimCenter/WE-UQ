@@ -63,6 +63,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <LowRiseTPU.h>
 #include <HighRiseTPU.h>
 #include <WindTunnelExperiment.h>
+#include <ExperimentalWindForces.h>
+#include <WindForceSpectrum.h>
 #include <StochasticWindModel/include/StochasticWindInput.h>
 #include <Inflow/inflowparameterwidget.h>
 #include "Utils/ProgramOutputDialog.h"
@@ -100,6 +102,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("HighRiseTPU"));    
     eventSelection->addItem(tr("Wind Tunnel Experiment"));
     eventSelection->addItem(tr("Existing"));
+    eventSelection->addItem(tr("Experimental Wind Forces"));
+    eventSelection->addItem(tr("Wind Force Spectrum (CPSD)"));
 
     eventSelection->setItemData(0, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
     eventSelection->setItemData(1, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
@@ -107,9 +111,13 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->setItemData(3, "Digital Wind Tunnel: OpenFOAM Simulation of the UF facility", Qt::ToolTipRole);
     eventSelection->setItemData(4, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
     eventSelection->setItemData(5, "Forces using TPU Wind Tunnel Datasets", Qt::ToolTipRole);
+
     eventSelection->setItemData(6, "Forces using TPU Wind Tunnel Datasets", Qt::ToolTipRole);    
     eventSelection->setItemData(7, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
     eventSelection->setItemData(8, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
+    eventSelection->setItemData(9, "Experimental Wind Forces", Qt::ToolTipRole);
+    eventSelection->setItemData(10, "Wind Force Spectrum (Cross Power Spectrum Density)", Qt::ToolTipRole);
+
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     theSelectionLayout->addWidget(label);
@@ -155,6 +163,16 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
+
+    theDigitalWindTunnel = new DigitalWindTunnel(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theDigitalWindTunnel);
+
+    theExperimentalWindForces = new ExperimentalWindForces(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theExperimentalWindForces);
+
+    theWindForceSpectrum = new WindForceSpectrum(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theWindForceSpectrum);
+
 
     layout->addWidget(theStackedWidget);
     this->setLayout(layout);
@@ -230,6 +248,10 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
         index = 7;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
         index = 8;
+    } else if ((type == QString("Experimental Wind Forces")) || (type == QString("ExperimentalWindForces"))) {
+        index = 9;
+    } else if ((type == QString("Wind Force Spectrum (CPSD)")) || (type == QString("WindForceSpectrum"))) {
+        index = 10;
     }
     else {
         return false;
@@ -286,19 +308,39 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theLowRiseTPU_Widget;
     }
 
+<<<<<<< HEAD
     else if (arg1 == "HighRiseTPU") {
         theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theHighRiseTPU_Widget;
     }    
 
     else if(arg1 == "Wind Tunnel Experiment") {
+=======
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(6);
+        theCurrentEvent = theExistingEvents;
+    }
+
+    else if(arg1 == "CFD - Digital Wind Tunnel") {
+>>>>>>> 9503c640f1b0c7aff1376563d25f194a9f325f3c
         theStackedWidget->setCurrentIndex(7);
         theCurrentEvent = theWindTunnelExperiment;
     }
 
+<<<<<<< HEAD
     else if(arg1 == "Existing") {
         theStackedWidget->setCurrentIndex(8);
         theCurrentEvent = theExistingEvents;
+=======
+    else if(arg1 == "Experimental Wind Forces") {
+        theStackedWidget->setCurrentIndex(8);
+        theCurrentEvent = theExperimentalWindForces;
+    }
+
+    else if(arg1 == "Wind Force Spectrum (CPSD)") {
+        theStackedWidget->setCurrentIndex(9);
+        theCurrentEvent = theWindForceSpectrum;
+>>>>>>> 9503c640f1b0c7aff1376563d25f194a9f325f3c
     }
 
     else {

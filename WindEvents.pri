@@ -50,6 +50,8 @@ SOURCES += \
     $$PWD/EVENTS/LowRiseTPU.cpp \
     $$PWD/EVENTS/HighRiseTPU.cpp \    
     $$PWD/EVENTS/WindTunnelExperiment.cpp \
+    $$PWD/EVENTS/ExperimentalWindForces.cpp \
+    $$PWD/EVENTS/WindForceSpectrum.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/WittigSinha.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/StochasticWindInput.cpp \
     $$PWD/EVENTS/ExpertCFD/Analysis/filemetadata.cpp \
@@ -89,6 +91,8 @@ HEADERS  += \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.h \
     $$PWD/EVENTS/WindEventSelection.h \
     $$PWD/EVENTS/WindTunnelExperiment.h \
+    $$PWD/EVENTS/ExperimentalWindForces.h \
+    $$PWD/EVENTS/WindForceSpectrum.h \
     $$PWD/EVENTS/DEDM_HRP.h \
     $$PWD/EVENTS/BasicCFD/BasicCFD.h \
     $$PWD/EVENTS/BasicCFD/MeshParametersCWE.h \

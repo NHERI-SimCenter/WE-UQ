@@ -93,6 +93,8 @@ private:
    SimCenterAppWidget *CFDTemplateEventWidget;
    SimCenterAppWidget *theWindTunnelExperiment;
    SimCenterAppWidget *theDigitalWindTunnel;
+   SimCenterAppWidget *theExperimentalWindForces;
+   SimCenterAppWidget *theWindForceSpectrum;
 
    RandomVariablesContainer *theRandomVariablesContainer;
 };
