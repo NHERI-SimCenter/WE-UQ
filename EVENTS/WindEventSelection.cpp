@@ -55,7 +55,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDebug>
 #include <QFileDialog>
 #include <QPushButton>
-#include <sectiontitle.h>
+#include <SectionTitle.h>
 //#include <InputWidgetEDP.h>
 
 #include <ExistingSimCenterEvents.h>
@@ -308,39 +308,34 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theLowRiseTPU_Widget;
     }
 
-<<<<<<< HEAD
     else if (arg1 == "HighRiseTPU") {
         theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theHighRiseTPU_Widget;
     }    
 
     else if(arg1 == "Wind Tunnel Experiment") {
-=======
-    else if(arg1 == "Existing") {
-        theStackedWidget->setCurrentIndex(6);
-        theCurrentEvent = theExistingEvents;
-    }
-
-    else if(arg1 == "CFD - Digital Wind Tunnel") {
->>>>>>> 9503c640f1b0c7aff1376563d25f194a9f325f3c
         theStackedWidget->setCurrentIndex(7);
         theCurrentEvent = theWindTunnelExperiment;
     }
-
-<<<<<<< HEAD
+    
     else if(arg1 == "Existing") {
         theStackedWidget->setCurrentIndex(8);
         theCurrentEvent = theExistingEvents;
-=======
+    }
+
+    else if(arg1 == "Existing") {
+        theStackedWidget->setCurrentIndex(9);
+        theCurrentEvent = theExistingEvents;
+    }
+    
     else if(arg1 == "Experimental Wind Forces") {
-        theStackedWidget->setCurrentIndex(8);
+        theStackedWidget->setCurrentIndex(10);
         theCurrentEvent = theExperimentalWindForces;
     }
 
     else if(arg1 == "Wind Force Spectrum (CPSD)") {
-        theStackedWidget->setCurrentIndex(9);
+        theStackedWidget->setCurrentIndex(10);
         theCurrentEvent = theWindForceSpectrum;
->>>>>>> 9503c640f1b0c7aff1376563d25f194a9f325f3c
     }
 
     else {
