@@ -1,8 +1,0 @@
-{
-    "DESModelType": "SpalartAllmarasDES",
-    "EventClassification": "Wind",
-    "LESModelType": "Smagorinsky",
-    "RANSModelType": "kEpsilon",
-    "simulationType": "RANS",
-    "type": "IsolatedBuildingCFD"
-}

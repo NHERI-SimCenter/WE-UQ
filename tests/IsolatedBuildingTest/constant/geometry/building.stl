@@ -1,0 +1,86 @@
+solid building.stl
+facet normal 0.0 0.0 -0.00870966
+  outer loop
+    vertex -0.0381 -0.05715 -1e-05
+    vertex -0.0381 0.05715 -1e-05
+    vertex 0.0381 -0.05715 -1e-05
+  endloop
+endfacet
+facet normal 0.0 0.0 -0.00870966
+  outer loop
+    vertex 0.0381 -0.05715 -1e-05
+    vertex -0.0381 0.05715 -1e-05
+    vertex 0.0381 0.05715 -1e-05
+  endloop
+endfacet
+facet normal -0.052259102 0.0 0.0
+  outer loop
+    vertex -0.0381 -0.05715 -1e-05
+    vertex -0.0381 -0.05715 0.4572
+    vertex -0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal -0.052259102 0.0 0.0
+  outer loop
+    vertex -0.0381 -0.05715 -1e-05
+    vertex -0.0381 0.05715 0.4572
+    vertex -0.0381 0.05715 -1e-05
+  endloop
+endfacet
+facet normal 0.0 0.0 0.00870966
+  outer loop
+    vertex -0.0381 -0.05715 0.4572
+    vertex 0.0381 -0.05715 0.4572
+    vertex 0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.0 0.0 0.00870966
+  outer loop
+    vertex -0.0381 -0.05715 0.4572
+    vertex 0.0381 0.05715 0.4572
+    vertex -0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.052259102 0.0 0.0
+  outer loop
+    vertex 0.0381 -0.05715 0.4572
+    vertex 0.0381 -0.05715 -1e-05
+    vertex 0.0381 0.05715 -1e-05
+  endloop
+endfacet
+facet normal 0.052259102 -0.0 0.0
+  outer loop
+    vertex 0.0381 -0.05715 0.4572
+    vertex 0.0381 0.05715 -1e-05
+    vertex 0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.0 0.034839403 -0.0
+  outer loop
+    vertex 0.0381 0.05715 -1e-05
+    vertex -0.0381 0.05715 -1e-05
+    vertex 0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.0 0.034839403 0.0
+  outer loop
+    vertex -0.0381 0.05715 -1e-05
+    vertex -0.0381 0.05715 0.4572
+    vertex 0.0381 0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.0 -0.034839403 0.0
+  outer loop
+    vertex -0.0381 -0.05715 -1e-05
+    vertex 0.0381 -0.05715 -1e-05
+    vertex 0.0381 -0.05715 0.4572
+  endloop
+endfacet
+facet normal 0.0 -0.034839403 0.0
+  outer loop
+    vertex -0.0381 -0.05715 -1e-05
+    vertex 0.0381 -0.05715 0.4572
+    vertex -0.0381 -0.05715 0.4572
+  endloop
+endfacet
+endsolid building.stl
