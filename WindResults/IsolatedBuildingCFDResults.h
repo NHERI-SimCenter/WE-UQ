@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef ISOLATED_BUILDING_CFD_RESULTS_H
+#define ISOLATED_BUILDING_CFD_RESULTS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,19 +55,21 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
+class IsolatedBuildingCFD;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class IsolatedBuildingCFDResults: public SimCenterWidget
 {
-    friend class IsolatedBuildingCFD;
-
     Q_OBJECT
+
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    //Main constractor
+    explicit IsolatedBuildingCFDResults(QWidget *parent = 0);
+
+    //Deconstractor
+    ~IsolatedBuildingCFDResults();
 
     bool writeToJSON();
 
@@ -76,68 +78,15 @@ signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+
+
+
 
 private:
-
-   IsolatedBuildingCFD  *mainModel;
-
-   QVBoxLayout          *layout;
-
-   QGroupBox            *resultMonitoringGroup;
-   QVBoxLayout          *resultMonitoringLayout;
-
-   QGroupBox            *monitorIntegratedLoadGroup;
-   QGridLayout          *monitorIntegratedLoadLayout;
-
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
-
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-   QLineEdit            *centerOfRotationX;
-   QLineEdit            *centerOfRotationY;
-   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-
-   void visCoordinateOfPoints(QGridLayout*);
-   QList<QVector3D> calculatePointCoordinates(int nWidth, int nDepth, int nHeight);
+   QVBoxLayout      *layout;
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // ISOLATED_BUILDING_CFD_RESULTS_H

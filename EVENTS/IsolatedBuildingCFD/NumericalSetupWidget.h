@@ -70,7 +70,7 @@ public:
     ~NumericalSetupWidget();
 
     bool writeToJSON();
-
+    void updateWidgets();
 
 signals:
 
@@ -78,6 +78,7 @@ public slots:
    void clear(void);
    void solverTypeChanged(const QString &arg1);
    void timeStepOptionChanged(const bool arg1);
+   void onRunInParallelChecked(int);
 
 
 
@@ -90,6 +91,9 @@ private:
 
    QGroupBox        *numericalSetupGroup;
    QVBoxLayout      *numericalSetupLayout;
+
+   QGroupBox        *parallelizationGroup;
+   QGridLayout      *parallelizationLayout;
 
    QGroupBox        *solverSelectionGroup;
    QGridLayout      *solverSelectionLayout;
@@ -106,8 +110,11 @@ private:
    QLineEdit        *timeStep;
    QDoubleSpinBox   *maxCourantNumber;
 
-   QRadioButton    *constTimeStep;
-   QRadioButton    *adjustTimeStep;
+   QCheckBox        *runInParallel;
+   QSpinBox         *numProcessors;
+
+   QRadioButton     *constTimeStep;
+   QRadioButton     *adjustTimeStep;
 
    QLabel           *solverTypeLabel ;
    QLabel           *numNonOrthogonalCorrectorsLabel;

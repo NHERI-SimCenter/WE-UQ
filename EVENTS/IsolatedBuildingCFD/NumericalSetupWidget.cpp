@@ -78,6 +78,10 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     numericalSetupLayout = new QVBoxLayout();
     numericalSetupGroup->setLayout(numericalSetupLayout);
 
+    parallelizationGroup = new QGroupBox("Parallelization", this);
+    parallelizationLayout = new QGridLayout();
+    parallelizationGroup->setLayout(parallelizationLayout);
+
     solverSelectionGroup = new QGroupBox("Solver Selection", this);
     solverSelectionLayout = new QGridLayout();
     solverSelectionGroup->setLayout(solverSelectionLayout);
@@ -86,6 +90,27 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     durationAndTimeStepLayout = new QGridLayout();
     durationAndTimeStepGroup->setLayout(durationAndTimeStepLayout);
 
+    //==================================================================
+    //              General Options
+    //==================================================================
+    QLabel* numProcessorsLabel = new QLabel("Number of Processors:");
+
+    runInParallel = new QCheckBox("Run Simulation in Parallel");
+    runInParallel->setChecked(true);
+    runInParallel->setToolTip("Run the CFD simulation in parallel or not");
+
+    numProcessors = new QSpinBox();
+    numProcessors->setSingleStep(16);
+    numProcessors->setMinimum(1);
+    numProcessors->setMaximum(1024);
+    numProcessors->setValue(64);
+    numProcessors->setToolTip("Number of processors to run the simulation with");
+
+    parallelizationLayout->addWidget(runInParallel, 0, 0);
+    parallelizationLayout->addWidget(numProcessorsLabel, 1, 0);
+    parallelizationLayout->addWidget(numProcessors, 1, 1);
+
+    numericalSetupLayout->addWidget(parallelizationGroup);
 
     //==================================================================
     //              Solver selection
@@ -104,11 +129,10 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     solverType->addItem("pimpleFoam");
     solverType->setToolTip("Solver type (for LES use pisoFoam or pimpleFoam)");
 
-
     numNonOrthogonalCorrectors = new QSpinBox();
     numNonOrthogonalCorrectors->setSingleStep(1);
     numNonOrthogonalCorrectors->setMinimum(0);
-    numNonOrthogonalCorrectors->setValue(0);
+    numNonOrthogonalCorrectors->setValue(1);
     numNonOrthogonalCorrectors->setToolTip("Number of non-orthogonal correction loops (should be at least 1 for non-orthogonal mesh)");
 
 
@@ -193,7 +217,10 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
 
     this->setLayout(layout);
 
+
     //Add signals
+
+    connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(solverType, SIGNAL(currentIndexChanged(QString)), this, SLOT(solverTypeChanged(QString)));
     connect(adjustTimeStep, SIGNAL(toggled(bool)), this, SLOT(timeStepOptionChanged(bool)));
 
@@ -208,6 +235,25 @@ NumericalSetupWidget::~NumericalSetupWidget()
 void NumericalSetupWidget::clear(void)
 {
 
+}
+
+void NumericalSetupWidget::updateWidgets(void)
+{
+    if(mainModel->simulationType() == "RANS")
+    {
+        solverType->setCurrentIndex(0);
+        solverTypeChanged("simpleFoam");
+    }
+    else if (mainModel->simulationType() == "LES")
+    {
+        solverType->setCurrentIndex(1);
+        solverTypeChanged("pisoFoam");
+    }
+    else if (mainModel->simulationType() == "DES")
+    {
+        solverType->setCurrentIndex(1);
+        solverTypeChanged("pisoFoam");
+    }
 }
 
 void NumericalSetupWidget::solverTypeChanged(const QString &arg1)
@@ -257,6 +303,20 @@ void NumericalSetupWidget::timeStepOptionChanged(const bool arg1)
     }
 }
 
+void NumericalSetupWidget::onRunInParallelChecked(int state)
+{
+
+    if (!runInParallel->isChecked())
+    {
+        numProcessors->setValue(1);
+    }
+    else
+    {
+        numProcessors->setValue(64);
+    }
+
+    numProcessors->setEnabled(runInParallel->isChecked()) ;
+}
 
 bool NumericalSetupWidget::writeToJSON()
 {
@@ -275,6 +335,8 @@ bool NumericalSetupWidget::writeToJSON()
     jsonObject["timeStep"] = timeStep->text().toDouble();
     jsonObject["maxCourantNumber"] = maxCourantNumber->value();
     jsonObject["adjustTimeStep"] = adjustTimeStep->isChecked();
+    jsonObject["runInParallel"] = runInParallel->isChecked();
+    jsonObject["numProcessors"] = numProcessors->value();
 
 
     QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/numericalSetup.json");

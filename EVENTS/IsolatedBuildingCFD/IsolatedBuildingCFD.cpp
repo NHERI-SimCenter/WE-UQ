@@ -45,6 +45,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "NumericalSetupWidget.h"
 #include "WindCharacteristicsWidget.h"
 #include "ResultMonitoringWidget.h"
+#include <qcustomplot.h>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -74,6 +75,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QOpenGLWidget>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
+#include <QProcess>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
@@ -143,7 +148,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     windDirectionWidget = new QSpinBox;
     windDirectionWidget->setRange(0, 90);
     windDirectionWidget->setSingleStep(10);
-    windDirectionWidget->setValue(45);
+    windDirectionWidget->setValue(0);
 
     QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
     domainLengthWidget = new QLineEdit();
@@ -190,10 +195,11 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     originZWidget->setText("0");
 
     QLabel *casePathLabel = new QLabel("Path: ");
-    QPushButton* browseButton  = new QPushButton("Browse");
+    QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit();
-    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+//    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/CFDModeling/validationCase/CAARC_LES_DFSR/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -213,7 +219,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     caseDirectoryLayout->addWidget(casePathLabel, 0, 0);
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
-    caseDirectoryLayout->addWidget(browseButton, 0, 2);
+    caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
 
     generalSettingLayout->addWidget(normalizationTypeLabel, 0, 0);
     generalSettingLayout->addWidget(normalizationTypeWidget, 0, 1);
@@ -357,8 +363,12 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     //
 
     runCFD = new QPushButton("Run CFD");
+    showResults = new QPushButton("Show Results");
     generalDescriptionLayout->addWidget(runCFD);
+    generalDescriptionLayout->addWidget(showResults);
     connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
+    connect(showResults, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
+    connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 }
 
 
@@ -367,18 +377,231 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 }
 
-void IsolatedBuildingCFD::onRunCFDClicked(void)
+void IsolatedBuildingCFD::onRunCFDClicked()
 {
+    //Write the JSON files
     windCharacteristics->writeToJSON();
     boundaryConditions->writeToJSON();
     turbulenceModeling->writeToJSON();
     numericalSetup->writeToJSON();
     resultMonitoring->writeToJSON();
+
+    //Run prepare case directory
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/setup_case.py";
+    QString jsonPath = caseDir() + "constant/simCenter";
+    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+    QString outputPath =caseDir();
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << jsonPath << templatePath << outputPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished(-1);
+
+    QMessageBox msgBox;
+    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+    msgBox.exec();
+
+    process->close();
+
+
 }
+
+void IsolatedBuildingCFD::onShowResultsClicked()
+{
+
+    //Run prepare case directory
+    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/postProcessing/process_output_data.py";
+    QString outputPath = caseDir();
+
+    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QStringList arguments;
+
+    arguments << scriptPath << outputPath;
+
+    QProcess *process = new QProcess(this);
+
+    process->start(program, arguments);
+
+    process->waitForFinished(-1);
+
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
+
+    process->close();
+
+
+
+    QDialog *dialog  = new QDialog(this);
+
+    int dialogHeight = 800;
+    int dialogWidth = 1000;
+
+    dialog->setMinimumHeight(dialogHeight);
+    dialog->setMinimumWidth(dialogWidth);
+    dialog->setWindowTitle("CFD Results");
+
+
+    QWidget* samplePointsWidget = new QWidget();
+
+
+    QGridLayout* dialogLayout = new QGridLayout();
+
+
+    // generate some data:
+
+    QString profName  = caseDir() + "constant/simCenter/output/windProfiles.txt";
+    QVector<QVector<double>> windProfile  =  read_txt_data(profName) ;
+
+    double H = buildingHeight()/geometricScale();
+
+    QPen pen;
+    pen.setColor(QColor(0,0,0));
+    pen.setWidth(2);
+//    pen.setStyle(Qt::NoPen);
+    pen.setJoinStyle(Qt::RoundJoin);
+
+
+    QCustomPlot* UavPlot  = new QCustomPlot();
+    UavPlot->addGraph();
+    UavPlot->graph()->setPen(pen);
+    UavPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+    UavPlot->graph(0)->setData(windProfile[1], windProfile[0]);
+    UavPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
+
+    // give the axes some labels:
+    UavPlot->xAxis->setLabel("Uav[m/s]");
+    UavPlot->yAxis->setLabel("z[m]");
+    // set axes ranges, so we see all data:
+    UavPlot->xAxis->setRange(0, 15);
+    UavPlot->yAxis->setRange(0, 1.0);
+    UavPlot->replot();
+
+    QCustomPlot* IuPlot  = new QCustomPlot();
+    IuPlot->addGraph();
+    IuPlot->graph()->setPen(pen);
+    IuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
+    IuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+    IuPlot->graph(0)->setData(windProfile[2], windProfile[0]);
+    // give the axes some labels:
+    IuPlot->xAxis->setLabel("Iu");
+    IuPlot->yAxis->setLabel("z[m]");
+    // set axes ranges, so we see all data:
+    IuPlot->xAxis->setRange(0, 0.5);
+    IuPlot->yAxis->setRange(0, 1.0);
+    IuPlot->replot();
+
+
+    QCustomPlot* LuPlot  = new QCustomPlot();
+    LuPlot->addGraph();
+    LuPlot->graph()->setPen(pen);
+    LuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
+    LuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+    LuPlot->graph(0)->setData(windProfile[3], windProfile[0]);
+    // give the axes some labels:
+    LuPlot->xAxis->setLabel("Lu[m]");
+    LuPlot->yAxis->setLabel("z[m]");
+    // set axes ranges, so we see all data:
+    LuPlot->xAxis->setRange(0, 2.0);
+    LuPlot->yAxis->setRange(0, 1.0);
+    LuPlot->replot();
+
+
+
+
+    QString SuName  = caseDir() + "constant/simCenter/output/Suh.txt";
+    QVector<QVector<double>> Suh  =  read_txt_data(SuName) ;
+
+    QCustomPlot* SuPlot  = new QCustomPlot();
+
+
+    SuPlot->addGraph();
+//    SuPlot->plotLayout()->addElement(0,0, new QCPPlotTitle(plot,"TITEL"));
+    SuPlot->graph()->setPen(pen);
+    SuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
+    SuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
+    SuPlot->graph(0)->setData(Suh[0], Suh[1]);
+    SuPlot->yAxis->setLabel("Su[m^2/s]");
+    SuPlot->xAxis->setLabel("f[Hz]");
+    SuPlot->xAxis->setRange(0.1, 1000.0);
+    SuPlot->yAxis->setRange(0.0001, 10.0);
+    SuPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
+    SuPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
+    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
+    SuPlot->yAxis->setTicker(logTicker);
+    SuPlot->xAxis->setTicker(logTicker);
+    SuPlot->replot();
+
+
+
+    dialogLayout->addWidget(UavPlot, 0, 0);
+    dialogLayout->addWidget(IuPlot, 0, 1);
+    dialogLayout->addWidget(LuPlot, 0, 2);
+    dialogLayout->addWidget(SuPlot, 1, 0, 1, 2);
+
+//    int numCols = 3; // x, y and z
+//    int numRows = points.size(); //acount points on each face of the building (sides and top)
+
+//    samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
+//    samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
+//    samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
+
+
+//    QStringList headerTitles = {"X", "Y", "Z"};
+
+//    samplingPointsTable->setHorizontalHeaderLabels(headerTitles);
+
+//    for (int i=0; i < numCols; i++)
+//    {
+//       samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
+
+//       for (int j=0; j < numRows; j++)
+//       {
+//            samplingPointsTable->setItem(j, i, new QTableWidgetItem(""));
+//       }
+//    }
+
+//    for (int i=0; i < numRows; i++)
+//    {
+//        samplingPointsTable->item(i, 0)->setText(QString::number(points[i].x()));
+//        samplingPointsTable->item(i, 1)->setText(QString::number(points[i].y()));
+//        samplingPointsTable->item(i, 2)->setText(QString::number(points[i].z()));
+//    }
+
+    dialogLayout->addWidget(samplePointsWidget, 0, 0);
+
+    dialog->setLayout(dialogLayout);
+    dialog->exec();
+
+
+}
+
+void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
+{
+    QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home/abiy",
+                                                    QFileDialog::ShowDirsOnly
+                                                    | QFileDialog::DontResolveSymlinks);
+
+
+    caseDirectoryPathWidget->setText(fileName);
+
+}
+
 
 void IsolatedBuildingCFD::clear(void)
 {
 
+}
+
+void IsolatedBuildingCFD::updateWidgets()
+{
+    numericalSetup->updateWidgets();
 }
 
 bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
@@ -472,6 +695,66 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
  }
 
 
+QVector<QVector<double>> IsolatedBuildingCFD::read_txt_data(QString fileName)
+{
+    QVector<QVector<double>>  data;
+
+    int colCount  = 0;
+
+    QFile inputFileTest(fileName);
+
+    if (inputFileTest.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFileTest);
+
+
+       while (!in.atEnd())
+       {
+            QString line = in.readLine();
+
+            QStringList  fields = line.split(" ");
+
+            colCount  = fields.size();
+            break;
+       }
+       inputFileTest.close();
+    }
+
+    for (int i=0; i < colCount; i++)
+    {
+        QVector<double> row;
+        data.append(row);
+    }
+
+    int count  = 0;
+
+    QFile inputFile(fileName);
+    if (inputFile.open(QIODevice::ReadOnly))
+    {
+       QTextStream in(&inputFile);
+
+       while (!in.atEnd())
+       {
+            QString line = in.readLine();
+
+//            QMessageBox msgBox;
+//            msgBox.setText(line);
+//            msgBox.exec();
+
+            QStringList  fields = line.split(" ");
+
+            for (int i=0; i < colCount; i++)
+            {
+                data[i].append(fields[i].toDouble());
+            }
+       }
+       inputFile.close();
+    }
+
+    return data;
+}
+
+
 double IsolatedBuildingCFD::domainLength()
 {
     return domainLengthWidget->text().toDouble();
@@ -539,5 +822,12 @@ const QString IsolatedBuildingCFD::caseDir()
 {
     return caseDirectoryPathWidget->text();
 }
+
+const QString IsolatedBuildingCFD::simulationType()
+{
+    return turbulenceModeling->simulationType();
+}
+
+
 
 

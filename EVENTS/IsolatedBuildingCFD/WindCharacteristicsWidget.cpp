@@ -97,7 +97,7 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     reynoldsNumberLabel = new QLabel("Reynolds Number:");
 
     roofHeightWindSpeed = new QLineEdit();
-    roofHeightWindSpeed->setText("10.0");
+    roofHeightWindSpeed->setText("12.35");
     roofHeightWindSpeed->setValidator(new QDoubleValidator());
     roofHeightWindSpeed->setToolTip("Wind speed at building height in model scale");
 
@@ -127,8 +127,6 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
 
 
     calculateReynoldsNumber = new QPushButton("Calculate");
-
-
     windCharacteristicsLayout->addWidget(roofHeightWindSpeedLabel, 0, 0);
     windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 1, 0);
     windCharacteristicsLayout->addWidget(airDensityLabel, 2, 0);
@@ -182,7 +180,7 @@ bool WindCharacteristicsWidget::writeToJSON()
     QJsonObject jsonObject;
 
     jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
+    jsonObject["EventClassification"] = "Wind";
 
     jsonObject["roofHeightWindSpeed"] = roofHeightWindSpeed->text().toDouble();
     jsonObject["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();

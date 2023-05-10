@@ -78,6 +78,8 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
 
+    void updateWidgets();
+    QVector<QVector<double>> read_txt_data(QString fileName);
 
     //Properties
     double domainLength();
@@ -97,12 +99,17 @@ public:
 
     const QString normalizationType();
     const QString caseDir();
+    const QString simulationType();
+
+
 
 signals:
 
 public slots:
    void clear(void);
-   void onRunCFDClicked(void);
+   void onRunCFDClicked();
+   void onShowResultsClicked();
+   void onBrowseCaseDirectoryButtonClicked(void);
 
 //   void onGenerateGeometryClicked();
 //   void onRunBlockMeshClicked();
@@ -184,6 +191,7 @@ private:
    QStringList varNamesAndValues;
 
    QPushButton  *runCFD;
+   QPushButton  *showResults;
 
 };
 

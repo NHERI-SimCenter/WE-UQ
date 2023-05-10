@@ -170,12 +170,12 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     floorHeightOptions->setToolTip("Choose constant or variable floor height options");
 
 
-    writeIterval = new QSpinBox();
-    writeIterval->setSingleStep(1);
-    writeIterval->setMinimum(1);
-    writeIterval->setValue(5);
-    writeIterval->setEnabled(true);
-    writeIterval->setToolTip("Writing interval as a multiple of time step");
+    storyLoadWriteInterval = new QSpinBox();
+    storyLoadWriteInterval->setSingleStep(1);
+    storyLoadWriteInterval->setMinimum(1);
+    storyLoadWriteInterval->setValue(10);
+    storyLoadWriteInterval->setEnabled(true);
+    storyLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for integrated loads");
 
     numStories = new QSpinBox();
     numStories->setSingleStep(1);
@@ -203,7 +203,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     centerOfRotationZ->setToolTip("Z-coordinate of the center of rotation ");
 
     monitorBaseLoad = new QCheckBox("Monitor Base Loads");
-    monitorBaseLoad->setChecked(false);
+    monitorBaseLoad->setChecked(true);
     monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
 
     monitorIntegratedLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
@@ -213,7 +213,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorIntegratedLoadLayout->addWidget(floorHeightLabel, 2, 0);
     monitorIntegratedLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
     monitorIntegratedLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
-    monitorIntegratedLoadLayout->addWidget(writeIterval, 3, 1, 1, 4);
+    monitorIntegratedLoadLayout->addWidget(storyLoadWriteInterval, 3, 1, 1, 4);
 
     monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
     monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
@@ -236,10 +236,20 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     QLabel *numTapsAlongWidthLabel = new QLabel("Number of Points Along Width:");
     QLabel *numTapsAlongDepthLabel = new QLabel("Number of Points Along Depth: ");
     QLabel *numTapsAlongHeightLabel = new QLabel("Number of Points Along Height: ");
+    QLabel *pressureWriteIntervalLabel = new QLabel("Write Interval:");
 
-    monitorPressure = new QCheckBox("Sample Presssure Data on the Building Surface");
-    monitorPressure->setChecked(true);
-    monitorPressure->setToolTip("Monitor surface pressure fluctuations at selected points");
+
+    pressureWriteInterval = new QSpinBox();
+    pressureWriteInterval->setSingleStep(1);
+    pressureWriteInterval->setMinimum(1);
+    pressureWriteInterval->setValue(10);
+    pressureWriteInterval->setEnabled(true);
+    pressureWriteInterval->setToolTip("Writing interval as a multiple of time step for pressure");
+
+
+    monitorSurfacePressure = new QCheckBox("Sample Presssure Data on the Building Surface");
+    monitorSurfacePressure->setChecked(true);
+    monitorSurfacePressure->setToolTip("Monitor surface pressure fluctuations at selected points");
 
 
     createPressurePoints = new QRadioButton("Create a Grid of Sampling Points");
@@ -273,7 +283,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numTapsAlongHeight->setRange(1, 1000);
     numTapsAlongHeight->setToolTip("Number of pressure monitoring points along the height of the building");
 
-    monitorPressureLayout->addWidget(monitorPressure, 0, 0);
+    monitorPressureLayout->addWidget(monitorSurfacePressure, 0, 0);
 
     pressureMonitoringPointsLayout->addWidget(createPressurePointsGroup, 2, 0, 3, 2);
     monitorPressureLayout->addWidget(pressureMonitoringPointsGroup, 2, 0, 3, 2);
@@ -291,7 +301,11 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     createPressurePointsLayout->addWidget(numTapsAlongDepth, 2, 1);
     createPressurePointsLayout->addWidget(numTapsAlongHeight, 3, 1);
 
-    pressureMonitoringPointsGroup->setEnabled(monitorPressure->isChecked());
+
+    pressureMonitoringPointsLayout->addWidget(pressureWriteIntervalLabel, 7, 0, 1, 2);
+    pressureMonitoringPointsLayout->addWidget(pressureWriteInterval, 7, 1, 1, 2);
+
+    pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 
     resultMonitoringLayout->addWidget(monitorPressureGroup);
 
@@ -300,15 +314,13 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     //Add signals
     connect(monitorBaseLoad, SIGNAL(stateChanged(int)), this, SLOT(onMonitorBaseLoadChecked(int)));
-    connect(monitorPressure, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPressureChecked(int)));
+    connect(monitorSurfacePressure, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPressureChecked(int)));
     connect(createPressurePoints, SIGNAL(toggled(bool)), this, SLOT(onCreatePressurePointsToggled(bool)));
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
 
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-
-
+//    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
 //    sto
 //    numb =theGI->getHeight();
 
@@ -333,7 +345,7 @@ void ResultMonitoringWidget::onMonitorBaseLoadChecked(int state)
 
 void ResultMonitoringWidget::onMonitorPressureChecked(int state)
 {
-    pressureMonitoringPointsGroup->setEnabled(monitorPressure->isChecked());
+    pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 }
 
 void ResultMonitoringWidget::onCreatePressurePointsToggled(bool checked)
@@ -369,7 +381,7 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     int numCols = 3; // x, y and z
     int numRows = points.size(); //acount points on each face of the building (sides and top)
 
-    QTableWidget *samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
+    samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
     samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
     samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
 
@@ -607,15 +619,51 @@ bool ResultMonitoringWidget::writeToJSON()
 
     jsonObject["numStories"] = numStories->value();
     jsonObject["floorHeight"] = floorHeight->text().toDouble();
-//    jsonObject["roofHeightWindSpeed"] = numStories->value();
 
+    QJsonArray centerOfRotation = {centerOfRotationX->text().toDouble(), centerOfRotationY->text().toDouble(), centerOfRotationZ->text().toDouble()};
+    jsonObject["centerOfRotation"] = centerOfRotation;
 
-//    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/resultMonitoring.json");
-//    jsonFile.open(QFile::WriteOnly);
+    jsonObject["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
+    jsonObject["monitorBaseLoad"] = monitorBaseLoad->isChecked();
 
-//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+    jsonObject["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
 
-//    jsonFile.write(jsonDoc.toJson());
+    int nW = numTapsAlongWidth->text().toInt();
+    int nD = numTapsAlongDepth->text().toInt();
+    int nH = numTapsAlongHeight->text().toInt();
+
+    //Should be updated in the future to directely read from talble
+    QList<QVector3D> defaultPoints = calculatePointCoordinates(nW, nD, nH);
+
+    //Write sampling points coordinates
+    const int nPoints = defaultPoints.size();
+
+    QJsonArray points;
+
+    for (int row = 0; row < nPoints; row++)
+    {
+        QJsonArray point;
+
+//        QJsonValue x = samplingPointsTable->item(row, 0)->text().toDouble();
+//        QJsonValue y = samplingPointsTable->item(row, 1)->text().toDouble();
+//        QJsonValue z = samplingPointsTable->item(row, 2)->text().toDouble();
+
+        point.append(defaultPoints[row].x());
+        point.append(defaultPoints[row].y());
+        point.append(defaultPoints[row].z());
+
+        points.append(point);
+    }
+
+    jsonObject["pressureSamplingPoints"] = points;
+    jsonObject["pressureWriteInterval"] = pressureWriteInterval->value();
+
+    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/resultMonitoring.json");
+    jsonFile.open(QFile::WriteOnly);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
 
     return true;
 }

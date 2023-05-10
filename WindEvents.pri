@@ -18,6 +18,7 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/Analysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
+INCLUDEPATH += $$PWD/EVENTS/IsolatedBuildingCFD
 
 SOURCES += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \

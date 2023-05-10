@@ -5,48 +5,24 @@
     \\  /    A nd           | Version:  10
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
-FoamFile
+
+type        	forces;
+libs        	("libforces.so");
+patches     	(building);
+writeControl 	timeStep;
+writeInterval 	10;
+porosity     	no;
+log           	yes;
+pRef       	0.0;
+rho    		rhoInf;    
+log       	yes;         
+rhoInf		1.0;          
+CofR  		(0.0 0.0 0.0);
+
+binData
 {
-    format      ascii;
-    class       volVectorField;
-    object      U;
+    nBin	60;
+    direction	(0 0 1);
+    cumulative	no;
 }
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-
-dimensions      [0 1 -1 0 0 0 0];
-
-internalField   uniform (10 0 0);
-
-boundaryField
-{
-    inlet
-    {
-    }
-
-    outlet
-    {
-    }
-
-    ground 
-    {
-    }
-    
-    top    
-    {
-    }
-
-    front    
-    {
-    }
-    
-    back    
-    {
-    }
-    
-    building 
-    {
-    }
-}
-
 // ************************************************************************* //

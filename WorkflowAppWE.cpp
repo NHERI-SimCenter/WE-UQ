@@ -436,10 +436,10 @@ WorkflowAppWE::processResults(QString &dirName){
 
   //
   // process results
-  // 
+  //
 
   theResults->processResults(dirName);
-  theComponentSelection->displayComponent("RES");  
+  theComponentSelection->displayComponent("RES");
 }
 
 void
@@ -471,7 +471,7 @@ WorkflowAppWE::clear(void)
 
   //
   // process results
-  //     
+  //
 }
 
 bool

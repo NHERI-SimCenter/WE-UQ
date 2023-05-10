@@ -100,13 +100,13 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     outletBCType->addItem("zeroPressureOutlet");
 
     sidesBCType  = new QComboBox();
-    sidesBCType->addItem("slip");
     sidesBCType->addItem("symmetry");
+    sidesBCType->addItem("slip");
     sidesBCType->addItem("noSlip");
 
     topBCType  = new QComboBox();
-    topBCType->addItem("slip");
     topBCType->addItem("symmetry");
+    topBCType->addItem("slip");
     topBCType->addItem("noSlip");
 
     groundBCType  = new QComboBox();

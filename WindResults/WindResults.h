@@ -1,5 +1,5 @@
-#ifndef TURBULENCE_MODELINNG_WIDGET_H
-#define TURBULENCE_MODELINNG_WIDGET_H
+#ifndef WIND_RESULTS_H
+#define WIND_RESULTS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -43,60 +43,35 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
-class QComboBox;
-class QGridLayout;
-class QStackedWidget;
-class QVBoxLayout;
-class QSpinBox;
-class QLineEdit;
-class QTextEdit;
-class LineEditRV;
-class QTabWidget;
-class QGroupBox;
-class QPushButton;
-class IsolatedBuildingCFD;
 
-class TurbulenceModelingWidget: public SimCenterAppWidget
+
+class WindResults: public SimCenterWidget
 {
     Q_OBJECT
+
 public:
-    explicit TurbulenceModelingWidget(IsolatedBuildingCFD *parent = 0);
-    ~TurbulenceModelingWidget();
+    //Main constractor
+    explicit WindResults(QWidget *parent = 0);
+
+    //Deconstractor
+    ~WindResults();
 
     bool writeToJSON();
-    const QString simulationType();
+
 
 signals:
 
 public slots:
    void clear(void);
-   void turbModelTypeChanged(const QString &arg1);
-   void RANSModelTypeChanged(const QString &arg1);
-   void LESModelTypeChanged(const QString &arg1);
 
-private:
-   IsolatedBuildingCFD  *mainModel;
-
-   QVBoxLayout      *layout;
-
-   QComboBox        *turbModelOptions;
-   QComboBox        *RANSOptions;
-   QComboBox        *LESOptions;
-   QComboBox        *DESOptions;
-
-   QWidget          *RANSWidget;
-   QWidget          *DESWidget;
-   QWidget          *LESWidget;
-
-   QTextEdit        *RANSModelCoeffs;
-   QTextEdit        *LESModelCoeffs;
-   QTextEdit        *DESModelCoeffs;
-   QStackedWidget   *stackedTurbModelWidget;
 
 
 
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
+private:
+//   QVBoxLayout      *layout;
+
+public:
+
 };
 
-#endif // TURBULENCE_MODELINNG_WIDGET_H
+#endif // WIND_RESULTS_H

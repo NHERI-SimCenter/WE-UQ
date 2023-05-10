@@ -1,6 +1,3 @@
-#ifndef TURBULENCE_MODELINNG_WIDGET_H
-#define TURBULENCE_MODELINNG_WIDGET_H
-
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
@@ -39,64 +36,62 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include <SimCenterAppWidget.h>
+#include "WindResults.h"
+#include <QPushButton>
+#include <QScrollArea>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDebug>
+#include <QFileDialog>
+#include <QPushButton>
+#include <SectionTitle.h>
+#include <QFileInfo>
+#include <QMovie>
+#include <QPixmap>
+#include <QIcon>
+#include <RandomVariablesContainer.h>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QMessageBox>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QVector>
+#include <LineEditRV.h>
+#include <QProcess>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
-class InputWidgetParameters;
-class RandomVariablesContainer;
-class QComboBox;
-class QGridLayout;
-class QStackedWidget;
-class QVBoxLayout;
-class QSpinBox;
-class QLineEdit;
-class QTextEdit;
-class LineEditRV;
-class QTabWidget;
-class QGroupBox;
-class QPushButton;
-class IsolatedBuildingCFD;
+#include <SimCenterPreferences.h>
+#include <GeneralInformationWidget.h>
 
-class TurbulenceModelingWidget: public SimCenterAppWidget
+//#include <InputWidgetParameters.h>
+
+WindResults::WindResults(QWidget *parent)
+    : SimCenterWidget(parent)
 {
-    Q_OBJECT
-public:
-    explicit TurbulenceModelingWidget(IsolatedBuildingCFD *parent = 0);
-    ~TurbulenceModelingWidget();
 
-    bool writeToJSON();
-    const QString simulationType();
+}
 
-signals:
 
-public slots:
-   void clear(void);
-   void turbModelTypeChanged(const QString &arg1);
-   void RANSModelTypeChanged(const QString &arg1);
-   void LESModelTypeChanged(const QString &arg1);
+WindResults::~WindResults()
+{
 
-private:
-   IsolatedBuildingCFD  *mainModel;
+}
 
-   QVBoxLayout      *layout;
+void WindResults::clear(void)
+{
 
-   QComboBox        *turbModelOptions;
-   QComboBox        *RANSOptions;
-   QComboBox        *LESOptions;
-   QComboBox        *DESOptions;
-
-   QWidget          *RANSWidget;
-   QWidget          *DESWidget;
-   QWidget          *LESWidget;
-
-   QTextEdit        *RANSModelCoeffs;
-   QTextEdit        *LESModelCoeffs;
-   QTextEdit        *DESModelCoeffs;
-   QStackedWidget   *stackedTurbModelWidget;
+}
 
 
 
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
-};
+bool WindResults::writeToJSON()
+{
 
-#endif // TURBULENCE_MODELINNG_WIDGET_H
+    return true;
+}

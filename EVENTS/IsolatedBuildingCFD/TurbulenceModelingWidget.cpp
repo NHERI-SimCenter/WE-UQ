@@ -229,6 +229,7 @@ void TurbulenceModelingWidget::turbModelTypeChanged(const QString &arg1)
 
     // this is needed for some reason if Basic was last selected item!
     stackedTurbModelWidget->repaint();
+    mainModel->updateWidgets();
 }
 
 void TurbulenceModelingWidget::RANSModelTypeChanged(const QString &arg1)
@@ -314,5 +315,11 @@ bool TurbulenceModelingWidget::writeToJSON()
 
     return true;
 }
+
+const QString TurbulenceModelingWidget::simulationType()
+{
+    return turbModelOptions->currentText();
+}
+
 
 

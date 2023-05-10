@@ -218,11 +218,10 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 
 void SimCenterVTKRenderingWidget::readMesh()
 {
-
     // Setup reader
     reader = vtkSmartPointer<vtkOpenFOAMReader>::New();
-    reader->SetFileName("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/IsolatedBuildingCFD.foam");
-    //   reader->Update();
+    QString foamFileName  = mainModel->caseDir() + "/case.foam";
+    reader->SetFileName(foamFileName.toStdString().c_str());
     reader->SetTimeValue(0);
     reader->CreateCellToPointOn();
     reader->ReadZonesOn();

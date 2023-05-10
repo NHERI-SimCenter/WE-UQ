@@ -8,45 +8,13 @@
 FoamFile
 {
     format      ascii;
-    class       volVectorField;
-    object      U;
+    class       dictionary;
+    object      physicalProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+viscosityModel  constant;
 
-dimensions      [0 1 -1 0 0 0 0];
-
-internalField   uniform (10 0 0);
-
-boundaryField
-{
-    inlet
-    {
-    }
-
-    outlet
-    {
-    }
-
-    ground 
-    {
-    }
-    
-    top    
-    {
-    }
-
-    front    
-    {
-    }
-    
-    back    
-    {
-    }
-    
-    building 
-    {
-    }
-}
+nu              [0 2 -1 0 0 0 0] 1.5e-05;
 
 // ************************************************************************* //

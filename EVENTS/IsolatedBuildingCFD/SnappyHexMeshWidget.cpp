@@ -77,7 +77,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    int widgetGap = 25;
+    int widgetGap = 15;
 
     snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
     snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
@@ -155,8 +155,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QGridLayout* backgroundMeshLayout = new QGridLayout(backgroundMeshWidget);
 
     QLabel *directionLabel = new QLabel("Direction");
-    QLabel *numberOfCellsLabel = new QLabel("Number of Cells");
-    QLabel *meshGradingLabel = new QLabel("Mesh Grading");
+    QLabel *numberOfCellsLabel = new QLabel("No. of Cells");
+    QLabel *meshGradingLabel = new QLabel("Grading");
     QLabel *meshSizeLabel = new QLabel("Grid Size");
 
     directionLabel->setStyleSheet("font-weight: bold; color: black");
@@ -169,17 +169,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *zAxisLabel = new QLabel("Z-axis");
 
     xAxisNumCells = new QLineEdit();
-    xAxisNumCells->setText("40");
+    xAxisNumCells->setText("80");
     xAxisNumCells->setValidator(new QIntValidator);
     xAxisNumCells->setToolTip("Number of cells in x-direction");
 
     yAxisNumCells = new QLineEdit();
-    yAxisNumCells->setText("20");
+    yAxisNumCells->setText("40");
     yAxisNumCells->setValidator(new QIntValidator);
     yAxisNumCells->setToolTip("Number of cells in y-direction");
 
     zAxisNumCells = new QLineEdit();
-    zAxisNumCells->setText("10");
+    zAxisNumCells->setText("20");
     zAxisNumCells->setValidator(new QIntValidator);
     zAxisNumCells->setToolTip("Number of cells in z-direction");
 
@@ -367,7 +367,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceName->addItem("Ground");
 
     surfaceRefinementLevel = new QSpinBox();
-    surfaceRefinementLevel->setRange(numRows + 1, 100);
+    surfaceRefinementLevel->setRange(numRows + 2, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
     surfaceRefinementDistance = new QLineEdit();
@@ -415,7 +415,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     refinementEdgeName->addItem("Building Edges");
 
     edgeRefinementLevel = new QSpinBox();
-    edgeRefinementLevel->setRange(numRows + 2, 100);
+    edgeRefinementLevel->setRange(numRows + 3, 100);
     edgeRefinementLevel->setSingleStep(1);
 
     QPushButton *edgeMeshDemoView = new QPushButton("");
@@ -469,8 +469,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     finalPrismLayerThickness = new QDoubleSpinBox();
     finalPrismLayerThickness->setRange(0.0, 1.0);
-    finalPrismLayerThickness->setValue(0.25);
-    finalPrismLayerThickness->setSingleStep(0.05);
+    finalPrismLayerThickness->setValue(0.5);
+    finalPrismLayerThickness->setSingleStep(0.1);
 
     QPushButton *prismLayersDemoView = new QPushButton("");
     QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png");
@@ -618,7 +618,7 @@ bool SnappyHexMeshWidget::createSnappyHexMeshDict()
     QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/create_snappy_hex_mesh_dictionary.py";
     QString jsonPath = mainModel->caseDir() + "constant/simCenter/";
     QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
-    QString outputPath = mainModel->caseDir() + "system/";
+    QString outputPath = mainModel->caseDir();
 
     QString program = "/home/abiy/anaconda3/bin/python3.9";
     QStringList arguments;
@@ -842,7 +842,7 @@ bool SnappyHexMeshWidget::exportBlockMeshParametersToJSON()
     jsonObject["inletBoundaryType"] = "patch";
     jsonObject["outletBoundaryType"] = "patch";
     jsonObject["groundBoundaryType"] = "wall";
-    jsonObject["topBoundaryType"] = "patch";
+    jsonObject["topBoundaryType"] = "symmetry";
     jsonObject["frontBoundaryType"] = "symmetry";
     jsonObject["backBoundaryType"] = "symmetry";
 
@@ -891,6 +891,7 @@ bool SnappyHexMeshWidget::exportSnappyMeshParametersToJSON()
     jsonObject["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
     jsonObject["resolveFeatureAngle"] = resolveFeatureAngle->value();
     jsonObject["numProcessors"] = numProcessors->value();
+    jsonObject["runInParallel"] = runInParallel->isChecked();
 
     //Add regional refinment
     const int nRegions = refinementBoxesTable->rowCount();

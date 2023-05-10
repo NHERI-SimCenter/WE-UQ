@@ -8,45 +8,22 @@
 FoamFile
 {
     format      ascii;
-    class       volVectorField;
-    object      U;
+    class       dictionary;
+    location    "system";
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+numberOfSubdomains  	8;
 
-dimensions      [0 1 -1 0 0 0 0];
+decomposer      	hierarchical;
+distributor     	ptscotch;
 
-internalField   uniform (10 0 0);
-
-boundaryField
+hierarchicalCoeffs
 {
-    inlet
-    {
-    }
-
-    outlet
-    {
-    }
-
-    ground 
-    {
-    }
-    
-    top    
-    {
-    }
-
-    front    
-    {
-    }
-    
-    back    
-    {
-    }
-    
-    building 
-    {
-    }
+    delta       	0.001;
+    order          	xyz;
 }
+
 
 // ************************************************************************* //

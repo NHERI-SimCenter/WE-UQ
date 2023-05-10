@@ -17,7 +17,52 @@ import shutil
 import numpy as np
 import foam_dict_reader as foam
 
+def write_decomposeParDict_file(input_json_path, template_dict_path, case_path):
 
+    #Read JSON data for turbulence model
+    snpy_json_file = open(input_json_path + "/snappyHexMeshParameters.json")
+
+    # Returns JSON object as a dictionary
+    snpy_data = json.load(snpy_json_file)
+      
+    snpy_json_file.close()
+    
+    num_processors = snpy_data['numProcessors']
+
+    
+    #Open the template file (OpenFOAM file) for manipulation
+    dict_file = open(template_dict_path + "/decomposeParDictTemplate", "r")
+
+    dict_lines = dict_file.readlines()
+    dict_file.close()
+    
+    #Write number of sub-domains
+    start_index = foam.find_keyword_line(dict_lines, "numberOfSubdomains") 
+    dict_lines[start_index] = "numberOfSubdomains\t{};\n".format(num_processors)
+    
+    #Write method of decomposition
+    start_index = foam.find_keyword_line(dict_lines, "decomposer") 
+    dict_lines[start_index] = "decomposer\t\t{};\n".format("hierarchical")
+    
+
+    #Add refinment box geometry
+    start_index = foam.find_keyword_line(dict_lines, "hierarchicalCoeffs") + 2 
+
+    added_part = "    n\t\t\t({} {} {});\n".format(2, 2, num_processors//4)
+        
+    dict_lines.insert(start_index, added_part)
+    
+    #Write edited dict to file
+    write_file_name = case_path + "system/decomposeParDict"
+    
+    if os.path.exists(write_file_name):
+        os.remove(write_file_name)
+    
+    output_file = open(write_file_name, "w+")
+    for line in dict_lines:
+        output_file.write(line)
+    output_file.close()   
+    
 def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict_path):
 
     #Read JSON data
@@ -220,7 +265,7 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
     
     
     #Write edited dict to file
-    write_file_name = output_dict_path + "/snappyHexMeshDict"
+    write_file_name = output_dict_path + "system/snappyHexMeshDict"
     
     if os.path.exists(write_file_name):
         os.remove(write_file_name)
@@ -243,3 +288,19 @@ if __name__ == '__main__':
     # script_path = os.path.dirname(os.path.realpath(__file__))
     
     create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict_path)
+    
+    #Read JSON data for turbulence model
+    snpy_json_file = open(input_json_path + "/snappyHexMeshParameters.json")
+
+    # Returns JSON object as a dictionary
+    snpy_data = json.load(snpy_json_file)
+      
+    snpy_json_file.close()
+    
+    run_in_parallel = snpy_data['runInParallel']
+    
+    # print(run_in_parallel)
+    
+    if run_in_parallel:
+        write_decomposeParDict_file(input_json_path, template_dict_path, output_dict_path)
+
