@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simcenter.designsafe-ci.org/",
+  "title": "SimCenter WE-UQ CFD Modeling of Generic Tall Building",
+  "description": "JSON Schema for representing a the geometry and orientation of a tall building",
+  "type": "object",
+  "properties": {
+    "buildingWidth": {
+      "description": "Width of the face perpendicular to x-axis",
+      "type": "number"
+    },
+    "buildingDepth": {
+      "description": "Width of the face perpendicular to y-axis",
+      "type": "number"
+    },
+    "buildingHeight": {
+      "description": "Height of the building.",
+      "type": "number"
+    },
+    "geometricScale": {
+      "description": "Geometric scale at which the simulation is caried out.",
+      "type": "number"
+    },
+    "windDirection": {
+      "description": "Approaching wind direction measured from x-axis",
+      "type": "number"
+    },
+    "lengthUnit": {
+      "description": "Units for the building geometry, the default is in meters.",
+      "type": "string"
+    },
+    "angleUnit": {
+      "description": "Units for the wind direction, the default is in degrees.",
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "EventClassification": "Wind",
+    "angleUnit": "degree",
+    "buildingDepth": 30.48,
+    "buildingHeight": 182.88,
+    "buildingWidth": 45.72,
+    "geometricScale": 400,
+    "lengthUnit": "m",
+    "normalizationType": "Relative",
+    "origin": [
+        0,
+        0,
+        0
+    ],
+    "type": "IsolatedBuildingCFD",
+    "windDirection": 45
+}

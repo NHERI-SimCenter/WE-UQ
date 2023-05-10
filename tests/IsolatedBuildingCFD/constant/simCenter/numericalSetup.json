@@ -1,0 +1,12 @@
+{
+    "EventClassification": "Wind",
+    "adjustTimeStep": false,
+    "duration": 36,
+    "maxCourantNumber": 5,
+    "numCorrectors": 2,
+    "numNonOrthogonalCorrectors": 0,
+    "numOuterCorrectors": 1,
+    "solverType": "simpleFoam",
+    "timeStep": 0.0001,
+    "type": "IsolatedBuildingCFD"
+}

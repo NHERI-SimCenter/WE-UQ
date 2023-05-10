@@ -42,6 +42,7 @@ include(../SimCenterCommon/Workflow/Workflow.pri)
 include(../SimCenterCommon/RandomVariables/RandomVariables.pri)
 include(../SimCenterCommon/InputSheetBM/InputSheetBM.pri)
 include(./WindEvents.pri)
+include(./WindResults.pri)
 
 SOURCES += main.cpp \
     WorkflowAppWE.cpp \

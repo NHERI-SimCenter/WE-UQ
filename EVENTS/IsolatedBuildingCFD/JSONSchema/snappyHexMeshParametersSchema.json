@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://simcenter.designsafe-ci.org/",
+  "title": "SimCenter WE-UQ CFD Modeling of Generic Tall Building",
+  "description": "JSON Schema for computational grid generation using snappyHexMesh meshing tool of OpenFOAM.",
+  "type": "object",
+  "properties": {
+    "domainLength": {
+      "description": "Length of the domain in x-direction.",
+      "type": "number"
+    },
+    "domainWidth": {
+      "description": "Width of the domain in y-direction.",
+      "type": "number"
+    },
+    "domainHeight": {
+      "description": "Height of the domain in z-direction.",
+      "type": "number"
+    },
+    "fetchLength": {
+      "description": "The distance from the inlet upto the target (building) location.",
+      "type": "number"
+    },
+    "buildingHeight": {
+      "description": "Height of the building.",
+      "type": "number"
+    },
+    "geometricScale": {
+      "description": "Geometric scale at which the simulation is carried out.",
+      "type": "number"
+    },
+    "relativeDimensions": {
+      "description": "Indicates wether the domain dimensions are relative to the building height (normalized) or not.",
+      "type": "boolean"
+    },
+    "origin": {
+      "description": "Reference point or origin of the coordinate system.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "buildingSTLName": {
+      "description": "Name of the STL surface representing the building geometry.",
+      "type": "string"
+    },
+    "numCellsBetweenLevels": {
+      "description": "Number of buffer layers between different levels.",
+      "type": "integer"
+    },
+    "resolveFeatureAngle": {
+      "description": "Feature resolution angle to capture sharp angles.",
+      "type": "number"
+    },
+    "numProcessors": {
+      "description": "Number of processors for snappyHexMesh generation.",
+      "type": "integer"
+    },
+    "xMin": {
+      "description": "Minimum x coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "yMin": {
+      "description": "Minimum y coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "zMin": {
+      "description": "Minimum z coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "xMin": {
+      "description": "Minimum x coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "yMax": {
+      "description": "Minimum y coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "zMax": {
+      "description": "Minimum z coordinate for the refinement boxes.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "addSurfaceRefinement": {
+      "description": "Adds surface refinements over building surface if turned on.",
+      "type": "boolean"
+    },
+    "addEdgeRefinement": {
+      "description": "Adds refinements over the building edge if turned on.",
+      "type": "boolean"
+    },
+    "addSurfaceLayers": {
+      "description": "Add prism layers on building surface or not.",
+      "type": "boolean"
+    },
+    "numSurfaceLayers": {
+      "description": "Number of surface(prism) layers to be added.",
+      "type": "integer"
+    },
+    "insidePoint": {
+      "description": "A point that will always remains inside the mesh(not surfaces) even after refinement.",
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "refinementRegionType": {
+      "description": "The type of refinement region geometry.",
+      "type": "string",
+      "enum": [
+        "searchableBox",
+        "searchableCylinder",
+        "searchableDisk"
+      ]
+    }
+  }
+}

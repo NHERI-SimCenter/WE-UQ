@@ -1,0 +1,89 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      DFSRTurbDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+//Name of the inflow patch
+patchName 		"inlet";
+
+//Start time of the simulation
+startTime		0.0;
+
+//End time of the simulation
+endTime			38.2;		
+
+//Time step for the inflow generation Should be 1/(2*fmax) 
+//to take advantage of the FFT algorithm.
+timeStep		0.0025;
+
+//Upper cut off frequency 
+fMax			200;
+
+//The number of frequency steps 
+nFreq			8192;
+
+//Number of spectral interpolation frequencies 
+nInterp			25;
+
+//Power of polynomial for distribution of 
+//interplolation frequency, default quartic q = 4 
+q			4;
+
+//Constant mean velocity for coherency function  
+cohUav			10.0;
+
+//Seed of the random number generator used to sample random phase angles 
+seed			100;          
+
+//Coherency decay coefficients 
+C                       (//x	y     z	
+                          (3.0 10.0  10.0) //u
+                          (3.0 10.0  10.0) //v
+                          (3.0 10.0  3.00) //w
+                        );  
+
+//Wind profile sub-dictionary
+windProfile
+{	
+	//read scaling factors for I, L 
+	//that varies with hieght
+	adjustProfile  	off;
+
+	//Factors to scale turbulence intensities and length scale profiles
+	//in each direction helps to account for decay of turbulence  
+	scaleI 		(1.0 1.0 1.0); //Constanta scaling 
+	scaleL		(1.0 1.0 1.0);
+}
+
+//If turned on adjusts the flow field to have
+//a constant mass flow rate
+constFlowRate           on;
+
+//The ratio/portion of the computational domain height 
+//above which the flow rate will be adjusted.
+//default 1: correction applied to the entire inelt plane
+flowRateHeightRatio     0.25;
+
+//Apply div-free corrections or not 
+correctDivergence	off;
+
+//Correct shear profile 
+correctShearProfile	off;
+
+//Write the time-series for sampled points
+writeSamples 		on;
+
+//Write the final inflow data
+writeInflow		on;
+// ************************************************************************* //

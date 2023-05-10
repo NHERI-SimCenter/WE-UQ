@@ -16,7 +16,7 @@
 #include <QTextStream>
 #include <QVector>
 
-#include "OpenFOAMhelper/openfoamhelper.h"
+#include "OpenFoamHelper/openfoamhelper.h"
 
 CFDExpertWidget::CFDExpertWidget(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), remoteService(remoteService), shown(false)

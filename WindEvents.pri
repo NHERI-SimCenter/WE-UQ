@@ -18,10 +18,19 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/Analysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
+INCLUDEPATH += $$PWD/EVENTS/IsolatedBuildingCFD
 
 SOURCES += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -40,7 +49,7 @@ SOURCES += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
-    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamHelper.cpp \
+    $$PWD/EVENTS/ExpertCFD/OpenFoamHelper/openfoamhelper.cpp \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.cpp \
     $$PWD/EVENTS/WindEventSelection.cpp \
     $$PWD/EVENTS/DEDM_HRP.cpp \
@@ -68,6 +77,14 @@ SOURCES += \
 HEADERS  += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.h \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \
@@ -87,7 +104,7 @@ HEADERS  += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
-    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamhelper.h \
+    $$PWD/EVENTS/ExpertCFD/OpenFoamHelper/openfoamhelper.h \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.h \
     $$PWD/EVENTS/WindEventSelection.h \
     $$PWD/EVENTS/WindTunnelExperiment.h \
@@ -122,5 +139,25 @@ FORMS    += \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.ui \
     $$PWD/EVENTS/usermodeshapes.ui
 
+#VTK Includes and libraries
+INCLUDEPATH += /usr/local/include/vtk-9.2
+
+LIBS += -L/usr/local/lib \
+        -lvtkViewsCore-9.2 \
+        -lvtkCommonCore-9.2 \
+        -lvtkFiltersGeometry-9.2 \
+        -lvtkRenderingCore-9.2 \
+        -lvtkRenderingContextOpenGL2-9.2 \
+        -lvtkCommonExecutionModel-9.2 \
+        -lvtkCommonDataModel-9.2 \
+        -lvtkGUISupportQt-9.2 \
+        -lvtkRenderingOpenGL2-9.2 \
+        -lvtkIOGeometry-9.2 \
+        -lvtkViewsQt-9.2 \
+        -lvtkIOLegacy-9.2 \
+        -lvtksys-9.2
+
 QT += widgets
+QT += core gui opengl
+
 
