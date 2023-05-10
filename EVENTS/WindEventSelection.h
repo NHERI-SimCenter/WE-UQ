@@ -93,6 +93,7 @@ private:
    SimCenterAppWidget *theWindForceSpectrum;
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theLowRiseTPU_Widget;
+   SimCenterAppWidget *theHighRiseTPU_Widget;  
    SimCenterAppWidget *theWindTunnelExperiment;
    SimCenterAppWidget *theExistingEvents;
 
