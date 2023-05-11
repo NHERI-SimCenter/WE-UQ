@@ -608,25 +608,22 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, i
     return transPoints;
 }
 
-bool ResultMonitoringWidget::writeToJSON()
+bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
-    QJsonObject jsonObject;
+    QJsonObject resMonitoringJson = QJsonObject();
 
-    jsonObject["type"] = "IsolatedBuildingCFD";
-    jsonObject["EventClassification"] = "Wind";
-
-    jsonObject["numStories"] = numStories->value();
-    jsonObject["floorHeight"] = floorHeight->text().toDouble();
+    resMonitoringJson["numStories"] = numStories->value();
+    resMonitoringJson["floorHeight"] = floorHeight->text().toDouble();
 
     QJsonArray centerOfRotation = {centerOfRotationX->text().toDouble(), centerOfRotationY->text().toDouble(), centerOfRotationZ->text().toDouble()};
-    jsonObject["centerOfRotation"] = centerOfRotation;
+    resMonitoringJson["centerOfRotation"] = centerOfRotation;
 
-    jsonObject["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
-    jsonObject["monitorBaseLoad"] = monitorBaseLoad->isChecked();
+    resMonitoringJson["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
+    resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
 
-    jsonObject["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
+    resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
 
     int nW = numTapsAlongWidth->text().toInt();
     int nD = numTapsAlongDepth->text().toInt();
@@ -643,11 +640,6 @@ bool ResultMonitoringWidget::writeToJSON()
     for (int row = 0; row < nPoints; row++)
     {
         QJsonArray point;
-
-//        QJsonValue x = samplingPointsTable->item(row, 0)->text().toDouble();
-//        QJsonValue y = samplingPointsTable->item(row, 1)->text().toDouble();
-//        QJsonValue z = samplingPointsTable->item(row, 2)->text().toDouble();
-
         point.append(defaultPoints[row].x());
         point.append(defaultPoints[row].y());
         point.append(defaultPoints[row].z());
@@ -655,15 +647,10 @@ bool ResultMonitoringWidget::writeToJSON()
         points.append(point);
     }
 
-    jsonObject["pressureSamplingPoints"] = points;
-    jsonObject["pressureWriteInterval"] = pressureWriteInterval->value();
+    resMonitoringJson["pressureSamplingPoints"] = points;
+    resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
 
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/resultMonitoring.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
+    jsonObject["resultMonitoring"] = resMonitoringJson;
 
     return true;
 }

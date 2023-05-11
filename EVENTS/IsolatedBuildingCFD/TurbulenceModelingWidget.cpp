@@ -64,9 +64,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonDocument>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
@@ -291,27 +288,19 @@ void TurbulenceModelingWidget::LESModelTypeChanged(const QString &arg1)
 }
 
 
-bool TurbulenceModelingWidget::writeToJSON()
+bool TurbulenceModelingWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes turbulence modeling options RANS, LES and DES.
 
-    QJsonObject jsonObject;
-
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
-
-    jsonObject["simulationType"] = turbModelOptions->currentText();
-    jsonObject["RANSModelType"] = RANSOptions->currentText();
-    jsonObject["LESModelType"] = LESOptions->currentText();
-    jsonObject["DESModelType"] = DESOptions->currentText();
+    QJsonObject turbModelingJson = QJsonObject();
 
 
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/turbulenceModeling.json");
-    jsonFile.open(QFile::WriteOnly);
+    turbModelingJson["simulationType"] = turbModelOptions->currentText();
+    turbModelingJson["RANSModelType"] = RANSOptions->currentText();
+    turbModelingJson["LESModelType"] = LESOptions->currentText();
+    turbModelingJson["DESModelType"] = DESOptions->currentText();
 
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
+    jsonObject["turbulenceModeling"] = turbModelingJson;
 
     return true;
 }

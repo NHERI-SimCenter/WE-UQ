@@ -380,16 +380,16 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 void IsolatedBuildingCFD::onRunCFDClicked()
 {
     //Write the JSON files
-    windCharacteristics->writeToJSON();
-    boundaryConditions->writeToJSON();
-    turbulenceModeling->writeToJSON();
-    numericalSetup->writeToJSON();
-    resultMonitoring->writeToJSON();
+//    windCharacteristics->writeToJSON();
+//    boundaryConditions->writeToJSON();
+//    turbulenceModeling->writeToJSON();
+//    numericalSetup->writeToJSON();
+//    resultMonitoring->writeToJSON();
 
     //Run prepare case directory
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/setup_case.py";
+    QString scriptPath = pyScriptsPath() + "/setup_case.py";
     QString jsonPath = caseDir() + "constant/simCenter";
-    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+    QString templatePath = foamDictsPath();
     QString outputPath =caseDir();
 
     QString program = "/home/abiy/anaconda3/bin/python3.9";
@@ -416,7 +416,7 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 {
 
     //Run prepare case directory
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/postProcessing/process_output_data.py";
+    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
     QString outputPath = caseDir();
 
     QString program = "/home/abiy/anaconda3/bin/python3.9";
@@ -822,6 +822,17 @@ const QString IsolatedBuildingCFD::caseDir()
 {
     return caseDirectoryPathWidget->text();
 }
+
+const QString IsolatedBuildingCFD::foamDictsPath()
+{
+    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+}
+
+const QString IsolatedBuildingCFD::pyScriptsPath()
+{
+    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
+}
+
 
 const QString IsolatedBuildingCFD::simulationType()
 {

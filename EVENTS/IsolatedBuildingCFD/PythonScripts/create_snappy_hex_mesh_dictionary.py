@@ -20,10 +20,10 @@ import foam_dict_reader as foam
 def write_decomposeParDict_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    snpy_json_file = open(input_json_path + "/snappyHexMeshParameters.json")
+    snpy_json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    snpy_data = json.load(snpy_json_file)
+    snpy_data = json.load(snpy_json_file)["snappyHexMeshParameters"]
       
     snpy_json_file.close()
     
@@ -66,10 +66,10 @@ def write_decomposeParDict_file(input_json_path, template_dict_path, case_path):
 def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict_path):
 
     #Read JSON data
-    json_file = open(input_json_path + "/snappyHexMeshParameters.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
       
     # Returns JSON object as a dictionary
-    domain_data = json.load(json_file)
+    domain_data = json.load(json_file)["snappyHexMeshParameters"]
       
     json_file.close()
     
@@ -214,16 +214,16 @@ def create_snappy_hex_mesh_dict(input_json_path, template_dict_path, output_dict
         dict_lines.insert(start_index, added_part)
         
     #Add surface refinment around the building as a refinment region
-    if surface_refinement_level > refinement_boxes[-1][1]:
-        added_part = ""
-        added_part += "         {}\n".format(refinement_surface_name)
-        added_part += "         {\n"
-        added_part += "             mode   distance;\n"
-        added_part += "             levels  (({:.4f} {}));\n".format(surface_refinement_distance, surface_refinement_level)
-        added_part += "         }\n"
-                    
-        start_index = foam.find_keyword_line(dict_lines, "refinementRegions") + 2 
-        dict_lines.insert(start_index, added_part)
+    # if surface_refinement_level > refinement_boxes[-1][1]:
+    added_part = ""
+    added_part += "         {}\n".format(refinement_surface_name)
+    added_part += "         {\n"
+    added_part += "             mode   distance;\n"
+    added_part += "             levels  (({:.4f} {}));\n".format(surface_refinement_distance, refinement_boxes[-1][1] + 1)
+    added_part += "         }\n"
+                
+    start_index = foam.find_keyword_line(dict_lines, "refinementRegions") + 2 
+    dict_lines.insert(start_index, added_part)
     
     #Add box refinments 
     added_part = ""
