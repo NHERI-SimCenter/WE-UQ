@@ -88,7 +88,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     mainWindowLayout = new QHBoxLayout();
 
-
     inputWindowLayout = new QVBoxLayout();
     inputWindowGroup = new QGroupBox();
 
@@ -198,8 +197,12 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit();
-//    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
-    caseDirectoryPathWidget->setText("/Users/fmckenna/NHERI/WE-UQ/build/WE_UQ.app/Contents/MacOS/IsolatedBuildingTest/");
+    QString currentAppDir = QCoreApplication::applicationDirPath();
+    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingTest"; // + QDir::separator() + "case.OpenFOAM";
+
+    
+    //    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+    caseDirectoryPathWidget->setText(testLocation);
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -211,8 +214,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
                                                  "\n --> Specify numerical setup "
                                                  "\n --> Run simulation "
                                                  "\n --> Post-process");
-
-
 
 
     generalDescriptionLayout->addWidget(generalDescriptionLabel);
@@ -236,8 +237,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
     buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
 
-//    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
-//    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
+    //    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
+    //    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
 
     buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
     buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
