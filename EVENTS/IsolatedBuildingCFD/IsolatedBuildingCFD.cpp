@@ -198,8 +198,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit();
-//    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
-    caseDirectoryPathWidget->setText("/Users/fmckenna/NHERI/WE-UQ/build/WE_UQ.app/Contents/MacOS/IsolatedBuildingTest/");
+    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+//    caseDirectoryPathWidget->setText("/Users/fmckenna/NHERI/WE-UQ/build/WE_UQ.app/Contents/MacOS/IsolatedBuildingTest/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
