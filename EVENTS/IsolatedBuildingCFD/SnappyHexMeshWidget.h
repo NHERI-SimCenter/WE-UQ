@@ -67,9 +67,10 @@ public:
     explicit SnappyHexMeshWidget(IsolatedBuildingCFD *parent = 0);
     ~SnappyHexMeshWidget();
 
-    bool exportBuildingGeometryToJSON();
-    bool exportBlockMeshParametersToJSON();
-    bool exportSnappyMeshParametersToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
+//    bool exportBuildingGeometryToJSON();
+//    bool exportBlockMeshParametersToJSON();
+//    bool exportSnappyMeshParametersToJSON();
 
     bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();

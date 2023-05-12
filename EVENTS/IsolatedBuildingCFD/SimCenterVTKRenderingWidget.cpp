@@ -40,8 +40,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDebug>

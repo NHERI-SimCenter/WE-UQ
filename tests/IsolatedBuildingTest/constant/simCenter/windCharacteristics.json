@@ -1,9 +1,0 @@
-{
-    "EventClassification": "Wind",
-    "aerodynamicRoughnessLength": 7.5e-05,
-    "airDensity": 1.225,
-    "buildingHeight": 0.4572,
-    "kinematicViscosity": 1.5e-05,
-    "roofHeightWindSpeed": 12.35,
-    "type": "IsolatedBuildingCFD"
-}

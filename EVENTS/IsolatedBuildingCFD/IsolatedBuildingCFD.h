@@ -99,8 +99,9 @@ public:
 
     const QString normalizationType();
     const QString caseDir();
+    const QString foamDictsPath();
+    const QString pyScriptsPath();
     const QString simulationType();
-
 
 
 signals:
@@ -111,18 +112,12 @@ public slots:
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
 
-//   void onGenerateGeometryClicked();
-//   void onRunBlockMeshClicked();
-//   void onRunSnappyHexMeshClicked();
-
 private:
    QHBoxLayout  *mainWindowLayout;
 
    QVBoxLayout  *inputWindowLayout;
    QGroupBox    *inputWindowGroup;
 
-//   QGroupBox    *snappyHexMeshGroup;
-//   QVBoxLayout  *snappyHexMeshLayout;
 
    QVBoxLayout  *visWindowLayout;
    QGroupBox    *visWindowGroup;

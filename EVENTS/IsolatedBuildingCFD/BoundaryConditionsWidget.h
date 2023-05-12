@@ -61,7 +61,7 @@ public:
     explicit BoundaryConditionsWidget(IsolatedBuildingCFD *parent = 0);
     ~BoundaryConditionsWidget();
 
-    bool writeToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
 
 
 signals:

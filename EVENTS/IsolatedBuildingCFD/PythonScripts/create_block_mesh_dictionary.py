@@ -15,10 +15,10 @@ import json
 def create_block_mesh_dict(input_json_path, template_dict_path, output_dict_path):
 
     #Read JSON data
-    json_file = open(input_json_path + "/blockMeshParameters.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
       
     # Returns JSON object as a dictionary
-    domain_data = json.load(json_file)
+    domain_data = json.load(json_file)["blockMeshParameters"]
       
     json_file.close()
     

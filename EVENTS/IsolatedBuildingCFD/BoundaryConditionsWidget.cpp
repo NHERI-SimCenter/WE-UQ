@@ -172,28 +172,20 @@ void BoundaryConditionsWidget::clear(void)
 
 }
 
-bool BoundaryConditionsWidget::writeToJSON()
+bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    // Writes physical parameters boundary information to JSON file.
+    // Writes physical boundary information to JSON file.
 
-    QJsonObject jsonObject;
+    QJsonObject boundaryCondJson = QJsonObject();
 
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
+    boundaryCondJson["inletBoundaryCondition"] = inletBCType->currentText();
+    boundaryCondJson["outletBoundaryCondition"] = outletBCType->currentText();
+    boundaryCondJson["topBoundaryCondition"] = topBCType->currentText();
+    boundaryCondJson["sidesBoundaryCondition"] = sidesBCType->currentText();
+    boundaryCondJson["groundBoundaryCondition"] = groundBCType->currentText();
+    boundaryCondJson["buildingBoundaryCondition"] = buildingBCType->currentText();
 
-    jsonObject["inletBoundaryCondition"] = inletBCType->currentText();
-    jsonObject["outletBoundaryCondition"] = outletBCType->currentText();
-    jsonObject["topBoundaryCondition"] = topBCType->currentText();
-    jsonObject["sidesBoundaryCondition"] = sidesBCType->currentText();
-    jsonObject["groundBoundaryCondition"] = groundBCType->currentText();
-    jsonObject["buildingBoundaryCondition"] = buildingBCType->currentText();
-
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/boundaryConditions.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
+    jsonObject["boundaryConditions"] = boundaryCondJson;
 
     return true;
 }

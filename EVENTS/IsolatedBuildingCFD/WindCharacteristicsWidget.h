@@ -69,7 +69,8 @@ public:
     explicit WindCharacteristicsWidget(IsolatedBuildingCFD *parent = 0);
     ~WindCharacteristicsWidget();
 
-    bool writeToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
 
 
 signals:
@@ -86,23 +87,23 @@ private:
 
    IsolatedBuildingCFD  *mainModel;
 
-   QVBoxLayout      *layout;
+   QVBoxLayout          *layout;
 
-   QGroupBox        *windCharacteristicsGroup;
-   QGridLayout      *windCharacteristicsLayout;
+   QGroupBox            *windCharacteristicsGroup;
+   QGridLayout          *windCharacteristicsLayout;
 
-   QLineEdit        *roofHeightWindSpeed;
-   QLineEdit        *airDensity;
-   QLineEdit        *kinematicViscosity;
-   QLineEdit        *reynoldsNumber;
-   QLineEdit        *aerodynamicRoughnessLength;
-   QPushButton      *calculateReynoldsNumber;
+   QLineEdit            *roofHeightWindSpeed;
+   QLineEdit            *airDensity;
+   QLineEdit            *kinematicViscosity;
+   QLineEdit            *reynoldsNumber;
+   QLineEdit            *aerodynamicRoughnessLength;
+   QPushButton          *calculateReynoldsNumber;
 
-   QLabel           *roofHeightWindSpeedLabel;
-   QLabel           *airDensityLabel;
-   QLabel           *kinematicViscosityLabel;
-   QLabel           *reynoldsNumberLabel;
-   QLabel           *aerodynamicRoughnessLengthLabel;
+   QLabel               *roofHeightWindSpeedLabel;
+   QLabel               *airDensityLabel;
+   QLabel               *kinematicViscosityLabel;
+   QLabel               *reynoldsNumberLabel;
+   QLabel               *aerodynamicRoughnessLengthLabel;
 
 public:
 

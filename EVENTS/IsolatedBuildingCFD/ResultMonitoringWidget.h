@@ -69,7 +69,7 @@ public:
     explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
     ~ResultMonitoringWidget();
 
-    bool writeToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
 
 
 signals:

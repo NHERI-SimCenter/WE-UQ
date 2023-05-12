@@ -63,7 +63,7 @@ public:
     explicit TurbulenceModelingWidget(IsolatedBuildingCFD *parent = 0);
     ~TurbulenceModelingWidget();
 
-    bool writeToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
     const QString simulationType();
 
 signals:
