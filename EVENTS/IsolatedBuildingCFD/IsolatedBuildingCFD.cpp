@@ -71,7 +71,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVector>
 #include <LineEditRV.h>
 #include <QDebug>
-#include <QMessageBox>
 #include <QOpenGLWidget>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
@@ -383,16 +382,9 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 void IsolatedBuildingCFD::onRunCFDClicked()
 {
-    //Write the JSON files
-//    windCharacteristics->writeToJSON();
-//    boundaryConditions->writeToJSON();
-//    turbulenceModeling->writeToJSON();
-//    numericalSetup->writeToJSON();
-//    resultMonitoring->writeToJSON();
-
     //Run prepare case directory
     QString scriptPath = pyScriptsPath() + "/setup_case.py";
-    QString jsonPath = caseDir() + "constant/simCenter";
+    QString jsonPath = caseDir() + "/constant/simCenter";
     QString templatePath = foamDictsPath();
     QString outputPath =caseDir();
 
@@ -419,26 +411,26 @@ void IsolatedBuildingCFD::onRunCFDClicked()
 void IsolatedBuildingCFD::onShowResultsClicked()
 {
 
-    //Run prepare case directory
-    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
-    QString outputPath = caseDir();
+//    //Run prepare case directory
+//    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
+//    QString outputPath = caseDir();
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
+//    QString program = "/home/abiy/anaconda3/bin/python3.9";
+//    QStringList arguments;
 
-    arguments << scriptPath << outputPath;
+//    arguments << scriptPath << outputPath;
 
-    QProcess *process = new QProcess(this);
+//    QProcess *process = new QProcess(this);
 
-    process->start(program, arguments);
+//    process->start(program, arguments);
 
-    process->waitForFinished(-1);
+//    process->waitForFinished(-1);
 
 //    QMessageBox msgBox;
 //    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 //    msgBox.exec();
 
-    process->close();
+//    process->close();
 
 
 
@@ -460,8 +452,8 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
     // generate some data:
 
-    QString profName  = caseDir() + "constant/simCenter/output/windProfiles.txt";
-    QVector<QVector<double>> windProfile  =  read_txt_data(profName) ;
+    QString profName  = caseDir() + "/constant/simCenter/output/windProfiles.txt";
+    QVector<QVector<double>> windProfile  =  readTxtData(profName) ;
 
     double H = buildingHeight()/geometricScale();
 
@@ -519,8 +511,8 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
 
 
-    QString SuName  = caseDir() + "constant/simCenter/output/Suh.txt";
-    QVector<QVector<double>> Suh  =  read_txt_data(SuName) ;
+    QString SuName  = caseDir() + "/constant/simCenter/output/Suh.txt";
+    QVector<QVector<double>> Suh  =  readTxtData(SuName) ;
 
     QCustomPlot* SuPlot  = new QCustomPlot();
 
@@ -613,26 +605,26 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     this->clear();
 
     normalizationTypeWidget->setCurrentText(jsonObject["normalizationType"].toString());
-    geometricScaleWidget->setText(jsonObject["geometricScale"].toString());
+    geometricScaleWidget->setText(QString::number(jsonObject["geometricScale"].toDouble()));
     caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
 
-    buildingWidthWidget->setText(jsonObject["buildingWidth"].toString());
-    buildingDepthWidget->setText(jsonObject["buildingDepth"].toString());
-    buildingHeightWidget->setText(jsonObject["buildingHeight"].toString());
+    buildingWidthWidget->setText(QString::number(jsonObject["buildingWidth"].toDouble()));
+    buildingDepthWidget->setText(QString::number(jsonObject["buildingDepth"].toDouble()));
+    buildingHeightWidget->setText(QString::number(jsonObject["buildingHeight"].toDouble()));
 
     windDirectionWidget->setValue(jsonObject["windDirection"].toInt());
 
-    domainLengthWidget->setText(jsonObject["domainLength"].toString());
-    domainWidthWidget->setText(jsonObject["domainWidth"].toString());
-    domainHeightWidget->setText(jsonObject["domainHeight"].toString());
-    fetchLengthWidget->setText(jsonObject["fetchLength"].toString());
+    domainLengthWidget->setText(QString::number(jsonObject["domainLength"].toDouble()));
+    domainWidthWidget->setText(QString::number(jsonObject["domainWidth"].toDouble()));
+    domainHeightWidget->setText(QString::number(jsonObject["domainHeight"].toDouble()));
+    fetchLengthWidget->setText(QString::number(jsonObject["fetchLength"].toDouble()));
 
 
     QJsonArray originPoint  = jsonObject["origin"].toArray();
 
-    originXWidget->setText(originPoint[0].toString());
-    originYWidget->setText(originPoint[1].toString());
-    originZWidget->setText(originPoint[2].toString());
+    originXWidget->setText(QString::number(originPoint[0].toDouble()));
+    originYWidget->setText(QString::number(originPoint[1].toDouble()));
+    originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
     originOptions->setCurrentText(jsonObject["originOption"].toString());
 
@@ -654,19 +646,19 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["type"] = "IsolatedBuildingCFD";
 
     jsonObject["normalizationType"] = normalizationTypeWidget->currentText();
-    jsonObject["geometricScale"]  = geometricScaleWidget->text();
+    jsonObject["geometricScale"]  = geometricScaleWidget->text().toDouble();
     jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
 
-    jsonObject["buildingWidth"] = buildingWidthWidget->text();
-    jsonObject["buildingDepth"] = buildingDepthWidget->text();
-    jsonObject["buildingHeight"] = buildingHeightWidget->text();
+    jsonObject["buildingWidth"] = buildingWidthWidget->text().toDouble();
+    jsonObject["buildingDepth"] = buildingDepthWidget->text().toDouble();
+    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
 
     jsonObject["windDirection"] = windDirectionWidget->value();
 
-    jsonObject["domainLength"] = domainLengthWidget->text();
-    jsonObject["domainWidth"] = domainWidthWidget->text();
-    jsonObject["domainHeight"] = domainHeightWidget->text();
-    jsonObject["fetchLength"] = fetchLengthWidget->text();
+    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
+    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
+    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
+    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
 
 
     QJsonArray originPoint;
@@ -732,8 +724,32 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
      return result;
  }
 
+bool IsolatedBuildingCFD::setupCase()
+{
+    QDir targetDir(caseDir());
 
-QVector<QVector<double>> IsolatedBuildingCFD::read_txt_data(QString fileName)
+    targetDir.rmdir("0");
+    targetDir.rmdir("constant");
+    targetDir.rmdir("system");
+
+    this->copyPath(templateCaseDir(), caseDir(), false);
+
+
+//    targetDir.mkpath("0");
+//    targetDir.mkpath("constant");
+//    targetDir.mkpath("system");
+
+//    auto newfoamFile = targetDir.absoluteFilePath("case.foam");
+//    if(!QFile::exists(newfoamFile))
+//        QFile::remove(newControlDictPath);
+
+//    QFile::copy(m_originalControlDictPath, newControlDictPath);
+
+
+    return true;
+}
+
+QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
 {
     QVector<QVector<double>>  data;
 
@@ -867,6 +883,10 @@ const QString IsolatedBuildingCFD::pyScriptsPath()
     return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
 }
 
+const QString IsolatedBuildingCFD::templateCaseDir()
+{
+    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
+}
 
 const QString IsolatedBuildingCFD::simulationType()
 {

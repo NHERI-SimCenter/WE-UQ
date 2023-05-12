@@ -1,5 +1,4 @@
 {
-    "EventClassification": "Wind",
     "blockMeshParameters": {
         "backBoundaryType": "symmetry",
         "buildingHeight": 182.88,
@@ -27,8 +26,6 @@
         "zGrading": 1,
         "zNumCells": 20
     },
-    "buildingDepth": "30.48",
-    "buildingHeight": "182.88",
     "buildingParameters": {
         "angleUnit": "degree",
         "buildingDepth": 30.48,
@@ -44,20 +41,6 @@
         ],
         "windDirection": 0
     },
-    "buildingWidth": "45.72",
-    "caseDirectoryPath": "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/",
-    "domainHeight": "5",
-    "domainLength": "20",
-    "domainWidth": "10",
-    "fetchLength": "5",
-    "geometricScale": "400.0",
-    "normalizationType": "Relative",
-    "origin": [
-        0,
-        0,
-        0
-    ],
-    "originOption": "Building Center",
     "snappyHexMeshParameters": {
         "addEdgeRefinement": true,
         "addPrismLayers": true,
@@ -131,14 +114,5 @@
         "runInParallel": false,
         "surfaceRefinementDistance": 0.1,
         "surfaceRefinementLevel": 6
-    },
-    "type": "IsolatedBuildingCFD",
-    "windCharacteristics": {
-        "aerodynamicRoughnessLength": 7.5e-05,
-        "airDensity": 1.225,
-        "buildingHeight": 0.4572,
-        "kinematicViscosity": 1.5e-05,
-        "roofHeightWindSpeed": 12.35
-    },
-    "windDirection": 0
+    }
 }

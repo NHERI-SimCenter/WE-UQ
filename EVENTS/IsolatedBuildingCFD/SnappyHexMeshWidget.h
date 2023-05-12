@@ -88,7 +88,7 @@ public slots:
    void onRunSnappyHexMeshClicked();
    void onRunCheckMeshClicked();
 
-   void onCalculateBackgroundMeshClicked();
+   void onCalculateBackgroundMeshSizeClicked();
    void onAddRegionClicked();
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();

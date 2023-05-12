@@ -71,16 +71,16 @@ public:
     explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
-
     //Methods
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputToJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
+    bool setupCase();
 
     void updateWidgets();
-    QVector<QVector<double>> read_txt_data(QString fileName);
+    QVector<QVector<double>> readTxtData(QString fileName);
 
     //Properties
     double domainLength();
@@ -101,6 +101,7 @@ public:
     const QString normalizationType();
     const QString caseDir();
     const QString foamDictsPath();
+    const QString templateCaseDir();
     const QString pyScriptsPath();
     const QString simulationType();
 

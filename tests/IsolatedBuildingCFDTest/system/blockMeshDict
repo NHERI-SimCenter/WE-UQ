@@ -26,7 +26,7 @@ backgroundMesh
 	zCells		20;
 	xGrading	1.0000;
 	yGrading	1.0000;
-	zGrading	11.0000;
+	zGrading	1.0000;
 }
 
 convertToMeters 1.0000;

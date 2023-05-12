@@ -520,7 +520,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     this->setLayout(layout);
 
-    connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshClicked()));
+    connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshSizeClicked()));
 
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
@@ -531,6 +531,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
+
+    onCalculateBackgroundMeshSizeClicked();
 }
 
 
@@ -548,6 +550,11 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
 {
     statusMessage("Generating background mesh with blockMesh");
     statusMessage("Creating blockMesh dictionary ...");
+
+    if (!QFile::exists(mainModel->caseDir() + "/system/controlDict"))
+    {
+        mainModel->setupCase();
+    }
 
     QJsonObject dummyJsonObj;
 
@@ -937,7 +944,7 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
     zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
 
-    onCalculateBackgroundMeshClicked();
+    onCalculateBackgroundMeshSizeClicked();
 
 
     //************************************************************************
@@ -992,7 +999,7 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-void SnappyHexMeshWidget::onCalculateBackgroundMeshClicked()
+void SnappyHexMeshWidget::onCalculateBackgroundMeshSizeClicked()
 {
     xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
     yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
