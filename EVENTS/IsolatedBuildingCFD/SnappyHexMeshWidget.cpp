@@ -779,7 +779,6 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 
 bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 {
-
     //Write building geometry and configuration parameters
     QJsonObject buildingParamsJson = QJsonObject();
 
@@ -812,9 +811,9 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["geometricScale"] = mainModel->geometricScale();
     blockMeshParamsJson["normalizationType"] = mainModel->normalizationType();
     blockMeshParamsJson["origin"] = originPoint;
-    blockMeshParamsJson["xNumCells"] = xAxisNumCells->text().toDouble();
-    blockMeshParamsJson["yNumCells"] = yAxisNumCells->text().toDouble();
-    blockMeshParamsJson["zNumCells"] = zAxisNumCells->text().toDouble();
+    blockMeshParamsJson["xNumCells"] = xAxisNumCells->text().toInt();
+    blockMeshParamsJson["yNumCells"] = yAxisNumCells->text().toInt();
+    blockMeshParamsJson["zNumCells"] = zAxisNumCells->text().toInt();
     blockMeshParamsJson["xGrading"] = xMeshGrading->value();
     blockMeshParamsJson["yGrading"] = yMeshGrading->value();
     blockMeshParamsJson["zGrading"] = zMeshGrading->value();
@@ -902,7 +901,6 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     //Add prism layers
     snappyMeshParamsJson["addPrismLayers"] = addPrismLayers->isChecked();
     snappyMeshParamsJson["numberOfPrismLayers"] = numberOfPrismLayers->value();
-    snappyMeshParamsJson["numberOfPrismLayers"] = numberOfPrismLayers->value();
     snappyMeshParamsJson["prismLayerExpantionRatio"] = prismLayerExpantionRatio->value();
     snappyMeshParamsJson["finalPrismLayerThickness"] = finalPrismLayerThickness->value();
     snappyMeshParamsJson["prismLayerSurfaceName"] = "building";
@@ -926,196 +924,73 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 }
 
 
+bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    //Read blockMesh configuration parameters
+    QJsonObject blockMeshParamsJson = jsonObject["blockMeshParameters"].toObject();
 
-//bool SnappyHexMeshWidget::exportBuildingGeometryToJSON()
-//{
-//    // just need to send the class type here.. type needed in object in case user screws up
+    xAxisNumCells->setText(QString::number(blockMeshParamsJson["xNumCells"].toInt()));
+    yAxisNumCells->setText(QString::number(blockMeshParamsJson["yNumCells"].toInt()));
+    zAxisNumCells->setText(QString::number(blockMeshParamsJson["zNumCells"].toInt()));
 
-//    QJsonObject jsonObject;
+    xMeshGrading->setValue(blockMeshParamsJson["xGrading"].toDouble());
+    yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
+    zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
 
-//    jsonObject["type"]="IsolatedBuildingCFD";
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["buildingWidth"]= mainModel->buildingWidth();
-//    jsonObject["buildingDepth"]= mainModel->buildingDepth();
-//    jsonObject["buildingHeight"]= mainModel->buildingHeight();
-//    jsonObject["geometricScale"]= mainModel->geometricScale();
-//    jsonObject["windDirection"] = mainModel->windDirection();
-//    jsonObject["normalizationType"] = mainModel->normalizationType();
-
-//    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-//    jsonObject["origin"] = originPoint;
-
-//    //Replace with the unit system from "General Information" window
-//    jsonObject["lengthUnit"] = "m";
-//    jsonObject["angleUnit"] = "degree";
+    onCalculateBackgroundMeshClicked();
 
 
-//    QFile jsonFile(mainModel->caseDir() + "constant/simCenter/buildingParameters.json");
-//    jsonFile.open(QFile::WriteOnly);
+    //************************************************************************
 
-//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+    //Read snappyHex configuration parameters
+    QJsonObject snappyMeshParamsJson = jsonObject["snappyHexMeshParameters"].toObject();
 
-//    jsonFile.write(jsonDoc.toJson());
+    //surfaceName->setCurrentText(snappyMeshParamsJson["buildingSTLName"].toString());
+    numCellsBetweenLevels->setValue(snappyMeshParamsJson["numCellsBetweenLevels"].toInt());
+    resolveFeatureAngle->setValue(snappyMeshParamsJson["resolveFeatureAngle"].toInt());
+    numProcessors->setValue(snappyMeshParamsJson["numProcessors"].toInt());
+    runInParallel->setChecked(snappyMeshParamsJson["runInParallel"].toBool());
 
-//    return true;
-//}
+    //Set regional refinment
+    QJsonArray regions = snappyMeshParamsJson["refinementBoxes"].toArray();
 
+    const int nRegions = regions.size();
 
-//bool SnappyHexMeshWidget::exportBlockMeshParametersToJSON()
-//{
-//    // Exports information needed for background mesh generation to JSON file.
-//    // This information includes:
-//    //      - domain dimensions
-//    //      - meshing information
-//    //      - boundary types
+    for (int ri = 0; ri < nRegions; ri++)
+    {
+        QJsonArray region  = regions[ri].toArray();
 
+        refinementBoxesTable->item(ri, 0)->setText(region[0].toString());
+        refinementBoxesTable->item(ri, 1)->setText(QString::number(region[1].toInt()));
+        refinementBoxesTable->item(ri, 2)->setText(QString::number(region[2].toDouble()));
+        refinementBoxesTable->item(ri, 3)->setText(QString::number(region[3].toDouble()));
+        refinementBoxesTable->item(ri, 4)->setText(QString::number(region[4].toDouble()));
+        refinementBoxesTable->item(ri, 5)->setText(QString::number(region[5].toDouble()));
+        refinementBoxesTable->item(ri, 6)->setText(QString::number(region[6].toDouble()));
+        refinementBoxesTable->item(ri, 7)->setText(QString::number(region[7].toDouble()));
 
-//    QJsonObject jsonObject;
+    }
 
-//    jsonObject["type"]="IsolatedBuildingCFD";
-//    jsonObject["EventClassification"]="Wind";
+    //Set surface refinment
+    addSurfaceRefinement->setChecked(snappyMeshParamsJson["addSurfaceRefinement"].toBool());
+    surfaceName->setCurrentText(snappyMeshParamsJson["refinementSurfaceName"].toString());
+    surfaceRefinementLevel->setValue(snappyMeshParamsJson["surfaceRefinementLevel"].toInt());
+    surfaceRefinementDistance->setText(QString::number(snappyMeshParamsJson["surfaceRefinementDistance"].toDouble()));
 
-//    jsonObject["domainLength"] = mainModel->domainLength();
-//    jsonObject["domainWidth"] = mainModel->domainWidth();
-//    jsonObject["domainHeight"] = mainModel->domainHeight();
-//    jsonObject["fetchLength"] = mainModel->fetchLength();
-//    jsonObject["buildingHeight"] = mainModel->buildingHeight();
-//    jsonObject["geometricScale"] = mainModel->geometricScale();
-//    jsonObject["normalizationType"] = mainModel->normalizationType();
+    //Set edge refinment
+    addEdgeRefinement->setChecked(snappyMeshParamsJson["addEdgeRefinement"].toBool());
+    edgeRefinementLevel->setValue(snappyMeshParamsJson["edgeRefinementLevel"].toInt());
+    refinementEdgeName->setCurrentText(snappyMeshParamsJson["refinementEdgeName"].toString());
 
-//    QJsonArray originPoint = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-//    jsonObject["origin"] = originPoint;
+    //Set prism layers
+    addPrismLayers->setChecked(snappyMeshParamsJson["addPrismLayers"].toBool());
+    numberOfPrismLayers->setValue(snappyMeshParamsJson["numberOfPrismLayers"].toInt());
+    prismLayerExpantionRatio->setValue(snappyMeshParamsJson["prismLayerExpantionRatio"].toDouble());
+    finalPrismLayerThickness->setValue(snappyMeshParamsJson["finalPrismLayerThickness"].toDouble());
+    prismLayerSurfaceName->setCurrentText(snappyMeshParamsJson["prismLayerSurfaceName"].toString());
 
-//    jsonObject["xNumCells"] = xAxisNumCells->text().toDouble();
-//    jsonObject["yNumCells"] = yAxisNumCells->text().toDouble();
-//    jsonObject["zNumCells"] = zAxisNumCells->text().toDouble();
-//    jsonObject["xGrading"] = xMeshGrading->value();
-//    jsonObject["yGrading"] = yMeshGrading->value();
-//    jsonObject["zGrading"] = zMeshGrading->value();
-//    jsonObject["inletBoundaryType"] = "patch";
-//    jsonObject["outletBoundaryType"] = "patch";
-//    jsonObject["groundBoundaryType"] = "wall";
-//    jsonObject["topBoundaryType"] = "symmetry";
-//    jsonObject["frontBoundaryType"] = "symmetry";
-//    jsonObject["backBoundaryType"] = "symmetry";
-
-
-//    //Replace with the unit system from "General Information" window
-//    jsonObject["lengthUnit"] = "m";
-
-
-//    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/blockMeshParameters.json");
-//    jsonFile.open(QFile::WriteOnly);
-
-//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-//    jsonFile.write(jsonDoc.toJson());
-
-//    return true;
-//}
-
-//bool SnappyHexMeshWidget::exportSnappyMeshParametersToJSON()
-//{
-//    // Exports information needed for snappyHexMesh generation to JSON file.
-//    // This information includes:
-//    //      - domain dimensions
-//    //      - meshing information
-//    //      - Refinment info
-//    //      - Prism layer
-
-
-//    QJsonObject jsonObject;
-
-//    jsonObject["type"]="IsolatedBuildingCFD";
-//    jsonObject["EventClassification"]="Wind";
-
-//    jsonObject["domainLength"] = mainModel->domainLength();
-//    jsonObject["domainWidth"] = mainModel->domainWidth();
-//    jsonObject["domainHeight"] = mainModel->domainHeight();
-//    jsonObject["fetchLength"] = mainModel->fetchLength();
-//    jsonObject["buildingHeight"] = mainModel->buildingHeight();
-//    jsonObject["geometricScale"] = mainModel->geometricScale();
-//    jsonObject["normalizationType"] = mainModel->normalizationType();
-
-//    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-//    jsonObject["origin"] = originPoint;
-
-//    jsonObject["buildingSTLName"] = "building";
-//    jsonObject["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
-//    jsonObject["resolveFeatureAngle"] = resolveFeatureAngle->value();
-//    jsonObject["numProcessors"] = numProcessors->value();
-//    jsonObject["runInParallel"] = runInParallel->isChecked();
-
-//    //Add regional refinment
-//    const int nRegions = refinementBoxesTable->rowCount();
-
-//    QJsonArray regions;
-
-//    for (int row = 0; row < nRegions; row++)
-//    {
-
-//        QJsonArray box;
-
-//        QJsonValue name = refinementBoxesTable->item(row, 0)->text();
-//        QJsonValue level = refinementBoxesTable->item(row, 1)->text().toDouble();
-
-//        QJsonValue xMin = refinementBoxesTable->item(row, 2)->text().toDouble();
-//        QJsonValue yMin = refinementBoxesTable->item(row, 3)->text().toDouble();
-//        QJsonValue zMin = refinementBoxesTable->item(row, 4)->text().toDouble();
-
-//        QJsonValue xMax = refinementBoxesTable->item(row, 5)->text().toDouble();
-//        QJsonValue yMax = refinementBoxesTable->item(row, 6)->text().toDouble();
-//        QJsonValue zMax = refinementBoxesTable->item(row, 7)->text().toDouble();
-
-//        box.append(name);
-//        box.append(level);
-//        box.append(xMin);
-//        box.append(yMin);
-//        box.append(zMin);
-//        box.append(xMax);
-//        box.append(yMax);
-//        box.append(zMax);
-
-//        regions.append(box);
-//    }
-
-//    jsonObject["refinementBoxes"] = regions;
-
-
-//    //Add surface refinment
-//    jsonObject["addSurfaceRefinement"] = addSurfaceRefinement->isChecked();
-//    jsonObject["surfaceRefinementLevel"] = surfaceRefinementLevel->value();
-//    jsonObject["surfaceRefinementDistance"] = surfaceRefinementDistance->text().toDouble();
-//    jsonObject["refinementSurfaceName"] = "building";
-
-
-//    //Add edge refinment
-//    jsonObject["addEdgeRefinement"] = addEdgeRefinement->isChecked();
-//    jsonObject["edgeRefinementLevel"] = edgeRefinementLevel->value();
-//    jsonObject["refinementEdgeName"] = "building";
-
-//    //Add prism layers
-//    jsonObject["addPrismLayers"] = addPrismLayers->isChecked();
-//    jsonObject["numberOfPrismLayers"] = numberOfPrismLayers->value();
-//    jsonObject["numberOfPrismLayers"] = numberOfPrismLayers->value();
-//    jsonObject["prismLayerExpantionRatio"] = prismLayerExpantionRatio->value();
-//    jsonObject["finalPrismLayerThickness"] = finalPrismLayerThickness->value();
-//    jsonObject["prismLayerSurfaceName"] = "building";
-
-//    //Replace with the unit system from "General Information" window
-//    jsonObject["lengthUnit"] = "m";
-
-
-//    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/snappyHexMeshParameters.json");
-//    jsonFile.open(QFile::WriteOnly);
-
-//    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-//    jsonFile.write(jsonDoc.toJson());
-
-//    return true;
-//}
-
+    return true;
+}
 
 void SnappyHexMeshWidget::onCalculateBackgroundMeshClicked()
 {

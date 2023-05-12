@@ -193,26 +193,17 @@ bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
 bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
 {
     // Read wind characterstics (flow properties) from a JSON file.
-
     //The JSON file is located in caseDir/constant/simCenter
 
 
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"] = "Wind";
+    QJsonObject windCharJson = jsonObject["windCharacteristics"].toObject();
 
-    jsonObject["roofHeightWindSpeed"] = roofHeightWindSpeed->text().toDouble();
-    jsonObject["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
-    jsonObject["kinematicViscosity"] = kinematicViscosity->text().toDouble();
-    jsonObject["airDensity"] = airDensity->text().toDouble();
-    jsonObject["buildingHeight"] = mainModel->buildingHeight()/mainModel->geometricScale();
+    roofHeightWindSpeed->setText(QString::number(windCharJson["roofHeightWindSpeed"].toDouble()));
+    aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));
+    airDensity->setText(QString::number(windCharJson["airDensity"].toDouble()));
+    kinematicViscosity->setText(QString::number(windCharJson["kinematicViscosity"].toDouble()));
 
-
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/windCharacteristics.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
+    onCalculateReynoldsNumber();
 
     return true;
 }

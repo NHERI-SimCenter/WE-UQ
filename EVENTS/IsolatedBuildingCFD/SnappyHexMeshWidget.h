@@ -68,9 +68,7 @@ public:
     ~SnappyHexMeshWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
-//    bool exportBuildingGeometryToJSON();
-//    bool exportBlockMeshParametersToJSON();
-//    bool exportSnappyMeshParametersToJSON();
+    bool inputFromJSON(QJsonObject &jsonObject);
 
     bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();

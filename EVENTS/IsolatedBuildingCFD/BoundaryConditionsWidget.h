@@ -62,7 +62,7 @@ public:
     ~BoundaryConditionsWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
-
+    bool inputFromJSON(QJsonObject &jsonObject);
 
 signals:
 

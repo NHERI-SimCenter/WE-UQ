@@ -189,3 +189,19 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 
     return true;
 }
+
+bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes physical boundary information to JSON file.
+
+    QJsonObject boundaryCondJson = jsonObject["boundaryConditions"].toObject();
+
+    inletBCType->setCurrentText(boundaryCondJson["inletBoundaryCondition"].toString());
+    outletBCType->setCurrentText(boundaryCondJson["outletBoundaryCondition"].toString());
+    topBCType->setCurrentText(boundaryCondJson["topBoundaryCondition"].toString());
+    sidesBCType->setCurrentText(boundaryCondJson["sidesBoundaryCondition"].toString());
+    groundBCType->setCurrentText(boundaryCondJson["groundBoundaryCondition"].toString());
+    buildingBCType->setCurrentText(boundaryCondJson["buildingBoundaryCondition"].toString());
+
+    return true;
+}

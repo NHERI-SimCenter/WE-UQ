@@ -305,6 +305,20 @@ bool TurbulenceModelingWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
+bool TurbulenceModelingWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes turbulence modeling options RANS, LES and DES.
+    QJsonObject turbModelingJson = jsonObject["turbulenceModeling"].toObject();
+
+
+    turbModelOptions->setCurrentText(turbModelingJson["simulationType"].toString());
+    RANSOptions->setCurrentText(turbModelingJson["RANSModelType"].toString());
+    LESOptions->setCurrentText(turbModelingJson["LESModelType"].toString());
+    DESOptions->setCurrentText(turbModelingJson["DESModelType"].toString());
+
+    return true;
+}
+
 const QString TurbulenceModelingWidget::simulationType()
 {
     return turbModelOptions->currentText();

@@ -625,32 +625,46 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
 
     resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
 
-    int nW = numTapsAlongWidth->text().toInt();
-    int nD = numTapsAlongDepth->text().toInt();
-    int nH = numTapsAlongHeight->text().toInt();
+    resMonitoringJson["numTapsAlongWidth"] = numTapsAlongWidth->value();
+    resMonitoringJson["numTapsAlongDepth"] = numTapsAlongDepth->value();
+    resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
 
-    //Should be updated in the future to directely read from talble
-    QList<QVector3D> defaultPoints = calculatePointCoordinates(nW, nD, nH);
-
-    //Write sampling points coordinates
-    const int nPoints = defaultPoints.size();
-
-    QJsonArray points;
-
-    for (int row = 0; row < nPoints; row++)
-    {
-        QJsonArray point;
-        point.append(defaultPoints[row].x());
-        point.append(defaultPoints[row].y());
-        point.append(defaultPoints[row].z());
-
-        points.append(point);
-    }
-
-    resMonitoringJson["pressureSamplingPoints"] = points;
     resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
 
     jsonObject["resultMonitoring"] = resMonitoringJson;
 
     return true;
 }
+
+
+bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes wind load monitoring options JSON file.
+
+    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
+
+
+    numStories->setValue(resMonitoringJson["numStories"].toInt());
+    floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
+
+    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
+
+    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
+    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
+    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
+
+    storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
+    monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
+
+    monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
+
+    numTapsAlongWidth->setValue(resMonitoringJson["numTapsAlongWidth"].toInt());
+    numTapsAlongDepth->setValue(resMonitoringJson["numTapsAlongDepth"].toInt());
+    numTapsAlongHeight->setValue(resMonitoringJson["numTapsAlongHeight"].toInt());
+
+    pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
+
+
+    return true;
+}
+

@@ -70,6 +70,7 @@ public:
     ~ResultMonitoringWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
 
 
 signals:
@@ -131,7 +132,6 @@ private:
 
    QPushButton          *openCSVFile;
    QPushButton          *showCoordinateOfPoints;
-
 
    void visCoordinateOfPoints(QGridLayout*);
    QList<QVector3D> calculatePointCoordinates(int nWidth, int nDepth, int nHeight);

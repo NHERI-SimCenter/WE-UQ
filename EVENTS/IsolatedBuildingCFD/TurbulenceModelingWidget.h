@@ -64,6 +64,7 @@ public:
     ~TurbulenceModelingWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
     const QString simulationType();
 
 signals:
@@ -77,21 +78,21 @@ public slots:
 private:
    IsolatedBuildingCFD  *mainModel;
 
-   QVBoxLayout      *layout;
+   QVBoxLayout          *layout;
 
-   QComboBox        *turbModelOptions;
-   QComboBox        *RANSOptions;
-   QComboBox        *LESOptions;
-   QComboBox        *DESOptions;
+   QComboBox            *turbModelOptions;
+   QComboBox            *RANSOptions;
+   QComboBox            *LESOptions;
+   QComboBox            *DESOptions;
 
-   QWidget          *RANSWidget;
-   QWidget          *DESWidget;
-   QWidget          *LESWidget;
+   QWidget              *RANSWidget;
+   QWidget              *DESWidget;
+   QWidget              *LESWidget;
 
-   QTextEdit        *RANSModelCoeffs;
-   QTextEdit        *LESModelCoeffs;
-   QTextEdit        *DESModelCoeffs;
-   QStackedWidget   *stackedTurbModelWidget;
+   QTextEdit            *RANSModelCoeffs;
+   QTextEdit            *LESModelCoeffs;
+   QTextEdit            *DESModelCoeffs;
+   QStackedWidget       *stackedTurbModelWidget;
 
 
 

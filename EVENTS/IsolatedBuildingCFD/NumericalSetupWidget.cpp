@@ -320,7 +320,7 @@ void NumericalSetupWidget::onRunInParallelChecked(int state)
 
 bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    // Writes physical boundary information to JSON file.
+    // Writes numerical setup to JSON file.
 
     QJsonObject numericalSetupJson = QJsonObject();
 
@@ -340,3 +340,22 @@ bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
+bool NumericalSetupWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Input numerical setup information to JSON file.
+
+    QJsonObject numericalSetupJson = jsonObject["numericalSetup"].toObject();
+
+    solverType->setCurrentText(numericalSetupJson["solverType"].toString());
+    numNonOrthogonalCorrectors->setValue(numericalSetupJson["numNonOrthogonalCorrectors"].toInt());
+    numCorrectors->setValue(numericalSetupJson["numCorrectors"].toInt());
+    numOuterCorrectors->setValue(numericalSetupJson["numOuterCorrectors"].toInt());
+    duration->setText(QString::number(numericalSetupJson["duration"].toDouble()));
+    timeStep->setText(QString::number(numericalSetupJson["timeStep"].toDouble()));
+    maxCourantNumber->setValue(numericalSetupJson["maxCourantNumber"].toDouble());
+    adjustTimeStep->setChecked(numericalSetupJson["adjustTimeStep"].toBool());
+    runInParallel->setChecked(numericalSetupJson["runInParallel"].toBool());;
+    numProcessors->setValue(numericalSetupJson["numProcessors"].toDouble());
+
+    return true;
+}

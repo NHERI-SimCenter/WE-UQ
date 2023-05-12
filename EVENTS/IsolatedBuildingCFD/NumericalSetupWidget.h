@@ -70,6 +70,7 @@ public:
     ~NumericalSetupWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
     void updateWidgets();
 
 signals:

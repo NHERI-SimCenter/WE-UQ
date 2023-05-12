@@ -74,6 +74,7 @@ public:
 
     //Methods
     bool inputFromJSON(QJsonObject &rvObject);
+    bool outputToJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
@@ -145,8 +146,6 @@ private:
    QLineEdit   *originXWidget;
    QLineEdit   *originYWidget;
    QLineEdit   *originZWidget;
-
-   LineEditRV   *windSpeedWidget;
 
    QGroupBox    *generalDescriptionGroup;
    QHBoxLayout  *generalDescriptionLayout;

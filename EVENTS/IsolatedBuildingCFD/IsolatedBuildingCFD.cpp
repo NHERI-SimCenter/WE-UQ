@@ -88,7 +88,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     mainWindowLayout = new QHBoxLayout();
 
-
     inputWindowLayout = new QVBoxLayout();
     inputWindowGroup = new QGroupBox();
 
@@ -198,8 +197,15 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit();
-    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+    //caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 //    caseDirectoryPathWidget->setText("/Users/fmckenna/NHERI/WE-UQ/build/WE_UQ.app/Contents/MacOS/IsolatedBuildingTest/");
+
+    QString currentAppDir = QCoreApplication::applicationDirPath();
+    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingTest"; // + QDir::separator() + "case.OpenFOAM";
+
+    caseDirectoryPathWidget->setText(testLocation);
+
+    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -211,8 +217,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
                                                  "\n --> Specify numerical setup "
                                                  "\n --> Run simulation "
                                                  "\n --> Post-process");
-
-
 
 
     generalDescriptionLayout->addWidget(generalDescriptionLabel);
@@ -236,8 +240,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
     buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
 
-//    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
-//    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
+    //    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
+    //    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
 
     buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
     buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
@@ -608,55 +612,82 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
-    if (jsonObject.contains("buildingWidth")) {
-      QJsonValue theValue = jsonObject["buildingWidth"];
-      QString selection = theValue.toString();
-      buildingWidthWidget->setText(selection);
-    } else
-      return false;
+    normalizationTypeWidget->setCurrentText(jsonObject["normalizationType"].toString());
+    geometricScaleWidget->setText(jsonObject["geometricScale"].toString());
+    caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
 
-    if (jsonObject.contains("buildingDepth")) {
-      QJsonValue theValue = jsonObject["buildingDepth"];
-      QString selection = theValue.toString();
-      buildingDepthWidget->setText(selection);
-    } else
-      return false;
+    buildingWidthWidget->setText(jsonObject["buildingWidth"].toString());
+    buildingDepthWidget->setText(jsonObject["buildingDepth"].toString());
+    buildingHeightWidget->setText(jsonObject["buildingHeight"].toString());
 
-    if (jsonObject.contains("buildingHeight")) {
-      QJsonValue theValue = jsonObject["buildingHeight"];
-      QString selection = theValue.toString();
-      buildingHeightWidget->setText(selection);
-    } else
-      return false;
+    windDirectionWidget->setValue(jsonObject["windDirection"].toInt());
 
-    if (jsonObject.contains("geometricScale")) {
-      QJsonValue theValue = jsonObject["geometricScale"];
-      QString selection = theValue.toString();
-      geometricScaleWidget->setText(selection);
-    } else
-      return false;
+    domainLengthWidget->setText(jsonObject["domainLength"].toString());
+    domainWidthWidget->setText(jsonObject["domainWidth"].toString());
+    domainHeightWidget->setText(jsonObject["domainHeight"].toString());
+    fetchLengthWidget->setText(jsonObject["fetchLength"].toString());
 
 
-    if (jsonObject.contains("windSpeed")) {
-      /*
-      QJsonValue theValue = jsonObject["windSpeed"];
-      double speed = theValue.toDouble();
-      windSpeed->setText(QString::number(speed));
-      */
-      windSpeedWidget->inputFromJSON(jsonObject,QString("windSpeed"));
-    } else
-      return false;
+    QJsonArray originPoint  = jsonObject["origin"].toArray();
 
-    if (jsonObject.contains("windDirection")) {
-      QJsonValue theValue = jsonObject["windDirection"];
-      int angle = theValue.toInt();
-      windDirectionWidget->setValue(angle);
-    } else
-      return false;
+    originXWidget->setText(originPoint[0].toString());
+    originYWidget->setText(originPoint[1].toString());
+    originZWidget->setText(originPoint[2].toString());
 
+    originOptions->setCurrentText(jsonObject["originOption"].toString());
+
+
+    windCharacteristics->inputFromJSON(jsonObject);
+    snappyHexMesh->inputFromJSON(jsonObject);
+    turbulenceModeling->inputFromJSON(jsonObject);
+    boundaryConditions->inputFromJSON(jsonObject);
+    numericalSetup->inputFromJSON(jsonObject);
+    resultMonitoring->inputFromJSON(jsonObject);
 
     return true;
 }
+
+bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
+{
+
+    jsonObject["EventClassification"] = "Wind";
+    jsonObject["type"] = "IsolatedBuildingCFD";
+
+    jsonObject["normalizationType"] = normalizationTypeWidget->currentText();
+    jsonObject["geometricScale"]  = geometricScaleWidget->text();
+    jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
+
+    jsonObject["buildingWidth"] = buildingWidthWidget->text();
+    jsonObject["buildingDepth"] = buildingDepthWidget->text();
+    jsonObject["buildingHeight"] = buildingHeightWidget->text();
+
+    jsonObject["windDirection"] = windDirectionWidget->value();
+
+    jsonObject["domainLength"] = domainLengthWidget->text();
+    jsonObject["domainWidth"] = domainWidthWidget->text();
+    jsonObject["domainHeight"] = domainHeightWidget->text();
+    jsonObject["fetchLength"] = fetchLengthWidget->text();
+
+
+    QJsonArray originPoint;
+    originPoint.append(coordSysOrigin()[0]);
+    originPoint.append(coordSysOrigin()[1]);
+    originPoint.append(coordSysOrigin()[2]);
+
+    jsonObject["origin"] = originPoint;
+    jsonObject["originOption"] = originOptions->currentText();
+
+
+    windCharacteristics->outputToJSON(jsonObject);
+    snappyHexMesh->outputToJSON(jsonObject);
+    turbulenceModeling->outputToJSON(jsonObject);
+    boundaryConditions->outputToJSON(jsonObject);
+    numericalSetup->outputToJSON(jsonObject);
+    resultMonitoring->outputToJSON(jsonObject);
+
+    return true;
+}
+
 
 bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
@@ -672,6 +703,8 @@ bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     return true;
 }
+
+
 bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
     Q_UNUSED(jsonObject);
@@ -691,6 +724,11 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
          emit sendFatalMessage(errorMessage);
          qDebug() << errorMessage;
      }
+
+     QString caseDirPath = this->caseDir();
+     this->copyPath(caseDirPath, destDir, false);
+
+     
      return result;
  }
 
@@ -736,10 +774,6 @@ QVector<QVector<double>> IsolatedBuildingCFD::read_txt_data(QString fileName)
        while (!in.atEnd())
        {
             QString line = in.readLine();
-
-//            QMessageBox msgBox;
-//            msgBox.setText(line);
-//            msgBox.exec();
 
             QStringList  fields = line.split(" ");
 
