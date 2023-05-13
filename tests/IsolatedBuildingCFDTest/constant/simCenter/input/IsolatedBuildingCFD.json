@@ -23,7 +23,7 @@
         "xNumCells": 80,
         "yGrading": 1,
         "yNumCells": 40,
-        "zGrading": 1,
+        "zGrading": 8,
         "zNumCells": 20
     },
     "buildingParameters": {

@@ -209,7 +209,6 @@ void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
 
 void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 {
-
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
     {
         readMesh();

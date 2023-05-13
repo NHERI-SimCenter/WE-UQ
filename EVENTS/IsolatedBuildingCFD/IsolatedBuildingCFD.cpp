@@ -723,17 +723,17 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
      bool result = this->copyFile(name1, destDir);
   */
-     if (result == false) {
-         QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
-         emit sendFatalMessage(errorMessage);
-         qDebug() << errorMessage;
-     }
+//     if (result == false) {
+//         QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
+//         emit sendFatalMessage(errorMessage);
+//         qDebug() << errorMessage;
+//     }
 
-     QString caseDirPath = this->caseDir();
-     this->copyPath(caseDirPath, destDir, false);
+//     QString caseDirPath = this->caseDir();
+//     this->copyPath(caseDirPath, destDir, false);
 
      
-     return result;
+//     return result;
  }
 
 bool IsolatedBuildingCFD::setupCase()
