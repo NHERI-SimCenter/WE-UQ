@@ -188,6 +188,8 @@ private:
    QPushButton  *runCFD;
    QPushButton  *showResults;
 
+   QString workingDirPath;
+
 };
 
 #endif // ISOLATED_BUILDING_CFD_H

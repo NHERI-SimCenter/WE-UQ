@@ -196,15 +196,25 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
 
     caseDirectoryPathWidget = new QLineEdit();
-    //caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
-//    caseDirectoryPathWidget->setText("/Users/fmckenna/NHERI/WE-UQ/build/WE_UQ.app/Contents/MacOS/IsolatedBuildingTest/");
-
     QString currentAppDir = QCoreApplication::applicationDirPath();
-    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingTest"; // + QDir::separator() + "case.OpenFOAM";
 
+    QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+    if (!workingDir.exists())
+      workingDir.mkpath(".");
+
+    QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+						 + "LocalWorkDir" + QDir::separator()
+						 + "IsolatedBuildingCFD");
+
+    if (!workingDir.exists(workingDirPath))
+	workingDir.mkpath(workingDirPath);
+	
+    workingDirPath = workingDir.path();
+
+    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFDTest"; // + QDir::separator() + "case.OpenFOAM";
     caseDirectoryPathWidget->setText(testLocation);
 
-    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+    // caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -706,11 +716,13 @@ bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
 bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
+  /*
      QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
              + QString("IsolatedBuildingCFD") + QDir::separator() + QString("IsolatedBuildingCFD.py");
 
      bool result = this->copyFile(name1, destDir);
+  */
      if (result == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
          emit sendFatalMessage(errorMessage);
@@ -875,17 +887,32 @@ const QString IsolatedBuildingCFD::caseDir()
 
 const QString IsolatedBuildingCFD::foamDictsPath()
 {
-    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("OpenFoamTemplateDicts");  
+  
+     //    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+     return name1;  
+
 }
 
 const QString IsolatedBuildingCFD::pyScriptsPath()
 {
-    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("PythonScripts");  
+  
+     // return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
+     return name1;
 }
 
 const QString IsolatedBuildingCFD::templateCaseDir()
 {
-    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("TemplateCaseDir");  
+     //return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
+     return name1;
 }
 
 const QString IsolatedBuildingCFD::simulationType()
