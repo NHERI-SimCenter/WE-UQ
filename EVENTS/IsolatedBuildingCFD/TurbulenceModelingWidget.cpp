@@ -64,9 +64,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QJsonDocument>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
@@ -291,27 +288,33 @@ void TurbulenceModelingWidget::LESModelTypeChanged(const QString &arg1)
 }
 
 
-bool TurbulenceModelingWidget::writeToJSON()
+bool TurbulenceModelingWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes turbulence modeling options RANS, LES and DES.
 
-    QJsonObject jsonObject;
-
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
-
-    jsonObject["simulationType"] = turbModelOptions->currentText();
-    jsonObject["RANSModelType"] = RANSOptions->currentText();
-    jsonObject["LESModelType"] = LESOptions->currentText();
-    jsonObject["DESModelType"] = DESOptions->currentText();
+    QJsonObject turbModelingJson = QJsonObject();
 
 
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/turbulenceModeling.json");
-    jsonFile.open(QFile::WriteOnly);
+    turbModelingJson["simulationType"] = turbModelOptions->currentText();
+    turbModelingJson["RANSModelType"] = RANSOptions->currentText();
+    turbModelingJson["LESModelType"] = LESOptions->currentText();
+    turbModelingJson["DESModelType"] = DESOptions->currentText();
 
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+    jsonObject["turbulenceModeling"] = turbModelingJson;
 
-    jsonFile.write(jsonDoc.toJson());
+    return true;
+}
+
+bool TurbulenceModelingWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes turbulence modeling options RANS, LES and DES.
+    QJsonObject turbModelingJson = jsonObject["turbulenceModeling"].toObject();
+
+
+    turbModelOptions->setCurrentText(turbModelingJson["simulationType"].toString());
+    RANSOptions->setCurrentText(turbModelingJson["RANSModelType"].toString());
+    LESOptions->setCurrentText(turbModelingJson["LESModelType"].toString());
+    DESOptions->setCurrentText(turbModelingJson["DESModelType"].toString());
 
     return true;
 }

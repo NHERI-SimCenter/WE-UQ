@@ -67,9 +67,8 @@ public:
     explicit SnappyHexMeshWidget(IsolatedBuildingCFD *parent = 0);
     ~SnappyHexMeshWidget();
 
-    bool exportBuildingGeometryToJSON();
-    bool exportBlockMeshParametersToJSON();
-    bool exportSnappyMeshParametersToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
 
     bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();
@@ -89,7 +88,7 @@ public slots:
    void onRunSnappyHexMeshClicked();
    void onRunCheckMeshClicked();
 
-   void onCalculateBackgroundMeshClicked();
+   void onCalculateBackgroundMeshSizeClicked();
    void onAddRegionClicked();
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();

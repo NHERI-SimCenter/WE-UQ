@@ -40,8 +40,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDebug>
@@ -111,7 +109,6 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
 
     qvtkWidget = new QVTKRenderWidget();
 
-
     QLabel *surfaceRepresentationLabel = new QLabel("Representation: ");
     QLabel *transparencyLabel = new QLabel("Transparency: ");
     QLabel *viewLabel = new QLabel("View: ");
@@ -141,7 +138,6 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     menueLayout->addWidget(transparencyLabel, 0, 4, Qt::AlignRight);
     menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
 
-    readMesh();
 
     qvtkWidget->setMinimumSize(QSize(350, 600));
     visLayout->addWidget(qvtkWidget);
@@ -150,16 +146,17 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     layout->addWidget(menueGroup);
     layout->addWidget(visGroup);
 
-
     this->setLayout(layout);
 
     connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
 
-    //Set default transparency to 10%
-    transparency->setValue(10);
-    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+
+    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
+    {
+        readMesh();
+    }
 }
 
 
@@ -212,8 +209,12 @@ void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
 
 void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 {
-    readMesh();
-    renderWindow->Render();
+
+    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
+    {
+        readMesh();
+        renderWindow->Render();
+    }
 }
 
 void SimCenterVTKRenderingWidget::readMesh()
@@ -267,4 +268,8 @@ void SimCenterVTKRenderingWidget::readMesh()
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
+
+    //Set default transparency to 10%
+    transparency->setValue(10);
+    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 }

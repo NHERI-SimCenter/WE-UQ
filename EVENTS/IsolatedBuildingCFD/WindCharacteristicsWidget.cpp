@@ -173,28 +173,37 @@ void WindCharacteristicsWidget::onCalculateReynoldsNumber()
     reynoldsNumber->setText(QString::number(Uh*h/kv));
 }
 
-bool WindCharacteristicsWidget::writeToJSON()
+bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    // Writes wind characterstics (flow properties) JSON file.
+    // Writes wind characterstics (flow properties) to JSON file.
 
-    QJsonObject jsonObject;
+    QJsonObject windCharJson = QJsonObject();
 
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"] = "Wind";
+    windCharJson["roofHeightWindSpeed"] = roofHeightWindSpeed->text().toDouble();
+    windCharJson["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
+    windCharJson["kinematicViscosity"] = kinematicViscosity->text().toDouble();
+    windCharJson["airDensity"] = airDensity->text().toDouble();
+    windCharJson["buildingHeight"] = mainModel->buildingHeight()/mainModel->geometricScale();
 
-    jsonObject["roofHeightWindSpeed"] = roofHeightWindSpeed->text().toDouble();
-    jsonObject["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
-    jsonObject["kinematicViscosity"] = kinematicViscosity->text().toDouble();
-    jsonObject["airDensity"] = airDensity->text().toDouble();
-    jsonObject["buildingHeight"] = mainModel->buildingHeight()/mainModel->geometricScale();
+    jsonObject["windCharacteristics"] = windCharJson;
+
+    return true;
+}
+
+bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Read wind characterstics (flow properties) from a JSON file.
+    //The JSON file is located in caseDir/constant/simCenter
 
 
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/windCharacteristics.json");
-    jsonFile.open(QFile::WriteOnly);
+    QJsonObject windCharJson = jsonObject["windCharacteristics"].toObject();
 
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+    roofHeightWindSpeed->setText(QString::number(windCharJson["roofHeightWindSpeed"].toDouble()));
+    aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));
+    airDensity->setText(QString::number(windCharJson["airDensity"].toDouble()));
+    kinematicViscosity->setText(QString::number(windCharJson["kinematicViscosity"].toDouble()));
 
-    jsonFile.write(jsonDoc.toJson());
+    onCalculateReynoldsNumber();
 
     return true;
 }

@@ -318,34 +318,44 @@ void NumericalSetupWidget::onRunInParallelChecked(int state)
     numProcessors->setEnabled(runInParallel->isChecked()) ;
 }
 
-bool NumericalSetupWidget::writeToJSON()
+bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    // Writes physical parameters boundary information to JSON file.
+    // Writes numerical setup to JSON file.
 
-    QJsonObject jsonObject;
+    QJsonObject numericalSetupJson = QJsonObject();
 
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
+    numericalSetupJson["solverType"] = solverType->currentText();
+    numericalSetupJson["numNonOrthogonalCorrectors"] = numNonOrthogonalCorrectors->value();
+    numericalSetupJson["numCorrectors"] = numCorrectors->value();
+    numericalSetupJson["numOuterCorrectors"] = numOuterCorrectors->value();
+    numericalSetupJson["duration"] = duration->text().toDouble();
+    numericalSetupJson["timeStep"] = timeStep->text().toDouble();
+    numericalSetupJson["maxCourantNumber"] = maxCourantNumber->value();
+    numericalSetupJson["adjustTimeStep"] = adjustTimeStep->isChecked();
+    numericalSetupJson["runInParallel"] = runInParallel->isChecked();
+    numericalSetupJson["numProcessors"] = numProcessors->value();
 
-    jsonObject["solverType"] = solverType->currentText();
-    jsonObject["numNonOrthogonalCorrectors"] = numNonOrthogonalCorrectors->value();
-    jsonObject["numCorrectors"] = numCorrectors->value();
-    jsonObject["numOuterCorrectors"] = numOuterCorrectors->value();
-    jsonObject["duration"] = duration->text().toDouble();
-    jsonObject["timeStep"] = timeStep->text().toDouble();
-    jsonObject["maxCourantNumber"] = maxCourantNumber->value();
-    jsonObject["adjustTimeStep"] = adjustTimeStep->isChecked();
-    jsonObject["runInParallel"] = runInParallel->isChecked();
-    jsonObject["numProcessors"] = numProcessors->value();
-
-
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/numericalSetup.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
+    jsonObject["numericalSetup"] = numericalSetupJson;
 
     return true;
 }
 
+bool NumericalSetupWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Input numerical setup information to JSON file.
+
+    QJsonObject numericalSetupJson = jsonObject["numericalSetup"].toObject();
+
+    solverType->setCurrentText(numericalSetupJson["solverType"].toString());
+    numNonOrthogonalCorrectors->setValue(numericalSetupJson["numNonOrthogonalCorrectors"].toInt());
+    numCorrectors->setValue(numericalSetupJson["numCorrectors"].toInt());
+    numOuterCorrectors->setValue(numericalSetupJson["numOuterCorrectors"].toInt());
+    duration->setText(QString::number(numericalSetupJson["duration"].toDouble()));
+    timeStep->setText(QString::number(numericalSetupJson["timeStep"].toDouble()));
+    maxCourantNumber->setValue(numericalSetupJson["maxCourantNumber"].toDouble());
+    adjustTimeStep->setChecked(numericalSetupJson["adjustTimeStep"].toBool());
+    runInParallel->setChecked(numericalSetupJson["runInParallel"].toBool());;
+    numProcessors->setValue(numericalSetupJson["numProcessors"].toDouble());
+
+    return true;
+}

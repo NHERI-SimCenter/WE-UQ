@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 from stl import mesh
 import json
 import numpy as np
@@ -7,11 +6,11 @@ import numpy as np
 def create_stl_file(input_path, output_path):
     
     #Read JSON data
-    json_file = open(input_path + "/buildingParameters.json")
+    json_file = open(input_path + "/IsolatedBuildingCFD.json")
       
     # returns JSON object as 
     # a dictionary
-    bldg_data = json.load(json_file)
+    bldg_data = json.load(json_file)["buildingParameters"]
       
     json_file.close()
     

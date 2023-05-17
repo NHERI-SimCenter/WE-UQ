@@ -18,15 +18,13 @@ import foam_dict_reader as foam
 def write_U_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    bc_json_file = open(input_json_path + "/boundaryConditions.json")
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
-      
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
+
     # Returns JSON object as a dictionary
-    boundary_data = json.load(bc_json_file)
-    wind_data = json.load(wc_json_file)
+    boundary_data = json.load(json_file)["boundaryConditions"]
+    wind_data = json.load(json_file)["windCharacteristics"]
       
-    wc_json_file.close()
-    bc_json_file.close()
+    json_file.close()
     
     inlet_BC_type =  boundary_data['inletBoundaryCondition']
     top_BC_type = boundary_data['topBoundaryCondition']
@@ -141,12 +139,12 @@ def write_U_file(input_json_path, template_dict_path, case_path):
 def write_p_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    bc_json_file = open(input_json_path + "/boundaryConditions.json")
-      
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
+
     # Returns JSON object as a dictionary
-    boundary_data = json.load(bc_json_file)
+    boundary_data = json.load(json_file)["boundaryConditions"]
       
-    bc_json_file.close()
+    json_file.close()
     
     sides_BC_type = boundary_data['sidesBoundaryCondition']
     top_BC_type = boundary_data['topBoundaryCondition']
@@ -242,15 +240,13 @@ def write_p_file(input_json_path, template_dict_path, case_path):
 def write_nut_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    bc_json_file = open(input_json_path + "/boundaryConditions.json")
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    boundary_data = json.load(bc_json_file)
-    wind_data = json.load(wc_json_file)
+    boundary_data = json.load(json_file)["boundaryConditions"]
+    wind_data = json.load(json_file)["windCharacteristics"]
       
-    bc_json_file.close()
-    wc_json_file.close()
+    json_file.close()
     
     sides_BC_type = boundary_data['sidesBoundaryCondition']
     top_BC_type = boundary_data['topBoundaryCondition']
@@ -366,15 +362,13 @@ def write_nut_file(input_json_path, template_dict_path, case_path):
 def write_epsilon_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    bc_json_file = open(input_json_path + "/boundaryConditions.json")
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    boundary_data = json.load(bc_json_file)
-    wind_data = json.load(wc_json_file)
+    boundary_data = json.load(json_file)["boundaryConditions"]
+    wind_data = json.load(json_file)["windCharacteristics"]
       
-    bc_json_file.close()
-    wc_json_file.close()
+    json_file.close()
     
     sides_BC_type = boundary_data['sidesBoundaryCondition']
     top_BC_type = boundary_data['topBoundaryCondition']
@@ -500,15 +494,13 @@ def write_epsilon_file(input_json_path, template_dict_path, case_path):
 def write_k_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    bc_json_file = open(input_json_path + "/boundaryConditions.json")
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    boundary_data = json.load(bc_json_file)
-    wind_data = json.load(wc_json_file)
+    boundary_data = json.load(json_file)["boundaryConditions"]
+    wind_data = json.load(json_file)["windCharacteristics"]
       
-    bc_json_file.close()
-    wc_json_file.close()
+    json_file.close()
     
     sides_BC_type = boundary_data['sidesBoundaryCondition']
     top_BC_type = boundary_data['topBoundaryCondition']
@@ -632,15 +624,13 @@ def write_k_file(input_json_path, template_dict_path, case_path):
 def write_controlDict_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    ns_json_file = open(input_json_path + "/numericalSetup.json")
-    rm_json_file = open(input_json_path + "/resultMonitoring.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    ns_data = json.load(ns_json_file)
-    rm_data = json.load(rm_json_file)
+    ns_data = json.load(json_file)["numericalSetup"]
+    rm_data = json.load(json_file)["resultMonitoring"]
       
-    ns_json_file.close()
-    rm_json_file.close()
+    json_file.close()
     
     solver_type = ns_data['solverType']
     duration = ns_data['duration']
@@ -737,12 +727,12 @@ def write_controlDict_file(input_json_path, template_dict_path, case_path):
 def write_fvSolution_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    ns_json_file = open(input_json_path + "/numericalSetup.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    ns_data = json.load(ns_json_file)
+    ns_data = json.load(json_file)["numericalSetup"]
       
-    ns_json_file.close()
+    json_file.close()
     
     num_non_orthogonal_correctors = ns_data['numNonOrthogonalCorrectors']
     num_correctors = ns_data['numCorrectors']
@@ -794,12 +784,12 @@ def write_fvSolution_file(input_json_path, template_dict_path, case_path):
 def write_pressure_probes_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    rm_json_file = open(input_json_path + "/resultMonitoring.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    rm_data = json.load(rm_json_file)
+    rm_data = json.load(json_file)["resultMonitoring"]
       
-    rm_json_file.close()
+    json_file.close()
 
     pressure_sampling_points = rm_data['pressureSamplingPoints']
     pressure_write_interval = rm_data['pressureWriteInterval']
@@ -846,14 +836,14 @@ def write_pressure_probes_file(input_json_path, template_dict_path, case_path):
 def write_base_forces_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    rm_json_file = open(input_json_path + "/resultMonitoring.json")
-    
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
+
     air_density = 1.0
 
     # Returns JSON object as a dictionary
-    rm_data = json.load(rm_json_file)
+    rm_data = json.load(json_file)["resultMonitoring"]
       
-    rm_json_file.close()
+    json_file.close()
     
 
     num_stories = rm_data['numStories']
@@ -901,14 +891,14 @@ def write_base_forces_file(input_json_path, template_dict_path, case_path):
 def write_story_forces_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data
-    rm_json_file = open(input_json_path + "/resultMonitoring.json")
-    
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
+
     air_density = 1.0
 
     # Returns JSON object as a dictionary
-    rm_data = json.load(rm_json_file)
+    rm_data = json.load(json_file)["resultMonitoring"]
       
-    rm_json_file.close()
+    json_file.close()
     
 
     num_stories = rm_data['numStories']
@@ -964,12 +954,12 @@ def write_story_forces_file(input_json_path, template_dict_path, case_path):
 def write_momentumTransport_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    turb_json_file = open(input_json_path + "/turbulenceModeling.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    turb_data = json.load(turb_json_file)
+    turb_data = json.load(json_file)["turbulenceModeling"]
       
-    turb_json_file.close()
+    json_file.close()
     
     simulation_type = turb_data['simulationType']
     RANS_type = turb_data['RANSModelType']
@@ -1020,12 +1010,12 @@ def write_momentumTransport_file(input_json_path, template_dict_path, case_path)
 def write_physicalProperties_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    wc_data = json.load(wc_json_file)
+    wc_data = json.load(json_file)["windCharacteristics"]
       
-    wc_json_file.close()
+    json_file.close()
     
     kinematic_viscosity = wc_data['kinematicViscosity']
 
@@ -1058,12 +1048,12 @@ def write_physicalProperties_file(input_json_path, template_dict_path, case_path
 def write_fvSchemes_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    turb_json_file = open(input_json_path + "/turbulenceModeling.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    turb_data = json.load(turb_json_file)
+    turb_data = json.load(json_file)["turbulenceModeling"]
       
-    turb_json_file.close()
+    json_file.close()
     
     simulation_type = turb_data['simulationType']
 
@@ -1089,12 +1079,12 @@ def write_fvSchemes_file(input_json_path, template_dict_path, case_path):
 def write_decomposeParDict_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    ns_json_file = open(input_json_path + "/numericalSetup.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    ns_data = json.load(ns_json_file)
+    ns_data = json.load(json_file)["numericalSetup"]
       
-    ns_json_file.close()
+    json_file.close()
     
     num_processors = ns_data['numProcessors']
 
@@ -1129,18 +1119,16 @@ def write_decomposeParDict_file(input_json_path, template_dict_path, case_path):
 def write_DFSRTurbDict_file(input_json_path, template_dict_path, case_path):
 
     #Read JSON data for turbulence model
-    wc_json_file = open(input_json_path + "/windCharacteristics.json")
-    ns_json_file = open(input_json_path + "/numericalSetup.json")      
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
     
     fmax = 200.0
     
 
     # Returns JSON object as a dictionary
-    wc_data = json.load(wc_json_file)
-    ns_data = json.load(ns_json_file)
+    wc_data = json.load(json_file)["windCharacteristics"]
+    ns_data = json.load(json_file)["numericalSetup"]
       
-    wc_json_file.close()
-    ns_json_file.close()
+    json_file.close()
 
     wind_speed = wc_data['roofHeightWindSpeed']
     duration = ns_data['duration']
@@ -1205,12 +1193,12 @@ if __name__ == '__main__':
     
     
     #Read JSON data for turbulence model
-    turb_json_file = open(input_json_path + "/turbulenceModeling.json")
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")
 
     # Returns JSON object as a dictionary
-    turb_data = json.load(turb_json_file)
+    turb_data = json.load(json_file)["turbulenceModeling"]
       
-    turb_json_file.close()
+    json_file.close()
     
     simulation_type = turb_data['simulationType']
     RANS_type = turb_data['RANSModelType']

@@ -172,28 +172,36 @@ void BoundaryConditionsWidget::clear(void)
 
 }
 
-bool BoundaryConditionsWidget::writeToJSON()
+bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    // Writes physical parameters boundary information to JSON file.
+    // Writes physical boundary information to JSON file.
 
-    QJsonObject jsonObject;
+    QJsonObject boundaryCondJson = QJsonObject();
 
-    jsonObject["type"]="IsolatedBuildingCFD";
-    jsonObject["EventClassification"]="Wind";
+    boundaryCondJson["inletBoundaryCondition"] = inletBCType->currentText();
+    boundaryCondJson["outletBoundaryCondition"] = outletBCType->currentText();
+    boundaryCondJson["topBoundaryCondition"] = topBCType->currentText();
+    boundaryCondJson["sidesBoundaryCondition"] = sidesBCType->currentText();
+    boundaryCondJson["groundBoundaryCondition"] = groundBCType->currentText();
+    boundaryCondJson["buildingBoundaryCondition"] = buildingBCType->currentText();
 
-    jsonObject["inletBoundaryCondition"] = inletBCType->currentText();
-    jsonObject["outletBoundaryCondition"] = outletBCType->currentText();
-    jsonObject["topBoundaryCondition"] = topBCType->currentText();
-    jsonObject["sidesBoundaryCondition"] = sidesBCType->currentText();
-    jsonObject["groundBoundaryCondition"] = groundBCType->currentText();
-    jsonObject["buildingBoundaryCondition"] = buildingBCType->currentText();
+    jsonObject["boundaryConditions"] = boundaryCondJson;
 
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/boundaryConditions.json");
-    jsonFile.open(QFile::WriteOnly);
+    return true;
+}
 
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes physical boundary information to JSON file.
 
-    jsonFile.write(jsonDoc.toJson());
+    QJsonObject boundaryCondJson = jsonObject["boundaryConditions"].toObject();
+
+    inletBCType->setCurrentText(boundaryCondJson["inletBoundaryCondition"].toString());
+    outletBCType->setCurrentText(boundaryCondJson["outletBoundaryCondition"].toString());
+    topBCType->setCurrentText(boundaryCondJson["topBoundaryCondition"].toString());
+    sidesBCType->setCurrentText(boundaryCondJson["sidesBoundaryCondition"].toString());
+    groundBCType->setCurrentText(boundaryCondJson["groundBoundaryCondition"].toString());
+    buildingBCType->setCurrentText(boundaryCondJson["buildingBoundaryCondition"].toString());
 
     return true;
 }

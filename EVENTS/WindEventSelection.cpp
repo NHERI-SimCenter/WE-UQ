@@ -42,7 +42,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
+#include <QMessageBox>
 #include <QStackedWidget>
 #include <QComboBox>
 

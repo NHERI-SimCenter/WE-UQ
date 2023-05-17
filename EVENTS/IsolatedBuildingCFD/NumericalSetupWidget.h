@@ -69,7 +69,8 @@ public:
     explicit NumericalSetupWidget(IsolatedBuildingCFD *parent = 0);
     ~NumericalSetupWidget();
 
-    bool writeToJSON();
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
     void updateWidgets();
 
 signals:

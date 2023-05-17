@@ -71,7 +71,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVector>
 #include <LineEditRV.h>
 #include <QDebug>
-#include <QMessageBox>
 #include <QOpenGLWidget>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
@@ -198,11 +197,24 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     caseDirectoryPathWidget = new QLineEdit();
     QString currentAppDir = QCoreApplication::applicationDirPath();
-    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingTest"; // + QDir::separator() + "case.OpenFOAM";
 
-    
-    //    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFD/");
+    QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+    if (!workingDir.exists())
+      workingDir.mkpath(".");
+
+    QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+						 + "LocalWorkDir" + QDir::separator()
+						 + "IsolatedBuildingCFD");
+
+    if (!workingDir.exists(workingDirPath))
+	workingDir.mkpath(workingDirPath);
+	
+    workingDirPath = workingDir.path();
+
+    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFDTest"; // + QDir::separator() + "case.OpenFOAM";
     caseDirectoryPathWidget->setText(testLocation);
+
+    // caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -380,17 +392,10 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 void IsolatedBuildingCFD::onRunCFDClicked()
 {
-    //Write the JSON files
-    windCharacteristics->writeToJSON();
-    boundaryConditions->writeToJSON();
-    turbulenceModeling->writeToJSON();
-    numericalSetup->writeToJSON();
-    resultMonitoring->writeToJSON();
-
     //Run prepare case directory
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/setup_case.py";
-    QString jsonPath = caseDir() + "constant/simCenter";
-    QString templatePath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+    QString scriptPath = pyScriptsPath() + "/setup_case.py";
+    QString jsonPath = caseDir() + "/constant/simCenter";
+    QString templatePath = foamDictsPath();
     QString outputPath =caseDir();
 
     QString program = "/home/abiy/anaconda3/bin/python3.9";
@@ -416,26 +421,26 @@ void IsolatedBuildingCFD::onRunCFDClicked()
 void IsolatedBuildingCFD::onShowResultsClicked()
 {
 
-    //Run prepare case directory
-    QString scriptPath = "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts/postProcessing/process_output_data.py";
-    QString outputPath = caseDir();
+//    //Run prepare case directory
+//    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
+//    QString outputPath = caseDir();
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
+//    QString program = "/home/abiy/anaconda3/bin/python3.9";
+//    QStringList arguments;
 
-    arguments << scriptPath << outputPath;
+//    arguments << scriptPath << outputPath;
 
-    QProcess *process = new QProcess(this);
+//    QProcess *process = new QProcess(this);
 
-    process->start(program, arguments);
+//    process->start(program, arguments);
 
-    process->waitForFinished(-1);
+//    process->waitForFinished(-1);
 
 //    QMessageBox msgBox;
 //    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 //    msgBox.exec();
 
-    process->close();
+//    process->close();
 
 
 
@@ -457,8 +462,8 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
     // generate some data:
 
-    QString profName  = caseDir() + "constant/simCenter/output/windProfiles.txt";
-    QVector<QVector<double>> windProfile  =  read_txt_data(profName) ;
+    QString profName  = caseDir() + "/constant/simCenter/output/windProfiles.txt";
+    QVector<QVector<double>> windProfile  =  readTxtData(profName) ;
 
     double H = buildingHeight()/geometricScale();
 
@@ -516,8 +521,8 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
 
 
-    QString SuName  = caseDir() + "constant/simCenter/output/Suh.txt";
-    QVector<QVector<double>> Suh  =  read_txt_data(SuName) ;
+    QString SuName  = caseDir() + "/constant/simCenter/output/Suh.txt";
+    QVector<QVector<double>> Suh  =  readTxtData(SuName) ;
 
     QCustomPlot* SuPlot  = new QCustomPlot();
 
@@ -609,55 +614,82 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
-    if (jsonObject.contains("buildingWidth")) {
-      QJsonValue theValue = jsonObject["buildingWidth"];
-      QString selection = theValue.toString();
-      buildingWidthWidget->setText(selection);
-    } else
-      return false;
+    normalizationTypeWidget->setCurrentText(jsonObject["normalizationType"].toString());
+    geometricScaleWidget->setText(QString::number(jsonObject["geometricScale"].toDouble()));
+    caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
 
-    if (jsonObject.contains("buildingDepth")) {
-      QJsonValue theValue = jsonObject["buildingDepth"];
-      QString selection = theValue.toString();
-      buildingDepthWidget->setText(selection);
-    } else
-      return false;
+    buildingWidthWidget->setText(QString::number(jsonObject["buildingWidth"].toDouble()));
+    buildingDepthWidget->setText(QString::number(jsonObject["buildingDepth"].toDouble()));
+    buildingHeightWidget->setText(QString::number(jsonObject["buildingHeight"].toDouble()));
 
-    if (jsonObject.contains("buildingHeight")) {
-      QJsonValue theValue = jsonObject["buildingHeight"];
-      QString selection = theValue.toString();
-      buildingHeightWidget->setText(selection);
-    } else
-      return false;
+    windDirectionWidget->setValue(jsonObject["windDirection"].toInt());
 
-    if (jsonObject.contains("geometricScale")) {
-      QJsonValue theValue = jsonObject["geometricScale"];
-      QString selection = theValue.toString();
-      geometricScaleWidget->setText(selection);
-    } else
-      return false;
+    domainLengthWidget->setText(QString::number(jsonObject["domainLength"].toDouble()));
+    domainWidthWidget->setText(QString::number(jsonObject["domainWidth"].toDouble()));
+    domainHeightWidget->setText(QString::number(jsonObject["domainHeight"].toDouble()));
+    fetchLengthWidget->setText(QString::number(jsonObject["fetchLength"].toDouble()));
 
 
-    if (jsonObject.contains("windSpeed")) {
-      /*
-      QJsonValue theValue = jsonObject["windSpeed"];
-      double speed = theValue.toDouble();
-      windSpeed->setText(QString::number(speed));
-      */
-      windSpeedWidget->inputFromJSON(jsonObject,QString("windSpeed"));
-    } else
-      return false;
+    QJsonArray originPoint  = jsonObject["origin"].toArray();
 
-    if (jsonObject.contains("windDirection")) {
-      QJsonValue theValue = jsonObject["windDirection"];
-      int angle = theValue.toInt();
-      windDirectionWidget->setValue(angle);
-    } else
-      return false;
+    originXWidget->setText(QString::number(originPoint[0].toDouble()));
+    originYWidget->setText(QString::number(originPoint[1].toDouble()));
+    originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
+    originOptions->setCurrentText(jsonObject["originOption"].toString());
+
+
+    windCharacteristics->inputFromJSON(jsonObject);
+    snappyHexMesh->inputFromJSON(jsonObject);
+    turbulenceModeling->inputFromJSON(jsonObject);
+    boundaryConditions->inputFromJSON(jsonObject);
+    numericalSetup->inputFromJSON(jsonObject);
+    resultMonitoring->inputFromJSON(jsonObject);
 
     return true;
 }
+
+bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
+{
+
+    jsonObject["EventClassification"] = "Wind";
+    jsonObject["type"] = "IsolatedBuildingCFD";
+
+    jsonObject["normalizationType"] = normalizationTypeWidget->currentText();
+    jsonObject["geometricScale"]  = geometricScaleWidget->text().toDouble();
+    jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
+
+    jsonObject["buildingWidth"] = buildingWidthWidget->text().toDouble();
+    jsonObject["buildingDepth"] = buildingDepthWidget->text().toDouble();
+    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
+
+    jsonObject["windDirection"] = windDirectionWidget->value();
+
+    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
+    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
+    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
+    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
+
+
+    QJsonArray originPoint;
+    originPoint.append(coordSysOrigin()[0]);
+    originPoint.append(coordSysOrigin()[1]);
+    originPoint.append(coordSysOrigin()[2]);
+
+    jsonObject["origin"] = originPoint;
+    jsonObject["originOption"] = originOptions->currentText();
+
+
+    windCharacteristics->outputToJSON(jsonObject);
+    snappyHexMesh->outputToJSON(jsonObject);
+    turbulenceModeling->outputToJSON(jsonObject);
+    boundaryConditions->outputToJSON(jsonObject);
+    numericalSetup->outputToJSON(jsonObject);
+    resultMonitoring->outputToJSON(jsonObject);
+
+    return true;
+}
+
 
 bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
@@ -673,6 +705,8 @@ bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     return true;
 }
+
+
 bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
     Q_UNUSED(jsonObject);
@@ -682,21 +716,52 @@ bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
 bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
+  /*
      QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
              + QString("IsolatedBuildingCFD") + QDir::separator() + QString("IsolatedBuildingCFD.py");
 
      bool result = this->copyFile(name1, destDir);
+  */
      if (result == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
          emit sendFatalMessage(errorMessage);
          qDebug() << errorMessage;
      }
+
+     QString caseDirPath = this->caseDir();
+     this->copyPath(caseDirPath, destDir, false);
+
+     
      return result;
  }
 
+bool IsolatedBuildingCFD::setupCase()
+{
+    QDir targetDir(caseDir());
 
-QVector<QVector<double>> IsolatedBuildingCFD::read_txt_data(QString fileName)
+    targetDir.rmdir("0");
+    targetDir.rmdir("constant");
+    targetDir.rmdir("system");
+
+    this->copyPath(templateCaseDir(), caseDir(), false);
+
+
+//    targetDir.mkpath("0");
+//    targetDir.mkpath("constant");
+//    targetDir.mkpath("system");
+
+//    auto newfoamFile = targetDir.absoluteFilePath("case.foam");
+//    if(!QFile::exists(newfoamFile))
+//        QFile::remove(newControlDictPath);
+
+//    QFile::copy(m_originalControlDictPath, newControlDictPath);
+
+
+    return true;
+}
+
+QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
 {
     QVector<QVector<double>>  data;
 
@@ -737,10 +802,6 @@ QVector<QVector<double>> IsolatedBuildingCFD::read_txt_data(QString fileName)
        while (!in.atEnd())
        {
             QString line = in.readLine();
-
-//            QMessageBox msgBox;
-//            msgBox.setText(line);
-//            msgBox.exec();
 
             QStringList  fields = line.split(" ");
 
@@ -822,6 +883,36 @@ const QString IsolatedBuildingCFD::normalizationType()
 const QString IsolatedBuildingCFD::caseDir()
 {
     return caseDirectoryPathWidget->text();
+}
+
+const QString IsolatedBuildingCFD::foamDictsPath()
+{
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("OpenFoamTemplateDicts");  
+  
+     //    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+     return name1;  
+
+}
+
+const QString IsolatedBuildingCFD::pyScriptsPath()
+{
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("PythonScripts");  
+  
+     // return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
+     return name1;
+}
+
+const QString IsolatedBuildingCFD::templateCaseDir()
+{
+     QString name1;
+     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("TemplateCaseDir");  
+     //return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
+     return name1;
 }
 
 const QString IsolatedBuildingCFD::simulationType()
