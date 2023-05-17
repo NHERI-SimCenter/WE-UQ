@@ -18,10 +18,19 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/Analysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
+INCLUDEPATH += $$PWD/EVENTS/IsolatedBuildingCFD
 
 SOURCES += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -40,7 +49,7 @@ SOURCES += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.cpp \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.cpp \
-    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamHelper.cpp \
+    $$PWD/EVENTS/ExpertCFD/OpenFoamHelper/openfoamhelper.cpp \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.cpp \
     $$PWD/EVENTS/WindEventSelection.cpp \
     $$PWD/EVENTS/DEDM_HRP.cpp \
@@ -48,6 +57,7 @@ SOURCES += \
     $$PWD/EVENTS/BasicCFD/MeshParametersCWE.cpp \
     $$PWD/EVENTS/BasicCFD/SimulationParametersCWE.cpp \
     $$PWD/EVENTS/LowRiseTPU.cpp \
+    $$PWD/EVENTS/HighRiseTPU.cpp \    
     $$PWD/EVENTS/WindTunnelExperiment.cpp \
     $$PWD/EVENTS/ExperimentalWindForces.cpp \
     $$PWD/EVENTS/WindForceSpectrum.cpp \
@@ -67,6 +77,14 @@ SOURCES += \
 HEADERS  += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.h \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/SnappyHexMeshWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/BoundaryConditionsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/TurbulenceModelingWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \
@@ -86,7 +104,7 @@ HEADERS  += \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_parampanel.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_stagestatustab.h \
     $$PWD/EVENTS/ExpertCFD/cwe_guiWidgets/cwe_tabwidget/cwe_tabwidget.h \
-    $$PWD/EVENTS/ExpertCFD/OpenFOAMhelper/openfoamhelper.h \
+    $$PWD/EVENTS/ExpertCFD/OpenFoamHelper/openfoamhelper.h \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.h \
     $$PWD/EVENTS/WindEventSelection.h \
     $$PWD/EVENTS/WindTunnelExperiment.h \
@@ -97,6 +115,7 @@ HEADERS  += \
     $$PWD/EVENTS/BasicCFD/MeshParametersCWE.h \
     $$PWD/EVENTS/BasicCFD/SimulationParametersCWE.h \
     $$PWD/EVENTS/LowRiseTPU.h \
+    $$PWD/EVENTS/HighRiseTPU.h \    
     $$PWD/EVENTS/StochasticWindModel/include/WittigSinha.h \
     $$PWD/EVENTS/StochasticWindModel/include/StochasticWindInput.h \
     $$PWD/EVENTS/ExpertCFD/Analysis/filemetadata.h \
@@ -120,5 +139,7 @@ FORMS    += \
     $$PWD/EVENTS/Inflow/inflowparameterwidget.ui \
     $$PWD/EVENTS/usermodeshapes.ui
 
-QT += widgets
+
+
+
 

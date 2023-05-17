@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("2.3.0");
+    QCoreApplication::setApplicationVersion("3.0.b");
     // GoogleAnalytics::SetTrackingId("UA-121615795-1");
     GoogleAnalytics::StartSession();
     GoogleAnalytics::ReportStart();
@@ -178,11 +178,17 @@ int main(int argc, char *argv[])
     thread->start();
 
     //
-  // show the main window, set styles & start the event loop
+    // show the main window, set styles & start the event loop
     //
 
     w.show();
     w.statusBar()->showMessage("Ready", 5000);
+
+//    pqApplicationCore appCore(argc, argv);
+
+
+
+
 
 #ifdef Q_OS_WIN
     QFile file(":/styleCommon/stylesheetWIN.qss");
@@ -193,7 +199,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef Q_OS_LINUX
-    QFile file(":/styleCommon/stylesheetMAC.qss");
+    QFile file(":/styleCommon/stylesheetLinux.qss");
 #endif
 
     if(file.open(QFile::ReadOnly)) {
@@ -250,6 +256,7 @@ int main(int argc, char *argv[])
     //a.setStyleSheet(openStyleFiles());
 
     int res = a.exec();
+
 
     //
     // on done with event loop, logout & stop the thread

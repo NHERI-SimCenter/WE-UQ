@@ -1,0 +1,118 @@
+{
+    "blockMeshParameters": {
+        "backBoundaryType": "symmetry",
+        "buildingHeight": 182.88,
+        "domainHeight": 5,
+        "domainLength": 20,
+        "domainWidth": 10,
+        "fetchLength": 5,
+        "frontBoundaryType": "symmetry",
+        "geometricScale": 400,
+        "groundBoundaryType": "wall",
+        "inletBoundaryType": "patch",
+        "lengthUnit": "m",
+        "normalizationType": "Relative",
+        "origin": [
+            0,
+            0,
+            0
+        ],
+        "outletBoundaryType": "patch",
+        "topBoundaryType": "symmetry",
+        "xGrading": 1,
+        "xNumCells": 80,
+        "yGrading": 1,
+        "yNumCells": 40,
+        "zGrading": 1,
+        "zNumCells": 20
+    },
+    "buildingParameters": {
+        "angleUnit": "degree",
+        "buildingDepth": 30.48,
+        "buildingHeight": 182.88,
+        "buildingWidth": 45.72,
+        "geometricScale": 400,
+        "lengthUnit": "m",
+        "normalizationType": "Relative",
+        "origin": [
+            0,
+            0,
+            0
+        ],
+        "windDirection": 0
+    },
+    "snappyHexMeshParameters": {
+        "addEdgeRefinement": true,
+        "addPrismLayers": true,
+        "addSurfaceRefinement": true,
+        "buildingHeight": 182.88,
+        "buildingSTLName": "building",
+        "domainHeight": 5,
+        "domainLength": 20,
+        "domainWidth": 10,
+        "edgeRefinementLevel": 7,
+        "fetchLength": 5,
+        "finalPrismLayerThickness": 0.5,
+        "geometricScale": 400,
+        "lengthUnit": "m",
+        "normalizationType": "Relative",
+        "numCellsBetweenLevels": 5,
+        "numProcessors": 4,
+        "numberOfPrismLayers": 5,
+        "origin": [
+            0,
+            0,
+            0
+        ],
+        "prismLayerExpantionRatio": 1.15,
+        "prismLayerSurfaceName": "building",
+        "refinementBoxes": [
+            [
+                "Box1",
+                1,
+                -6.6,
+                -2.75,
+                0,
+                6.65,
+                2.75,
+                3.75
+            ],
+            [
+                "Box2",
+                2,
+                -6.6,
+                -1.64,
+                0,
+                4.37,
+                1.64,
+                2.75
+            ],
+            [
+                "Box3",
+                3,
+                -0.77,
+                -0.87,
+                0,
+                2.19,
+                0.87,
+                1.75
+            ],
+            [
+                "Box4",
+                4,
+                -0.44,
+                -0.55,
+                0,
+                1.31,
+                0.55,
+                1.35
+            ]
+        ],
+        "refinementEdgeName": "building",
+        "refinementSurfaceName": "building",
+        "resolveFeatureAngle": 30,
+        "runInParallel": false,
+        "surfaceRefinementDistance": 0.1,
+        "surfaceRefinementLevel": 6
+    }
+}

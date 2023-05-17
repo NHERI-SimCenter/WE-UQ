@@ -121,7 +121,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
     modelScale->setDisabled(true); // auto calculated
     layout->addWidget(msg,7,0,1,-1);
 
-    citationQuoteLabel = new QLabel("\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
+    citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
     layout->addWidget(citationQuoteLabel,8,0,1,-1);
 
 
