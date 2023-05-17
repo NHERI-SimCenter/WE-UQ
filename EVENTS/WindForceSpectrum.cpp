@@ -215,6 +215,21 @@ WindForceSpectrum::inputFromJSON(QJsonObject &jsonObject)
     fullScaleDuration->inputFromJSON(jsonObject);
     seed->inputFromJSON(jsonObject);
     filepath->inputFromJSON(jsonObject);
+
+    QString myfilepath=filepath->text();
+    if (!(myfilepath=="")) {
+            if (myfilepath.endsWith(".json")) {
+                this->parseForceFile(myfilepath);
+                modelScaleLabel -> setStyleSheet("QLabel { color : black; }");
+            } else {
+                modelScaleLabel -> setStyleSheet("QLabel { color : grey; }");
+                modelScale ->setText("");
+                msg ->setText("");
+            }
+
+   }
+
+
     return true;
 }
 
