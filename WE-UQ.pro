@@ -33,6 +33,22 @@ INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
 win32 {
     LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
+    LIBS += -L$$PWD/../VTK/lib
+    LIBS += vtkViewsCore-9.2.lib
+    LIBS += vtkCommonCore-9.2.lib
+    LIBS += vtkFiltersGeometry-9.2.lib
+    LIBS += vtkRenderingCore-9.2.lib
+    LIBS += vtkRenderingContextOpenGL2-9.2.lib
+    LIBS += vtkCommonExecutionModel-9.2.lib
+    LIBS += vtkGUISupportQt-9.2.lib
+    LIBS += vtkCommonDataModel-9.2.lib
+    LIBS += vtkIOGeometry-9.2.lib
+    LIBS += vtkRenderingOpenGL2-9.2.lib
+    LIBS += vtkIOGeometry-9.2.lib
+    LIBS += vtkViewsQt-9.2.lib
+    LIBS += vtkIOLegacy-9.2.lib
+    LIBS += vtksys-9.2.lib
+
 } else {
 
     mac {
