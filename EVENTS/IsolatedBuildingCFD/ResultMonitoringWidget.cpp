@@ -482,7 +482,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
 void ResultMonitoringWidget::onOpenCSVFileClicked()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/abiy", tr("CSV Files (*.csv)"));
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("CSV Files (*.csv)"));
 
    QFileDialog dialog(this);
    dialog.setFileMode(QFileDialog::AnyFile);
