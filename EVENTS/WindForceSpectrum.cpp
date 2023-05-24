@@ -88,7 +88,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
      modePercent = new SC_DoubleLineEdit("modePercent",25);
      modelScale = new SC_DoubleLineEdit("modelScale");
      fullScaleSpeed = new SC_DoubleLineEdit("fullScaleSpeed");
-     fullScaleSpeedUnit = new QLabel(QString(myLengthUnit + " per sec"));
+     fullScaleSpeedUnit = new QLabel(QString(myLengthUnit + "/sec"));
      fullScaleDuration = new SC_DoubleLineEdit("fullScaleDuration");
      seed = new SC_IntLineEdit("seed",42);
      filepath = new SC_StringLineEdit("filepath");
@@ -98,12 +98,12 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
      chooseFile->setText(tr("Choose"));
      connect(chooseFile,SIGNAL(clicked()),this,SLOT(chooseFileName()));
      msg = new QLabel("");
-
+     msg_info = new QLabel("");
      // Locate widgets
     layout->addWidget(new QLabel("Percentage of Modes"),0,0);
     layout->addWidget(modePercent,0,1);
     layout->addWidget(new QLabel("%"),0,2);
-    layout->addWidget(new QLabel("Full Scale Speed"),2,0);
+    layout->addWidget(new QLabel("Full Scale Reference Wind Speed"),2,0);
     layout->addWidget(fullScaleSpeed,2,1);
     layout->addWidget(fullScaleSpeedUnit,2,2);
     layout->addWidget(new QLabel("Full Scale Duration "),3,0);
@@ -119,13 +119,14 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
     layout->addWidget(modelScaleLabel,6,0);
     layout->addWidget(modelScale,6,1);
     modelScale->setDisabled(true); // auto calculated
-    layout->addWidget(msg,7,0,1,-1);
+    layout->addWidget(msg_info,7,0,1,-1);
+    layout->addWidget(msg,8,0,1,-1);
 
     citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
-    layout->addWidget(citationQuoteLabel,8,0,1,-1);
+    layout->addWidget(citationQuoteLabel,9,0,1,-1);
 
 
-    layout->setRowStretch(9,1);
+    layout->setRowStretch(10,1);
     layout->setColumnStretch(2,1);
     layout->setColumnStretch(4,1);
 
@@ -215,6 +216,22 @@ WindForceSpectrum::inputFromJSON(QJsonObject &jsonObject)
     fullScaleDuration->inputFromJSON(jsonObject);
     seed->inputFromJSON(jsonObject);
     filepath->inputFromJSON(jsonObject);
+
+    QString myfilepath=filepath->text();
+    if (!(myfilepath=="")) {
+            if (myfilepath.endsWith(".json")) {
+                this->parseForceFile(myfilepath);
+                modelScaleLabel -> setStyleSheet("QLabel { color : black; }");
+            } else {
+                modelScaleLabel -> setStyleSheet("QLabel { color : grey; }");
+                modelScale ->setText("");
+                msg ->setText("");
+                msg_info->setText("");
+            }
+
+   }
+
+
     return true;
 }
 
@@ -244,7 +261,7 @@ void WindForceSpectrum::hideCitation(bool tog) {
     if (!tog)
         citationQuoteLabel->setText("");
     else
-        citationQuoteLabel->setText("Suksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
+        citationQuoteLabel->setText("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nDuarte, T.G.A., Arunachalam, S., Subgranon, A. and Spence, S.M., 2023. Uncertainty Quantification of a Wind Tunnel-Informed Stochastic Wind Load Model for Wind Engineering Applications. arXiv preprint arXiv:2305.06253.");
 }
 
 void
@@ -262,6 +279,7 @@ WindForceSpectrum::chooseFileName(void) {
                 modelScaleLabel -> setStyleSheet("QLabel { color : grey; }");
                 modelScale ->setText("");
                 msg ->setText("");
+                msg_info ->setText("");
             }
 
    }
@@ -281,7 +299,6 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
         jsonData = doc.object();
         msg->setText("");
-
 
     } else {
         msg->setText("Failed to read file");
@@ -319,6 +336,12 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         }
     }
 
+    double fs = jsonData["fs"].toDouble();
+    double Vref = jsonData["Vref"].toDouble();
+
+    msg_info->setText("The sampling frequency (fs) is "+ QString::number(fs) + " Hz, and the model scale reference wind speed (Vref) is "+ QString::number(Vref) + " " + myLengthUnit + "/sec.");
+    msg_info->setStyleSheet("QLabel { color : black; }");
+
     this->updateScale();
     this->checkStory();
 
@@ -335,7 +358,8 @@ WindForceSpectrum::updateScale() {
     double scaleW = fullW/dataW;
 
     if ((scaleD!=scaleH) || (scaleD!=scaleW)) {
-        msg->setText("Warning: target-data geometry scaling ratio is inconsistent: D="+ QString::number(scaleD, 'f', 1) +", H="+ QString::number(scaleH, 'f', 1) +", B=" + QString::number(scaleW, 'f', 1));
+        QString curText = msg->text();
+        msg->setText(curText + "\nWarning: target-data geometry scaling ratio is inconsistent: D="+ QString::number(scaleD, 'f', 1) +", H="+ QString::number(scaleH, 'f', 1) +", B=" + QString::number(scaleW, 'f', 1));
         msg -> setStyleSheet("QLabel { color : blue; }");
 
     } else {

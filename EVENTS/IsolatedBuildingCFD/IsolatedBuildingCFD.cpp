@@ -723,6 +723,8 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
      bool result = this->copyFile(name1, destDir);
   */
+    bool result = true;
+    QString name1("");
      if (result == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
          emit sendFatalMessage(errorMessage);

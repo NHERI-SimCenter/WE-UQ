@@ -89,7 +89,7 @@ private:
    SC_IntLineEdit *seed;
    SC_StringLineEdit *filepath;
    QString filename;
-   QLabel *msg;
+   QLabel *msg, *msg_info;
    GeneralInformationWidget *theGI;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

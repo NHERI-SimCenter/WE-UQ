@@ -93,7 +93,7 @@ ExperimentalWindForces::ExperimentalWindForces(RandomVariablesContainer *theRand
     layout->addWidget(overlapPerc,2,1);
     layout->addWidget(new QLabel("%"),2,2);
 
-    citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
+    citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nDuarte, T.G.A., Arunachalam, S., Subgranon, A. and Spence, S.M., 2023. Uncertainty Quantification of a Wind Tunnel-Informed Stochastic Wind Load Model for Wind Engineering Applications. arXiv preprint arXiv:2305.06253.");
     layout->addWidget(citationQuoteLabel,3,0,1,-1);
 
     layout->setRowStretch(8,1);
