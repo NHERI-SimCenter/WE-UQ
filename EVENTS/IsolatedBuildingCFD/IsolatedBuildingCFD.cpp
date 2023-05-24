@@ -117,6 +117,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     domainInformationGroup = new QGroupBox("Domain Dimensions");
     domainInformationLayout = new QGridLayout();
 
+    cfdResultsGroup = new QGroupBox("CFD Results", this);
+    cfdResultsLayout = new QGridLayout();
+    cfdResultsGroup->setLayout(cfdResultsLayout);
+
     theBuildingButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
 
@@ -214,15 +218,16 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFDTest"; // + QDir::separator() + "case.OpenFOAM";
     caseDirectoryPathWidget->setText(testLocation);
 
-    // caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+     caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
-    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The procedure involves: "
+    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. "
+                                                 "\n The procedure involves: "
                                                  "\n --> Define building geometry "
                                                  "\n --> Generate mesh using snappyHexMesh tool "
-                                                 "\n --> Define boundary condition and wind characterstics  "
                                                  "\n --> Setup turbulence model "
+                                                 "\n --> Define boundary condition and wind characterstics  "
                                                  "\n --> Specify numerical setup "
                                                  "\n --> Run simulation "
                                                  "\n --> Post-process");
@@ -326,12 +331,13 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     inputFormsLayout->addWidget(caseDirectoryGroup);
     inputFormsLayout->addWidget(buildingAndDomainInformationGroup);
     inputFormsLayout->addWidget(coordinateSystemGroup);
-    inputFormsLayout->addWidget(windCharacteristics);
     inputFormsLayout->addWidget(snappyHexMesh);
-    inputFormsLayout->addWidget(turbulenceModeling);
+    inputFormsLayout->addWidget(windCharacteristics);
     inputFormsLayout->addWidget(boundaryConditions);
+    inputFormsLayout->addWidget(turbulenceModeling);
     inputFormsLayout->addWidget(numericalSetup);
     inputFormsLayout->addWidget(resultMonitoring);
+    inputFormsLayout->addWidget(cfdResultsGroup);
 
     inputFormsGroup->setLayout(inputFormsLayout);
 
@@ -375,10 +381,11 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     // set initial selections
     //
 
-    runCFD = new QPushButton("Run CFD");
-    showResults = new QPushButton("Show Results");
-    generalDescriptionLayout->addWidget(runCFD);
-    generalDescriptionLayout->addWidget(showResults);
+    runCFD = new QPushButton("Plot Base Load Spectra");
+    showResults = new QPushButton("Plot Wind Profiles");
+    cfdResultsLayout->addWidget(showResults);
+    cfdResultsLayout->addWidget(runCFD);
+
     connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
     connect(showResults, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
@@ -887,32 +894,32 @@ const QString IsolatedBuildingCFD::caseDir()
 
 const QString IsolatedBuildingCFD::foamDictsPath()
 {
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("OpenFoamTemplateDicts");  
+//     QString name1;
+//     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+//             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("OpenFoamTemplateDicts");
   
-     //    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
-     return name1;  
+         return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
+//     return name1;
 
 }
 
 const QString IsolatedBuildingCFD::pyScriptsPath()
 {
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("PythonScripts");  
+//     QString name1;
+//     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+//             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("PythonScripts");
   
-     // return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
-     return name1;
+      return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
+//     return name1;
 }
 
 const QString IsolatedBuildingCFD::templateCaseDir()
 {
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("TemplateCaseDir");  
-     //return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
-     return name1;
+//     QString name1;
+//     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+//             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("TemplateCaseDir");
+     return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
+//     return name1;
 }
 
 const QString IsolatedBuildingCFD::simulationType()

@@ -124,6 +124,9 @@ private:
    QVBoxLayout  *visWindowLayout;
    QGroupBox    *visWindowGroup;
 
+   QGroupBox    *cfdResultsGroup;
+   QGridLayout  *cfdResultsLayout;
+
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
 
