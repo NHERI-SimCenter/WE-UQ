@@ -86,7 +86,6 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     //
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
-    //QLabel *label = new QLabel();
     SectionTitle *label = new SectionTitle();
     label->setMinimumWidth(200);
     label->setText(QString("Load Generator"));
@@ -121,9 +120,10 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->setItemData(11, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
+    eventSelection->setMinimumWidth(250);
+    eventSelection->setMaximumHeight(25);
+
     theSelectionLayout->addWidget(label);
-    QSpacerItem *spacer = new QSpacerItem(50,10);
-    theSelectionLayout->addItem(spacer);
     theSelectionLayout->addWidget(eventSelection,1);
     theSelectionLayout->addStretch(2);
     layout->addLayout(theSelectionLayout);

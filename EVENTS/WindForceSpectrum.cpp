@@ -36,11 +36,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written: fmckenna, Sang-ri
 
-#include "WindForceSpectrum.h"
-#include "SC_DoubleLineEdit.h"
-#include "SC_IntLineEdit.h"
-#include "SC_StringLineEdit.h"
-#include "SectionTitle.h"
 
 #include <QPushButton>
 #include <QScrollArea>
@@ -65,6 +60,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
+
+#include "WindForceSpectrum.h"
+#include "SC_DoubleLineEdit.h"
+#include "SC_IntLineEdit.h"
+#include "SC_StringLineEdit.h"
+#include "SectionTitle.h"
 
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
@@ -311,17 +312,18 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
     dataW = jsonData["B"].toDouble();
 
     QStringList keys;
-    if (jsonData.contains("Fx")) {
+    if (jsonData.contains("norm_all")) {
         QStringList keys_time = {"B","comp_CFmean","D","f_target","fs","H","norm_all","s_target_real","s_target_imag","Vref"};
         keys = keys_time;
         nstory = jsonData["Fx"].toArray().size();
-    } else if  (jsonData.contains("norm_all")) {
+    } else if  (jsonData.contains("Fx")) {
         QStringList keys_spec = {"B","D","fs","Fx","Fy","H","H","t","Tz","Vref"};
         keys = keys_spec;
         nstory = jsonData["norm_all"].toArray().size()/3;
     } else {
         msg->setText("File format not recognized");
         msg->setStyleSheet("QLabel { color : red; }");
+        return;
     }
     bool err_flag = false;
     for (int i =0; i<keys.size(); i++)
@@ -330,6 +332,7 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
             msg->setText("JSON key not found: "+ keys[i]);
             msg->setStyleSheet("QLabel { color : red; }");
             err_flag = true;
+            return;
         }
         if (!err_flag) {
             msg->setStyleSheet("QLabel { color : black; }");
@@ -359,7 +362,9 @@ WindForceSpectrum::updateScale() {
 
     if ((scaleD!=scaleH) || (scaleD!=scaleW)) {
         QString curText = msg->text();
-        msg->setText(curText + "\nWarning: target-data geometry scaling ratio is inconsistent: D="+ QString::number(scaleD, 'f', 1) +", H="+ QString::number(scaleH, 'f', 1) +", B=" + QString::number(scaleW, 'f', 1));
+        //QString scalingInconsMsg = "";
+        QString scalingInconsMsg = "Warning: target-data geometry scaling ratio is inconsistent: D="+ QString::number(scaleD, 'f', 1) +", H="+ QString::number(scaleH, 'f', 1) +", B=" + QString::number(scaleW, 'f', 1);
+        msg->setText(scalingInconsMsg);
         msg -> setStyleSheet("QLabel { color : blue; }");
 
     } else {

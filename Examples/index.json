@@ -119,16 +119,16 @@
       "title": "Digital Wind Tunnel",
       "published": "2022-03-06T21:26:53.946381-08:00\"",
       "doc": [
-          "weuq-0011/README.rst",	  
+          "weuq-0011/README.rst",   
           "weuq-0011/figures/UFWindTunnel.png",
           "weuq-0011/figures/openfoam_structure.png",
           "weuq-0011/figures/DWTsketch.png",
-          "weuq-0011/figures/User-interface.png",	  
+          "weuq-0011/figures/User-interface.png",   
           "weuq-0011/figures/Direct_table.png",
-          "weuq-0011/figures/Mesh.png",	  
+          "weuq-0011/figures/Mesh.png",   
           "weuq-0011/figures/table.png",
-          "weuq-0011/figures/TInF_function.png"
-          "weuq-0011/figures/Post-processsing.png"	  
+          "weuq-0011/figures/TInF_function.png",
+          "weuq-0011/figures/Post-processsing.png"    
       ],
       "entry_point": "weuq-0011/./input.json",
       "summary": "This study uses WE-UQ's built-in interface 'Digital Wind Tunnel' to run a CFD simulation.",
@@ -141,6 +141,35 @@
         "UV.1.1",
         "UM.1.1.1",
         "UM.1.1"
+      ]
+    },
+    "weuq-0012": {
+      "id": "weuq-0012",
+      "base": "weuq-0012",
+      "title": "Wind Tunnel-Informed Stochastic Wind Load Generation",
+      "published": "2023-05-26T21:26:53.946381-08:00\"",
+      "doc": [
+          "weuq-0012/README.rst",   
+          "weuq-0012/figures/we12_1.png",
+          "weuq-0012/figures/we12_2.png",
+          "weuq-0012/figures/we12_3.png",
+          "weuq-0012/figures/we12_UQ.png",
+          "weuq-0012/figures/we12_GI.png",
+          "weuq-0012/figures/we12_SIM.png",
+          "weuq-0012/figures/we12_EVT.png",
+          "weuq-0012/figures/we12_RV.png",
+          "weuq-0012/figures/we12_RES1.png",
+          "weuq-0012/figures/we12_RES2.png",
+          "weuq-0012/figures/we12_RES3.png"    
+      ],
+      "entry_point": "weuq-0012/./input.json",
+      "summary": "This study estimates the uncertainty in structural responses subjected to wind tunnel-informed stochastic wind load.",
+      "logo": "figures/we12_1.png",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
       ]
     } 
   },

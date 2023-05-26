@@ -401,7 +401,7 @@
         "solver": "Umfpack"
     },
     "UQ": {
-        "parallelExecution": false,
+        "parallelExecution": true,
         "samplingMethodData": {
             "method": "LHS",
             "samples": 5,
