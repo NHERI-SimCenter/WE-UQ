@@ -22,7 +22,9 @@ def write_U_file(input_json_path, template_dict_path, case_path):
 
     # Returns JSON object as a dictionary
     boundary_data = json.load(json_file)["boundaryConditions"]
+        
     wind_data = json.load(json_file)["windCharacteristics"]
+    
       
     json_file.close()
     

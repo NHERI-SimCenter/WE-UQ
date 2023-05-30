@@ -220,7 +220,11 @@ void SimCenterVTKRenderingWidget::readMesh()
 {
     // Setup reader
     reader = vtkSmartPointer<vtkOpenFOAMReader>::New();
-    QString foamFileName  = mainModel->caseDir() + "/case.foam";
+    QString foamFileName  = mainModel->caseDir() + "/vis.foam";
+
+    QFile visFoam(foamFileName);
+    visFoam.open(QIODevice::WriteOnly);
+
     reader->SetFileName(foamFileName.toStdString().c_str());
     reader->SetTimeValue(0);
     reader->CreateCellToPointOn();
@@ -269,6 +273,6 @@ void SimCenterVTKRenderingWidget::readMesh()
     surfaceRepresentation->setCurrentIndex(0);
 
     //Set default transparency to 10%
-    transparency->setValue(10);
-    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+//    transparency->setValue(10);
+//    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 }

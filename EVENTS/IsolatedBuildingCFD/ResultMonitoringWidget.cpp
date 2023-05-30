@@ -369,14 +369,10 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
     QWidget* samplePointsWidget = new QWidget();
 
-
     QGridLayout* dialogLayout = new QGridLayout();
 
-    int nW = numTapsAlongWidth->text().toInt();
-    int nD = numTapsAlongDepth->text().toInt();
-    int nH = numTapsAlongHeight->text().toInt();
 
-    QList<QVector3D> points = calculatePointCoordinates(nW, nD, nH);
+    QList<QVector3D> points = calculatePointCoordinates();
 
     int numCols = 3; // x, y and z
     int numRows = points.size(); //acount points on each face of the building (sides and top)
@@ -452,7 +448,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
     //point reader
     pointsReader = vtkSmartPointer<vtkSimplePointsReader>::New();
-    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
     pointsReader->Update();
 
     //point mapper
@@ -489,12 +485,13 @@ void ResultMonitoringWidget::onOpenCSVFileClicked()
 }
 
 
-QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, int nDepth, int nHeight)
+QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
 {
-
     QList<QVector3D> points;
 
-    const int nPoints = 2*(nWidth*nHeight + nDepth*nHeight) + nWidth*nDepth;
+    int nWidth = numTapsAlongWidth->text().toInt();
+    int nDepth = numTapsAlongDepth->text().toInt();
+    int nHeight = numTapsAlongHeight->text().toInt();
 
     float x = 0.0;
     float y = 0.0;
@@ -587,7 +584,7 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, i
 
 
     //Write to a file
-    QString fileName = mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt";
+    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
     QFile file(fileName);
 
     file.remove();
@@ -630,6 +627,18 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
     resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
 
     resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
+
+
+    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
+    QJsonArray pressureSamplingPoints;
+
+    for(int i=0; i < pointsXYZ.size(); i++)
+    {
+        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
+        pressureSamplingPoints.append(point);
+    }
+
+    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
 
     jsonObject["resultMonitoring"] = resMonitoringJson;
 

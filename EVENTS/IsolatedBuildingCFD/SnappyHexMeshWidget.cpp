@@ -549,18 +549,20 @@ void SnappyHexMeshWidget::clear(void)
 void SnappyHexMeshWidget::onRunBlockMeshClicked()
 {
     statusMessage("Generating background mesh with blockMesh");
-    statusMessage("Creating blockMesh dictionary ...");
+//    statusMessage("Creating blockMesh dictionary ...");
 
-    if (!QFile::exists(mainModel->caseDir() + "/system/controlDict"))
-    {
-        mainModel->setupCase();
-    }
+//    if (!QFile::exists(mainModel->caseDir() + "/system/controlDict"))
+//    {
+//        mainModel->setupCase();
+//    }
 
-    QJsonObject dummyJsonObj;
+//    QJsonObject dummyJsonObj;
 
-    outputToJSON(dummyJsonObj);
+//    outputToJSON(dummyJsonObj);
 
-    createBlockMeshDict();
+//    createBlockMeshDict();
+
+    mainModel->writeOpenFoamFiles();
 
     statusMessage("Running blockMesh ...");
 
@@ -572,10 +574,13 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
     onRunBlockMeshClicked();
 
     statusMessage("Generating snappyHexMesh");
-    statusMessage("Creating snappyHexMesh dictionary ...");
 
-    createSnappyHexMeshDict();
-    generateBuildingSTLGeometry();
+    mainModel->writeOpenFoamFiles();
+
+//    statusMessage("Creating snappyHexMesh dictionary ...");
+
+//    createSnappyHexMeshDict();
+//    generateBuildingSTLGeometry();
 
     statusMessage("Extracting building surface features ...");
 
@@ -594,91 +599,92 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
 }
 
 
-bool SnappyHexMeshWidget::createBlockMeshDict()
-{
+//bool SnappyHexMeshWidget::createBlockMeshDict()
+//{
 
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_block_mesh_dictionary.py";
-    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-    QString templatePath = mainModel->foamDictsPath();
-    QString outputPath = mainModel->caseDir() + "system/";
+//    QString scriptPath = mainModel->pyScriptsPath() + "/create_block_mesh_dictionary.py";
+//    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
+//    QString templatePath = mainModel->templateDictDir();
+//    QString outputPath = mainModel->caseDir() + "system/";
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
+//    QString program = SimCenterPreferences::getInstance()->getPython();
 
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
+//    QStringList arguments;
 
-    QProcess *process = new QProcess(this);
+//    arguments << scriptPath << jsonPath << templatePath << outputPath;
 
-    process->start(program, arguments);
+//    QProcess *process = new QProcess(this);
 
-    process->waitForFinished();
+//    process->start(program, arguments);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+//    process->waitForFinished();
 
-    process->close();
+////    QMessageBox msgBox;
+////    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+////    msgBox.exec();
 
-    return true;
-}
+//    process->close();
 
-bool SnappyHexMeshWidget::createSnappyHexMeshDict()
-{
+//    return true;
+//}
 
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_snappy_hex_mesh_dictionary.py";
-    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-    QString templatePath = mainModel->foamDictsPath();
-    QString outputPath = mainModel->caseDir();
+//bool SnappyHexMeshWidget::createSnappyHexMeshDict()
+//{
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
+//    QString scriptPath = mainModel->pyScriptsPath() + "/create_snappy_hex_mesh_dictionary.py";
+//    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
+//    QString templatePath = mainModel->templateDictDir();
+//    QString outputPath = mainModel->caseDir();
 
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
+//    QString program = SimCenterPreferences::getInstance()->getPython();
+//    QStringList arguments;
 
-    QProcess *process = new QProcess(this);
+//    arguments << scriptPath << jsonPath << templatePath << outputPath;
 
-    process->start(program, arguments);
+//    QProcess *process = new QProcess(this);
 
-    process->waitForFinished(-1);
+//    process->start(program, arguments);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+//    process->waitForFinished(-1);
 
-    process->close();
+////    QMessageBox msgBox;
+////    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+////    msgBox.exec();
 
-    return true;
-}
+//    process->close();
 
-bool SnappyHexMeshWidget::generateBuildingSTLGeometry()
-{
+//    return true;
+//}
 
-    QString stlPath = mainModel->caseDir() + "constant/geometry/";
-    QString jsonPath = mainModel->caseDir() + "constant/simCenter/input/";
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_building_stl_geometry.py";
+//bool SnappyHexMeshWidget::generateBuildingSTLGeometry()
+//{
 
-//    QStringList args = {workingDir, workingDir};
-//    ModularPython *geomPy = new ModularPython(workingDir, this);
-//    geomPy->run(scriptPath, args);
+//    QString stlPath = mainModel->caseDir() + "constant/geometry/";
+//    QString jsonPath = mainModel->caseDir() + "constant/simCenter/input/";
+//    QString scriptPath = mainModel->pyScriptsPath() + "/create_building_stl_geometry.py";
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
+////    QStringList args = {workingDir, workingDir};
+////    ModularPython *geomPy = new ModularPython(workingDir, this);
+////    geomPy->run(scriptPath, args);
 
-    arguments << scriptPath << jsonPath << stlPath;
+//    QString program = SimCenterPreferences::getInstance()->getPython();
+//    QStringList arguments;
 
-    QProcess *process = new QProcess(this);
+//    arguments << scriptPath << jsonPath << stlPath;
 
-    process->start(program, arguments);
+//    QProcess *process = new QProcess(this);
 
-    process->waitForFinished(-1);
+//    process->start(program, arguments);
 
-    process->close();
+//    process->waitForFinished(-1);
 
-    statusMessage("Generated STL geometry of the building");
-    statusMessage("\t\tData saved to: " + stlPath + "\n");
+//    process->close();
 
-    return true;
-}
+//    statusMessage("Generated STL geometry of the building");
+//    statusMessage("\t\tData saved to: " + stlPath + "\n");
+
+//    return true;
+//}
 
 
 bool SnappyHexMeshWidget::runBlockMeshCommand()
@@ -727,6 +733,7 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
+
     QStringList commands;
 
     commands << "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
@@ -916,16 +923,6 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     snappyMeshParamsJson["lengthUnit"] = "m";
 
     jsonObject["snappyHexMeshParameters"] = snappyMeshParamsJson;
-
-
-    //Write it to JSON becase it is needed for the mesh generation before the
-    //final simulation is run.
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/input/IsolatedBuildingCFD.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
 
     return true;
 }
