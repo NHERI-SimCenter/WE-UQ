@@ -424,6 +424,7 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
     QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
                             + QDir::separator() + "input" + QDir::separator() + "IsolatedBuildingCFD.json";
 
+
     QFile jsonFile(inputFilePath);
     if (!jsonFile.open(QFile::WriteOnly | QFile::Text))
     {

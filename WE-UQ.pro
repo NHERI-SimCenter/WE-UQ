@@ -89,11 +89,6 @@ win32 {
     }
     }
 
-
-
-
-
-
 include(../SimCenterCommon/Common/Common.pri)
 include(../SimCenterCommon/Workflow/Workflow.pri)
 include(../SimCenterCommon/RandomVariables/RandomVariables.pri)

@@ -108,9 +108,9 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
 
     qvtkWidget = new QVTKRenderWidget();
 
-    QMessageBox msgBox;
-    msgBox.setText("yes");
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText("yes");
+//    msgBox.exec();
 
     QLabel *surfaceRepresentationLabel = new QLabel("Representation: ");
     QLabel *transparencyLabel = new QLabel("Transparency: ");

@@ -743,13 +743,6 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
     process->setWorkingDirectory(casePath);
     process->start("bash", QStringList() << "-c" << commands);
 
-//    QTime dieTime= QTime::currentTime().addSecs(10);
-
-//    while (QTime::currentTime() < dieTime)
-//    {
-//        statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    }
-
     process->waitForFinished(-1);
 
     QMessageBox msgBox;
