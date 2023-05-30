@@ -214,7 +214,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFDTest"; // + QDir::separator() + "case.OpenFOAM";
     caseDirectoryPathWidget->setText(testLocation);
 
-    // caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+// caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
+    caseDirectoryPathWidget->setText("C:\\Users\\fanta\\SimCenter\\SourceCode\\NHERI-SimCenter\\WE-UQ\\tests\\IsolatedBuildingCFDTest\\");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -362,7 +363,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
-    visWidget = new SimCenterVTKRenderingWidget (this);
+    visWidget = new SimCenterVTKRenderingWidget(this);
 
     visWindowLayout->addWidget(visWidget);
 
@@ -734,6 +735,7 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
      
 //     return result;
+    return false;
  }
 
 bool IsolatedBuildingCFD::setupCase()

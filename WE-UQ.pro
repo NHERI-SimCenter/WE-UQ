@@ -33,6 +33,22 @@ INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
 win32 {
     LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
+    DEPENDPATH += $$PWD/../VTK/Release/bin
+    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
+    LIBS += -L$$PWD/../VTK/Release/lib \
+    -lvtkViewsCore-9.2 \
+    -lvtkCommonCore-9.2 \
+    -lvtkFiltersGeometry-9.2 \
+    -lvtkRenderingCore-9.2 \
+    -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkCommonExecutionModel-9.2 \
+    -lvtkCommonDataModel-9.2 \
+    -lvtkGUISupportQt-9.2 \
+    -lvtkRenderingOpenGL2-9.2 \
+    -lvtkIOGeometry-9.2 \
+    -lvtkViewsQt-9.2 \
+    -lvtkIOLegacy-9.2 \
+    -lvtksys-9.2
 } else {
 
     mac {
@@ -53,8 +69,8 @@ win32 {
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
     } else {
-    INCLUDEPATH += /usr/local/include/vtk-9.2
 
+    INCLUDEPATH += /usr/local/include/vtk-9.2
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
     -lvtkCommonCore-9.2 \
@@ -72,6 +88,7 @@ win32 {
 
     }
     }
+
 
 
 

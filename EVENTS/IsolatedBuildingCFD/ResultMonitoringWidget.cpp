@@ -434,7 +434,6 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
     dialogLayout->addWidget(qvtkWidget, 0, 1);
 
-
     // Setup reader
     buildingReader = vtkSmartPointer<vtkSTLReader>::New();
     buildingReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());

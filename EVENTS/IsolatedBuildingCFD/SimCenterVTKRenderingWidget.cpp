@@ -56,15 +56,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QButtonGroup>
 
 #include <QComboBox>
+#include <QMessageBox>
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QVector>
 #include <LineEditRV.h>
-
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
-
 #include "vtkGenericOpenGLRenderWindow.h"
 #include "vtkSmartPointer.h"
 #include <vtkDataObjectToTable.h>
@@ -109,6 +108,10 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
 
     qvtkWidget = new QVTKRenderWidget();
 
+    QMessageBox msgBox;
+    msgBox.setText("yes");
+    msgBox.exec();
+
     QLabel *surfaceRepresentationLabel = new QLabel("Representation: ");
     QLabel *transparencyLabel = new QLabel("Transparency: ");
     QLabel *viewLabel = new QLabel("View: ");
@@ -151,7 +154,6 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
-
 
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
     {
