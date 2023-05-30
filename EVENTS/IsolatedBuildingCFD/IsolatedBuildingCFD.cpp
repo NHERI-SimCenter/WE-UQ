@@ -117,6 +117,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     domainInformationGroup = new QGroupBox("Domain Dimensions");
     domainInformationLayout = new QGridLayout();
 
+    cfdResultsGroup = new QGroupBox("CFD Results", this);
+    cfdResultsLayout = new QGridLayout();
+    cfdResultsGroup->setLayout(cfdResultsLayout);
+
     theBuildingButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
 
@@ -200,30 +204,29 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     if (!workingDir.exists())
-      workingDir.mkpath(".");
+        workingDir.mkpath(".");
 
     QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
 						 + "LocalWorkDir" + QDir::separator()
 						 + "IsolatedBuildingCFD");
 
     if (!workingDir.exists(workingDirPath))
-	workingDir.mkpath(workingDirPath);
+        workingDir.mkpath(workingDirPath);
 	
-    workingDirPath = workingDir.path();
+//    workingDirPath = workingDir.path();
+//    QString defaultLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFD"; // + QDir::separator() + "case.OpenFOAM";
+//    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
-    QString testLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFDTest"; // + QDir::separator() + "case.OpenFOAM";
-    caseDirectoryPathWidget->setText(testLocation);
-
-// caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
-    caseDirectoryPathWidget->setText("C:\\Users\\fanta\\SimCenter\\SourceCode\\NHERI-SimCenter\\WE-UQ\\tests\\IsolatedBuildingCFDTest\\");
+    caseDirectoryPathWidget->setText(workingDirPath);
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
-    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The procedure involves: "
+    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. "
+                                                 "\n The procedure involves: "
                                                  "\n --> Define building geometry "
                                                  "\n --> Generate mesh using snappyHexMesh tool "
-                                                 "\n --> Define boundary condition and wind characterstics  "
                                                  "\n --> Setup turbulence model "
+                                                 "\n --> Define boundary condition and wind characterstics  "
                                                  "\n --> Specify numerical setup "
                                                  "\n --> Run simulation "
                                                  "\n --> Post-process");
@@ -327,12 +330,14 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     inputFormsLayout->addWidget(caseDirectoryGroup);
     inputFormsLayout->addWidget(buildingAndDomainInformationGroup);
     inputFormsLayout->addWidget(coordinateSystemGroup);
-    inputFormsLayout->addWidget(windCharacteristics);
     inputFormsLayout->addWidget(snappyHexMesh);
-    inputFormsLayout->addWidget(turbulenceModeling);
+    inputFormsLayout->addWidget(windCharacteristics);
     inputFormsLayout->addWidget(boundaryConditions);
+    inputFormsLayout->addWidget(turbulenceModeling);
     inputFormsLayout->addWidget(numericalSetup);
     inputFormsLayout->addWidget(resultMonitoring);
+    inputFormsLayout->addWidget(cfdResultsGroup);
+
 
     inputFormsGroup->setLayout(inputFormsLayout);
 
@@ -358,7 +363,41 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     mainWindowLayout->addWidget(inputWindowGroup);
     inputFormsGroup->setMaximumWidth(windowWidth - 100);
 
-    //==========================================================================
+    //
+    // get GeneralInfo
+    // connnect some signals and slots to capture building dimensions changing to update selections
+    // set initial selections
+    //
+
+    plotWindProfiles = new QPushButton("Plot Wind Profiles");
+    plotWindLoads = new QPushButton("Plot Wind Loads");
+
+    cfdResultsLayout->addWidget(plotWindProfiles);
+    cfdResultsLayout->addWidget(plotWindLoads);
+
+//    connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
+    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
+    connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+
+    //=====================================================
+    // Setup the case directory
+    //=====================================================
+
+    if(!isCaseConfigured())
+    {
+        setupCase();
+
+        snappyHexMesh->onRunBlockMeshClicked();
+    }
+
+    if (!isMeshed())
+    {
+        snappyHexMesh->onRunBlockMeshClicked();
+    }
+
+    //=====================================================
+    // Setup the visulalization window
+    //=====================================================
 
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
@@ -368,21 +407,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowLayout->addWidget(visWidget);
 
     this->setLayout(mainWindowLayout);
-
-
-    //
-    // get GeneralInfo
-    // connnect some signals and slots to capture building dimensions changing to update selections
-    // set initial selections
-    //
-
-    runCFD = new QPushButton("Run CFD");
-    showResults = new QPushButton("Show Results");
-    generalDescriptionLayout->addWidget(runCFD);
-    generalDescriptionLayout->addWidget(showResults);
-    connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
-    connect(showResults, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
-    connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 }
 
 
@@ -391,15 +415,38 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 }
 
-void IsolatedBuildingCFD::onRunCFDClicked()
+void IsolatedBuildingCFD::writeOpenFoamFiles()
 {
-    //Run prepare case directory
+
+    //Write it to JSON becase it is needed for the mesh generation before the
+    //final simulation is run.
+    //In future only one JSON file in temp.SimCenter directory is enough
+    QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                            + QDir::separator() + "input" + QDir::separator() + "IsolatedBuildingCFD.json";
+
+    QFile jsonFile(inputFilePath);
+    if (!jsonFile.open(QFile::WriteOnly | QFile::Text))
+    {
+       qDebug() << "Cannot find the path: " << inputFilePath;
+    }
+
+    QJsonObject jsonObject;
+
+    outputToJSON(jsonObject);
+
+    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
+
+    jsonFile.write(jsonDoc.toJson());
+
+    jsonFile.close();
+
+    //Run python script to prepare case directory
     QString scriptPath = pyScriptsPath() + "/setup_case.py";
-    QString jsonPath = caseDir() + "/constant/simCenter";
-    QString templatePath = foamDictsPath();
+    QString jsonPath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter" + QDir::separator() + "input";
+    QString templatePath = templateDictDir();
     QString outputPath =caseDir();
 
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
+    QString program = SimCenterPreferences::getInstance()->getPython();
     QStringList arguments;
 
     arguments << scriptPath << jsonPath << templatePath << outputPath;
@@ -410,13 +457,11 @@ void IsolatedBuildingCFD::onRunCFDClicked()
 
     process->waitForFinished(-1);
 
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
 
     process->close();
-
-
 }
 
 void IsolatedBuildingCFD::onShowResultsClicked()
@@ -426,7 +471,7 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 //    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
 //    QString outputPath = caseDir();
 
-//    QString program = "/home/abiy/anaconda3/bin/python3.9";
+//    QString program = SimCenterPreferences::getInstance()->getPython();
 //    QStringList arguments;
 
 //    arguments << scriptPath << outputPath;
@@ -598,6 +643,17 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
 
     caseDirectoryPathWidget->setText(fileName);
 
+    if(!isCaseConfigured())
+    {
+        setupCase();
+
+        snappyHexMesh->onRunBlockMeshClicked();
+    }
+
+    if (!isMeshed())
+    {
+        snappyHexMesh->onRunBlockMeshClicked();
+    }
 }
 
 
@@ -738,30 +794,54 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
     return false;
  }
 
-bool IsolatedBuildingCFD::setupCase()
+bool IsolatedBuildingCFD::cleanCase()
 {
-    QDir targetDir(caseDir());
+    QDir zeroDir(caseDir() + QDir::separator() + "0");
+    QDir constDir(caseDir() + QDir::separator() + "constant");
+    QDir systemDir(caseDir() + QDir::separator() + "system");
 
-    targetDir.rmdir("0");
-    targetDir.rmdir("constant");
-    targetDir.rmdir("system");
+    zeroDir.removeRecursively();
+    constDir.removeRecursively();
+    systemDir.removeRecursively();
 
-    this->copyPath(templateCaseDir(), caseDir(), false);
+    QFile logFile(caseDir() + QDir::separator() + "log.txt");
 
-
-//    targetDir.mkpath("0");
-//    targetDir.mkpath("constant");
-//    targetDir.mkpath("system");
-
-//    auto newfoamFile = targetDir.absoluteFilePath("case.foam");
-//    if(!QFile::exists(newfoamFile))
-//        QFile::remove(newControlDictPath);
-
-//    QFile::copy(m_originalControlDictPath, newControlDictPath);
-
+    logFile.remove();
 
     return true;
 }
+
+bool IsolatedBuildingCFD::setupCase()
+{
+    cleanCase();
+
+    QDir targetDir(caseDir());
+
+    if (!targetDir.exists())
+    {
+        targetDir.mkpath(caseDir());
+    }
+
+    targetDir.mkpath("0");
+    targetDir.mkpath("constant");
+    targetDir.mkpath("constant/geometry");
+    targetDir.mkpath("constant/simCenter");
+    targetDir.mkpath("constant/simCenter/output");
+    targetDir.mkpath("constant/simCenter/input");
+    targetDir.mkpath("constant/boundaryData");
+    targetDir.mkpath("constant/boundaryData/windProfile");
+    targetDir.mkpath("constant/boundaryData/sampledData");
+    targetDir.mkpath("system");
+
+    QFile visFoam(caseDir() + "/vis.foam");
+    visFoam.open(QIODevice::WriteOnly);
+
+    //Write dictionary files
+    writeOpenFoamFiles();
+
+    return true;
+}
+
 
 QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
 {
@@ -818,6 +898,32 @@ QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
     return data;
 }
 
+
+bool IsolatedBuildingCFD::isCaseConfigured()
+{
+    QDir zeroDir(caseDir() + QDir::separator() +  "0");
+    QDir constDir(caseDir() + QDir::separator() + "constant");
+    QDir systemDir(caseDir() + QDir::separator() + "system");
+    QFile contrlDict(caseDir() + QDir::separator() + "system" + QDir::separator() + "controlDict");
+    QFile blockDict(caseDir() + QDir::separator() + "system" +  QDir::separator() + "blockMeshDict");
+    QFile snappyDict(caseDir() + QDir::separator() + "system" + QDir::separator() + "snappyHexMeshDict");
+
+//    QMessageBox msgBox;
+//    msgBox.setText(QString::number(contrlDict.exists()));
+//    msgBox.exec();
+
+    //Better if we check other files too, for now this are enought to run mesh
+    return zeroDir.exists() && constDir.exists() && systemDir.exists() &&
+           contrlDict.exists() && blockDict.exists() && snappyDict.exists();
+}
+
+bool IsolatedBuildingCFD::isMeshed()
+{
+    QFile pointsFile(caseDir() + QDir::separator() + "constant" + QDir::separator() + "polyMesh" + QDir::separator() + "points");
+
+    //Better if we check other files too, for now this are enought to run mesh
+    return isCaseConfigured() && pointsFile.exists();
+}
 
 double IsolatedBuildingCFD::domainLength()
 {
@@ -887,40 +993,30 @@ const QString IsolatedBuildingCFD::caseDir()
     return caseDirectoryPathWidget->text();
 }
 
-const QString IsolatedBuildingCFD::foamDictsPath()
-{
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("OpenFoamTemplateDicts");  
-  
-     //    return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/OpenFoamTemplateDicts";
-     return name1;  
-
-}
-
 const QString IsolatedBuildingCFD::pyScriptsPath()
 {
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("PythonScripts");  
-  
-     // return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/PythonScripts";
-     return name1;
+    QString backendAppDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
+             + QString("IsolatedBuildingCFD");
+
+    return backendAppDir;
 }
 
-const QString IsolatedBuildingCFD::templateCaseDir()
+const QString IsolatedBuildingCFD::templateDictDir()
 {
-     QString name1;
-     name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("TemplateCaseDir");  
-     //return "/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/EVENTS/IsolatedBuildingCFD/TemplateCaseDictionary";
-     return name1;
+    QString backendAppDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+             + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
+             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("templateOF10Dicts");
+
+    return backendAppDir;
 }
 
 const QString IsolatedBuildingCFD::simulationType()
 {
     return turbulenceModeling->simulationType();
 }
+
+
 
 
 

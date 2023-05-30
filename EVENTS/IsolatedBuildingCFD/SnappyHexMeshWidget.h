@@ -112,7 +112,6 @@ private:
    QGroupBox    *generalOptionsGroup;
    QGridLayout  *generalOptionsLayout;
 
-
    QGroupBox    *runMeshGroup;
    QHBoxLayout  *runMeshLayout;
 

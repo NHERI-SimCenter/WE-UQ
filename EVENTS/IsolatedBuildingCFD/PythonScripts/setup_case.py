@@ -22,7 +22,9 @@ def write_U_file(input_json_path, template_dict_path, case_path):
 
     # Returns JSON object as a dictionary
     boundary_data = json.load(json_file)["boundaryConditions"]
+        
     wind_data = json.load(json_file)["windCharacteristics"]
+    
       
     json_file.close()
     
@@ -1164,6 +1166,42 @@ def write_DFSRTurbDict_file(input_json_path, template_dict_path, case_path):
 
     #Write edited dict to file
     write_file_name = case_path + "constant/DFSRTurbDict"
+    
+    if os.path.exists(write_file_name):
+        os.remove(write_file_name)
+    
+    output_file = open(write_file_name, "w+")
+    for line in dict_lines:
+        output_file.write(line)
+    output_file.close()    
+    
+    
+    
+def write_surfaceFeaturesDict_file(input_json_path, template_dict_path, case_path):
+
+    #Read JSON data for turbulence model
+    json_file = open(input_json_path + "/IsolatedBuildingCFD.json")    
+
+    # Returns JSON object as a dictionary
+    sn_data = json.load(json_file)["snappyHexMeshParameters"]
+      
+    json_file.close()
+
+    surface_name = sn_data['buildingSTLName']
+    
+
+    #Open the template file (OpenFOAM file) for manipulation
+    dict_file = open(template_dict_path + "/surfaceFeaturesDictTemplate", "r")
+
+    dict_lines = dict_file.readlines()
+    dict_file.close()
+    
+    #Write STL surface name to extract the edges
+    start_index = foam.find_keyword_line(dict_lines, "surfaces") 
+    dict_lines[start_index] = "surfaces \t(\"{}.stl\");\n".format(surface_name)
+
+    #Write edited dict to file
+    write_file_name = case_path + "system/surfaceFeaturesDict"
     
     if os.path.exists(write_file_name):
         os.remove(write_file_name)

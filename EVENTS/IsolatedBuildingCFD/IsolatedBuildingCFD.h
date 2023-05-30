@@ -78,7 +78,11 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
     bool setupCase();
+    bool cleanCase();
+    bool isMeshed();
+    bool isCaseConfigured();
 
+    void writeOpenFoamFiles();
     void updateWidgets();
     QVector<QVector<double>> readTxtData(QString fileName);
 
@@ -101,7 +105,7 @@ public:
     const QString normalizationType();
     const QString caseDir();
     const QString foamDictsPath();
-    const QString templateCaseDir();
+    const QString templateDictDir();
     const QString pyScriptsPath();
     const QString simulationType();
 
@@ -110,7 +114,6 @@ signals:
 
 public slots:
    void clear(void);
-   void onRunCFDClicked();
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
 
@@ -123,6 +126,9 @@ private:
 
    QVBoxLayout  *visWindowLayout;
    QGroupBox    *visWindowGroup;
+
+   QGroupBox    *cfdResultsGroup;
+   QGridLayout  *cfdResultsLayout;
 
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
@@ -185,8 +191,8 @@ private:
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 
-   QPushButton  *runCFD;
-   QPushButton  *showResults;
+   QPushButton  *plotWindProfiles;
+   QPushButton  *plotWindLoads;
 
    QString workingDirPath;
 
