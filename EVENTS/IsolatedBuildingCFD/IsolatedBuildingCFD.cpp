@@ -728,6 +728,8 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
     jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
 
+    jsonObject["lengthUnit"] = "m";
+    jsonObject["angleUnit"] = "degree";
 
     QJsonArray originPoint;
     originPoint.append(coordSysOrigin()[0]);

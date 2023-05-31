@@ -92,14 +92,16 @@ private:
    QGroupBox            *windCharacteristicsGroup;
    QGridLayout          *windCharacteristicsLayout;
 
-   QLineEdit            *roofHeightWindSpeed;
+   QLineEdit            *referenceWindSpeed;
+   QLineEdit            *referenceHeight;
    QLineEdit            *airDensity;
    QLineEdit            *kinematicViscosity;
    QLineEdit            *reynoldsNumber;
    QLineEdit            *aerodynamicRoughnessLength;
    QPushButton          *calculateReynoldsNumber;
 
-   QLabel               *roofHeightWindSpeedLabel;
+   QLabel               *referenceWindSpeedLabel;
+   QLabel               *referenceHeightLabel;
    QLabel               *airDensityLabel;
    QLabel               *kinematicViscosityLabel;
    QLabel               *reynoldsNumberLabel;

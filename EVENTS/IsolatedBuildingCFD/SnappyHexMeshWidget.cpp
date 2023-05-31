@@ -549,18 +549,8 @@ void SnappyHexMeshWidget::clear(void)
 void SnappyHexMeshWidget::onRunBlockMeshClicked()
 {
     statusMessage("Generating background mesh with blockMesh");
-//    statusMessage("Creating blockMesh dictionary ...");
 
-//    if (!QFile::exists(mainModel->caseDir() + "/system/controlDict"))
-//    {
-//        mainModel->setupCase();
-//    }
-
-//    QJsonObject dummyJsonObj;
-
-//    outputToJSON(dummyJsonObj);
-
-//    createBlockMeshDict();
+    statusMessage("Creating blockMesh dictionary ...");
 
     mainModel->writeOpenFoamFiles();
 
@@ -575,12 +565,9 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
 
     statusMessage("Generating snappyHexMesh");
 
+    statusMessage("Creating snappyHexMesh dictionary ...");
+
     mainModel->writeOpenFoamFiles();
-
-//    statusMessage("Creating snappyHexMesh dictionary ...");
-
-//    createSnappyHexMeshDict();
-//    generateBuildingSTLGeometry();
 
     statusMessage("Extracting building surface features ...");
 
@@ -597,94 +584,6 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
 }
-
-
-//bool SnappyHexMeshWidget::createBlockMeshDict()
-//{
-
-//    QString scriptPath = mainModel->pyScriptsPath() + "/create_block_mesh_dictionary.py";
-//    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-//    QString templatePath = mainModel->templateDictDir();
-//    QString outputPath = mainModel->caseDir() + "system/";
-
-//    QString program = SimCenterPreferences::getInstance()->getPython();
-
-//    QStringList arguments;
-
-//    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-//    QProcess *process = new QProcess(this);
-
-//    process->start(program, arguments);
-
-//    process->waitForFinished();
-
-////    QMessageBox msgBox;
-////    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-////    msgBox.exec();
-
-//    process->close();
-
-//    return true;
-//}
-
-//bool SnappyHexMeshWidget::createSnappyHexMeshDict()
-//{
-
-//    QString scriptPath = mainModel->pyScriptsPath() + "/create_snappy_hex_mesh_dictionary.py";
-//    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-//    QString templatePath = mainModel->templateDictDir();
-//    QString outputPath = mainModel->caseDir();
-
-//    QString program = SimCenterPreferences::getInstance()->getPython();
-//    QStringList arguments;
-
-//    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-//    QProcess *process = new QProcess(this);
-
-//    process->start(program, arguments);
-
-//    process->waitForFinished(-1);
-
-////    QMessageBox msgBox;
-////    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-////    msgBox.exec();
-
-//    process->close();
-
-//    return true;
-//}
-
-//bool SnappyHexMeshWidget::generateBuildingSTLGeometry()
-//{
-
-//    QString stlPath = mainModel->caseDir() + "constant/geometry/";
-//    QString jsonPath = mainModel->caseDir() + "constant/simCenter/input/";
-//    QString scriptPath = mainModel->pyScriptsPath() + "/create_building_stl_geometry.py";
-
-////    QStringList args = {workingDir, workingDir};
-////    ModularPython *geomPy = new ModularPython(workingDir, this);
-////    geomPy->run(scriptPath, args);
-
-//    QString program = SimCenterPreferences::getInstance()->getPython();
-//    QStringList arguments;
-
-//    arguments << scriptPath << jsonPath << stlPath;
-
-//    QProcess *process = new QProcess(this);
-
-//    process->start(program, arguments);
-
-//    process->waitForFinished(-1);
-
-//    process->close();
-
-//    statusMessage("Generated STL geometry of the building");
-//    statusMessage("\t\tData saved to: " + stlPath + "\n");
-
-//    return true;
-//}
 
 
 bool SnappyHexMeshWidget::runBlockMeshCommand()
@@ -773,10 +672,6 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText("Mesh generation completed!");
-//    msgBox.exec();
-
     statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
@@ -786,38 +681,9 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 
 bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    //Write building geometry and configuration parameters
-    QJsonObject buildingParamsJson = QJsonObject();
-
-    buildingParamsJson["buildingWidth"]= mainModel->buildingWidth();
-    buildingParamsJson["buildingDepth"]= mainModel->buildingDepth();
-    buildingParamsJson["buildingHeight"]= mainModel->buildingHeight();
-    buildingParamsJson["geometricScale"]= mainModel->geometricScale();
-    buildingParamsJson["windDirection"] = mainModel->windDirection();
-    buildingParamsJson["normalizationType"] = mainModel->normalizationType();
-
-    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-    buildingParamsJson["origin"] = originPoint;
-
-    //Replace with the unit system from "General Information" window later
-    buildingParamsJson["lengthUnit"] = "m";
-    buildingParamsJson["angleUnit"] = "degree";
-    jsonObject["buildingParameters"] = buildingParamsJson;
-
-
-    //************************************************************************
-
     //Write blockMesh configuration parameters
     QJsonObject blockMeshParamsJson = QJsonObject();
 
-    blockMeshParamsJson["domainLength"] = mainModel->domainLength();
-    blockMeshParamsJson["domainWidth"] = mainModel->domainWidth();
-    blockMeshParamsJson["domainHeight"] = mainModel->domainHeight();
-    blockMeshParamsJson["fetchLength"] = mainModel->fetchLength();
-    blockMeshParamsJson["buildingHeight"] = mainModel->buildingHeight();
-    blockMeshParamsJson["geometricScale"] = mainModel->geometricScale();
-    blockMeshParamsJson["normalizationType"] = mainModel->normalizationType();
-    blockMeshParamsJson["origin"] = originPoint;
     blockMeshParamsJson["xNumCells"] = xAxisNumCells->text().toInt();
     blockMeshParamsJson["yNumCells"] = yAxisNumCells->text().toInt();
     blockMeshParamsJson["zNumCells"] = zAxisNumCells->text().toInt();
@@ -830,27 +696,15 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["topBoundaryType"] = "symmetry";
     blockMeshParamsJson["frontBoundaryType"] = "symmetry";
     blockMeshParamsJson["backBoundaryType"] = "symmetry";
-    //Replace with the unit system from "General Information" window
-    blockMeshParamsJson["lengthUnit"] = "m";
+
 
     jsonObject["blockMeshParameters"] = blockMeshParamsJson;
 
 
     //************************************************************************
 
-    //Write blockMesh configuration parameters
+    //Write snappy configuration parameters
     QJsonObject snappyMeshParamsJson = QJsonObject();
-
-    snappyMeshParamsJson["domainLength"] = mainModel->domainLength();
-    snappyMeshParamsJson["domainWidth"] = mainModel->domainWidth();
-    snappyMeshParamsJson["domainHeight"] = mainModel->domainHeight();
-    snappyMeshParamsJson["fetchLength"] = mainModel->fetchLength();
-    snappyMeshParamsJson["buildingHeight"] = mainModel->buildingHeight();
-    snappyMeshParamsJson["geometricScale"] = mainModel->geometricScale();
-    snappyMeshParamsJson["normalizationType"] = mainModel->normalizationType();
-
-    snappyMeshParamsJson["origin"] = originPoint;
-
     snappyMeshParamsJson["buildingSTLName"] = "building";
     snappyMeshParamsJson["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
     snappyMeshParamsJson["resolveFeatureAngle"] = resolveFeatureAngle->value();
