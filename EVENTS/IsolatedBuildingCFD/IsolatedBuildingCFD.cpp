@@ -598,35 +598,6 @@ void IsolatedBuildingCFD::onShowResultsClicked()
     dialogLayout->addWidget(LuPlot, 0, 2);
     dialogLayout->addWidget(SuPlot, 1, 0, 1, 2);
 
-//    int numCols = 3; // x, y and z
-//    int numRows = points.size(); //acount points on each face of the building (sides and top)
-
-//    samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
-//    samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
-//    samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
-
-
-//    QStringList headerTitles = {"X", "Y", "Z"};
-
-//    samplingPointsTable->setHorizontalHeaderLabels(headerTitles);
-
-//    for (int i=0; i < numCols; i++)
-//    {
-//       samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
-
-//       for (int j=0; j < numRows; j++)
-//       {
-//            samplingPointsTable->setItem(j, i, new QTableWidgetItem(""));
-//       }
-//    }
-
-//    for (int i=0; i < numRows; i++)
-//    {
-//        samplingPointsTable->item(i, 0)->setText(QString::number(points[i].x()));
-//        samplingPointsTable->item(i, 1)->setText(QString::number(points[i].y()));
-//        samplingPointsTable->item(i, 2)->setText(QString::number(points[i].z()));
-//    }
-
     dialogLayout->addWidget(samplePointsWidget, 0, 0);
 
     dialog->setLayout(dialogLayout);
@@ -911,10 +882,6 @@ bool IsolatedBuildingCFD::isCaseConfigured()
     QFile blockDict(caseDir() + QDir::separator() + "system" +  QDir::separator() + "blockMeshDict");
     QFile snappyDict(caseDir() + QDir::separator() + "system" + QDir::separator() + "snappyHexMeshDict");
 
-//    QMessageBox msgBox;
-//    msgBox.setText(QString::number(contrlDict.exists()));
-//    msgBox.exec();
-
     //Better if we check other files too, for now this are enought to run mesh
     return zeroDir.exists() && constDir.exists() && systemDir.exists() &&
            contrlDict.exists() && blockDict.exists() && snappyDict.exists();
@@ -1007,11 +974,11 @@ const QString IsolatedBuildingCFD::pyScriptsPath()
 
 const QString IsolatedBuildingCFD::templateDictDir()
 {
-    QString backendAppDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+    QString templateDictsDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
              + QString("IsolatedBuildingCFD") + QDir::separator() + QString("templateOF10Dicts");
 
-    return backendAppDir;
+    return templateDictsDir;
 }
 
 const QString IsolatedBuildingCFD::simulationType()

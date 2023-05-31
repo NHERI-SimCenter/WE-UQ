@@ -206,7 +206,8 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
 
     QJsonObject windCharJson = jsonObject["windCharacteristics"].toObject();
 
-    referenceWindSpeed->setText(QString::number(windCharJson["roofHeightWindSpeed"].toDouble()));
+    referenceWindSpeed->setText(QString::number(windCharJson["referenceWindSpeed"].toDouble()));
+    referenceHeight->setText(QString::number(windCharJson["referenceHeight"].toDouble()));
     aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));
     airDensity->setText(QString::number(windCharJson["airDensity"].toDouble()));
     kinematicViscosity->setText(QString::number(windCharJson["kinematicViscosity"].toDouble()));

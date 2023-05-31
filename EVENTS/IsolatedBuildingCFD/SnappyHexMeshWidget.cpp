@@ -115,11 +115,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     resolveFeatureAngle->setValue(30);
     resolveFeatureAngle->setToolTip("Feature resolution angle to capture sharp angles.");
 
-//    castellatedMesh = new QCheckBox();
-//    castellatedMesh->setChecked(true);
-//    resolveFeatureAngle->setToolTip("Use castellated mesh or not angle to capture sharp angles.");
-
-
     runInParallel = new QCheckBox();
     runInParallel->setChecked(false);
     runInParallel->setToolTip("Run snappyHexMesh in parallel or not.");
@@ -283,14 +278,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
         refinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
         refinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
     }
-
-//    //Box # 1
-//    refinementBoxesTable->item(0, 2)->setText("-6.60");
-//    refinementBoxesTable->item(0, 3)->setText("-4.00");
-//    refinementBoxesTable->item(0, 4)->setText("0.00");
-//    refinementBoxesTable->item(0, 5)->setText("8.75");
-//    refinementBoxesTable->item(0, 6)->setText("4.00");
-//    refinementBoxesTable->item(0, 7)->setText("4.00");
 
     //Box # 1
     refinementBoxesTable->item(0, 2)->setText("-6.60");

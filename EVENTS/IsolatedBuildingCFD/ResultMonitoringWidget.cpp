@@ -132,24 +132,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorFlowFieldGroup->setLayout(monitorFlowFieldLayout);
 
 
-//    monitorIntegratedLoadLabel = new QLabel("Monitor Integrated Loads");
-//    monitorIntegratedLoad  = new QCheckBox();
-
-//    monitorPressureLabel = new QLabel("Monitor Local Pressure");
-//    monitorPressure  = new QCheckBox();
-
-//    monitorFlowFieldLabel = new QLabel("Monitor Flow Field");
-//    monitorFlowField  = new QCheckBox();
-
-//    resultMonitoringLayouet->addWidget(monitorIntegratedLoadLabel, 0, 0);
-//    resultMonitoringLayout->addWidget(monitorIntegratedLoad, 0, 1);
-
-//    resultMonitoringLayout->addWidget(monitorPressureLabel, 1, 0);
-//    resultMonitoringLayout->addWidget(monitorPressure, 1, 1);
-
-//    resultMonitoringLayout->addWidget(monitorFlowFieldLabel, 2, 0);
-//    resultMonitoringLayout->addWidget(monitorFlowField, 2, 1);
-
     //==================================================================
     //              Monitor Integrated Loads Option
     //==================================================================
@@ -318,11 +300,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(createPressurePoints, SIGNAL(toggled(bool)), this, SLOT(onCreatePressurePointsToggled(bool)));
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
-
-
-//    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-//    sto
-//    numb =theGI->getHeight();
 
 }
 
