@@ -195,6 +195,7 @@ private:
    QPushButton  *plotWindLoads;
 
    QString workingDirPath;
+   QString openFoamVersion;
 
 };
 

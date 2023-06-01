@@ -191,6 +191,9 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     layout->addWidget(turbModelGroup);
     this->setLayout(layout);
 
+
+    //======================== Default Setup ==============================//
+
 }
 
 

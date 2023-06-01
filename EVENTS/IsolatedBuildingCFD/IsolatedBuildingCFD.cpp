@@ -383,6 +383,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     // Setup the case directory
     //=====================================================
 
+    openFoamVersion = "10";
+
     if(!isCaseConfigured())
     {
         setupCase();
@@ -407,6 +409,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowLayout->addWidget(visWidget);
 
     this->setLayout(mainWindowLayout);
+
+
 }
 
 
@@ -608,7 +612,7 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
 void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
 {
-    QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "/home/abiy",
+    QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), caseDir(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
 
@@ -666,6 +670,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
     originOptions->setCurrentText(jsonObject["originOption"].toString());
+    openFoamVersion = jsonObject["openFoamVersion"].toString();
 
 
     windCharacteristics->inputFromJSON(jsonObject);
@@ -709,6 +714,7 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject["origin"] = originPoint;
     jsonObject["originOption"] = originOptions->currentText();
+    jsonObject["openFoamVersion"] = openFoamVersion;
 
 
     windCharacteristics->outputToJSON(jsonObject);
@@ -747,25 +753,23 @@ bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
 bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
-  /*
-     QString name1; name1 = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
-             + QString("applications") + QDir::separator() + QString("createEvent") + QDir::separator()
-             + QString("IsolatedBuildingCFD") + QDir::separator() + QString("IsolatedBuildingCFD.py");
+     writeOpenFoamFiles();
 
-     bool result = this->copyFile(name1, destDir);
-  */
-//     if (result == false) {
-//         QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + name1 + "to: " + destDir;
-//         emit sendFatalMessage(errorMessage);
-//         qDebug() << errorMessage;
-//     }
+     QString caseName = "IsolatedBuildingCFD";
 
-//     QString caseDirPath = this->caseDir();
-//     this->copyPath(caseDirPath, destDir, false);
+     bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
 
-     
-//     return result;
-    return false;
+     if (result == false) {
+         QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;
+         emit sendFatalMessage(errorMessage);
+         qDebug() << errorMessage;
+     }
+
+//     qDebug() << caseDir() << destDir;
+
+//     exit(0);
+
+     return result;
  }
 
 bool IsolatedBuildingCFD::cleanCase()
