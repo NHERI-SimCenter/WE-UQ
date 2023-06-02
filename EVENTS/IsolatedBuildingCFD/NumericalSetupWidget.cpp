@@ -74,9 +74,9 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    numericalSetupGroup = new QGroupBox("Numerical Setup", this);
-    numericalSetupLayout = new QVBoxLayout();
-    numericalSetupGroup->setLayout(numericalSetupLayout);
+//    numericalSetupGroup = new QGroupBox("Numerical Setup", this);
+//    numericalSetupLayout = new QVBoxLayout();
+//    numericalSetupGroup->setLayout(numericalSetupLayout);
 
     parallelizationGroup = new QGroupBox("Parallelization", this);
     parallelizationLayout = new QGridLayout();
@@ -110,7 +110,6 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     parallelizationLayout->addWidget(numProcessorsLabel, 1, 0);
     parallelizationLayout->addWidget(numProcessors, 1, 1);
 
-    numericalSetupLayout->addWidget(parallelizationGroup);
 
     //==================================================================
     //              Solver selection
@@ -161,7 +160,6 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     solverSelectionLayout->addWidget(numCorrectors, 2, 1);
     solverSelectionLayout->addWidget(numOuterCorrectors, 3, 1);
 
-    numericalSetupLayout->addWidget(solverSelectionGroup);
 
     //==================================================================
     //              Duration and time step controls
@@ -212,8 +210,9 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     durationAndTimeStepLayout->addWidget(maxCourantNumberLabel, 2, 0);
     durationAndTimeStepLayout->addWidget(maxCourantNumber, 2, 1);
 
-    numericalSetupLayout->addWidget(durationAndTimeStepGroup);
-    layout->addWidget(numericalSetupGroup);
+    layout->addWidget(solverSelectionGroup);
+    layout->addWidget(durationAndTimeStepGroup);
+    layout->addWidget(parallelizationGroup);
 
     this->setLayout(layout);
 

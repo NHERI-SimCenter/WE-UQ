@@ -107,9 +107,9 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    resultMonitoringGroup = new QGroupBox("Result Monitoring");
-    resultMonitoringLayout = new QVBoxLayout();
-    resultMonitoringGroup->setLayout(resultMonitoringLayout);
+//    resultMonitoringGroup = new QGroupBox("Result Monitoring");
+//    resultMonitoringLayout = new QVBoxLayout();
+//    resultMonitoringGroup->setLayout(resultMonitoringLayout);
 
     monitorIntegratedLoadGroup = new QGroupBox("Story Loads");
     monitorIntegratedLoadLayout = new QGridLayout();
@@ -209,7 +209,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 //    monitorIntegratedLoadLayout->addWidget(monitorBaseLoadLabel, 4, 0);
     monitorIntegratedLoadLayout->addWidget(monitorBaseLoad, 5, 0);
 
-    resultMonitoringLayout->addWidget(monitorIntegratedLoadGroup);
+    layout->addWidget(monitorIntegratedLoadGroup);
 
     //==================================================================
     //              Monitor Local Pressure
@@ -289,9 +289,9 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 
-    resultMonitoringLayout->addWidget(monitorPressureGroup);
+    layout->addWidget(monitorPressureGroup);
 
-    layout->addWidget(resultMonitoringGroup);
+//    layout->addWidget(resultMonitoringGroup);
     this->setLayout(layout);
 
     //Add signals

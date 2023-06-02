@@ -157,8 +157,8 @@ private:
    QGroupBox    *generalDescriptionGroup;
    QHBoxLayout  *generalDescriptionLayout;
 
-   QGroupBox    *generalSettingGroup;
-   QGridLayout  *generalSettingLayout;
+   QGroupBox    *dimAndScaleGroup;
+   QGridLayout  *dimAndScaleLayout;
    QComboBox    *normalizationTypeWidget;
 
 
@@ -177,8 +177,8 @@ private:
    QWidget      *buildingAndDomainInformationGroup;
    QGridLayout  *buildingAndDomainInformationLayout;
 
-   QWidget      *inputFormsGroup;
-   QGridLayout  *inputFormsLayout;
+//   QWidget      *inputFormsGroup;
+//   QGridLayout  *inputFormsLayout;
 
    WindCharacteristicsWidget    *windCharacteristics;
    SnappyHexMeshWidget          *snappyHexMesh;

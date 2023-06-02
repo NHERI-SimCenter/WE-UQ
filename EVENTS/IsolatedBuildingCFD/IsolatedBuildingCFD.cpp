@@ -93,17 +93,37 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
-    inputFormsGroup = new QWidget();
-    inputFormsLayout = new QGridLayout();
+//    inputFormsGroup = new QWidget();
+//    inputFormsLayout = new QGridLayout();
+
+
+    QTabWidget *inputTab = new QTabWidget(this);
+
+    QWidget *generalWidget = new QWidget();
+    QWidget *geometryWidget = new QWidget();
+    QWidget *meshWidget = new QWidget();
+    QWidget *BCWidget = new QWidget();
+    QWidget *numericalSetupWidget = new QWidget();
+    QWidget *monitoringWidget = new QWidget();
+    QWidget *resultsWidget = new QWidget();
+
+    QVBoxLayout* generalLayout  = new QVBoxLayout();
+    QVBoxLayout* geometryLayout  = new QVBoxLayout();
+    QVBoxLayout* meshLayout  = new QVBoxLayout();
+    QVBoxLayout* BCLayout  = new QVBoxLayout();
+    QVBoxLayout* numericalSetupLayout  = new QVBoxLayout();
+    QVBoxLayout* monitoringLayout  = new QVBoxLayout();
+    QVBoxLayout* resultsLayout  = new QVBoxLayout();
+
 
     generalDescriptionGroup = new QGroupBox("General Description");
     generalDescriptionLayout = new QHBoxLayout();
 
-    generalSettingGroup = new QGroupBox("Dimentions and Scale");
-    generalSettingLayout = new QGridLayout();
-
     caseDirectoryGroup = new QGroupBox("Case Directory");
     caseDirectoryLayout = new QGridLayout();
+
+    dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
+    dimAndScaleLayout = new QGridLayout();
 
     buildingAndDomainInformationGroup = new QWidget();
     buildingAndDomainInformationLayout = new QGridLayout();
@@ -119,7 +139,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     cfdResultsGroup = new QGroupBox("CFD Results", this);
     cfdResultsLayout = new QGridLayout();
-    cfdResultsGroup->setLayout(cfdResultsLayout);
 
     theBuildingButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
@@ -238,11 +257,11 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
 
-    generalSettingLayout->addWidget(normalizationTypeLabel, 0, 0);
-    generalSettingLayout->addWidget(normalizationTypeWidget, 0, 1);
+    dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
+    dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
 
-    generalSettingLayout->addWidget(geometricScaleLabel, 0, 2, Qt::AlignRight);
-    generalSettingLayout->addWidget(geometricScaleWidget, 0, 3, Qt::AlignLeft);
+    dimAndScaleLayout->addWidget(geometricScaleLabel, 0, 2, Qt::AlignRight);
+    dimAndScaleLayout->addWidget(geometricScaleWidget, 0, 3, Qt::AlignLeft);
 
     buildingInformationLayout->addWidget(buildingWidthLabel,0,1);
     buildingInformationLayout->addWidget(buildingWidthWidget,0,3);
@@ -252,9 +271,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
     buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
-
-    //    buildingInformationLayout->addWidget(geometricScaleLabel,3,1);
-    //    buildingInformationLayout->addWidget(geometricScaleWidget,3,3);
 
     buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
     buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
@@ -276,9 +292,9 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     domainInformationLayout->addWidget(useCOSTDimLabel,5,0);
     domainInformationLayout->addWidget(useCOSTDimWidget,5,1);
 
-//    domainInformationLayout->addWidget(relativeDimensionsLabel,6,0);
-//    domainInformationLayout->addWidget(relativeDimensionsWidget,6,1);
-
+    buildingAndDomainInformationLayout->addWidget(buildingInformationGroup, 0, 0);
+    buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
+    buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
 
 
     coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
@@ -293,18 +309,23 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
-    generalSettingGroup->setLayout(generalSettingLayout);
+    dimAndScaleGroup->setLayout(dimAndScaleLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
     buildingInformationGroup->setLayout(buildingInformationLayout);
     domainInformationGroup->setLayout(domainInformationLayout);
-    coordinateSystemGroup->setLayout(coordinateSystemLayout);
-
-    buildingAndDomainInformationLayout->addWidget(buildingInformationGroup, 0, 0);
-    buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
-    buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
-
-
     buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
+    coordinateSystemGroup->setLayout(coordinateSystemLayout);
+    cfdResultsGroup->setLayout(cfdResultsLayout);
+
+
+    generalWidget->setLayout(generalLayout);
+    geometryWidget->setLayout(geometryLayout);
+    meshWidget->setLayout(meshLayout);
+    BCWidget->setLayout(BCLayout);
+    numericalSetupWidget->setLayout(numericalSetupLayout);
+    monitoringWidget->setLayout(monitoringLayout);
+    resultsWidget->setLayout(resultsLayout);
+
 
     //Controls for wind characteristics setup
     windCharacteristics = new WindCharacteristicsWidget(this);
@@ -325,21 +346,47 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     resultMonitoring = new ResultMonitoringWidget(this);
 
 
-    inputFormsLayout->addWidget(generalDescriptionGroup);
-    inputFormsLayout->addWidget(generalSettingGroup);
-    inputFormsLayout->addWidget(caseDirectoryGroup);
-    inputFormsLayout->addWidget(buildingAndDomainInformationGroup);
-    inputFormsLayout->addWidget(coordinateSystemGroup);
-    inputFormsLayout->addWidget(snappyHexMesh);
-    inputFormsLayout->addWidget(windCharacteristics);
-    inputFormsLayout->addWidget(boundaryConditions);
-    inputFormsLayout->addWidget(turbulenceModeling);
-    inputFormsLayout->addWidget(numericalSetup);
-    inputFormsLayout->addWidget(resultMonitoring);
-    inputFormsLayout->addWidget(cfdResultsGroup);
+    //Populate each tab
+    generalLayout->addWidget(generalDescriptionGroup);
+    generalLayout->addWidget(caseDirectoryGroup);
+    generalLayout->addStretch(1);
+
+    //    generalDescriptionGroup->setMaximumHeight(300);
+//    generalWidget->setMaximumHeight(400);
+
+    geometryLayout->addWidget(dimAndScaleGroup);
+    geometryLayout->addWidget(buildingAndDomainInformationGroup);
+    geometryLayout->addWidget(coordinateSystemGroup);
+
+    meshLayout->addWidget(snappyHexMesh);
+
+    BCLayout->addWidget(windCharacteristics);
+    BCLayout->addWidget(boundaryConditions);
+
+    numericalSetupLayout->addWidget(turbulenceModeling);
+    numericalSetupLayout->addWidget(numericalSetup);
+
+    monitoringLayout->addWidget(resultMonitoring);
+
+    resultsLayout->addWidget(cfdResultsGroup);
+
+    inputTab->addTab(generalWidget, "General");
+    inputTab->addTab(geometryWidget, "Geometry");
+    inputTab->addTab(meshWidget, "Mesh");
+    inputTab->addTab(BCWidget, "Boundary Conditions");
+    inputTab->addTab(numericalSetupWidget, "Numerical Setup");
+    inputTab->addTab(monitoringWidget, "Monitoring");
+    inputTab->addTab(resultsWidget, "Results");
 
 
-    inputFormsGroup->setLayout(inputFormsLayout);
+    inputWindowLayout->addWidget(inputTab);
+    inputWindowGroup->setLayout(inputWindowLayout);
+    inputWindowGroup->setMaximumWidth(windowWidth - 50);
+//    inputWindowGroup->setMaximumHeight(600);
+
+    mainWindowLayout->addWidget(inputWindowGroup);
+
+//    inputFormsGroup->setLayout(inputFormsLayout);
 
 //    buildingAndDomainInformationGroup->setMaximumWidth(windowWidth);
 //    generalDescriptionGroup->setMaximumWidth(windowWidth);
@@ -349,25 +396,24 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
 
-    inputWindowGroup->setLayout(inputWindowLayout);
 
-    QScrollArea *scrollArea = new QScrollArea();
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setLineWidth(1);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-    scrollArea->setWidget(inputFormsGroup);
-    scrollArea->setMaximumWidth(windowWidth + 50);
+//    QScrollArea *scrollArea = new QScrollArea();
+//    scrollArea->setWidgetResizable(true);
+//    scrollArea->setLineWidth(1);
+//    scrollArea->setFrameShape(QFrame::NoFrame);
+//    scrollArea->setWidget(inputFormsGroup);
+//    scrollArea->setMaximumWidth(windowWidth + 50);
 
-    inputWindowLayout->addWidget(scrollArea);
+//    inputWindowLayout->addWidget(scrollArea);
 
-    mainWindowLayout->addWidget(inputWindowGroup);
-    inputFormsGroup->setMaximumWidth(windowWidth - 100);
+//    mainWindowLayout->addWidget(inputWindowGroup);
 
-    //
-    // get GeneralInfo
-    // connnect some signals and slots to capture building dimensions changing to update selections
-    // set initial selections
-    //
+
+//    //
+//    // get GeneralInfo
+//    // connnect some signals and slots to capture building dimensions changing to update selections
+//    // set initial selections
+//    //
 
     plotWindProfiles = new QPushButton("Plot Wind Profiles");
     plotWindLoads = new QPushButton("Plot Wind Loads");

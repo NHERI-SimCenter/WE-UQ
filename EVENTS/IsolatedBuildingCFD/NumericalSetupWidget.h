@@ -90,8 +90,8 @@ private:
 
    QVBoxLayout      *layout;
 
-   QGroupBox        *numericalSetupGroup;
-   QVBoxLayout      *numericalSetupLayout;
+//   QGroupBox        *numericalSetupGroup;
+//   QVBoxLayout      *numericalSetupLayout;
 
    QGroupBox        *parallelizationGroup;
    QGridLayout      *parallelizationLayout;

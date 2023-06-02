@@ -79,8 +79,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     int widgetGap = 15;
 
-    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
-    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
+//    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
+//    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
 
     generalOptionsGroup = new QGroupBox("General Options", this);
     generalOptionsLayout = new QGridLayout();
@@ -92,9 +92,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
-
-    snappyHexMeshLayout->addWidget(generalOptionsGroup);
-    snappyHexMeshLayout->addWidget(snappyHexMeshTab);
 
     // Add general Options group
     QLabel *numCellsBetweenLevelsLabel = new QLabel("Number of Cells Between Levels:");
@@ -114,6 +111,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     resolveFeatureAngle->setRange(0, 180);
     resolveFeatureAngle->setValue(30);
     resolveFeatureAngle->setToolTip("Feature resolution angle to capture sharp angles.");
+
 
     runInParallel = new QCheckBox();
     runInParallel->setChecked(false);
@@ -494,21 +492,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
 
-    snappyHexMeshLayout->addWidget(runMeshGroup);
-
-
-    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
-    //    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
-
+    layout->addWidget(generalOptionsGroup);
+    layout->addWidget(snappyHexMeshTab);
+    layout->addWidget(runMeshGroup);
 
     //=============================================================================
 
-    layout->addWidget(snappyHexMeshGroup);
-
+//    layout->addWidget(snappyHexMeshGroup);
     this->setLayout(layout);
 
+    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
     connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshSizeClicked()));
-
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
     connect(addEdgeRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddEdgeRefinementChecked(int)));
