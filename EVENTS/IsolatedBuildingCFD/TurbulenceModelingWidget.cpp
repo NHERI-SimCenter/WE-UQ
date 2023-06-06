@@ -140,6 +140,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
                                  "Ce = 1.048\n";
 
     LESModelCoeffs->setText(LESModelCoeffText);
+    LESModelCoeffs->setFontItalic(true);
     LESModelCoeffs->setReadOnly(true);
 
     LESOptions  = new QComboBox();

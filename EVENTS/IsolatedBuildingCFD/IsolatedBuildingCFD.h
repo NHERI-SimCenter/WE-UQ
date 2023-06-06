@@ -102,12 +102,12 @@ public:
 
     QVector<double> coordSysOrigin();
 
-    const QString normalizationType();
-    const QString caseDir();
-    const QString foamDictsPath();
-    const QString templateDictDir();
-    const QString pyScriptsPath();
-    const QString simulationType();
+    QString normalizationType();
+    QString caseDir();
+    QString foamDictsPath();
+    QString templateDictDir();
+    QString pyScriptsPath();
+    QString simulationType();
 
 
 signals:

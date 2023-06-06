@@ -78,6 +78,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QTextEdit>
 
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
@@ -116,7 +117,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QVBoxLayout* resultsLayout  = new QVBoxLayout();
 
 
-    generalDescriptionGroup = new QGroupBox("General Description");
+    generalDescriptionGroup = new QGroupBox("Modeling Processes");
     generalDescriptionLayout = new QHBoxLayout();
 
     caseDirectoryGroup = new QGroupBox("Case Directory");
@@ -232,26 +233,34 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     if (!workingDir.exists(workingDirPath))
         workingDir.mkpath(workingDirPath);
 	
-//    workingDirPath = workingDir.path();
-//    QString defaultLocation = currentAppDir + QDir::separator() + "IsolatedBuildingCFD"; // + QDir::separator() + "case.OpenFOAM";
-//    caseDirectoryPathWidget->setText("/home/abiy/SimCenter/SourceCode/NHERI-SimCenter/WE-UQ/tests/IsolatedBuildingCFDTest/");
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
-    QLabel *generalDescriptionLabel = new QLabel("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. "
-                                                 "\n The procedure involves: "
-                                                 "\n --> Define building geometry "
-                                                 "\n --> Generate mesh using snappyHexMesh tool "
-                                                 "\n --> Setup turbulence model "
-                                                 "\n --> Define boundary condition and wind characterstics  "
-                                                 "\n --> Specify numerical setup "
-                                                 "\n --> Run simulation "
-                                                 "\n --> Post-process");
+
+    QTextEdit *modelingProcedureText = new QTextEdit ();
+    modelingProcedureText->setReadOnly(true);
+
+    QTextDocument* document = modelingProcedureText->document();
+    QTextCursor* cursor = new QTextCursor(document);
+
+    cursor->insertText("A CFD (virtual wind tunnel) model for a generic rectangularly shaped building to perform wind load simulation. The modeling procedure involves: ");
+
+    QTextListFormat listFormat;
+    listFormat.setStyle(QTextListFormat::ListDecimal);
+    cursor->insertList(listFormat);
+
+    cursor->insertText(" Define the geometry");
+    cursor->insertText("\n Generate mesh");
+    cursor->insertText("\n Define boundary conditions");
+    cursor->insertText("\n Specify numerical setup");
+    cursor->insertText("\n Monitor wind loads");
+    cursor->insertText("\n Run simulation");
+    cursor->insertText("\n Post-process results");
 
 
-    generalDescriptionLayout->addWidget(generalDescriptionLabel);
+    generalDescriptionLayout->addWidget(modelingProcedureText);
 
     caseDirectoryLayout->addWidget(casePathLabel, 0, 0);
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
@@ -349,26 +358,29 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     //Populate each tab
     generalLayout->addWidget(generalDescriptionGroup);
     generalLayout->addWidget(caseDirectoryGroup);
-    generalLayout->addStretch(1);
-
-    //    generalDescriptionGroup->setMaximumHeight(300);
-//    generalWidget->setMaximumHeight(400);
+    generalLayout->addStretch();
 
     geometryLayout->addWidget(dimAndScaleGroup);
     geometryLayout->addWidget(buildingAndDomainInformationGroup);
     geometryLayout->addWidget(coordinateSystemGroup);
+    geometryLayout->addStretch();
 
     meshLayout->addWidget(snappyHexMesh);
+    meshLayout->addStretch();
 
     BCLayout->addWidget(windCharacteristics);
     BCLayout->addWidget(boundaryConditions);
+    BCLayout->addStretch();
 
     numericalSetupLayout->addWidget(turbulenceModeling);
     numericalSetupLayout->addWidget(numericalSetup);
+    numericalSetupLayout->addStretch();
 
     monitoringLayout->addWidget(resultMonitoring);
+    monitoringLayout->addStretch();
 
     resultsLayout->addWidget(cfdResultsGroup);
+    resultsLayout->addStretch();
 
     inputTab->addTab(generalWidget, "General");
     inputTab->addTab(geometryWidget, "Geometry");
@@ -381,39 +393,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     inputWindowLayout->addWidget(inputTab);
     inputWindowGroup->setLayout(inputWindowLayout);
-    inputWindowGroup->setMaximumWidth(windowWidth - 50);
-//    inputWindowGroup->setMaximumHeight(600);
+    inputWindowGroup->setMaximumWidth(windowWidth - 100);
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
-//    inputFormsGroup->setLayout(inputFormsLayout);
-
-//    buildingAndDomainInformationGroup->setMaximumWidth(windowWidth);
-//    generalDescriptionGroup->setMaximumWidth(windowWidth);
-//    coordinateSystemGroup->setMaximumWidth(windowWidth);
-
-//    buildingAndDomainInformationLayout->setMargin(20);
-
-
-
-
-//    QScrollArea *scrollArea = new QScrollArea();
-//    scrollArea->setWidgetResizable(true);
-//    scrollArea->setLineWidth(1);
-//    scrollArea->setFrameShape(QFrame::NoFrame);
-//    scrollArea->setWidget(inputFormsGroup);
-//    scrollArea->setMaximumWidth(windowWidth + 50);
-
-//    inputWindowLayout->addWidget(scrollArea);
-
-//    mainWindowLayout->addWidget(inputWindowGroup);
-
-
-//    //
-//    // get GeneralInfo
-//    // connnect some signals and slots to capture building dimensions changing to update selections
-//    // set initial selections
-//    //
 
     plotWindProfiles = new QPushButton("Plot Wind Profiles");
     plotWindLoads = new QPushButton("Plot Wind Loads");
@@ -421,7 +404,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     cfdResultsLayout->addWidget(plotWindProfiles);
     cfdResultsLayout->addWidget(plotWindLoads);
 
-//    connect(runCFD, SIGNAL(clicked()), this, SLOT(onRunCFDClicked()));
     connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 
@@ -455,8 +437,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowLayout->addWidget(visWidget);
 
     this->setLayout(mainWindowLayout);
-
-
 }
 
 
@@ -468,9 +448,8 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 void IsolatedBuildingCFD::writeOpenFoamFiles()
 {
 
-    //Write it to JSON becase it is needed for the mesh generation before the
-    //final simulation is run.
-    //In future only one JSON file in temp.SimCenter directory is enough
+    //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
+    //In future only one JSON file in temp.SimCenter directory might be enough
     QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
                             + QDir::separator() + "input" + QDir::separator() + "IsolatedBuildingCFD.json";
 
@@ -507,10 +486,6 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
     process->start(program, arguments);
 
     process->waitForFinished(-1);
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
 
     process->close();
 }
@@ -811,10 +786,6 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
          qDebug() << errorMessage;
      }
 
-//     qDebug() << caseDir() << destDir;
-
-//     exit(0);
-
      return result;
  }
 
@@ -1003,17 +974,17 @@ QVector<double> IsolatedBuildingCFD::coordSysOrigin()
     return origin;
 }
 
-const QString IsolatedBuildingCFD::normalizationType()
+QString IsolatedBuildingCFD::normalizationType()
 {
     return normalizationTypeWidget->currentText();
 }
 
-const QString IsolatedBuildingCFD::caseDir()
+QString IsolatedBuildingCFD::caseDir()
 {
     return caseDirectoryPathWidget->text();
 }
 
-const QString IsolatedBuildingCFD::pyScriptsPath()
+QString IsolatedBuildingCFD::pyScriptsPath()
 {
     QString backendAppDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
@@ -1022,7 +993,7 @@ const QString IsolatedBuildingCFD::pyScriptsPath()
     return backendAppDir;
 }
 
-const QString IsolatedBuildingCFD::templateDictDir()
+QString IsolatedBuildingCFD::templateDictDir()
 {
     QString templateDictsDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
              + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
@@ -1031,7 +1002,7 @@ const QString IsolatedBuildingCFD::templateDictDir()
     return templateDictsDir;
 }
 
-const QString IsolatedBuildingCFD::simulationType()
+QString IsolatedBuildingCFD::simulationType()
 {
     return turbulenceModeling->simulationType();
 }

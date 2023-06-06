@@ -60,6 +60,8 @@ class vtkDataSetMapper;
 class vtkActor;
 class vtkOpenFOAMReader;
 class vtkUnstructuredGrid;
+class vtkMultiBlockDataSet;
+class vtkPolyDataMapper;
 class IsolatedBuildingCFD;
 
 class SimCenterVTKRenderingWidget: public SimCenterAppWidget
@@ -70,15 +72,21 @@ class SimCenterVTKRenderingWidget: public SimCenterAppWidget
 public:
     explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
     ~SimCenterVTKRenderingWidget();
+    void readMesh();
+    void showAllMesh();
+    void showBreakout();
+    void showBuildingOnly();
+    template <class Type>
+    static Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
 signals:
 
 public slots:
    void clear(void);
    void surfaceRepresentationChanged(const QString &arg1);
+   void viewObjectChanged(const QString &arg1);
    void onReloadCaseClicked();
    void onTransparencyChanged(const int value);
-   void readMesh();
 
 private:
    IsolatedBuildingCFD  *mainModel;
@@ -94,6 +102,7 @@ private:
    QComboBox    *viewObject;
    QPushButton  *reloadCase;
    QSlider      *transparency;
+   float        colorValue = 0.85;
 
    QVTKRenderWidget *qvtkWidget;
    vtkUnstructuredGrid* block0;
