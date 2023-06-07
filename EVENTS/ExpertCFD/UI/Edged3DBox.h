@@ -31,7 +31,7 @@ private:
     Qt3DCore::QTransform* transform;
     Qt3DCore::QTransform* edgeTransform;
     Qt3DCore::QTransform* gridPointsTransform;
-    Qt3DRender::QAttribute* gridPointsVerticesAttribute;
+    Qt3DCore::QAttribute* gridPointsVerticesAttribute;
     Qt3DRender::QGeometryRenderer* gridPointsRenderer;
 
     void setup3DEdges();
