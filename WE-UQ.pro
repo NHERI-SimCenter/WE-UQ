@@ -37,6 +37,8 @@ win32 {
     INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
     LIBS += -L$$PWD/../VTK/Release/lib \
     -lvtkViewsCore-9.2 \
+    -lvtkFiltersCore-9.2 \
+    -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
