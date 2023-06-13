@@ -4,7 +4,7 @@ appName="WE-UQ"
 appFile="WE_UQ.app"
 dmgFile="WE-UQ_Mac_Download.dmg"
 
-QTDIR="/Users/fmckenna/Qt/5.15.2/clang_64/"
+QTDIR="/Users/simcenter/Qt/5.15.2/clang_64/"
 
 pathToBackendApps="/Users/fmckenna/release/SimCenterBackendApplications"
 pathToOpenSees="/Users/fmckenna/bin/OpenSees3.2.2"

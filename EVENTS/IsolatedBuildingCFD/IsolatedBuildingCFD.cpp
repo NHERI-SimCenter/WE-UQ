@@ -84,7 +84,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     femSpecific = 0;
-    const int windowWidth = 850;
+    const int windowWidth = 700;
 
     mainWindowLayout = new QHBoxLayout();
 
@@ -166,7 +166,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     geometricScaleWidget->setText("400.0");
 
     QLabel *windDirectionLabel = new QLabel("Wind Direction:");
-    QLabel *angleUnit = new QLabel("degrees");
+    //QLabel *angleUnit = new QLabel("degrees");
     windDirectionWidget = new QSpinBox;
     windDirectionWidget->setRange(0, 90);
     windDirectionWidget->setSingleStep(10);
@@ -283,7 +283,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
     buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
-    buildingInformationLayout->addWidget(angleUnit, 3, 4);
+    //buildingInformationLayout->addWidget(angleUnit, 3, 4);
 
 
     domainInformationLayout->addWidget(domainLengthLabel,0,0);

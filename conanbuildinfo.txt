@@ -1,34 +1,27 @@
 [includedirs]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/include
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/include
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/include
 
 [libdirs]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/lib
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/lib
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/lib
 
 [bindirs]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/bin
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/bin
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/bin
 
 [resdirs]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/res
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/res
 
 [builddirs]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/
 
 [libs]
 curl
 z
-ssl
-crypto
 
 [system_libs]
-dl
-pthread
-rt
+
 
 [defines]
 CURL_STATICLIB=1
@@ -52,33 +45,33 @@ CURL_STATICLIB=1
 
 
 [frameworks]
-
+CoreFoundation
+Security
 
 [frameworkdirs]
 
 
 
 [includedirs_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/include
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/include
 
 [libdirs_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/lib
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/lib
 
 [bindirs_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/bin
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/bin
 
 [resdirs_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/res
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/res
 
 [builddirs_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/
 
 [libs_libcurl]
 curl
 
 [system_libs_libcurl]
-rt
-pthread
+
 
 [defines_libcurl]
 CURL_STATICLIB=1
@@ -102,13 +95,14 @@ CURL_STATICLIB=1
 
 
 [frameworks_libcurl]
-
+CoreFoundation
+Security
 
 [frameworkdirs_libcurl]
 
 
 [rootpath_libcurl]
-/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef
+/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15
 
 [name_libcurl]
 libcurl
@@ -125,10 +119,10 @@ cmake_find_package_multi=CURL
 
 
 [includedirs_zlib]
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/include
 
 [libdirs_zlib]
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/lib
 
 [bindirs_zlib]
 
@@ -137,7 +131,7 @@ cmake_find_package_multi=CURL
 
 
 [builddirs_zlib]
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/
 
 [libs_zlib]
 z
@@ -173,7 +167,7 @@ z
 
 
 [rootpath_zlib]
-/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646
+/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc
 
 [name_zlib]
 zlib
@@ -189,77 +183,7 @@ cmake_find_package_multi=ZLIB
 
 
 
-[includedirs_openssl]
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include
-
-[libdirs_openssl]
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib
-
-[bindirs_openssl]
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/bin
-
-[resdirs_openssl]
-
-
-[builddirs_openssl]
-
-
-[libs_openssl]
-ssl
-crypto
-
-[system_libs_openssl]
-dl
-pthread
-rt
-
-[defines_openssl]
-
-
-[cppflags_openssl]
-
-
-[cxxflags_openssl]
-
-
-[cflags_openssl]
-
-
-[sharedlinkflags_openssl]
-
-
-[exelinkflags_openssl]
-
-
-[sysroot_openssl]
-
-
-[frameworks_openssl]
-
-
-[frameworkdirs_openssl]
-
-
-[rootpath_openssl]
-/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646
-
-[name_openssl]
-openssl
-
-[version_openssl]
-1.1.1o
-
-[generatornames_openssl]
-cmake_find_package=OpenSSL
-cmake_find_package_multi=OpenSSL
-
-[generatorfilenames_openssl]
-
-
-
 [USER_libcurl]
-[USER_openssl]
 [USER_zlib]
 [ENV_libcurl]
 [ENV_zlib]
-[ENV_openssl]

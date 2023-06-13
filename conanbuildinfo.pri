@@ -1,71 +1,52 @@
-CONAN_INCLUDEPATH += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/include" \
-    "/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include" \
-    "/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include"
-CONAN_LIBS += -lcurl -lz -lssl -lcrypto
-CONAN_SYSTEMLIBS += -ldl -lpthread -lrt
-CONAN_FRAMEWORKS += 
+CONAN_INCLUDEPATH += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/include" \
+    "/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/include"
+CONAN_LIBS += -lcurl -lz
+CONAN_SYSTEMLIBS += 
+CONAN_FRAMEWORKS += -framework CoreFoundation -framework Security
 CONAN_FRAMEWORK_PATHS += 
-CONAN_LIBDIRS += -L"/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/lib" \
-    -L"/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib" \
-    -L"/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib"
-CONAN_BINDIRS += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/bin" \
-    "/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/bin"
-CONAN_RESDIRS += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/res"
-CONAN_BUILDDIRS += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/" \
-    "/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/"
+CONAN_LIBDIRS += -L"/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/lib" \
+    -L"/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/lib"
+CONAN_BINDIRS += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/bin"
+CONAN_RESDIRS += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/res"
+CONAN_BUILDDIRS += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/" \
+    "/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/"
 CONAN_DEFINES += "CURL_STATICLIB=1"
 CONAN_QMAKE_CXXFLAGS += 
 CONAN_QMAKE_CFLAGS += 
 CONAN_QMAKE_LFLAGS_SHLIB += 
 CONAN_QMAKE_LFLAGS_APP += 
 
-CONAN_INCLUDEPATH_LIBCURL += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/include"
+CONAN_INCLUDEPATH_LIBCURL += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/include"
 CONAN_LIBS_LIBCURL += -lcurl
-CONAN_SYSTEMLIBS_LIBCURL += -lrt -lpthread
-CONAN_FRAMEWORKS_LIBCURL += 
+CONAN_SYSTEMLIBS_LIBCURL += 
+CONAN_FRAMEWORKS_LIBCURL += -framework CoreFoundation -framework Security
 CONAN_FRAMEWORK_PATHS_LIBCURL += 
-CONAN_LIBDIRS_LIBCURL += -L"/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/lib"
-CONAN_BINDIRS_LIBCURL += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/bin"
-CONAN_RESDIRS_LIBCURL += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/res"
-CONAN_BUILDDIRS_LIBCURL += "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef/"
+CONAN_LIBDIRS_LIBCURL += -L"/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/lib"
+CONAN_BINDIRS_LIBCURL += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/bin"
+CONAN_RESDIRS_LIBCURL += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/res"
+CONAN_BUILDDIRS_LIBCURL += "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15/"
 CONAN_DEFINES_LIBCURL += "CURL_STATICLIB=1"
 CONAN_QMAKE_CXXFLAGS_LIBCURL += 
 CONAN_QMAKE_CFLAGS_LIBCURL += 
 CONAN_QMAKE_LFLAGS_SHLIB_LIBCURL += 
 CONAN_QMAKE_LFLAGS_APP_LIBCURL += 
-CONAN_LIBCURL_ROOT = "/home/abiy/.conan/data/libcurl/7.72.0/_/_/package/0c5339e3252a17695b86faf7d8701a95bdc6c4ef"
+CONAN_LIBCURL_ROOT = "/Users/simcenter/.conan/data/libcurl/7.72.0/_/_/package/3d1bec21b16e6b00e50fed264612d3520d664d15"
 
-CONAN_INCLUDEPATH_ZLIB += "/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include"
+CONAN_INCLUDEPATH_ZLIB += "/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/include"
 CONAN_LIBS_ZLIB += -lz
 CONAN_SYSTEMLIBS_ZLIB += 
 CONAN_FRAMEWORKS_ZLIB += 
 CONAN_FRAMEWORK_PATHS_ZLIB += 
-CONAN_LIBDIRS_ZLIB += -L"/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib"
+CONAN_LIBDIRS_ZLIB += -L"/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/lib"
 CONAN_BINDIRS_ZLIB += 
 CONAN_RESDIRS_ZLIB += 
-CONAN_BUILDDIRS_ZLIB += "/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/"
+CONAN_BUILDDIRS_ZLIB += "/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc/"
 CONAN_DEFINES_ZLIB += 
 CONAN_QMAKE_CXXFLAGS_ZLIB += 
 CONAN_QMAKE_CFLAGS_ZLIB += 
 CONAN_QMAKE_LFLAGS_SHLIB_ZLIB += 
 CONAN_QMAKE_LFLAGS_APP_ZLIB += 
-CONAN_ZLIB_ROOT = "/home/abiy/.conan/data/zlib/1.2.12/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646"
-
-CONAN_INCLUDEPATH_OPENSSL += "/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/include"
-CONAN_LIBS_OPENSSL += -lssl -lcrypto
-CONAN_SYSTEMLIBS_OPENSSL += -ldl -lpthread -lrt
-CONAN_FRAMEWORKS_OPENSSL += 
-CONAN_FRAMEWORK_PATHS_OPENSSL += 
-CONAN_LIBDIRS_OPENSSL += -L"/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/lib"
-CONAN_BINDIRS_OPENSSL += "/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646/bin"
-CONAN_RESDIRS_OPENSSL += 
-CONAN_BUILDDIRS_OPENSSL += 
-CONAN_DEFINES_OPENSSL += 
-CONAN_QMAKE_CXXFLAGS_OPENSSL += 
-CONAN_QMAKE_CFLAGS_OPENSSL += 
-CONAN_QMAKE_LFLAGS_SHLIB_OPENSSL += 
-CONAN_QMAKE_LFLAGS_APP_OPENSSL += 
-CONAN_OPENSSL_ROOT = "/home/abiy/.conan/data/openssl/1.1.1o/_/_/package/dfbe50feef7f3c6223a476cd5aeadb687084a646"
+CONAN_ZLIB_ROOT = "/Users/simcenter/.conan/data/zlib/1.2.12/_/_/package/e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc"
 
 CONFIG(conan_basic_setup) {
     INCLUDEPATH += $$CONAN_INCLUDEPATH
