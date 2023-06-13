@@ -428,7 +428,7 @@ void SimCenterVTKRenderingWidget::showBuildingOnly()
 
 // Get named block of specified type
 template <class Type>
-static Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
+Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
 {
     Type* dataset = nullptr;
     const unsigned int nblocks = (mb ? mb->GetNumberOfBlocks() : 0u);

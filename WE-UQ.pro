@@ -80,6 +80,8 @@ win32 {
     INCLUDEPATH += /usr/local/include/vtk-9.2
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
+    -lvtkFiltersCore-9.2 \
+    -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
@@ -92,7 +94,6 @@ win32 {
     -lvtkViewsQt-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
-
     }
     }
 

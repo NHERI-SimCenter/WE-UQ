@@ -77,7 +77,7 @@ public:
     void showBreakout();
     void showBuildingOnly();
     template <class Type>
-    static Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
 signals:
 
