@@ -8,6 +8,7 @@
 #include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender>
 
 class Edged3DBox : public QObject
 {
@@ -31,7 +32,7 @@ private:
     Qt3DCore::QTransform* transform;
     Qt3DCore::QTransform* edgeTransform;
     Qt3DCore::QTransform* gridPointsTransform;
-    Qt3DCore::QAttribute* gridPointsVerticesAttribute;
+    Qt3DRender::QAttribute* gridPointsVerticesAttribute;
     Qt3DRender::QGeometryRenderer* gridPointsRenderer;
 
     void setup3DEdges();
