@@ -55,8 +55,11 @@ win32 {
 
     mac {
     ICON = icons/NHERI-WEuq-Icon.icns
-    DEPENDPATH += $$PWD/../VTK/lib
-    LIBS += -L$$PWD/../VTK/lib \
+#    DEPENDPATH += $$PWD/../VTK/lib
+#    LIBS += -L$$PWD/../VTK/lib \
+    DEPENDPATH += $$PWD/../VTK/Release/bin
+    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
+    LIBS += -L$$PWD/../VTK/Release/lib \
     -lvtkViewsCore-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
