@@ -30,7 +30,7 @@ INCLUDEPATH += ExpertCFD/CFDanalysis
 INCLUDEPATH += ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
 INCLUDEPATH += /usr/local/include/vtk-9.2               
-               
+
 
 win32 {
     LIBS +=  -lAdvapi32

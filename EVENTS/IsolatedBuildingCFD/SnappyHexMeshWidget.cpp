@@ -584,12 +584,12 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
                    + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
 
-        //Actual comand on the terminal
-        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
+        //Actual command on the terminal
+        //$docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
 
     #else
 
-        commands << "source /opt/openfoam10/etc/bashrc;" + "blockMesh";
+        commands = "source /opt/openfoam10/etc/bashrc; blockMesh";
 
     #endif
 
@@ -618,12 +618,12 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
                    + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"";
 
-        //Actual comand on the terminal
+        //Actual command on the terminal
         //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
 
     #else
 
-        commands << "source /opt/openfoam10/etc/bashrc;" + "surfaceFeatures";
+        commands  = "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
 
     #endif
 
@@ -653,12 +653,12 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
                    + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"";
 
-        //Actual comand on the terminal
+        //Actual command on the terminal
         //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh; exit"
 
     #else
 
-        commands << "source /opt/openfoam10/etc/bashrc;" + "snappyHexMesh";
+        commands = "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
 
     #endif
 
