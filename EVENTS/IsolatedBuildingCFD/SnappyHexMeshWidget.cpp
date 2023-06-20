@@ -580,8 +580,8 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm -it --entrypoint /bin/bash -v" +  mainModel->caseDir() + ":"
-                   + localFoamPath + " " + dockerImage + "-c"
+        commands = "docker run --rm -it --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+                   + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
 
 //        docker run --rm -it --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
