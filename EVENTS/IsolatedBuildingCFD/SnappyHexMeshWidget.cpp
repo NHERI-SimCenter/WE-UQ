@@ -60,7 +60,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QSpinBox>
 #include <QGroupBox>
 #include <QVBoxLayout>
-#include <QVector>f
+#include <QVector>
 #include <LineEditRV.h>
 #include <QProcess>
 #include <QJsonArray>
