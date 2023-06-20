@@ -580,12 +580,12 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm -it --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
                    + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
 
-//        docker run --rm -it --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
-
+        //Actual comand on the terminal
+        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
 
     #else
 
@@ -596,12 +596,6 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
     process->start("bash", QStringList() << "-c" << commands);
     process->waitForFinished(-1);
 
-
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.setText("yes");
-    msgBox.exec();
-
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
@@ -611,15 +605,28 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
 bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 {
-
     QString casePath = mainModel->caseDir();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
-
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+                   + localFoamPath + " " + dockerImage + " -c "
+                   + "\"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"";
+
+        //Actual comand on the terminal
+        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
+
+    #else
+
+        commands << "source /opt/openfoam10/etc/bashrc;" + "surfaceFeatures";
+
+    #endif
+
     process->start("bash", QStringList() << "-c" << commands);
     process->waitForFinished(-1);
 
@@ -632,23 +639,31 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 
 bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 {
-
     QString casePath = mainModel->caseDir();
-
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
-
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+                   + localFoamPath + " " + dockerImage + " -c "
+                   + "\"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"";
+
+        //Actual comand on the terminal
+        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh; exit"
+
+    #else
+
+        commands << "source /opt/openfoam10/etc/bashrc;" + "snappyHexMesh";
+
+    #endif
+
     process->start("bash", QStringList() << "-c" << commands);
-
     process->waitForFinished(-1);
-
-    QMessageBox msgBox;
-    msgBox.setText("Mesh generation completed!");
-    msgBox.exec();
 
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 

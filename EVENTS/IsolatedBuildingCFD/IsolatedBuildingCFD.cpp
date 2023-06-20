@@ -487,6 +487,10 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
+
     process->close();
 }
 
