@@ -115,9 +115,9 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
 
     qvtkWidget = new QVTKRenderWidget();
 
-    QLabel *surfaceRepresentationLabel = new QLabel("Representation ");
-    QLabel *transparencyLabel = new QLabel("Transparency ");
-    QLabel *viewLabel = new QLabel("View option ");
+    QLabel *surfaceRepresentationLabel = new QLabel("Representation");
+    QLabel *transparencyLabel = new QLabel("Transparency");
+    QLabel *viewLabel = new QLabel("View");
 
     surfaceRepresentation = new QComboBox();
     surfaceRepresentation->addItem("SurfaceWithGrid");

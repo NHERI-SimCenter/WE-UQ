@@ -84,7 +84,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     femSpecific = 0;
-    const int windowWidth = 700;
+    const int windowWidth = 800;
 
     mainWindowLayout = new QHBoxLayout();
 
