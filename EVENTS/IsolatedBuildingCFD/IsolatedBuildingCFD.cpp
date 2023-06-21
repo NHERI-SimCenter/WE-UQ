@@ -408,6 +408,17 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 
     //=====================================================
+    // Set general information
+    //=====================================================
+
+//    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+
+//    buildingHeightWidget->setText(QString::number(theGI->getHeight()));
+//    buildingWidthWidget->setText(QString::number(theGI->getWidth()));
+//    buildingDepthWidget->setText(QString::number(theGI->getDepth()));
+
+
+    //=====================================================
     // Setup the case directory
     //=====================================================
 
