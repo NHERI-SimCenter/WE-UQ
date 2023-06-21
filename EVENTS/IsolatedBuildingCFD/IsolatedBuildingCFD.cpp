@@ -251,13 +251,13 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     listFormat.setStyle(QTextListFormat::ListDecimal);
     cursor->insertList(listFormat);
 
-    cursor->insertText(" Define the geometry");
-    cursor->insertText("\n Generate mesh");
-    cursor->insertText("\n Define boundary conditions");
-    cursor->insertText("\n Specify numerical setup");
-    cursor->insertText("\n Monitor wind loads");
-    cursor->insertText("\n Run simulation");
-    cursor->insertText("\n Post-process results");
+    cursor->insertText(" Define the geometry\n");
+    cursor->insertText(" Generate mesh\n");
+    cursor->insertText(" Define boundary conditions\n");
+    cursor->insertText(" Specify numerical setup\n");
+    cursor->insertText(" Monitor wind loads\n");
+    cursor->insertText(" Run simulation\n");
+    cursor->insertText(" Post-process results");
 
 
     generalDescriptionLayout->addWidget(modelingProcedureText);

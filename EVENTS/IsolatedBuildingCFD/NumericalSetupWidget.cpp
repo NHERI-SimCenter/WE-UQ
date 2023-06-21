@@ -103,7 +103,7 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     numProcessors->setSingleStep(16);
     numProcessors->setMinimum(1);
     numProcessors->setMaximum(1024);
-    numProcessors->setValue(64);
+    numProcessors->setValue(32);
     numProcessors->setToolTip("Number of processors to run the simulation with");
 
     parallelizationLayout->addWidget(runInParallel, 0, 0);

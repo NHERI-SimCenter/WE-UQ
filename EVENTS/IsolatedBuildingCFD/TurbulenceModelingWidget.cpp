@@ -187,6 +187,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     turbModelLayout->addWidget(stackedTurbModelWidget);
     connect(turbModelOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(turbModelTypeChanged(QString)));
 
+
     //============================= ******* ===============================//
 
     layout->addWidget(turbModelGroup);
@@ -194,6 +195,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
 
 
     //======================== Default Setup ==============================//
+//    turbModelTypeChanged("LES");
 
 }
 
