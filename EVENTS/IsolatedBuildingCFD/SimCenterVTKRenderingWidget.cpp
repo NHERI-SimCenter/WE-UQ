@@ -140,9 +140,9 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     menueLayout->addWidget(viewObject, 0, 1, Qt::AlignLeft);
     menueLayout->addWidget(surfaceRepresentationLabel, 0, 2, Qt::AlignRight);
     menueLayout->addWidget(surfaceRepresentation, 0, 3, Qt::AlignLeft);
-    menueLayout->addWidget(transparencyLabel, 0, 4, Qt::AlignRight);
-    menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
-    menueLayout->addWidget(reloadCase, 0, 6, Qt::AlignCenter);
+//    menueLayout->addWidget(transparencyLabel, 0, 4, Qt::AlignRight);
+    menueLayout->addWidget(transparency, 0, 4, Qt::AlignLeft);
+    menueLayout->addWidget(reloadCase, 0, 5, Qt::AlignCenter);
 
     qvtkWidget->setMinimumSize(QSize(350, 600));
     visLayout->addWidget(qvtkWidget);
