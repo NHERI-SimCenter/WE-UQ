@@ -37,8 +37,7 @@ win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
     DEPENDPATH += $$PWD/../VTK/Release/bin
     INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
-                  LIBS += -L$$PWD/../VTK/Release/lib \
-    LIBS += -L/usr/local/lib \    
+    LIBS += -L$$PWD/../VTK/Release/lib \
     -lvtkViewsCore-9.2 \
     -lvtkFiltersCore-9.2 \
     -lvtkFiltersSources-9.2 \
@@ -61,7 +60,7 @@ win32 {
 #    DEPENDPATH += $$PWD/../VTK/lib
 #    LIBS += -L$$PWD/../VTK/lib \
     DEPENDPATH += $$PWD/../VTK/Release/bin
-                  INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
+    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
     INCLUDEPATH += /usr/local/include/vtk-9.2                  
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
