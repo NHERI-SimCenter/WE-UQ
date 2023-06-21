@@ -145,8 +145,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
 
     theBuildingButton->setIcon(pixmapFlat);
-    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.35);
-    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.35);
+    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.30);
+    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.30);
     buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 4, 1, Qt::AlignVCenter);
 
     QLabel *buildingWidthLabel = new QLabel("Building Width:");

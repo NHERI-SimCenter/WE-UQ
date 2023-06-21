@@ -236,8 +236,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QPushButton *blockMeshDemoView = new QPushButton("");
     QPixmap pixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/blockMeshDemoMeshView.png");
     blockMeshDemoView->setIcon(pixmap);
-    blockMeshDemoView->setIconSize(pixmap.rect().size()*.35);
-    blockMeshDemoView->setFixedSize(pixmap.rect().size()*.35);
+    blockMeshDemoView->setIconSize(pixmap.rect().size()*.30);
+    blockMeshDemoView->setFixedSize(pixmap.rect().size()*.30);
 
     backgroundMeshLayout->addWidget(blockMeshDemoView,1,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
@@ -576,11 +576,10 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
     process->setWorkingDirectory(casePath);
 
     #ifdef Q_OS_MACOS
-
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+        commands = "docker run --rm --entrypoint /bin/bash" + " -v " + mainModel->caseDir() + ":"
                    + localFoamPath + " " + dockerImage + " -c "
                    + "\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
 
