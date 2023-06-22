@@ -78,6 +78,12 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     QGridLayout* boundaryConditionsLayout = new QGridLayout(boundaryConditionsGroup);
     boundaryConditionsGroup->setLayout(boundaryConditionsLayout);
 
+
+    QGroupBox* inflowGroup = new QGroupBox("Inflow Conditions", this);
+    QGridLayout* inflowLayout = new QGridLayout(inflowGroup);
+    inflowGroup->setLayout(inflowLayout);
+
+
     QLabel *patchNameLabel = new QLabel("Face Name");
     QLabel *boundaryConditionTypeLabel = new QLabel("Boundary Condition");
 
@@ -157,6 +163,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
     //-------------------------------------------------------------------------------
     layout->addWidget(boundaryConditionsGroup);
+    layout->addWidget(inflowGroup);
 
     this->setLayout(layout);
 }
@@ -175,7 +182,6 @@ void BoundaryConditionsWidget::clear(void)
 bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes physical boundary information to JSON file.
-
     QJsonObject boundaryCondJson = QJsonObject();
 
     boundaryCondJson["inletBoundaryCondition"] = inletBCType->currentText();
