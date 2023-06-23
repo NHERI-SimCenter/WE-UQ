@@ -52,6 +52,7 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
+class QRadioButton;
 class IsolatedBuildingCFD;
 
 class BoundaryConditionsWidget: public SimCenterAppWidget
@@ -80,6 +81,11 @@ private:
    QComboBox    *topBCType;
    QComboBox    *groundBCType;
    QComboBox    *buildingBCType;
+
+   QRadioButton *infDFSR;
+   QRadioButton *infDFM;
+   QRadioButton *infDFM;
+
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

@@ -175,6 +175,14 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     QLabel *infLScale = new QLabel("Wind Profile: ");
 
 
+    constTimeStep = new QRadioButton("Constant");
+    constTimeStep->setChecked(true);
+    constTimeStep->setToolTip("Use constant time step for the solver");
+
+
+    adjustTimeStep = new QRadioButton("Adjustable");
+    adjustTimeStep->setChecked(false);
+    adjustTimeStep->setToolTip("Use adjustable time step for the solver");
 
     inflowLayout->addWidget(infMethod, 0, 0);
 
