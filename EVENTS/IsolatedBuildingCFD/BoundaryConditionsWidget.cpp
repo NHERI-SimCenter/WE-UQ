@@ -79,11 +79,6 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     boundaryConditionsGroup->setLayout(boundaryConditionsLayout);
 
 
-    QGroupBox* inflowGroup = new QGroupBox("Inflow Conditions", this);
-    QGridLayout* inflowLayout = new QGridLayout(inflowGroup);
-    inflowGroup->setLayout(inflowLayout);
-
-
     QLabel *patchNameLabel = new QLabel("Face Name");
     QLabel *boundaryConditionTypeLabel = new QLabel("Boundary Condition");
 
@@ -161,7 +156,30 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     boundaryConditionsLayout->setHorizontalSpacing(25);
 
 
-    //-------------------------------------------------------------------------------
+    //=======================================================
+    //Inflow boundary condition options
+    //=======================================================
+    QGroupBox* inflowGroup = new QGroupBox("Inflow Conditions", this);
+    QGridLayout* inflowLayout = new QGridLayout();
+    inflowGroup->setLayout(inflowLayout);
+
+    QGroupBox* windProfileGroup = new QGroupBox("Inflow Conditions", this);
+    QGridLayout* windProfileLayout = new QGridLayout(inflowGroup);
+    windProfileGroup->setLayout(windProfileLayout);
+
+
+    QLabel *infMethod = new QLabel("Inflow Generation Method: ");
+    QLabel *infTimeStep = new QLabel("Time Step: ");
+    QLabel *infSamplingFrequency = new QLabel("Sampling Frequency: ");
+    QLabel *infIScale = new QLabel("Wind Profile: ");
+    QLabel *infLScale = new QLabel("Wind Profile: ");
+
+
+
+    inflowLayout->addWidget(infMethod, 0, 0);
+
+
+    //-------------------------------------------------------
     layout->addWidget(boundaryConditionsGroup);
     layout->addWidget(inflowGroup);
 
