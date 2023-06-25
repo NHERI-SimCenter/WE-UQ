@@ -333,7 +333,6 @@ void ResultMonitoringWidget::onCreatePressurePointsToggled(bool checked)
 
 void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 {
-
     QDialog *dialog  = new QDialog(this);
 
     int dialogHeight = 600;
@@ -454,7 +453,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
 void ResultMonitoringWidget::onOpenCSVFileClicked()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "/home/abiy", tr("CSV Files (*.csv)"));
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
 
    QFileDialog dialog(this);
    dialog.setFileMode(QFileDialog::AnyFile);
