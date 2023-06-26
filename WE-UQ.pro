@@ -1,4 +1,4 @@
-#-------------------------------------------------
+`#-------------------------------------------------
 #
 # Project created by QtCreator 2017-06-06T06:31:52
 #
@@ -29,25 +29,30 @@ INCLUDEPATH += ExpertCFD/Analysis
 INCLUDEPATH += ExpertCFD/CFDanalysis
 INCLUDEPATH += ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
+INCLUDEPATH += /usr/local/include/vtk-9.2               
+
 
 win32 {
     LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
-    LIBS += -L$$PWD/../VTK/lib
-    LIBS += vtkViewsCore-9.2.lib
-    LIBS += vtkCommonCore-9.2.lib
-    LIBS += vtkFiltersGeometry-9.2.lib
-    LIBS += vtkRenderingCore-9.2.lib
-    LIBS += vtkRenderingContextOpenGL2-9.2.lib
-    LIBS += vtkCommonExecutionModel-9.2.lib
-    LIBS += vtkGUISupportQt-9.2.lib
-    LIBS += vtkCommonDataModel-9.2.lib
-    LIBS += vtkIOGeometry-9.2.lib
-    LIBS += vtkRenderingOpenGL2-9.2.lib
-    LIBS += vtkIOGeometry-9.2.lib
-    LIBS += vtkViewsQt-9.2.lib
-    LIBS += vtkIOLegacy-9.2.lib
-    LIBS += vtksys-9.2.lib
+    DEPENDPATH += $$PWD/../VTK/Release/bin
+    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
+    LIBS += -L$$PWD/../VTK/Release/lib \
+    -lvtkViewsCore-9.2 \
+    -lvtkFiltersCore-9.2 \
+    -lvtkFiltersSources-9.2 \
+    -lvtkCommonCore-9.2 \
+    -lvtkFiltersGeometry-9.2 \
+    -lvtkRenderingCore-9.2 \
+    -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkCommonExecutionModel-9.2 \
+    -lvtkCommonDataModel-9.2 \
+    -lvtkGUISupportQt-9.2 \
+    -lvtkRenderingOpenGL2-9.2 \
+    -lvtkIOGeometry-9.2 \
+    -lvtkViewsQt-9.2 \
+    -lvtkIOLegacy-9.2 \
+    -lvtksys-9.2
 
 } else {
 
@@ -55,7 +60,14 @@ win32 {
     ICON = icons/NHERI-WEuq-Icon.icns
     DEPENDPATH += $$PWD/../VTK/lib
     LIBS += -L$$PWD/../VTK/lib \
+#    DEPENDPATH += $$PWD/../VTK/Release/bin
+#    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
+#    INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2                   
+#    INCLUDEPATH += /usr/local/include/vtk-9.2                  
+#    LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
+    -lvtkFiltersCore-9.2 \
+    -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
@@ -69,10 +81,12 @@ win32 {
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
     } else {
-    INCLUDEPATH += /usr/local/include/vtk-9.2
 
+    INCLUDEPATH += /usr/local/include/vtk-9.2
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
+    -lvtkFiltersCore-9.2 \
+    -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
@@ -85,13 +99,8 @@ win32 {
     -lvtkViewsQt-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
-
     }
     }
-
-
-
-
 
 include(../SimCenterCommon/Common/Common.pri)
 include(../SimCenterCommon/Workflow/Workflow.pri)

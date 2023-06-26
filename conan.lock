@@ -1,0 +1,35 @@
+{
+ "graph_lock": {
+  "nodes": {
+   "0": {
+    "options": "libcurl:fPIC=True\nlibcurl:shared=False\nlibcurl:with_brotli=False\nlibcurl:with_c_ares=False\nlibcurl:with_ca_bundle=None\nlibcurl:with_ca_path=None\nlibcurl:with_cookies=True\nlibcurl:with_crypto_auth=True\nlibcurl:with_dict=True\nlibcurl:with_docs=False\nlibcurl:with_file=True\nlibcurl:with_ftp=True\nlibcurl:with_gopher=True\nlibcurl:with_http=True\nlibcurl:with_imap=True\nlibcurl:with_ipv6=True\nlibcurl:with_largemaxwritesize=False\nlibcurl:with_ldap=False\nlibcurl:with_libidn=False\nlibcurl:with_libmetalink=False\nlibcurl:with_libpsl=False\nlibcurl:with_librtmp=False\nlibcurl:with_libssh2=False\nlibcurl:with_mqtt=True\nlibcurl:with_nghttp2=False\nlibcurl:with_ntlm=True\nlibcurl:with_ntlm_wb=True\nlibcurl:with_pop3=True\nlibcurl:with_proxy=True\nlibcurl:with_rtsp=True\nlibcurl:with_smb=True\nlibcurl:with_smtp=True\nlibcurl:with_ssl=darwinssl\nlibcurl:with_symbol_hiding=False\nlibcurl:with_telnet=True\nlibcurl:with_tftp=True\nlibcurl:with_threaded_resolver=True\nlibcurl:with_unix_sockets=True\nlibcurl:with_verbose_debug=True\nlibcurl:with_verbose_strings=True\nlibcurl:with_zlib=True\nlibcurl:with_zstd=False\nzlib:fPIC=True\nzlib:shared=False",
+    "requires": [
+     "1",
+     "2"
+    ],
+    "path": "conanfile.py",
+    "context": "host"
+   },
+   "1": {
+    "ref": "zlib/1.2.12",
+    "options": "fPIC=True\nshared=False",
+    "package_id": "e4fbacdee83eb1a2e68227ffe19f6e9a61b36cbc",
+    "prev": "0",
+    "context": "host"
+   },
+   "2": {
+    "ref": "libcurl/7.72.0",
+    "options": "fPIC=True\nshared=False\nwith_brotli=False\nwith_c_ares=False\nwith_ca_bundle=None\nwith_ca_path=None\nwith_cookies=True\nwith_crypto_auth=True\nwith_dict=True\nwith_docs=False\nwith_file=True\nwith_ftp=True\nwith_gopher=True\nwith_http=True\nwith_imap=True\nwith_ipv6=True\nwith_largemaxwritesize=False\nwith_ldap=False\nwith_libidn=False\nwith_libmetalink=False\nwith_libpsl=False\nwith_librtmp=False\nwith_libssh2=False\nwith_mqtt=True\nwith_nghttp2=False\nwith_ntlm=True\nwith_ntlm_wb=True\nwith_pop3=True\nwith_proxy=True\nwith_rtsp=True\nwith_smb=True\nwith_smtp=True\nwith_ssl=darwinssl\nwith_symbol_hiding=False\nwith_telnet=True\nwith_tftp=True\nwith_threaded_resolver=True\nwith_unix_sockets=True\nwith_verbose_debug=True\nwith_verbose_strings=True\nwith_zlib=True\nwith_zstd=False\nzlib:fPIC=True\nzlib:shared=False",
+    "package_id": "3d1bec21b16e6b00e50fed264612d3520d664d15",
+    "prev": "0",
+    "requires": [
+     "1"
+    ],
+    "context": "host"
+   }
+  },
+  "revisions_enabled": false
+ },
+ "version": "0.4",
+ "profile_host": "[settings]\narch=x86_64\narch_build=x86_64\nbuild_type=Release\ncompiler=apple-clang\ncompiler.libcxx=libc++\ncompiler.version=13\nos=Macos\nos_build=Macos\n[options]\n[build_requires]\n[env]\n"
+}

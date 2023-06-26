@@ -24,6 +24,3 @@ QTreeView#treeViewOnTheLeft::item:selected:active{
 QTreeView#treeViewOnTheLeft::item:selected:!active {
     background: rgb(63, 147, 168);
 }
-
-
-

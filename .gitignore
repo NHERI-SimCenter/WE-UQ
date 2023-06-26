@@ -69,8 +69,10 @@ WE-UQ.pro.user.4.10-pre1
 
 # Build folder
 build/*
-tests/WEUQ-FSI/ZOOM instructions/
 userID.sh
 .DS_Store
 EVENTS/DigitalWindTunnel/.DS_Store
 
+# Test folders 
+tests/WEUQ-FSI/ZOOM instructions/
+tests/IsolatedBuildingCFDTest/

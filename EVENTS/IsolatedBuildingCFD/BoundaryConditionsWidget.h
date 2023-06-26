@@ -49,9 +49,10 @@ class QVBoxLayout;
 class QSpinBox;
 class QLineEdit;
 class LineEditRV;
-class QTabWidget;
+class QTableWidget;
 class QGroupBox;
 class QPushButton;
+class QRadioButton;
 class IsolatedBuildingCFD;
 
 class BoundaryConditionsWidget: public SimCenterAppWidget
@@ -63,11 +64,17 @@ public:
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
+    bool readCSV(QString & fileName);
 
 signals:
 
 public slots:
    void clear(void);
+   void inletBCTypeChanged(const QString &arg1);
+   void inflowTimeStepChanged(const QString &arg1);
+   void windProfileOptionChanged(const QString &arg1);
+   void onImportWindProfilesClicked();
+   void onShowWindProfilesClicked();
 
 private:
    IsolatedBuildingCFD  *mainModel;
@@ -80,6 +87,25 @@ private:
    QComboBox    *topBCType;
    QComboBox    *groundBCType;
    QComboBox    *buildingBCType;
+
+   QRadioButton *inflowDFSR;
+   QRadioButton *inflowDFM;
+   QRadioButton *inflowSEM;
+   QRadioButton *inflowDFSEM;
+   QRadioButton *inflowTSM;
+
+   QLineEdit    *inflowTimeStep;
+   QLineEdit    *inflowMaxFreq;
+   QLineEdit    *IScale;
+   QLineEdit    *LScale;
+
+   QGroupBox    *inflowGroup;
+   QGridLayout  *inflowLayout;
+
+   QComboBox    *windProfileOption;
+   QPushButton  *importWindProfiles;
+   QPushButton  *showWindProfiles;
+   QList<QList<double>> windProfiles;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

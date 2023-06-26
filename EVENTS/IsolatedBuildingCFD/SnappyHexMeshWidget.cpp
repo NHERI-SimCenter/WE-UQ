@@ -79,8 +79,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     int widgetGap = 15;
 
-    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
-    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
+//    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
+//    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
 
     generalOptionsGroup = new QGroupBox("General Options", this);
     generalOptionsLayout = new QGridLayout();
@@ -92,9 +92,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
-
-    snappyHexMeshLayout->addWidget(generalOptionsGroup);
-    snappyHexMeshLayout->addWidget(snappyHexMeshTab);
 
     // Add general Options group
     QLabel *numCellsBetweenLevelsLabel = new QLabel("Number of Cells Between Levels:");
@@ -114,10 +111,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     resolveFeatureAngle->setRange(0, 180);
     resolveFeatureAngle->setValue(30);
     resolveFeatureAngle->setToolTip("Feature resolution angle to capture sharp angles.");
-
-//    castellatedMesh = new QCheckBox();
-//    castellatedMesh->setChecked(true);
-//    resolveFeatureAngle->setToolTip("Use castellated mesh or not angle to capture sharp angles.");
 
 
     runInParallel = new QCheckBox();
@@ -243,8 +236,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QPushButton *blockMeshDemoView = new QPushButton("");
     QPixmap pixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/blockMeshDemoMeshView.png");
     blockMeshDemoView->setIcon(pixmap);
-    blockMeshDemoView->setIconSize(pixmap.rect().size()*.35);
-    blockMeshDemoView->setFixedSize(pixmap.rect().size()*.35);
+    blockMeshDemoView->setIconSize(pixmap.rect().size()*.30);
+    blockMeshDemoView->setFixedSize(pixmap.rect().size()*.30);
 
     backgroundMeshLayout->addWidget(blockMeshDemoView,1,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
@@ -283,14 +276,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
         refinementBoxesTable->item(i, 0)->setText(tr("Box%1").arg(i + 1));
         refinementBoxesTable->item(i, 1)->setText(tr("%1").arg(i + 1));
     }
-
-//    //Box # 1
-//    refinementBoxesTable->item(0, 2)->setText("-6.60");
-//    refinementBoxesTable->item(0, 3)->setText("-4.00");
-//    refinementBoxesTable->item(0, 4)->setText("0.00");
-//    refinementBoxesTable->item(0, 5)->setText("8.75");
-//    refinementBoxesTable->item(0, 6)->setText("4.00");
-//    refinementBoxesTable->item(0, 7)->setText("4.00");
 
     //Box # 1
     refinementBoxesTable->item(0, 2)->setText("-6.60");
@@ -507,21 +492,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
 
-    snappyHexMeshLayout->addWidget(runMeshGroup);
-
-
-    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
-    //    connect(snappyMeshButton,SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
-
+    layout->addWidget(generalOptionsGroup);
+    layout->addWidget(snappyHexMeshTab);
+    layout->addWidget(runMeshGroup);
 
     //=============================================================================
 
-    layout->addWidget(snappyHexMeshGroup);
-
+//    layout->addWidget(snappyHexMeshGroup);
     this->setLayout(layout);
 
+    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
     connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshSizeClicked()));
-
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
     connect(addEdgeRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddEdgeRefinementChecked(int)));
@@ -549,18 +530,10 @@ void SnappyHexMeshWidget::clear(void)
 void SnappyHexMeshWidget::onRunBlockMeshClicked()
 {
     statusMessage("Generating background mesh with blockMesh");
+
     statusMessage("Creating blockMesh dictionary ...");
 
-    if (!QFile::exists(mainModel->caseDir() + "/system/controlDict"))
-    {
-        mainModel->setupCase();
-    }
-
-    QJsonObject dummyJsonObj;
-
-    outputToJSON(dummyJsonObj);
-
-    createBlockMeshDict();
+    mainModel->writeOpenFoamFiles();
 
     statusMessage("Running blockMesh ...");
 
@@ -572,10 +545,10 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
     onRunBlockMeshClicked();
 
     statusMessage("Generating snappyHexMesh");
+
     statusMessage("Creating snappyHexMesh dictionary ...");
 
-    createSnappyHexMeshDict();
-    generateBuildingSTLGeometry();
+    mainModel->writeOpenFoamFiles();
 
     statusMessage("Extracting building surface features ...");
 
@@ -594,104 +567,38 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
 }
 
 
-bool SnappyHexMeshWidget::createBlockMeshDict()
-{
-
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_block_mesh_dictionary.py";
-    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-    QString templatePath = mainModel->foamDictsPath();
-    QString outputPath = mainModel->caseDir() + "system/";
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished();
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
-
-    process->close();
-
-    return true;
-}
-
-bool SnappyHexMeshWidget::createSnappyHexMeshDict()
-{
-
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_snappy_hex_mesh_dictionary.py";
-    QString jsonPath = mainModel->caseDir() + "/constant/simCenter/input/";
-    QString templatePath = mainModel->foamDictsPath();
-    QString outputPath = mainModel->caseDir();
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished(-1);
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
-
-    process->close();
-
-    return true;
-}
-
-bool SnappyHexMeshWidget::generateBuildingSTLGeometry()
-{
-
-    QString stlPath = mainModel->caseDir() + "constant/geometry/";
-    QString jsonPath = mainModel->caseDir() + "constant/simCenter/input/";
-    QString scriptPath = mainModel->pyScriptsPath() + "/create_building_stl_geometry.py";
-
-//    QStringList args = {workingDir, workingDir};
-//    ModularPython *geomPy = new ModularPython(workingDir, this);
-//    geomPy->run(scriptPath, args);
-
-    QString program = "/home/abiy/anaconda3/bin/python3.9";
-    QStringList arguments;
-
-    arguments << scriptPath << jsonPath << stlPath;
-
-    QProcess *process = new QProcess(this);
-
-    process->start(program, arguments);
-
-    process->waitForFinished(-1);
-
-    process->close();
-
-    statusMessage("Generated STL geometry of the building");
-    statusMessage("\t\tData saved to: " + stlPath + "\n");
-
-    return true;
-}
-
-
 bool SnappyHexMeshWidget::runBlockMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; blockMesh";
-
+    qDebug() << "CASE_PATH: " << casePath;
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+	/*
+        commands = QString("docker run --rm --entrypoint /bin/bash") + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+	  + localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
+	*/
+	
+        commands = "docker run --rm --entrypoint /bin/bash" + " -v " + mainModel->caseDir() + ":"
+                   +localFoamPath + " " + dockerImage + " -c "
+                   +"\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
+
+
+        //Actual command on the terminal
+        //$docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
+
+    #else
+
+        commands = "source /opt/openfoam10/etc/bashrc; blockMesh";
+
+    #endif
+
     process->start("bash", QStringList() << "-c" << commands);
     process->waitForFinished(-1);
 
@@ -704,15 +611,28 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
 bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 {
-
     QString casePath = mainModel->caseDir();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
-
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+                   + localFoamPath + " " + dockerImage + " -c "
+                   + "\"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"";
+
+        //Actual command on the terminal
+        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
+
+    #else
+
+        commands  = "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
+
+    #endif
+
     process->start("bash", QStringList() << "-c" << commands);
     process->waitForFinished(-1);
 
@@ -725,29 +645,31 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 
 bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 {
-
     QString casePath = mainModel->caseDir();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
-
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
+                   + localFoamPath + " " + dockerImage + " -c "
+                   + "\"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"";
+
+        //Actual command on the terminal
+        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh; exit"
+
+    #else
+
+        commands = "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite";
+
+    #endif
+
     process->start("bash", QStringList() << "-c" << commands);
-
-//    QTime dieTime= QTime::currentTime().addSecs(10);
-
-//    while (QTime::currentTime() < dieTime)
-//    {
-//        statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    }
-
     process->waitForFinished(-1);
-
-    QMessageBox msgBox;
-    msgBox.setText("Mesh generation completed!");
-    msgBox.exec();
 
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
@@ -773,10 +695,6 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText("Mesh generation completed!");
-//    msgBox.exec();
-
     statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
@@ -786,38 +704,9 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 
 bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 {
-    //Write building geometry and configuration parameters
-    QJsonObject buildingParamsJson = QJsonObject();
-
-    buildingParamsJson["buildingWidth"]= mainModel->buildingWidth();
-    buildingParamsJson["buildingDepth"]= mainModel->buildingDepth();
-    buildingParamsJson["buildingHeight"]= mainModel->buildingHeight();
-    buildingParamsJson["geometricScale"]= mainModel->geometricScale();
-    buildingParamsJson["windDirection"] = mainModel->windDirection();
-    buildingParamsJson["normalizationType"] = mainModel->normalizationType();
-
-    QJsonArray originPoint  = {mainModel->coordSysOrigin()[0], mainModel->coordSysOrigin()[1], mainModel->coordSysOrigin()[2]};
-    buildingParamsJson["origin"] = originPoint;
-
-    //Replace with the unit system from "General Information" window later
-    buildingParamsJson["lengthUnit"] = "m";
-    buildingParamsJson["angleUnit"] = "degree";
-    jsonObject["buildingParameters"] = buildingParamsJson;
-
-
-    //************************************************************************
-
     //Write blockMesh configuration parameters
     QJsonObject blockMeshParamsJson = QJsonObject();
 
-    blockMeshParamsJson["domainLength"] = mainModel->domainLength();
-    blockMeshParamsJson["domainWidth"] = mainModel->domainWidth();
-    blockMeshParamsJson["domainHeight"] = mainModel->domainHeight();
-    blockMeshParamsJson["fetchLength"] = mainModel->fetchLength();
-    blockMeshParamsJson["buildingHeight"] = mainModel->buildingHeight();
-    blockMeshParamsJson["geometricScale"] = mainModel->geometricScale();
-    blockMeshParamsJson["normalizationType"] = mainModel->normalizationType();
-    blockMeshParamsJson["origin"] = originPoint;
     blockMeshParamsJson["xNumCells"] = xAxisNumCells->text().toInt();
     blockMeshParamsJson["yNumCells"] = yAxisNumCells->text().toInt();
     blockMeshParamsJson["zNumCells"] = zAxisNumCells->text().toInt();
@@ -830,27 +719,15 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["topBoundaryType"] = "symmetry";
     blockMeshParamsJson["frontBoundaryType"] = "symmetry";
     blockMeshParamsJson["backBoundaryType"] = "symmetry";
-    //Replace with the unit system from "General Information" window
-    blockMeshParamsJson["lengthUnit"] = "m";
+
 
     jsonObject["blockMeshParameters"] = blockMeshParamsJson;
 
 
     //************************************************************************
 
-    //Write blockMesh configuration parameters
+    //Write snappy configuration parameters
     QJsonObject snappyMeshParamsJson = QJsonObject();
-
-    snappyMeshParamsJson["domainLength"] = mainModel->domainLength();
-    snappyMeshParamsJson["domainWidth"] = mainModel->domainWidth();
-    snappyMeshParamsJson["domainHeight"] = mainModel->domainHeight();
-    snappyMeshParamsJson["fetchLength"] = mainModel->fetchLength();
-    snappyMeshParamsJson["buildingHeight"] = mainModel->buildingHeight();
-    snappyMeshParamsJson["geometricScale"] = mainModel->geometricScale();
-    snappyMeshParamsJson["normalizationType"] = mainModel->normalizationType();
-
-    snappyMeshParamsJson["origin"] = originPoint;
-
     snappyMeshParamsJson["buildingSTLName"] = "building";
     snappyMeshParamsJson["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
     snappyMeshParamsJson["resolveFeatureAngle"] = resolveFeatureAngle->value();
@@ -916,16 +793,6 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     snappyMeshParamsJson["lengthUnit"] = "m";
 
     jsonObject["snappyHexMeshParameters"] = snappyMeshParamsJson;
-
-
-    //Write it to JSON becase it is needed for the mesh generation before the
-    //final simulation is run.
-    QFile jsonFile(mainModel->caseDir() + "/constant/simCenter/input/IsolatedBuildingCFD.json");
-    jsonFile.open(QFile::WriteOnly);
-
-    QJsonDocument jsonDoc = QJsonDocument(jsonObject);
-
-    jsonFile.write(jsonDoc.toJson());
 
     return true;
 }

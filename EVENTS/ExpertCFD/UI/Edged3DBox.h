@@ -8,6 +8,7 @@
 #include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender>
 
 class Edged3DBox : public QObject
 {

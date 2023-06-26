@@ -89,8 +89,8 @@ private:
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *resultMonitoringGroup;
-   QVBoxLayout          *resultMonitoringLayout;
+//   QGroupBox            *resultMonitoringGroup;
+//   QVBoxLayout          *resultMonitoringLayout;
 
    QGroupBox            *monitorIntegratedLoadGroup;
    QGridLayout          *monitorIntegratedLoadLayout;
@@ -134,7 +134,7 @@ private:
    QPushButton          *showCoordinateOfPoints;
 
    void visCoordinateOfPoints(QGridLayout*);
-   QList<QVector3D> calculatePointCoordinates(int nWidth, int nDepth, int nHeight);
+   QList<QVector3D> calculatePointCoordinates();
 
 public:
 

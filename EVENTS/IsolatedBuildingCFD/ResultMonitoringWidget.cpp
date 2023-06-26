@@ -107,9 +107,9 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    resultMonitoringGroup = new QGroupBox("Result Monitoring");
-    resultMonitoringLayout = new QVBoxLayout();
-    resultMonitoringGroup->setLayout(resultMonitoringLayout);
+//    resultMonitoringGroup = new QGroupBox("Result Monitoring");
+//    resultMonitoringLayout = new QVBoxLayout();
+//    resultMonitoringGroup->setLayout(resultMonitoringLayout);
 
     monitorIntegratedLoadGroup = new QGroupBox("Story Loads");
     monitorIntegratedLoadLayout = new QGridLayout();
@@ -131,24 +131,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorFlowFieldLayout = new QGridLayout();
     monitorFlowFieldGroup->setLayout(monitorFlowFieldLayout);
 
-
-//    monitorIntegratedLoadLabel = new QLabel("Monitor Integrated Loads");
-//    monitorIntegratedLoad  = new QCheckBox();
-
-//    monitorPressureLabel = new QLabel("Monitor Local Pressure");
-//    monitorPressure  = new QCheckBox();
-
-//    monitorFlowFieldLabel = new QLabel("Monitor Flow Field");
-//    monitorFlowField  = new QCheckBox();
-
-//    resultMonitoringLayouet->addWidget(monitorIntegratedLoadLabel, 0, 0);
-//    resultMonitoringLayout->addWidget(monitorIntegratedLoad, 0, 1);
-
-//    resultMonitoringLayout->addWidget(monitorPressureLabel, 1, 0);
-//    resultMonitoringLayout->addWidget(monitorPressure, 1, 1);
-
-//    resultMonitoringLayout->addWidget(monitorFlowFieldLabel, 2, 0);
-//    resultMonitoringLayout->addWidget(monitorFlowField, 2, 1);
 
     //==================================================================
     //              Monitor Integrated Loads Option
@@ -227,7 +209,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 //    monitorIntegratedLoadLayout->addWidget(monitorBaseLoadLabel, 4, 0);
     monitorIntegratedLoadLayout->addWidget(monitorBaseLoad, 5, 0);
 
-    resultMonitoringLayout->addWidget(monitorIntegratedLoadGroup);
+    layout->addWidget(monitorIntegratedLoadGroup);
 
     //==================================================================
     //              Monitor Local Pressure
@@ -307,9 +289,9 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 
-    resultMonitoringLayout->addWidget(monitorPressureGroup);
+    layout->addWidget(monitorPressureGroup);
 
-    layout->addWidget(resultMonitoringGroup);
+//    layout->addWidget(resultMonitoringGroup);
     this->setLayout(layout);
 
     //Add signals
@@ -318,11 +300,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(createPressurePoints, SIGNAL(toggled(bool)), this, SLOT(onCreatePressurePointsToggled(bool)));
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
-
-
-//    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-//    sto
-//    numb =theGI->getHeight();
 
 }
 
@@ -356,7 +333,6 @@ void ResultMonitoringWidget::onCreatePressurePointsToggled(bool checked)
 
 void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 {
-
     QDialog *dialog  = new QDialog(this);
 
     int dialogHeight = 600;
@@ -369,14 +345,10 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
     QWidget* samplePointsWidget = new QWidget();
 
-
     QGridLayout* dialogLayout = new QGridLayout();
 
-    int nW = numTapsAlongWidth->text().toInt();
-    int nD = numTapsAlongDepth->text().toInt();
-    int nH = numTapsAlongHeight->text().toInt();
 
-    QList<QVector3D> points = calculatePointCoordinates(nW, nD, nH);
+    QList<QVector3D> points = calculatePointCoordinates();
 
     int numCols = 3; // x, y and z
     int numRows = points.size(); //acount points on each face of the building (sides and top)
@@ -434,7 +406,6 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
     dialogLayout->addWidget(qvtkWidget, 0, 1);
 
-
     // Setup reader
     buildingReader = vtkSmartPointer<vtkSTLReader>::New();
     buildingReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
@@ -452,7 +423,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
     //point reader
     pointsReader = vtkSmartPointer<vtkSimplePointsReader>::New();
-    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
     pointsReader->Update();
 
     //point mapper
@@ -482,19 +453,20 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 
 void ResultMonitoringWidget::onOpenCSVFileClicked()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "", tr("CSV Files (*.csv)"));
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
 
    QFileDialog dialog(this);
    dialog.setFileMode(QFileDialog::AnyFile);
 }
 
 
-QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, int nDepth, int nHeight)
+QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
 {
-
     QList<QVector3D> points;
 
-    const int nPoints = 2*(nWidth*nHeight + nDepth*nHeight) + nWidth*nDepth;
+    int nWidth = numTapsAlongWidth->text().toInt();
+    int nDepth = numTapsAlongDepth->text().toInt();
+    int nHeight = numTapsAlongHeight->text().toInt();
 
     float x = 0.0;
     float y = 0.0;
@@ -587,7 +559,7 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates(int nWidth, i
 
 
     //Write to a file
-    QString fileName = mainModel->caseDir() + "/constant/simCenter/defaultSamplingPoints.txt";
+    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
     QFile file(fileName);
 
     file.remove();
@@ -630,6 +602,18 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
     resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
 
     resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
+
+
+    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
+    QJsonArray pressureSamplingPoints;
+
+    for(int i=0; i < pointsXYZ.size(); i++)
+    {
+        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
+        pressureSamplingPoints.append(point);
+    }
+
+    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
 
     jsonObject["resultMonitoring"] = resMonitoringJson;
 

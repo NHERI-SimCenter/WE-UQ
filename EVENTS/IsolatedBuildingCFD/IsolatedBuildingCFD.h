@@ -78,7 +78,11 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
     bool setupCase();
+    bool cleanCase();
+    bool isMeshed();
+    bool isCaseConfigured();
 
+    void writeOpenFoamFiles();
     void updateWidgets();
     QVector<QVector<double>> readTxtData(QString fileName);
 
@@ -98,19 +102,18 @@ public:
 
     QVector<double> coordSysOrigin();
 
-    const QString normalizationType();
-    const QString caseDir();
-    const QString foamDictsPath();
-    const QString templateCaseDir();
-    const QString pyScriptsPath();
-    const QString simulationType();
+    QString normalizationType();
+    QString caseDir();
+    QString foamDictsPath();
+    QString templateDictDir();
+    QString pyScriptsPath();
+    QString simulationType();
 
 
 signals:
 
 public slots:
    void clear(void);
-   void onRunCFDClicked();
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
 
@@ -123,6 +126,9 @@ private:
 
    QVBoxLayout  *visWindowLayout;
    QGroupBox    *visWindowGroup;
+
+   QGroupBox    *cfdResultsGroup;
+   QGridLayout  *cfdResultsLayout;
 
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
@@ -151,8 +157,8 @@ private:
    QGroupBox    *generalDescriptionGroup;
    QHBoxLayout  *generalDescriptionLayout;
 
-   QGroupBox    *generalSettingGroup;
-   QGridLayout  *generalSettingLayout;
+   QGroupBox    *dimAndScaleGroup;
+   QGridLayout  *dimAndScaleLayout;
    QComboBox    *normalizationTypeWidget;
 
 
@@ -171,8 +177,8 @@ private:
    QWidget      *buildingAndDomainInformationGroup;
    QGridLayout  *buildingAndDomainInformationLayout;
 
-   QWidget      *inputFormsGroup;
-   QGridLayout  *inputFormsLayout;
+//   QWidget      *inputFormsGroup;
+//   QGridLayout  *inputFormsLayout;
 
    WindCharacteristicsWidget    *windCharacteristics;
    SnappyHexMeshWidget          *snappyHexMesh;
@@ -185,10 +191,11 @@ private:
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 
-   QPushButton  *runCFD;
-   QPushButton  *showResults;
+   QPushButton  *plotWindProfiles;
+   QPushButton  *plotWindLoads;
 
    QString workingDirPath;
+   QString openFoamVersion;
 
 };
 

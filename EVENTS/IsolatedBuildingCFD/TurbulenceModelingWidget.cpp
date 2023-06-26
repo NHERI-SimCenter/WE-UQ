@@ -140,6 +140,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
                                  "Ce = 1.048\n";
 
     LESModelCoeffs->setText(LESModelCoeffText);
+    LESModelCoeffs->setFontItalic(true);
     LESModelCoeffs->setReadOnly(true);
 
     LESOptions  = new QComboBox();
@@ -186,10 +187,15 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     turbModelLayout->addWidget(stackedTurbModelWidget);
     connect(turbModelOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(turbModelTypeChanged(QString)));
 
+
     //============================= ******* ===============================//
 
     layout->addWidget(turbModelGroup);
     this->setLayout(layout);
+
+
+    //======================== Default Setup ==============================//
+//    turbModelTypeChanged("LES");
 
 }
 

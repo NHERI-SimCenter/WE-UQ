@@ -106,12 +106,11 @@ private:
 
    QVBoxLayout  *layout;
 
-   QGroupBox    *snappyHexMeshGroup;
-   QVBoxLayout  *snappyHexMeshLayout;
+//   QGroupBox    *snappyHexMeshGroup;
+//   QVBoxLayout  *snappyHexMeshLayout;
 
    QGroupBox    *generalOptionsGroup;
    QGridLayout  *generalOptionsLayout;
-
 
    QGroupBox    *runMeshGroup;
    QHBoxLayout  *runMeshLayout;
