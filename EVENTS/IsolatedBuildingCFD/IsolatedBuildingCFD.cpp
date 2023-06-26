@@ -606,8 +606,6 @@ void IsolatedBuildingCFD::onShowResultsClicked()
     LuPlot->replot();
 
 
-
-
     QString SuName  = caseDir() + "/constant/simCenter/output/Suh.txt";
     QVector<QVector<double>> Suh  =  readTxtData(SuName) ;
 
