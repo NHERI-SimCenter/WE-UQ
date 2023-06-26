@@ -571,6 +571,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
+    qDebug() << "CASE_PATH: " << casePath;
     QString commands;
     QProcess *process = new QProcess(this);
     process->setWorkingDirectory(casePath);
@@ -579,9 +580,8 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm --entrypoint /bin/bash" + " -v " + mainModel->caseDir() + ":"
-                   + localFoamPath + " " + dockerImage + " -c "
-                   + "\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
+        commands = QString("docker run --rm --entrypoint /bin/bash") + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+	  + localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
 
         //Actual command on the terminal
         //$docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
