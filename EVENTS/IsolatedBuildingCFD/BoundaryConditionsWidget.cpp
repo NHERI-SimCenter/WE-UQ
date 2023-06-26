@@ -40,8 +40,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "IsolatedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
-#include <QJsonArray>
-#include <QJsonObject>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDebug>
@@ -66,6 +64,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QMessageBox>
+#include <QTableWidget>
 
 BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -77,6 +77,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
     QGridLayout* boundaryConditionsLayout = new QGridLayout(boundaryConditionsGroup);
     boundaryConditionsGroup->setLayout(boundaryConditionsLayout);
+
 
     QLabel *patchNameLabel = new QLabel("Face Name");
     QLabel *boundaryConditionTypeLabel = new QLabel("Boundary Condition");
@@ -155,10 +156,92 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     boundaryConditionsLayout->setHorizontalSpacing(25);
 
 
-    //-------------------------------------------------------------------------------
+    //=======================================================
+    //Inflow boundary condition options
+    //=======================================================
+    inflowGroup = new QGroupBox("Inflow Properties", this);
+    inflowLayout = new QGridLayout();
+    inflowGroup->setLayout(inflowLayout);
+    inflowGroup->setEnabled(false);
+
+    QLabel *inflowMethodLabel = new QLabel("Generation Method: ");
+    QLabel *inflowTimeStepLabel = new QLabel("Inflow Time Step: ");
+    QLabel *inflowMaxFreqLabel = new QLabel("Max. Frequency: ");
+    QLabel *windProfileOptionLabel = new QLabel("Wind Profile: ");
+
+    inflowDFSR = new QRadioButton("DFSR");
+    inflowDFSR->setChecked(true);
+    inflowDFSR->setToolTip("Uses the Divergence-free Spectral Representation (DFSR) method");
+
+    inflowDFM = new QRadioButton("DFM");
+    inflowDFM->setChecked(false);
+    inflowDFM->setToolTip("Uses the Digital Filtering Method (DFM)");
+
+    inflowSEM = new QRadioButton("SEM");
+    inflowSEM->setChecked(false);
+    inflowSEM->setToolTip("Uses the Synthetic Eddy Method (SEM)");
+
+    inflowDFSEM = new QRadioButton("DFSEM");
+    inflowDFSEM->setChecked(false);
+    inflowDFSEM->setToolTip("Uses the Divergence-free Synthetic Eddy Method(DFSEM)");
+
+    inflowTSM = new QRadioButton("TSM");
+    inflowTSM->setChecked(false);
+    inflowTSM->setToolTip("Uses the Turbulent Spot Method(TSM)");
+
+
+    inflowTimeStep = new QLineEdit();
+    inflowTimeStep->setText("0.005");
+    inflowTimeStep->setToolTip("Time step for the inflow generation, can be higher than the solver time step");
+
+    inflowMaxFreq = new QLineEdit();
+    inflowMaxFreq->setText(QString::number(0.5/inflowTimeStep->text().toDouble()));
+    inflowMaxFreq->setEnabled(false);
+    inflowMaxFreq->setToolTip("Faximum frequency modeled in the inflow");
+
+    windProfileOption = new QComboBox();
+    windProfileOption->addItem("Table");
+    windProfileOption->addItem("ESDU");
+    windProfileOption->setToolTip("Specify the wind profile from tabulated data for Engineering Sciences Data Unit (ESDU)");
+
+
+    importWindProfiles = new QPushButton("Import(*.csv)");
+    importWindProfiles->setVisible(true);
+
+    showWindProfiles = new QPushButton("Show Wind Profiles");
+
+
+    inflowLayout->addWidget(inflowMethodLabel, 0, 0);
+    inflowLayout->addWidget(inflowDFSR, 0, 1);
+    inflowLayout->addWidget(inflowDFM, 0, 2);
+    inflowLayout->addWidget(inflowSEM, 0, 3);
+    inflowLayout->addWidget(inflowDFSEM, 0, 4);
+    inflowLayout->addWidget(inflowTSM, 0, 5);
+
+    inflowLayout->addWidget(inflowTimeStepLabel, 1, 0);
+    inflowLayout->addWidget(inflowTimeStep, 1, 1, 1, 2);
+
+    inflowLayout->addWidget(inflowMaxFreqLabel, 2, 0);
+    inflowLayout->addWidget(inflowMaxFreq, 2, 1, 1, 2);
+
+    inflowLayout->addWidget(windProfileOptionLabel, 3, 0);
+    inflowLayout->addWidget(windProfileOption, 3, 1, 1, 2);
+
+    inflowLayout->addWidget(importWindProfiles, 3, 3);
+    inflowLayout->addWidget(showWindProfiles, 3, 4, 1, 2);
+
+
+    //-------------------------------------------------------
     layout->addWidget(boundaryConditionsGroup);
+    layout->addWidget(inflowGroup);
 
     this->setLayout(layout);
+
+    connect(inletBCType, SIGNAL(currentIndexChanged(QString)), this, SLOT(inletBCTypeChanged(QString)));
+    connect(inflowTimeStep, SIGNAL(textChanged(QString)), this, SLOT(inflowTimeStepChanged(QString)));
+    connect(windProfileOption, SIGNAL(currentIndexChanged(QString)), this, SLOT(windProfileOptionChanged(QString)));
+    connect(importWindProfiles, SIGNAL(clicked()), this, SLOT(onImportWindProfilesClicked()));
+    connect(showWindProfiles, SIGNAL(clicked()), this, SLOT(onShowWindProfilesClicked()));
 }
 
 
@@ -172,10 +255,137 @@ void BoundaryConditionsWidget::clear(void)
 
 }
 
+void BoundaryConditionsWidget::inletBCTypeChanged(const QString &arg1)
+{
+    if(arg1 == "TInf")
+    {
+        inflowGroup->setEnabled(true);
+    }
+    else
+    {
+        inflowGroup->setEnabled(false);
+    }
+}
+
+void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
+{
+    if(arg1 == "ESDU")
+    {
+        importWindProfiles->setVisible(false);
+    }
+    else if(arg1 == "Table")
+    {
+        importWindProfiles->setVisible(true);
+    }
+    else
+    {
+        qDebug() << "ERROR .. wind profile option.. type unknown: " << arg1;
+    }
+}
+
+void BoundaryConditionsWidget::inflowTimeStepChanged(const QString &arg1)
+{
+    inflowMaxFreq->setText(QString::number(0.5/arg1.toDouble()));
+}
+
+
+void BoundaryConditionsWidget::onImportWindProfilesClicked()
+{
+    QString windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
+
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+
+//    QMessageBox msgBox;
+//    msgBox.setText("Wind profile path: " + windProfilePath);
+//    msgBox.exec();
+
+    readCSV(windProfilePath);
+}
+
+bool BoundaryConditionsWidget::readCSV(QString &fileName)
+{
+    windProfiles.clear();
+
+    // verify that the given file exists
+    QFile csv_file = QFile(fileName);
+    if (!csv_file.exists()) {
+        return false;
+    }
+
+    // try opening the file and parse it if successful
+    if (!csv_file.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QTextStream inStream(&csv_file);
+
+    while (!inStream.atEnd()) {
+        QString line = inStream.readLine();
+        QStringList fields = line.split(",");
+
+        QList<double> row;
+
+        foreach ( const QString field, fields )
+        {
+            row.append(field.toDouble());
+        }
+        windProfiles.append(row);
+    }
+
+    csv_file.close();
+
+    return true;
+}
+
+void BoundaryConditionsWidget::onShowWindProfilesClicked()
+{
+    QDialog *dialog  = new QDialog(this);
+
+    int dialogHeight = 600;
+    int dialogWidth = 800;
+
+    dialog->setMinimumHeight(dialogHeight);
+    dialog->setMinimumWidth(dialogWidth);
+    dialog->setWindowTitle("Wind Profiles");
+
+
+    QWidget* windProfileWidget = new QWidget();
+
+    QGridLayout* dialogLayout = new QGridLayout();
+
+
+    int numRows = windProfiles.size(); // x, y and z
+    int numCols = windProfiles.first().size(); //acount points on each face of the building (sides and top)
+
+    QTableWidget* windProfileTable = new QTableWidget(numRows, numCols, windProfileWidget);
+    windProfileTable->setMinimumHeight(dialogHeight*0.95);
+    windProfileTable->setMinimumWidth(dialogWidth*0.95);
+
+
+    QStringList headerTitles = {"Z(m)", "Uav(m/s)", "Iu", "Iv", "Iw", "Lu(m)", "Lv(m)", "Lw(m)"};
+
+    windProfileTable->setHorizontalHeaderLabels(headerTitles);
+
+    for (int i=0; i < numCols; i++)
+    {
+       windProfileTable->setColumnWidth(i, windProfileTable->size().width()/numCols - 15);
+
+       for (int j=0; j < numRows; j++)
+       {
+            windProfileTable->setItem(j, i, new QTableWidgetItem(QString::number(windProfiles[j][i])));
+       }
+    }
+
+    dialogLayout->addWidget(windProfileTable, 0, 0);
+
+    dialog->setLayout(dialogLayout);
+    dialog->exec();
+}
+
 bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes physical boundary information to JSON file.
-
     QJsonObject boundaryCondJson = QJsonObject();
 
     boundaryCondJson["inletBoundaryCondition"] = inletBCType->currentText();
@@ -185,6 +395,60 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
     boundaryCondJson["groundBoundaryCondition"] = groundBCType->currentText();
     boundaryCondJson["buildingBoundaryCondition"] = buildingBCType->currentText();
 
+
+    if (inletBCType->currentText() == "TInf")
+    {
+        QJsonObject inflowJson = QJsonObject();
+
+
+        QString method  = "";
+
+        if(inflowDFSR->isChecked())
+        {
+            method  = "DFSR";
+        }
+        else if (inflowDFM->isChecked())
+        {
+            method  = "DFM";
+        }
+        else if (inflowSEM->isChecked())
+        {
+            method  = "SEM";
+        }
+        else if (inflowDFSEM->isChecked())
+        {
+            method  = "DFSEM";
+        }
+        else if (inflowTSM->isChecked())
+        {
+            method  = "TSM";
+        }
+
+        inflowJson["generationMethod"] = method;
+        inflowJson["inflowTimeStep"] = inflowTimeStep->text().toDouble();
+        inflowJson["inflowMaxFreq"] = inflowMaxFreq->text().toDouble();
+        inflowJson["windProfileOption"] = windProfileOption->currentText();
+
+        //Write the table to JSON file otherwise the wind profiles
+        //are created from ESDU during OpenFOAM case setup processes
+        if(windProfileOption->currentText() == "Table")
+        {
+            QJsonArray windProfilesJson;
+
+            for(int i=0; i < windProfiles.size(); i++){
+                QJsonArray row;
+                for(int j=0; j < windProfiles[i].size(); j++){
+                    row.append(windProfiles[i][j]);
+                }
+                windProfilesJson.append(row);
+            }
+
+            inflowJson["windProfiles"] = windProfilesJson;
+        }
+
+        boundaryCondJson["inflowProperties"] = inflowJson;
+    }
+
     jsonObject["boundaryConditions"] = boundaryCondJson;
 
     return true;
@@ -193,7 +457,6 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
 bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes physical boundary information to JSON file.
-
     QJsonObject boundaryCondJson = jsonObject["boundaryConditions"].toObject();
 
     inletBCType->setCurrentText(boundaryCondJson["inletBoundaryCondition"].toString());
@@ -202,6 +465,63 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
     sidesBCType->setCurrentText(boundaryCondJson["sidesBoundaryCondition"].toString());
     groundBCType->setCurrentText(boundaryCondJson["groundBoundaryCondition"].toString());
     buildingBCType->setCurrentText(boundaryCondJson["buildingBoundaryCondition"].toString());
+
+
+    if (boundaryCondJson["inletBoundaryCondition"].toString() == "TInf")
+    {
+        QJsonObject inflowJson = boundaryCondJson["inflowProperties"].toObject();
+
+        QString method = inflowJson["generationMethod"].toString();
+
+        if(method == "DFSR")
+        {
+            inflowDFSR->setChecked(true);
+        }
+        else if (method == "DFM")
+        {
+            inflowDFM->setChecked(true);
+        }
+        else if (method == "SEM")
+        {
+            inflowSEM->setChecked(true);
+        }
+        else if (method == "DFSEM")
+        {
+            inflowDFSEM->setChecked(true);
+        }
+        else if (method == "TSM")
+        {
+            inflowTSM->setChecked(true);
+        }
+
+        inflowTimeStep->setText(QString::number(inflowJson["inflowTimeStep"].toDouble()));
+        inflowMaxFreq->setText(QString::number(inflowJson["inflowMaxFreq"].toDouble()));
+        windProfileOption->setCurrentText(inflowJson["windProfileOption"].toString());
+
+        //Read the table from JSON file otherwise the wind profiles
+        //are created from ESDU during OpenFOAM case setup processes
+        if(inflowJson["windProfileOption"] == "Table")
+        {
+            QJsonArray windProfilesJson = inflowJson["windProfiles"].toArray();
+
+            windProfiles.clear();
+
+            for(int i=0; i < windProfilesJson.size(); i++){
+                QList<double> row;
+
+                QJsonArray jRow = windProfilesJson[i].toArray();
+
+                for(int j=0; j < jRow.size(); j++){
+                    row.append(jRow[j].toDouble());
+                }
+                windProfiles.append(row);
+            }
+        }
+
+        boundaryCondJson["inflowProperties"] = inflowJson;
+    }
+
+    jsonObject["boundaryConditions"] = boundaryCondJson;
 
     return true;
 }

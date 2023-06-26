@@ -40,8 +40,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include <SimCenterAppWidget.h>
-#include "vtkSmartPointer.h" // Required for smart pointer internal ivars.
-#include "QVTKRenderWidget.h"
+#include <vtkSmartPointer.h> // Required for smart pointer internal ivars.
+#include <QVTKRenderWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
