@@ -218,7 +218,6 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
 
 
     //Add signals
-
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(solverType, SIGNAL(currentIndexChanged(QString)), this, SLOT(solverTypeChanged(QString)));
     connect(adjustTimeStep, SIGNAL(toggled(bool)), this, SLOT(timeStepOptionChanged(bool)));
