@@ -580,18 +580,13 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-	/*
-        commands = QString("docker run --rm --entrypoint /bin/bash") + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-	  + localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
-	*/
-	
-        commands = "docker run --rm --entrypoint /bin/bash" + " -v " + mainModel->caseDir() + ":"
-                   +localFoamPath + " " + dockerImage + " -c "
-                   +"\"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"";
+
+        commands = "docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
 
 
         //Actual command on the terminal
-        //$docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
+        //$docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; blockMesh; exit"
 
     #else
 
@@ -620,12 +615,11 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
-                   + localFoamPath + " " + dockerImage + " -c "
-                   + "\"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"";
+        commands = "docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"");
 
         //Actual command on the terminal
-        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
+        //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
 
     #else
 
@@ -655,12 +649,11 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-        commands = "docker run --rm --entrypoint /bin/bash -v " +  mainModel->caseDir() + ":"
-                   + localFoamPath + " " + dockerImage + " -c "
-                   + "\"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"";
+        commands = "docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"");
 
         //Actual command on the terminal
-        //docker run --rm --entrypoint /bin/bash -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh; exit"
+        //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh -overwrites; exit"
 
     #else
 
@@ -683,19 +676,31 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
-    QStringList commands;
-
-    commands << "source /opt/openfoam10/etc/bashrc; checkMesh";
-
+    QString commands;
     QProcess *process = new QProcess(this);
-
     process->setWorkingDirectory(casePath);
+
+    #ifdef Q_OS_MACOS
+
+        QString localFoamPath = "/home/openfoam";
+        QString dockerImage = "openfoam/openfoam10-paraview510";
+
+        commands = "docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; checkMesh; exit\"");
+
+        //Actual command on the terminal
+        //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; checkMesh; exit"
+
+    #else
+
+    commands = "source /opt/openfoam10/etc/bashrc; checkMesh";
+
+#endif
+
     process->start("bash", QStringList() << "-c" << commands);
-
-
     process->waitForFinished(-1);
 
-    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+    statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
 
