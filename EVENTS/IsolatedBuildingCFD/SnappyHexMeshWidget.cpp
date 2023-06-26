@@ -681,7 +681,6 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
     process->setWorkingDirectory(casePath);
 
     #ifdef Q_OS_MACOS
-
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
