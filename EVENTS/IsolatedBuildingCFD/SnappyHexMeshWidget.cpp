@@ -195,15 +195,18 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     xAxisMeshSize = new QLineEdit();
     xAxisMeshSize->setText("10");
+    xAxisMeshSize->setEnabled(false);
     xAxisMeshSize->setToolTip("Mesh size in x-direction");
 
     yAxisMeshSize = new QLineEdit();
     yAxisMeshSize->setText("10");
     yAxisMeshSize->setToolTip("Mesh size in y-direction");
+    yAxisMeshSize->setEnabled(false);
 
     zAxisMeshSize = new QLineEdit();
     zAxisMeshSize->setText("10");
     zAxisMeshSize->setToolTip("Mesh size in z-direction");
+    zAxisMeshSize->setEnabled(false);
 
 
     backgroundMeshLayout->addWidget(directionLabel,0,0,Qt::AlignCenter);
@@ -239,14 +242,14 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     blockMeshDemoView->setIconSize(pixmap.rect().size()*.30);
     blockMeshDemoView->setFixedSize(pixmap.rect().size()*.30);
 
-    backgroundMeshLayout->addWidget(blockMeshDemoView,1,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
+//    backgroundMeshLayout->addWidget(blockMeshDemoView,0,4,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    backgroundMeshLayout->addWidget(blockMeshDemoView,0,4,5,1); // Qt::AlignVCenter
 
-
-    calcBackgroundMesh = new QPushButton("Calculate Mesh Size");
-    backgroundMeshLayout->addWidget(calcBackgroundMesh,4,1,1,3, Qt::AlignRight);
 
     backgroundMeshWidget->setLayout(backgroundMeshLayout);
     snappyHexMeshTab->addTab(backgroundMeshWidget, "Background Mesh");
+
+
 
     //-----------------------------------------------------------------
 
@@ -502,18 +505,20 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     this->setLayout(layout);
 
     connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
-    connect(calcBackgroundMesh, SIGNAL(clicked()), this, SLOT(onCalculateBackgroundMeshSizeClicked()));
+    connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
+    connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
+    connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
+
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
     connect(addEdgeRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddEdgeRefinementChecked(int)));
     connect(addPrismLayers, SIGNAL(stateChanged(int)), this, SLOT(onAddPrismLayersChecked(int)));
 
-
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
 
-    onCalculateBackgroundMeshSizeClicked();
+    onNumberOfCellsChanged(xAxisNumCells->text());
 }
 
 
@@ -815,7 +820,7 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
     zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
 
-    onCalculateBackgroundMeshSizeClicked();
+    onNumberOfCellsChanged(xAxisNumCells->text());
 
 
     //************************************************************************
@@ -870,12 +875,6 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-void SnappyHexMeshWidget::onCalculateBackgroundMeshSizeClicked()
-{
-    xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
-    yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
-    zAxisMeshSize->setText(QString::number(mainModel->domainHeight()/zAxisNumCells->text().toDouble()));
-}
 
 void SnappyHexMeshWidget::onRunInParallelChecked(int)
 {
@@ -916,4 +915,11 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
     {
         refinementBoxesTable->removeRow(selected->selectedRows()[0].row());
     }
+}
+
+void SnappyHexMeshWidget::onNumberOfCellsChanged(const QString &arg1)
+{
+    xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
+    yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
+    zAxisMeshSize->setText(QString::number(mainModel->domainHeight()/zAxisNumCells->text().toDouble()));
 }

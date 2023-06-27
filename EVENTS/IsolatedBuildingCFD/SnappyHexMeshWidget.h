@@ -88,7 +88,6 @@ public slots:
    void onRunSnappyHexMeshClicked();
    void onRunCheckMeshClicked();
 
-   void onCalculateBackgroundMeshSizeClicked();
    void onAddRegionClicked();
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();
@@ -96,6 +95,7 @@ public slots:
    void onAddPrismLayersChecked(int);
    void onAddSurfaceRefinementChecked(int);
    void onAddEdgeRefinementChecked(int);
+   void onNumberOfCellsChanged(const QString &arg1);
 
 
 
@@ -153,7 +153,6 @@ private:
    QDoubleSpinBox   *finalPrismLayerThickness;
    QComboBox        *prismLayerSurfaceName;
 
-   QPushButton      *calcBackgroundMesh;
    QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
