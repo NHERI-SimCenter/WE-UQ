@@ -84,7 +84,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     femSpecific = 0;
-    const int windowWidth = 800;
+    const int windowWidth = 850;
 
     mainWindowLayout = new QHBoxLayout();
 
@@ -122,6 +122,9 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     caseDirectoryGroup = new QGroupBox("Case Directory");
     caseDirectoryLayout = new QGridLayout();
+
+    unitSystemGroup = new QGroupBox("Units");
+    unitSystemLayout = new QGridLayout();
 
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
     dimAndScaleLayout = new QGridLayout();
@@ -232,9 +235,25 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     if (!workingDir.exists(workingDirPath))
         workingDir.mkpath(workingDirPath);
-	
 
     caseDirectoryPathWidget->setText(workingDirPath);
+
+    QLabel *massUnitLabel = new QLabel("Mass unit: ");
+    QLabel *lengthUnitLabel = new QLabel("Length unit: ");
+    QLabel *timeUnitLabel = new QLabel("Time unit: ");
+    QLabel *angleUnitLabel = new QLabel("Angle unit: ");
+
+    massUnit = new QComboBox ();
+    massUnit->addItem("kilogram");
+
+    lengthUnit = new QComboBox ();
+    lengthUnit->addItem("metre");
+
+    timeUnit = new QComboBox ();
+    timeUnit->addItem("second");
+
+    angleUnit = new QComboBox ();
+    angleUnit->addItem("degree");
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
@@ -265,6 +284,15 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     caseDirectoryLayout->addWidget(casePathLabel, 0, 0);
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
+
+    unitSystemLayout->addWidget(massUnitLabel, 0, 0);
+    unitSystemLayout->addWidget(massUnit, 0, 1);
+    unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
+    unitSystemLayout->addWidget(lengthUnit, 1, 1);
+    unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
+    unitSystemLayout->addWidget(timeUnit, 2, 1);
+    unitSystemLayout->addWidget(angleUnitLabel, 3, 0);
+    unitSystemLayout->addWidget(angleUnit, 3, 1);
 
     dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
     dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
@@ -318,6 +346,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
+    unitSystemGroup->setLayout(unitSystemLayout);
     dimAndScaleGroup->setLayout(dimAndScaleLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
     buildingInformationGroup->setLayout(buildingInformationLayout);
@@ -358,6 +387,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     //Populate each tab
     generalLayout->addWidget(generalDescriptionGroup);
     generalLayout->addWidget(caseDirectoryGroup);
+    generalLayout->addWidget(unitSystemGroup);
     generalLayout->addStretch();
 
     geometryLayout->addWidget(dimAndScaleGroup);
@@ -382,7 +412,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     resultsLayout->addWidget(cfdResultsGroup);
     resultsLayout->addStretch();
 
-    inputTab->addTab(generalWidget, "General");
+    inputTab->addTab(generalWidget, "Start");
     inputTab->addTab(geometryWidget, "Geometry");
     inputTab->addTab(meshWidget, "Mesh");
     inputTab->addTab(BCWidget, "Boundary Conditions");
