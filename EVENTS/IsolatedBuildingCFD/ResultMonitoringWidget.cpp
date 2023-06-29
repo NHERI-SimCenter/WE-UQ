@@ -163,7 +163,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numStories->setSingleStep(1);
     numStories->setMinimum(1);
     numStories->setValue(60);
-    numStories->setEnabled(false);
+//    numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
 
 
