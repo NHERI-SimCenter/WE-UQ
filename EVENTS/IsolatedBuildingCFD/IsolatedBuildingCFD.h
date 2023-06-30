@@ -165,6 +165,15 @@ private:
    QGroupBox    *caseDirectoryGroup;
    QGridLayout  *caseDirectoryLayout;
 
+   QGroupBox    *unitSystemGroup;
+   QGridLayout  *unitSystemLayout;
+   QComboBox    *massUnit;
+   QComboBox    *lengthUnit;
+   QComboBox    *timeUnit;
+   QComboBox    *angleUnit;
+
+
+
    QGroupBox    *buildingInformationGroup;
    QGridLayout  *buildingInformationLayout;
 

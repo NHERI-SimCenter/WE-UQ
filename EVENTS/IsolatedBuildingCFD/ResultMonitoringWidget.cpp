@@ -162,10 +162,10 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     storyLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for integrated loads");
 
     numStories = new QSpinBox();
-    numStories->setSingleStep(1);
+    numStories->setSingleStep(5);
     numStories->setMinimum(1);
     numStories->setValue(60);
-    numStories->setEnabled(false);
+//    numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
 
     floorHeight = new QLineEdit();
