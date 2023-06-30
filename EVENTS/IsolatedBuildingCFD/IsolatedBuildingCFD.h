@@ -109,6 +109,9 @@ public:
     QString pyScriptsPath();
     QString simulationType();
 
+    double convertToMeter(double dim, QString units);
+    double convertFromMeter(double dim, QString units);
+
 
 signals:
 

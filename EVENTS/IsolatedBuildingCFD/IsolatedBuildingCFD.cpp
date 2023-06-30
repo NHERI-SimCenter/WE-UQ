@@ -244,13 +244,13 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     QLabel *angleUnitLabel = new QLabel("Angle : ");
 
     massUnit = new QComboBox ();
-    massUnit->addItem("kilogram");
+    massUnit->addItem("kg");
 
     lengthUnit = new QComboBox ();
-    lengthUnit->addItem("metre");
+    lengthUnit->addItem("m");
 
     timeUnit = new QComboBox ();
-    timeUnit->addItem("second");
+    timeUnit->addItem("s");
 
     angleUnit = new QComboBox ();
     angleUnit->addItem("degree");
@@ -438,15 +438,26 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 
     //=====================================================
-    // Set general information
+    // Sync with general information tab
     //=====================================================
 
-//    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
 
-//    buildingHeightWidget->setText(QString::number(theGI->getHeight()));
-//    buildingWidthWidget->setText(QString::number(theGI->getWidth()));
-//    buildingDepthWidget->setText(QString::number(theGI->getDepth()));
+    connect(theGI, &GeneralInformationWidget::buildingDimensionsChanged ,
+            [=] (double width, double depth, double area) {
+                buildingWidthWidget->setText(QString::number(convertToMeter(width, theGI->getLengthUnit())));
+                buildingDepthWidget->setText(QString::number(convertToMeter(depth, theGI->getLengthUnit())));
+            });
 
+    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged ,
+            [=] (int nFloors, double height) {
+                buildingHeightWidget->setText(QString::number(convertToMeter(height, theGI->getLengthUnit())));
+            });
+
+    //Disable editing in the event section
+    buildingWidthWidget->setEnabled(false);
+    buildingHeightWidget->setEnabled(false);
+    buildingDepthWidget->setEnabled(false);
 
     //=====================================================
     // Setup the case directory
@@ -768,8 +779,10 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
     jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
 
-    jsonObject["lengthUnit"] = "m";
-    jsonObject["angleUnit"] = "degree";
+    jsonObject["massUnit"] = massUnit->currentText();
+    jsonObject["lengthUnit"] = lengthUnit->currentText();
+    jsonObject["timeUnit"] = timeUnit->currentText();
+    jsonObject["angleUnit"] = angleUnit->currentText();
 
     QJsonArray originPoint;
     originPoint.append(coordSysOrigin()[0]);
@@ -1048,6 +1061,62 @@ QString IsolatedBuildingCFD::templateDictDir()
 QString IsolatedBuildingCFD::simulationType()
 {
     return turbulenceModeling->simulationType();
+}
+
+double IsolatedBuildingCFD::convertToMeter(double dim, QString unit )
+{
+    // Converts to meter from other unit system;
+
+    if (unit == "m")
+    {
+       return dim;
+    }
+    else if (unit == "in")
+    {
+       return dim*0.0254;
+    }
+    else if (unit == "cm")
+    {
+       return dim*100.0;
+    }
+    else if (unit == "mm")
+    {
+       return dim*1000.0;
+    }
+    else if (unit == "ft")
+    {
+       return dim*0.3048;
+    }
+    else
+       qDebug() << "Unit system not recognized";
+}
+
+double IsolatedBuildingCFD::convertFromMeter(double dim, QString unit )
+{
+    //Convert from meters to other units
+
+    if (unit == "m")
+    {
+       return dim;
+    }
+    else if (unit == "in")
+    {
+       return dim/0.0254;
+    }
+    else if (unit == "cm")
+    {
+       return dim/100.0;
+    }
+    else if (unit == "mm")
+    {
+       return dim/1000.0;
+    }
+    else if (unit == "ft")
+    {
+       return dim/0.3048;
+    }
+    else
+       qDebug() << "Unit system not recognized";
 }
 
 
