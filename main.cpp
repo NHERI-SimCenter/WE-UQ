@@ -73,9 +73,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
     QCoreApplication::setApplicationVersion("3.0.c");
-    // GoogleAnalytics::SetTrackingId("UA-121615795-1");
-    GoogleAnalytics::StartSession();
-    GoogleAnalytics::ReportStart();
 
     Q_INIT_RESOURCE(images1);
 
@@ -108,6 +105,12 @@ int main(int argc, char *argv[])
     // debugFile.remove();
 
     QApplication a(argc, argv);
+
+    //Setting Google Analytics Tracking Information
+    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+    GoogleAnalytics::CreateSessionId();
+    GoogleAnalytics::StartSession();
 
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
