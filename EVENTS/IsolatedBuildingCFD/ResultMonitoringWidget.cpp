@@ -38,6 +38,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "IsolatedBuildingCFD.h"
 #include "ResultMonitoringWidget.h"
+#include <GeneralInformationWidget.h>
+
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -114,7 +116,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorIntegratedLoadGroup = new QGroupBox("Story Loads");
     monitorIntegratedLoadLayout = new QGridLayout();
     monitorIntegratedLoadGroup->setLayout(monitorIntegratedLoadLayout);
-
+    
     monitorPressureGroup = new QGroupBox("Pressure Data");
     monitorPressureLayout = new QGridLayout();
     monitorPressureGroup->setLayout(monitorPressureLayout);
@@ -144,11 +146,11 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     QLabel* centerOfRotationXLabel = new QLabel("X");
     QLabel* centerOfRotationYLabel = new QLabel("Y");
     QLabel* centerOfRotationZLabel = new QLabel("Z");
-//    QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
-
+    //    QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
+    
     floorHeightOptions = new QComboBox();
     floorHeightOptions->addItem("Uniform Floor Height");
-//    floorHeightOptions->addItem("Variable Floor Height");
+    //    floorHeightOptions->addItem("Variable Floor Height");
     floorHeightOptions->setToolTip("Choose constant or variable floor height options");
 
 
@@ -166,9 +168,8 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
 
-
     floorHeight = new QLineEdit();
-//    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()));
+    //    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()));
     floorHeight->setEnabled(false);
     floorHeight->setToolTip("Calculated floor height");
 
@@ -290,8 +291,8 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 
     layout->addWidget(monitorPressureGroup);
-
-//    layout->addWidget(resultMonitoringGroup);
+    
+    //    layout->addWidget(resultMonitoringGroup);
     this->setLayout(layout);
 
     //Add signals
@@ -300,6 +301,13 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(createPressurePoints, SIGNAL(toggled(bool)), this, SLOT(onCreatePressurePointsToggled(bool)));
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
+
+
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
+	    [=] (int nFl, double ht) {
+	      numStories->setValue(nFl);
+	});
 
 }
 
