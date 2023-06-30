@@ -238,10 +238,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
-    QLabel *massUnitLabel = new QLabel("Mass unit: ");
-    QLabel *lengthUnitLabel = new QLabel("Length unit: ");
-    QLabel *timeUnitLabel = new QLabel("Time unit: ");
-    QLabel *angleUnitLabel = new QLabel("Angle unit: ");
+    QLabel *massUnitLabel = new QLabel("Mass : ");
+    QLabel *lengthUnitLabel = new QLabel("Length : ");
+    QLabel *timeUnitLabel = new QLabel("Time : ");
+    QLabel *angleUnitLabel = new QLabel("Angle : ");
 
     massUnit = new QComboBox ();
     massUnit->addItem("kilogram");
