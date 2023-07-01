@@ -79,6 +79,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QTextEdit>
+#include <QFormLayout>
+
 
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
@@ -124,7 +126,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     caseDirectoryLayout = new QGridLayout();
 
     unitSystemGroup = new QGroupBox("Units");
-    unitSystemLayout = new QGridLayout();
+    unitSystemLayout = new QFormLayout(unitSystemGroup);
 
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
     dimAndScaleLayout = new QGridLayout();
@@ -185,7 +187,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     QLabel *domainHeightLabel = new QLabel("Domain Height (Z-axis):");
     domainHeightWidget = new QLineEdit();
-    domainHeightWidget->setText("5");
+    domainHeightWidget->setText("6");
 
     QLabel *fetchLengthLabel = new QLabel("Fetch Length (X-axis):");
     fetchLengthWidget = new QLineEdit();
@@ -193,22 +195,22 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     QLabel *useCOSTDimLabel = new QLabel("COST Recommendation:");
     useCOSTDimWidget = new QCheckBox();
-    useCOSTDimWidget->setChecked(false);
+    useCOSTDimWidget->setChecked(true);
 
     QLabel *normalizationTypeLabel = new QLabel("Input Dimension Normalization:");
     normalizationTypeWidget = new QComboBox();
     normalizationTypeWidget->addItem("Relative");
     normalizationTypeWidget->addItem("Absolute");
 
-    QLabel *originOptionsLabel = new QLabel("Location of Reference Point: ");
-    QLabel *originCoordinateLabel = new QLabel("Reference Point:");
+    QLabel *originOptionsLabel = new QLabel("Location of Absolute Origin: ");
+    QLabel *originCoordinateLabel = new QLabel("Coordinate: ");
     QLabel *originXLabel = new QLabel("X<sub>o</sub>:");
     QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");
     QLabel *originZLabel = new QLabel("Z<sub>o</sub>:");
 
     originOptions = new QComboBox();
-    originOptions->addItem("Building Center");
-    originOptions->addItem("Bottom Left Corner");
+    originOptions->addItem("Building Bottom Center");
+    originOptions->addItem("Domain Bottom Left Corner");
     originOptions->addItem("Custom");
 
     originXWidget = new QLineEdit();
@@ -218,6 +220,10 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     originXWidget->setText("0");
     originYWidget->setText("0");
     originZWidget->setText("0");
+
+    originXWidget->setEnabled(false);
+    originYWidget->setEnabled(false);
+    originZWidget->setEnabled(false);
 
     QLabel *casePathLabel = new QLabel("Path: ");
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
@@ -237,11 +243,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
         workingDir.mkpath(workingDirPath);
 
     caseDirectoryPathWidget->setText(workingDirPath);
-
-    QLabel *massUnitLabel = new QLabel("Mass : ");
-    QLabel *lengthUnitLabel = new QLabel("Length : ");
-    QLabel *timeUnitLabel = new QLabel("Time : ");
-    QLabel *angleUnitLabel = new QLabel("Angle : ");
 
     massUnit = new QComboBox ();
     massUnit->addItem("kg");
@@ -285,14 +286,20 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
 
-    unitSystemLayout->addWidget(massUnitLabel, 0, 0);
-    unitSystemLayout->addWidget(massUnit, 0, 1);
-    unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
-    unitSystemLayout->addWidget(lengthUnit, 1, 1);
-    unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
-    unitSystemLayout->addWidget(timeUnit, 2, 1);
-    unitSystemLayout->addWidget(angleUnitLabel, 3, 0);
-    unitSystemLayout->addWidget(angleUnit, 3, 1);
+    unitSystemLayout->addRow(tr("Mass: "), massUnit);
+    unitSystemLayout->addRow(tr("Length: "),lengthUnit);
+    unitSystemLayout->addRow(tr("Time: "), timeUnit);
+    unitSystemLayout->addRow(tr("Angle: "), angleUnit);
+
+    massUnit->setMaximumWidth(250);
+    lengthUnit->setMaximumWidth(250);
+    timeUnit->setMaximumWidth(250);
+    angleUnit->setMaximumWidth(250);
+
+    //Setting Style
+    unitSystemLayout->setAlignment(Qt::AlignLeft);
+    unitSystemLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+    unitSystemLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
 
     dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
     dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
@@ -436,6 +443,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(originOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(originChanged(QString)));
+    connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
 
     //=====================================================
     // Sync with general information tab
@@ -545,6 +554,37 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->close();
 }
+
+void IsolatedBuildingCFD::originChanged(const QString &arg)
+{
+    if(arg == "Building Bottom Center")
+    {
+       originXWidget->setText("0");
+       originYWidget->setText("0");
+       originZWidget->setText("0");
+
+       originXWidget->setEnabled(false);
+       originYWidget->setEnabled(false);
+       originZWidget->setEnabled(false);
+    }
+    else if(arg == "Domain Bottom Left Corner")
+    {
+       originXWidget->setText(QString::number(-fetchLength()));
+       originYWidget->setText(QString::number(-domainWidth()/2.0));
+       originZWidget->setText(QString::number(0.0));
+
+       originXWidget->setEnabled(false);
+       originYWidget->setEnabled(false);
+       originZWidget->setEnabled(false);
+    }
+    else if(arg == "Custom")
+    {
+        originXWidget->setEnabled(true);
+        originYWidget->setEnabled(true);
+        originZWidget->setEnabled(true);
+    }
+}
+
 
 void IsolatedBuildingCFD::onShowResultsClicked()
 {
@@ -681,8 +721,6 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
     dialog->setLayout(dialogLayout);
     dialog->exec();
-
-
 }
 
 void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
@@ -713,6 +751,19 @@ void IsolatedBuildingCFD::clear(void)
 
 }
 
+void IsolatedBuildingCFD::useCOSTOptionChecked(int state)
+{
+    //Works fine when Height > Width
+    if (useCOSTDimWidget->isChecked())
+    {
+        domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeight())));
+        domainWidthWidget->setText(QString::number(getNormDim(10.0*buildingHeight())));
+        domainHeightWidget->setText(QString::number(getNormDim(6.0*buildingHeight())));
+        fetchLengthWidget->setText(QString::number(getNormDim(5.0*buildingHeight())));
+    }
+
+}
+
 void IsolatedBuildingCFD::updateWidgets()
 {
     numericalSetup->updateWidgets();
@@ -736,7 +787,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     domainWidthWidget->setText(QString::number(jsonObject["domainWidth"].toDouble()));
     domainHeightWidget->setText(QString::number(jsonObject["domainHeight"].toDouble()));
     fetchLengthWidget->setText(QString::number(jsonObject["fetchLength"].toDouble()));
-
+    useCOSTDimWidget->setChecked(jsonObject["useCOST"].toBool());
 
     QJsonArray originPoint  = jsonObject["origin"].toArray();
 
@@ -778,6 +829,7 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
     jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
     jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
+    jsonObject["useCOST"] = useCOSTDimWidget->isChecked();
 
     jsonObject["massUnit"] = massUnit->currentText();
     jsonObject["lengthUnit"] = lengthUnit->currentText();
@@ -1063,10 +1115,9 @@ QString IsolatedBuildingCFD::simulationType()
     return turbulenceModeling->simulationType();
 }
 
-double IsolatedBuildingCFD::convertToMeter(double dim, QString unit )
+double IsolatedBuildingCFD::convertToMeter(double dim, QString unit)
 {
     // Converts to meter from other unit system;
-
     if (unit == "m")
     {
        return dim;
@@ -1091,10 +1142,9 @@ double IsolatedBuildingCFD::convertToMeter(double dim, QString unit )
        qDebug() << "Unit system not recognized";
 }
 
-double IsolatedBuildingCFD::convertFromMeter(double dim, QString unit )
+double IsolatedBuildingCFD::convertFromMeter(double dim, QString unit)
 {
     //Convert from meters to other units
-
     if (unit == "m")
     {
        return dim;
@@ -1119,6 +1169,15 @@ double IsolatedBuildingCFD::convertFromMeter(double dim, QString unit )
        qDebug() << "Unit system not recognized";
 }
 
+double IsolatedBuildingCFD::getNormDim(double dim)
+{
+    if(normalizationTypeWidget->currentText() == "Relative")
+    {
+       return dim/buildingHeight();
+    }
+
+    return dim/geometricScale();
+}
 
 
 
