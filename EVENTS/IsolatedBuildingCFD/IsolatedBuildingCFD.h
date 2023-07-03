@@ -81,9 +81,12 @@ public:
     bool setupCase();
     bool cleanCase();
     bool isMeshed();
+    bool isSnappyCompleted();
+    bool isBlockMeshCompleted();
     bool isCaseConfigured();
 
     void writeOpenFoamFiles();
+    void readCaseData();
     void updateWidgets();
     QVector<QVector<double>> readTxtData(QString fileName);
 

@@ -477,14 +477,15 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     if(!isCaseConfigured())
     {
         setupCase();
-
-        snappyHexMesh->onRunBlockMeshClicked();
     }
 
     if (!isMeshed())
     {
         snappyHexMesh->onRunBlockMeshClicked();
     }
+
+    //Read all the case data from const/simCenter
+    readCaseData();
 
     //=====================================================
     // Setup the visulalization window
@@ -554,6 +555,51 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->close();
 }
+
+
+
+void IsolatedBuildingCFD::readCaseData()
+{
+
+    //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
+    //In future only one JSON file in temp.SimCenter directory might be enough
+    QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                            + QDir::separator() + "input" + QDir::separator() + "IsolatedBuildingCFD.json";
+
+
+    QFile jsonFile(inputFilePath);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+       qDebug() << "Cannot find the path: " << inputFilePath;
+    }
+
+
+    QString val = jsonFile.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject jsonObject = doc.object();
+
+    inputFromJSON(jsonObject);
+
+    // close file
+    jsonFile.close();
+
+
+    //Clean extra files if exist in 0 folder
+    QFile nSurfaceLayersFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "nSurfaceLayers");
+    QFile pointLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "pointLevel");
+    QFile thicknessFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thickness");
+    QFile thicknessFractionFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thicknessFraction");
+    QFile cellLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "cellLevel");
+
+    nSurfaceLayersFile.remove();
+    pointLevelFile.remove();
+    thicknessFile.remove();
+    thicknessFractionFile.remove();
+    cellLevelFile.remove();
+
+    snappyHexMesh->blockMeshCompleted = true;
+}
+
 
 void IsolatedBuildingCFD::originChanged(const QString &arg)
 {
@@ -735,8 +781,6 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     if(!isCaseConfigured())
     {
         setupCase();
-
-        snappyHexMesh->onRunBlockMeshClicked();
     }
 
     if (!isMeshed())
@@ -942,6 +986,9 @@ bool IsolatedBuildingCFD::setupCase()
     //Write dictionary files
     writeOpenFoamFiles();
 
+    snappyHexMesh->blockMeshCompleted = false;
+    snappyHexMesh->snappyHexMeshCompleted = false;
+
     return true;
 }
 
@@ -1022,6 +1069,17 @@ bool IsolatedBuildingCFD::isMeshed()
 
     //Better if we check other files too, for now this are enought to run mesh
     return isCaseConfigured() && pointsFile.exists();
+}
+
+bool IsolatedBuildingCFD::isSnappyCompleted()
+{
+    return snappyHexMesh->snappyHexMeshCompleted;
+}
+
+bool IsolatedBuildingCFD::isBlockMeshCompleted()
+{
+    return snappyHexMesh->blockMeshCompleted;
+
 }
 
 double IsolatedBuildingCFD::domainLength()

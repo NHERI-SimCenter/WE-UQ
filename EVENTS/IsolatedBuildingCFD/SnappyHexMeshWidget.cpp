@@ -606,6 +606,9 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
     process->close();
 
+    blockMeshCompleted = true;
+    snappyHexMeshCompleted = false;
+
     return true;
 }
 
@@ -673,6 +676,8 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 
     process->close();
 
+    snappyHexMeshCompleted = true;
+
     return true;
 }
 
@@ -728,7 +733,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["topBoundaryType"] = "symmetry";
     blockMeshParamsJson["frontBoundaryType"] = "symmetry";
     blockMeshParamsJson["backBoundaryType"] = "symmetry";
-
+    blockMeshParamsJson["blockMeshCompleted"] = blockMeshCompleted;
 
     jsonObject["blockMeshParameters"] = blockMeshParamsJson;
 
@@ -742,6 +747,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     snappyMeshParamsJson["resolveFeatureAngle"] = resolveFeatureAngle->value();
     snappyMeshParamsJson["numProcessors"] = numProcessors->value();
     snappyMeshParamsJson["runInParallel"] = runInParallel->isChecked();
+    snappyMeshParamsJson["snappyHexMeshCompleted"] = snappyHexMeshCompleted;
 
     //Add regional refinment
     const int nRegions = refinementBoxesTable->rowCount();
@@ -820,6 +826,8 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
     zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
 
+    blockMeshCompleted = blockMeshParamsJson["blockMeshCompleted"].toBool();
+
     onNumberOfCellsChanged(xAxisNumCells->text());
 
 
@@ -871,6 +879,8 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     prismLayerExpantionRatio->setValue(snappyMeshParamsJson["prismLayerExpantionRatio"].toDouble());
     finalPrismLayerThickness->setValue(snappyMeshParamsJson["finalPrismLayerThickness"].toDouble());
     prismLayerSurfaceName->setCurrentText(snappyMeshParamsJson["prismLayerSurfaceName"].toString());
+
+    snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();
 
     return true;
 }

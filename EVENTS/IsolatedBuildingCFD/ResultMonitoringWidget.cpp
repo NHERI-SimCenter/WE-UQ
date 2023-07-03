@@ -398,8 +398,6 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
 void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
 {
-
-
     QVTKRenderWidget *qvtkWidget;
     vtkSmartPointer<vtkSTLReader> buildingReader;
     vtkSmartPointer<vtkDataSetMapper> buildingMapper; //mapper

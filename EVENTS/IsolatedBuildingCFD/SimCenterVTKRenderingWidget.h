@@ -76,6 +76,7 @@ public:
     void showAllMesh();
     void showBreakout();
     void showBuildingOnly();
+
     template <class Type>
     Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 

@@ -157,6 +157,10 @@ private:
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 
+   //Mesh status variables
+   bool snappyHexMeshCompleted = false;
+   bool blockMeshCompleted = false;
+
 public:
 
 };
