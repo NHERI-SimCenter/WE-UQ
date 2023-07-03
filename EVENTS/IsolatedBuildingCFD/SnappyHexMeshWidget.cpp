@@ -133,7 +133,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     generalOptionsLayout->addWidget(resolveFeatureAngleLabel, 1, 0);
     generalOptionsLayout->addWidget(resolveFeatureAngle, 1, 1);
-    generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
+//    generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
 
     generalOptionsLayout->addWidget(runInParalellLabel, 0, 3);
     generalOptionsLayout->addWidget(runInParallel, 0, 4);

@@ -91,7 +91,7 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
 //    QLabel *lengthUnitLabel = new QLabel("m");
     referenceHeightLabel = new QLabel("Reference Height:");
     referenceWindSpeedLabel = new QLabel("Wind Speed at Reference Height:");
-    aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length (m):");
+    aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length:");
     airDensityLabel = new QLabel("Air Density:");
     kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");
     reynoldsNumberLabel = new QLabel("Reynolds Number:");
