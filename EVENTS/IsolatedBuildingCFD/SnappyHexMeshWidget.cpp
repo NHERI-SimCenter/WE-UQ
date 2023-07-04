@@ -162,17 +162,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *zAxisLabel = new QLabel("Z-axis");
 
     xAxisNumCells = new QLineEdit();
-    xAxisNumCells->setText("80");
+    xAxisNumCells->setText(QString::number(int(12.001*mainModel->domainLength()/mainModel->domainHeight())));
     xAxisNumCells->setValidator(new QIntValidator);
     xAxisNumCells->setToolTip("Number of cells in x-direction");
 
     yAxisNumCells = new QLineEdit();
-    yAxisNumCells->setText("40");
+    yAxisNumCells->setText(QString::number(int(12.001*mainModel->domainWidth()/mainModel->domainHeight())));
     yAxisNumCells->setValidator(new QIntValidator);
     yAxisNumCells->setToolTip("Number of cells in y-direction");
 
     zAxisNumCells = new QLineEdit();
-    zAxisNumCells->setText("20");
+    zAxisNumCells->setText("12");
     zAxisNumCells->setValidator(new QIntValidator);
     zAxisNumCells->setToolTip("Number of cells in z-direction");
 
@@ -543,6 +543,9 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
     statusMessage("Running blockMesh ...");
 
     runBlockMeshCommand();
+
+    mainModel->removeOldFiles();
+    mainModel->reloadMesh();
 }
 
 void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
@@ -563,6 +566,8 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
 
     runSnappyHexMeshCommand();
 
+    mainModel->removeOldFiles();
+    mainModel->reloadMesh();
 }
 
 void SnappyHexMeshWidget::onRunCheckMeshClicked()

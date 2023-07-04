@@ -583,21 +583,9 @@ void IsolatedBuildingCFD::readCaseData()
     // close file
     jsonFile.close();
 
-
-    //Clean extra files if exist in 0 folder
-    QFile nSurfaceLayersFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "nSurfaceLayers");
-    QFile pointLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "pointLevel");
-    QFile thicknessFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thickness");
-    QFile thicknessFractionFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thicknessFraction");
-    QFile cellLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "cellLevel");
-
-    nSurfaceLayersFile.remove();
-    pointLevelFile.remove();
-    thicknessFile.remove();
-    thicknessFractionFile.remove();
-    cellLevelFile.remove();
-
     snappyHexMesh->blockMeshCompleted = true;
+
+    removeOldFiles();
 }
 
 
@@ -958,6 +946,24 @@ bool IsolatedBuildingCFD::cleanCase()
     return true;
 }
 
+bool IsolatedBuildingCFD::removeOldFiles()
+{
+    //Clean extra files if exist in 0 folder
+    QFile nSurfaceLayersFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "nSurfaceLayers");
+    QFile pointLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "pointLevel");
+    QFile thicknessFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thickness");
+    QFile thicknessFractionFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "thicknessFraction");
+    QFile cellLevelFile(caseDir() + QDir::separator() + "0" + QDir::separator() + "cellLevel");
+
+    nSurfaceLayersFile.remove();
+    pointLevelFile.remove();
+    thicknessFile.remove();
+    thicknessFractionFile.remove();
+    cellLevelFile.remove();
+
+    return true;
+}
+
 bool IsolatedBuildingCFD::setupCase()
 {
     cleanCase();
@@ -1171,6 +1177,11 @@ QString IsolatedBuildingCFD::templateDictDir()
 QString IsolatedBuildingCFD::simulationType()
 {
     return turbulenceModeling->simulationType();
+}
+
+void IsolatedBuildingCFD::reloadMesh()
+{
+    visWidget->onReloadCaseClicked();
 }
 
 double IsolatedBuildingCFD::convertToMeter(double dim, QString unit)

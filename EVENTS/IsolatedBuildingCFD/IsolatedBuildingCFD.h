@@ -80,6 +80,7 @@ public:
     bool copyFiles(QString &dirName);
     bool setupCase();
     bool cleanCase();
+    bool removeOldFiles();
     bool isMeshed();
     bool isSnappyCompleted();
     bool isBlockMeshCompleted();
@@ -88,6 +89,8 @@ public:
     void writeOpenFoamFiles();
     void readCaseData();
     void updateWidgets();
+    void reloadMesh();
+
     QVector<QVector<double>> readTxtData(QString fileName);
 
     //Properties
