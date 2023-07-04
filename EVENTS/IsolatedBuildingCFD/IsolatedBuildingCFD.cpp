@@ -85,6 +85,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
+
+}
+
+bool IsolatedBuildingCFD::initialize()
+{
     femSpecific = 0;
     const int windowWidth = 850;
 
@@ -95,10 +100,6 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
-
-//    inputFormsGroup = new QWidget();
-//    inputFormsLayout = new QGridLayout();
-
 
     QTabWidget *inputTab = new QTabWidget(this);
 
@@ -236,8 +237,8 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
         workingDir.mkpath(".");
 
     QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-						 + "LocalWorkDir" + QDir::separator()
-						 + "IsolatedBuildingCFD");
+                                                 + "LocalWorkDir" + QDir::separator()
+                                                 + "IsolatedBuildingCFD");
 
     if (!workingDir.exists(workingDirPath))
         workingDir.mkpath(workingDirPath);
@@ -452,6 +453,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 
     GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
 
+
     connect(theGI, &GeneralInformationWidget::buildingDimensionsChanged ,
             [=] (double width, double depth, double area) {
                 buildingWidthWidget->setText(QString::number(convertToMeter(width, theGI->getLengthUnit())));
@@ -499,6 +501,13 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     visWindowLayout->addWidget(visWidget);
 
     this->setLayout(mainWindowLayout);
+
+    caseInitialized = true;
+
+    theGI->setLengthUnit("m");
+    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    return true;
 }
 
 
@@ -507,9 +516,8 @@ IsolatedBuildingCFD::~IsolatedBuildingCFD()
 
 }
 
-void IsolatedBuildingCFD::writeOpenFoamFiles()
+void IsolatedBuildingCFD::updateJSON()
 {
-
     //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
     //In future only one JSON file in temp.SimCenter directory might be enough
     QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
@@ -519,7 +527,7 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
     QFile jsonFile(inputFilePath);
     if (!jsonFile.open(QFile::WriteOnly | QFile::Text))
     {
-       qDebug() << "Cannot find the path: " << inputFilePath;
+        qDebug() << "Cannot find the path: " << inputFilePath;
     }
 
     QJsonObject jsonObject;
@@ -531,6 +539,12 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
     jsonFile.write(jsonDoc.toJson());
 
     jsonFile.close();
+}
+
+void IsolatedBuildingCFD::writeOpenFoamFiles()
+{
+
+    updateJSON();
 
     //Run python script to prepare case directory
     QString scriptPath = pyScriptsPath() + "/setup_case.py";
@@ -582,8 +596,6 @@ void IsolatedBuildingCFD::readCaseData()
 
     // close file
     jsonFile.close();
-
-    snappyHexMesh->blockMeshCompleted = true;
 
     removeOldFiles();
 }
@@ -992,7 +1004,7 @@ bool IsolatedBuildingCFD::setupCase()
     //Write dictionary files
     writeOpenFoamFiles();
 
-    snappyHexMesh->blockMeshCompleted = false;
+
     snappyHexMesh->snappyHexMeshCompleted = false;
 
     return true;
@@ -1077,15 +1089,9 @@ bool IsolatedBuildingCFD::isMeshed()
     return isCaseConfigured() && pointsFile.exists();
 }
 
-bool IsolatedBuildingCFD::isSnappyCompleted()
+bool IsolatedBuildingCFD::isSnappyHexMeshCompleted()
 {
     return snappyHexMesh->snappyHexMeshCompleted;
-}
-
-bool IsolatedBuildingCFD::isBlockMeshCompleted()
-{
-    return snappyHexMesh->blockMeshCompleted;
-
 }
 
 double IsolatedBuildingCFD::domainLength()
@@ -1124,8 +1130,7 @@ double IsolatedBuildingCFD::buildingHeight()
 }
 int IsolatedBuildingCFD::numberOfFloors()
 {
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    return theGI->getNumFloors();
+    return resultMonitoring->numStories->value();
 }
 
 
@@ -1181,7 +1186,15 @@ QString IsolatedBuildingCFD::simulationType()
 
 void IsolatedBuildingCFD::reloadMesh()
 {
-    visWidget->onReloadCaseClicked();
+    if (isInitialize())
+    {
+        visWidget->onReloadCaseClicked();
+    }
+}
+
+bool IsolatedBuildingCFD::isInitialize()
+{
+    return caseInitialized;
 }
 
 double IsolatedBuildingCFD::convertToMeter(double dim, QString unit)

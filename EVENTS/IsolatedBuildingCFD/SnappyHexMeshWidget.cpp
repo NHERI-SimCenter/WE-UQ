@@ -545,6 +545,7 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
     runBlockMeshCommand();
 
     mainModel->removeOldFiles();
+    mainModel->updateJSON();
     mainModel->reloadMesh();
 }
 
@@ -567,6 +568,7 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
     runSnappyHexMeshCommand();
 
     mainModel->removeOldFiles();
+    mainModel->updateJSON();
     mainModel->reloadMesh();
 }
 
@@ -611,7 +613,6 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
     process->close();
 
-    blockMeshCompleted = true;
     snappyHexMeshCompleted = false;
 
     return true;
@@ -738,7 +739,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["topBoundaryType"] = "symmetry";
     blockMeshParamsJson["frontBoundaryType"] = "symmetry";
     blockMeshParamsJson["backBoundaryType"] = "symmetry";
-    blockMeshParamsJson["blockMeshCompleted"] = blockMeshCompleted;
+
 
     jsonObject["blockMeshParameters"] = blockMeshParamsJson;
 
@@ -830,8 +831,6 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     xMeshGrading->setValue(blockMeshParamsJson["xGrading"].toDouble());
     yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
     zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
-
-    blockMeshCompleted = blockMeshParamsJson["blockMeshCompleted"].toBool();
 
     onNumberOfCellsChanged(xAxisNumCells->text());
 

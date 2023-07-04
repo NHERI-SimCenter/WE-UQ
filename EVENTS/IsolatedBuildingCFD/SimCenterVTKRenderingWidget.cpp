@@ -103,6 +103,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
+    initialize();
+}
+
+void SimCenterVTKRenderingWidget::initialize()
+{
     layout = new QVBoxLayout();
 
     menueLayout = new QGridLayout();
@@ -162,6 +167,8 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     {
         readMesh();
     }
+
+    initialized = true;
 }
 
 
@@ -348,7 +355,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
 
     vtkNew<vtkAppendPolyData> appendFilter;
 
-    if(mainModel->isSnappyCompleted())
+    if(mainModel->isSnappyHexMeshCompleted())
     {
         appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
     }
@@ -405,7 +412,7 @@ void SimCenterVTKRenderingWidget::showBuildingOnly()
     vtkPolyData* bldgBlock;
     vtkSmartPointer<vtkSTLReader> stlReader;
 
-    if (mainModel->isSnappyCompleted())
+    if (mainModel->isSnappyHexMeshCompleted())
     {
         auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
 
@@ -472,5 +479,10 @@ Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const cha
         }
     }
     return dataset;
+}
+
+bool SimCenterVTKRenderingWidget::isInitialized()
+{
+    return initialized;
 }
 

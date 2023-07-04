@@ -159,7 +159,6 @@ private:
 
    //Mesh status variables
    bool snappyHexMeshCompleted = false;
-   bool blockMeshCompleted = false;
 
 public:
 

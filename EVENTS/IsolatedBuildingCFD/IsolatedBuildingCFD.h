@@ -78,15 +78,19 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
+
+    bool initialize();
+    bool isInitialize();
+
     bool setupCase();
     bool cleanCase();
     bool removeOldFiles();
     bool isMeshed();
-    bool isSnappyCompleted();
-    bool isBlockMeshCompleted();
+    bool isSnappyHexMeshCompleted();
     bool isCaseConfigured();
 
     void writeOpenFoamFiles();
+    void updateJSON();
     void readCaseData();
     void updateWidgets();
     void reloadMesh();
@@ -201,9 +205,6 @@ private:
    QWidget      *buildingAndDomainInformationGroup;
    QGridLayout  *buildingAndDomainInformationLayout;
 
-//   QWidget      *inputFormsGroup;
-//   QGridLayout  *inputFormsLayout;
-
    WindCharacteristicsWidget    *windCharacteristics;
    SnappyHexMeshWidget          *snappyHexMesh;
    SimCenterVTKRenderingWidget  *visWidget;
@@ -220,6 +221,8 @@ private:
 
    QString workingDirPath;
    QString openFoamVersion;
+
+   bool caseInitialized = false;
 
 };
 
