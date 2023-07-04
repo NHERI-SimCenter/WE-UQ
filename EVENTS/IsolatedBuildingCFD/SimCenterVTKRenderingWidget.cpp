@@ -98,9 +98,15 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkPolyDataMapper.h>
 #include <vtkAppendPolyData.h>
 #include <vtkCleanPolyData.h>
+#include <vtkSTLReader.h>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
+{
+    initialize();
+}
+
+void SimCenterVTKRenderingWidget::initialize()
 {
     layout = new QVBoxLayout();
 
@@ -161,6 +167,8 @@ SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *p
     {
         readMesh();
     }
+
+    initialized = true;
 }
 
 
@@ -264,6 +272,7 @@ void SimCenterVTKRenderingWidget::readMesh()
 
     block0 = vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()->GetBlock(0));
 
+
     //Create mapper
     mapper = vtkSmartPointer<vtkDataSetMapper>::New();
     mapper->SetInputData(block0);
@@ -295,6 +304,7 @@ void SimCenterVTKRenderingWidget::readMesh()
     //Set default transparency to 10%
 //    transparency->setValue(10);
 //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+
 }
 
 void SimCenterVTKRenderingWidget::showAllMesh()
@@ -337,11 +347,23 @@ void SimCenterVTKRenderingWidget::showAllMesh()
 
 void SimCenterVTKRenderingWidget::showBreakout()
 {
+    vtkSmartPointer<vtkSTLReader> stlReader = vtkSmartPointer<vtkSTLReader>::New();
+    stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+    stlReader->Update();
 
     auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
 
     vtkNew<vtkAppendPolyData> appendFilter;
-    appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
+
+    if(mainModel->isSnappyHexMeshCompleted())
+    {
+        appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
+    }
+    else
+    {
+        appendFilter->AddInputData(stlReader->GetOutput());
+    }
+
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "ground"));
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "back"));
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "outlet"));
@@ -387,10 +409,22 @@ void SimCenterVTKRenderingWidget::showBreakout()
 
 void SimCenterVTKRenderingWidget::showBuildingOnly()
 {
+    vtkPolyData* bldgBlock;
+    vtkSmartPointer<vtkSTLReader> stlReader;
 
-    auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
+    if (mainModel->isSnappyHexMeshCompleted())
+    {
+        auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
 
-    auto* bldgBlock = findBlock<vtkPolyData>(allBlocks, "building");
+        bldgBlock = findBlock<vtkPolyData>(allBlocks, "building");
+    }
+    else
+    {
+        stlReader = vtkSmartPointer<vtkSTLReader>::New();
+        stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+        stlReader->Update();
+        bldgBlock = stlReader->GetOutput();
+    }
 
     //Create mapper
     mapper = vtkSmartPointer<vtkDataSetMapper>::New();
@@ -445,5 +479,10 @@ Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const cha
         }
     }
     return dataset;
+}
+
+bool SimCenterVTKRenderingWidget::isInitialized()
+{
+    return initialized;
 }
 

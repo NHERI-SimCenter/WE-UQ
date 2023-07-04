@@ -72,10 +72,15 @@ class SimCenterVTKRenderingWidget: public SimCenterAppWidget
 public:
     explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
     ~SimCenterVTKRenderingWidget();
+
+    void initialize();
     void readMesh();
     void showAllMesh();
     void showBreakout();
     void showBuildingOnly();
+
+    bool isInitialized();
+
     template <class Type>
     Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
@@ -114,6 +119,8 @@ private:
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
+
+   bool initialized = false;
 };
 
 #endif // BOUNDARY_CONDITIONS_WIDGET_H

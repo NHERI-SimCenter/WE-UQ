@@ -289,6 +289,12 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
     else if(arg1 == "CFD - Wind Loads on Isolated Building") {
         theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = theIsolatedBuildingCFD;
+
+        IsolatedBuildingCFD* theIso  = dynamic_cast<IsolatedBuildingCFD*>(theIsolatedBuildingCFD);
+        if (!theIso->isInitialize())
+        {
+            theIso->initialize();
+        }
     }
     
     else if(arg1 == "CFD - Expert") {

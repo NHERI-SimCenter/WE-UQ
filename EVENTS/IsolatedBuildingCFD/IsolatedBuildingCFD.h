@@ -63,6 +63,7 @@ class LineEditRV;
 class QGroupBox;
 class QPushButton;
 class QCheckBox;
+class QFormLayout;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -77,13 +78,23 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
+
+    bool initialize();
+    bool isInitialize();
+
     bool setupCase();
     bool cleanCase();
+    bool removeOldFiles();
     bool isMeshed();
+    bool isSnappyHexMeshCompleted();
     bool isCaseConfigured();
 
     void writeOpenFoamFiles();
+    void updateJSON();
+    void readCaseData();
     void updateWidgets();
+    void reloadMesh();
+
     QVector<QVector<double>> readTxtData(QString fileName);
 
     //Properties
@@ -109,6 +120,12 @@ public:
     QString pyScriptsPath();
     QString simulationType();
 
+    double convertToMeter(double dim, QString units);
+    double convertFromMeter(double dim, QString units);
+
+    //Returns a dimention normalized by the building height
+    double getNormDim(double dim);
+
 
 signals:
 
@@ -116,6 +133,8 @@ public slots:
    void clear(void);
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
+   void originChanged(const QString &arg);
+   void useCOSTOptionChecked(int);
 
 private:
    QHBoxLayout  *mainWindowLayout;
@@ -166,7 +185,7 @@ private:
    QGridLayout  *caseDirectoryLayout;
 
    QGroupBox    *unitSystemGroup;
-   QGridLayout  *unitSystemLayout;
+   QFormLayout  *unitSystemLayout;
    QComboBox    *massUnit;
    QComboBox    *lengthUnit;
    QComboBox    *timeUnit;
@@ -186,9 +205,6 @@ private:
    QWidget      *buildingAndDomainInformationGroup;
    QGridLayout  *buildingAndDomainInformationLayout;
 
-//   QWidget      *inputFormsGroup;
-//   QGridLayout  *inputFormsLayout;
-
    WindCharacteristicsWidget    *windCharacteristics;
    SnappyHexMeshWidget          *snappyHexMesh;
    SimCenterVTKRenderingWidget  *visWidget;
@@ -205,6 +221,8 @@ private:
 
    QString workingDirPath;
    QString openFoamVersion;
+
+   bool caseInitialized = false;
 
 };
 

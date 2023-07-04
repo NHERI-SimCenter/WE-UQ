@@ -133,7 +133,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     generalOptionsLayout->addWidget(resolveFeatureAngleLabel, 1, 0);
     generalOptionsLayout->addWidget(resolveFeatureAngle, 1, 1);
-    generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
+//    generalOptionsLayout->addWidget(degreesLabel, 1, 2, Qt::AlignLeft);
 
     generalOptionsLayout->addWidget(runInParalellLabel, 0, 3);
     generalOptionsLayout->addWidget(runInParallel, 0, 4);
@@ -162,17 +162,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *zAxisLabel = new QLabel("Z-axis");
 
     xAxisNumCells = new QLineEdit();
-    xAxisNumCells->setText("80");
+    xAxisNumCells->setText(QString::number(int(12.001*mainModel->domainLength()/mainModel->domainHeight())));
     xAxisNumCells->setValidator(new QIntValidator);
     xAxisNumCells->setToolTip("Number of cells in x-direction");
 
     yAxisNumCells = new QLineEdit();
-    yAxisNumCells->setText("40");
+    yAxisNumCells->setText(QString::number(int(12.001*mainModel->domainWidth()/mainModel->domainHeight())));
     yAxisNumCells->setValidator(new QIntValidator);
     yAxisNumCells->setToolTip("Number of cells in y-direction");
 
     zAxisNumCells = new QLineEdit();
-    zAxisNumCells->setText("20");
+    zAxisNumCells->setText("12");
     zAxisNumCells->setValidator(new QIntValidator);
     zAxisNumCells->setToolTip("Number of cells in z-direction");
 
@@ -543,6 +543,10 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
     statusMessage("Running blockMesh ...");
 
     runBlockMeshCommand();
+
+    mainModel->removeOldFiles();
+    mainModel->updateJSON();
+    mainModel->reloadMesh();
 }
 
 void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
@@ -563,6 +567,9 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
 
     runSnappyHexMeshCommand();
 
+    mainModel->removeOldFiles();
+    mainModel->updateJSON();
+    mainModel->reloadMesh();
 }
 
 void SnappyHexMeshWidget::onRunCheckMeshClicked()
@@ -605,6 +612,8 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
+
+    snappyHexMeshCompleted = false;
 
     return true;
 }
@@ -672,6 +681,8 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
+
+    snappyHexMeshCompleted = true;
 
     return true;
 }
@@ -742,6 +753,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     snappyMeshParamsJson["resolveFeatureAngle"] = resolveFeatureAngle->value();
     snappyMeshParamsJson["numProcessors"] = numProcessors->value();
     snappyMeshParamsJson["runInParallel"] = runInParallel->isChecked();
+    snappyMeshParamsJson["snappyHexMeshCompleted"] = snappyHexMeshCompleted;
 
     //Add regional refinment
     const int nRegions = refinementBoxesTable->rowCount();
@@ -871,6 +883,8 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     prismLayerExpantionRatio->setValue(snappyMeshParamsJson["prismLayerExpantionRatio"].toDouble());
     finalPrismLayerThickness->setValue(snappyMeshParamsJson["finalPrismLayerThickness"].toDouble());
     prismLayerSurfaceName->setCurrentText(snappyMeshParamsJson["prismLayerSurfaceName"].toString());
+
+    snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();
 
     return true;
 }
