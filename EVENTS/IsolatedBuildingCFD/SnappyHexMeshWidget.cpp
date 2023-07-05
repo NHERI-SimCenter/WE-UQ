@@ -66,11 +66,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
-
+#include <QtMath>
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
-
-//#include <InputWidgetParameters.h>
 
 SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -79,10 +77,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     int widgetGap = 15;
 
-//    snappyHexMeshGroup = new QGroupBox("Mesh Generation", this);
-//    snappyHexMeshLayout = new QVBoxLayout(snappyHexMeshGroup);
-
-    generalOptionsGroup = new QGroupBox("General Options", this);
+    generalOptionsGroup = new QGroupBox("Advanced Options", this);
     generalOptionsLayout = new QGridLayout();
 
     runMeshGroup = new QGroupBox("Run Mesh", this);
@@ -194,17 +189,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
 
     xAxisMeshSize = new QLineEdit();
-    xAxisMeshSize->setText("10");
+    xAxisMeshSize->setText("0.5");
     xAxisMeshSize->setEnabled(false);
     xAxisMeshSize->setToolTip("Mesh size in x-direction");
 
     yAxisMeshSize = new QLineEdit();
-    yAxisMeshSize->setText("10");
+    yAxisMeshSize->setText("0.5");
     yAxisMeshSize->setToolTip("Mesh size in y-direction");
     yAxisMeshSize->setEnabled(false);
 
     zAxisMeshSize = new QLineEdit();
-    zAxisMeshSize->setText("10");
+    zAxisMeshSize->setText("0.5");
     zAxisMeshSize->setToolTip("Mesh size in z-direction");
     zAxisMeshSize->setEnabled(false);
 
@@ -257,12 +252,12 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QWidget* regionalRefinementWidget = new QWidget();
     QGridLayout* regionalRefinementLayout = new QGridLayout(regionalRefinementWidget);
 
-    int numCols = 8;
+    int numCols = 9;
     int numRows = 4;
 
     refinementBoxesTable = new QTableWidget(numRows, numCols);
 
-    QStringList headerTitles = {"Name", "Level", "X-min", "Y-min", "Z-min", "X-max", "Y-max", "Z-max"};
+    QStringList headerTitles = {"Name", "Level", "X-min", "Y-min", "Z-min", "X-max", "Y-max", "Z-max", "Mesh Size"};
     refinementBoxesTable->setHorizontalHeaderLabels(headerTitles);
 
     for (int i=0; i < numCols; i++)
@@ -312,6 +307,13 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     refinementBoxesTable->item(3, 6)->setText("0.55");
     refinementBoxesTable->item(3, 7)->setText("1.35");
 
+
+    for (int i=0; i < numRows; i++)
+    {
+        refinementBoxesTable->item(i, 8)->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, refinementBoxesTable->item(i, 1)->text().toInt())));
+    }
+
+
     QPushButton* addRegionButton = new QPushButton("Add Region");
     QPushButton* removeRegionButton = new QPushButton("Remove Region");
     QPushButton* checkRegionsButton = new QPushButton("Check Regions");
@@ -346,6 +348,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *surfaceNameLabel = new QLabel("Surface Name:");
     QLabel *refinementLevelLabel = new QLabel("Refinement Level:");
     QLabel *refinementDistanceLabel = new QLabel("Refinement Distance:");
+    QLabel *surfaceRefinementMeshSizeLabel = new QLabel("Smallest Mesh Size::");
 
     addSurfaceRefinement = new QCheckBox();
     addSurfaceRefinement->setChecked(true);
@@ -361,6 +364,11 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceRefinementDistance = new QLineEdit();
     surfaceRefinementDistance->setText("0.10");
 
+    surfaceRefinementMeshSize = new QLineEdit();
+    surfaceRefinementMeshSize->setEnabled(false);
+    surfaceRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, surfaceRefinementLevel->value())));
+
+
     QPushButton *surfaceMeshDemoView = new QPushButton("");
     QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
     surfaceMeshDemoView->setIcon(surfaceMeshPixmap);
@@ -371,14 +379,15 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceRefinementLayout->addWidget(surfaceNameLabel, 1, 0);
     surfaceRefinementLayout->addWidget(refinementLevelLabel, 2, 0);
     surfaceRefinementLayout->addWidget(refinementDistanceLabel, 3, 0);
+    surfaceRefinementLayout->addWidget(surfaceRefinementMeshSizeLabel, 4, 0);
 
     surfaceRefinementLayout->addWidget(addSurfaceRefinement, 0, 1);
     surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
     surfaceRefinementLayout->addWidget(surfaceRefinementLevel, 2, 1);
     surfaceRefinementLayout->addWidget(surfaceRefinementDistance, 3, 1);
+    surfaceRefinementLayout->addWidget(surfaceRefinementMeshSize, 4, 1);
 
     surfaceRefinementLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-
 
     surfaceRefinementWidget->setLayout(surfaceRefinementLayout);
     snappyHexMeshTab->addTab(surfaceRefinementWidget, "Surface Refinements");
@@ -395,6 +404,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *addEdgeRefinementLabel = new QLabel("Add Edge Refinement:");
     QLabel *edgeNameLabel = new QLabel("Refinement Edge:");
     QLabel *edgeRefinementLevelLabel = new QLabel("Refinement Level:");
+    QLabel *edgeRefinementMeshSizeLabel = new QLabel("Smallest Mesh Size:");
 
     addEdgeRefinement = new QCheckBox();
     addEdgeRefinement->setChecked(true);
@@ -406,6 +416,10 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     edgeRefinementLevel->setRange(numRows + 3, 100);
     edgeRefinementLevel->setSingleStep(1);
 
+    edgeRefinementMeshSize = new QLineEdit();
+    edgeRefinementMeshSize->setEnabled(false);
+    edgeRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())));
+
     QPushButton *edgeMeshDemoView = new QPushButton("");
     QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinementDemoView.svg");
     edgeMeshDemoView->setIcon(edgeMeshPixmap);
@@ -415,12 +429,14 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     edgeRefinementLayout->addWidget(addEdgeRefinementLabel, 0, 0);
     edgeRefinementLayout->addWidget(edgeNameLabel, 1, 0);
     edgeRefinementLayout->addWidget(edgeRefinementLevelLabel, 2, 0);
+    edgeRefinementLayout->addWidget(edgeRefinementMeshSizeLabel, 3, 0);
 
     edgeRefinementLayout->addWidget(addEdgeRefinement, 0, 1);
     edgeRefinementLayout->addWidget(refinementEdgeName, 1, 1);
     edgeRefinementLayout->addWidget(edgeRefinementLevel, 2, 1);
+    edgeRefinementLayout->addWidget(edgeRefinementMeshSize, 3, 1);
 
-    edgeRefinementLayout->addWidget(edgeMeshDemoView,0,2,3,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    edgeRefinementLayout->addWidget(edgeMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
     edgeRefinementWidget->setLayout(edgeRefinementLayout);
@@ -439,6 +455,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *numberOfPrismLayersLabel = new QLabel("Number of Layers:");
     QLabel *prismLayerExpantionRatioLabel = new QLabel("Expantion Ratio:");
     QLabel *finalLayerThicknessLabel = new QLabel("Final Layer Thickness:");
+    QLabel *prismLayerMeshSizeLabel = new QLabel("Smallest Grid Size: ");
 
     addPrismLayers = new QCheckBox();
     addPrismLayers->setChecked(true);
@@ -460,6 +477,10 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     finalPrismLayerThickness->setValue(0.5);
     finalPrismLayerThickness->setSingleStep(0.1);
 
+    prismLayerMeshSize = new QLineEdit();
+    prismLayerMeshSize->setEnabled(false);
+    prismLayerMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
+
     QPushButton *prismLayersDemoView = new QPushButton("");
     QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png");
     prismLayersDemoView->setIcon(prismLayersPixmap);
@@ -471,14 +492,16 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     prismLayerLayout->addWidget(numberOfPrismLayersLabel, 2, 0);
     prismLayerLayout->addWidget(prismLayerExpantionRatioLabel, 3, 0);
     prismLayerLayout->addWidget(finalLayerThicknessLabel, 4, 0);
+    prismLayerLayout->addWidget(prismLayerMeshSizeLabel, 5, 0);
 
     prismLayerLayout->addWidget(addPrismLayers, 0, 1);
     prismLayerLayout->addWidget(prismLayerSurfaceName, 1, 1);
     prismLayerLayout->addWidget(numberOfPrismLayers, 2, 1);
     prismLayerLayout->addWidget(prismLayerExpantionRatio, 3, 1);
     prismLayerLayout->addWidget(finalPrismLayerThickness, 4, 1);
+    prismLayerLayout->addWidget(prismLayerMeshSize, 5, 1);
 
-    prismLayerLayout->addWidget(prismLayersDemoView,0,2,5,1,Qt::AlignVCenter); // Qt::AlignVCenter
+    prismLayerLayout->addWidget(prismLayersDemoView,0,2,6,1,Qt::AlignVCenter); // Qt::AlignVCenter
 
 
     prismLayerWidget->setLayout(prismLayerLayout);
@@ -495,8 +518,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
 
-    layout->addWidget(generalOptionsGroup);
     layout->addWidget(snappyHexMeshTab);
+    layout->addWidget(generalOptionsGroup);
     layout->addWidget(runMeshGroup);
 
     //=============================================================================
@@ -518,7 +541,13 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
 
+//    connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onSurfaceRefinementLevelChanged(QString)));
+//    connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onEdgeRefinementLevelChanged(QString)));
+//    connect(prismLayerMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfPrismLayerChanged(QString)));
+
     onNumberOfCellsChanged(xAxisNumCells->text());
+
+
 }
 
 

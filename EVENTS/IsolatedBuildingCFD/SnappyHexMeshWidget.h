@@ -140,11 +140,13 @@ private:
    QComboBox    *surfaceName;
    QSpinBox     *surfaceRefinementLevel;
    QLineEdit    *surfaceRefinementDistance;
+   QLineEdit    *surfaceRefinementMeshSize;
 
    //Add edge refinment
    QCheckBox    *addEdgeRefinement;
    QSpinBox     *edgeRefinementLevel;
    QComboBox    *refinementEdgeName;
+   QLineEdit    *edgeRefinementMeshSize;
 
    //Add prism layers
    QCheckBox        *addPrismLayers;
@@ -152,6 +154,7 @@ private:
    QDoubleSpinBox   *prismLayerExpantionRatio;
    QDoubleSpinBox   *finalPrismLayerThickness;
    QComboBox        *prismLayerSurfaceName;
+   QLineEdit        *prismLayerMeshSize;
 
    QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;

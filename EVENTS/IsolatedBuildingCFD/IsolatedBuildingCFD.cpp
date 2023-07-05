@@ -247,15 +247,19 @@ bool IsolatedBuildingCFD::initialize()
 
     massUnit = new QComboBox ();
     massUnit->addItem("kg");
+    massUnit->setEnabled(false);
 
     lengthUnit = new QComboBox ();
     lengthUnit->addItem("m");
+    lengthUnit->setEnabled(false);
 
     timeUnit = new QComboBox ();
     timeUnit->addItem("s");
+    timeUnit->setEnabled(false);
 
     angleUnit = new QComboBox ();
     angleUnit->addItem("degree");
+    angleUnit->setEnabled(false);
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
