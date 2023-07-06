@@ -524,13 +524,12 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     //=============================================================================
 
-//    layout->addWidget(snappyHexMeshGroup);
     this->setLayout(layout);
 
     connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
-    connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
-    connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
-    connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged(QString)));
+    connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
+    connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
+    connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
 
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
@@ -541,14 +540,15 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
 
-    connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged(QString)));
-    connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged(QString)));
-    connect(prismLayerMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged(QString)));
-    connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged(QString)));
+    connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
+    connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
+    connect(prismLayerMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
+    connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
+    connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
+    connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
 
-    onNumberOfCellsChanged(xAxisNumCells->text());
-
-    calculateMeshSize();
+    onNumberOfCellsChanged();
+    onMeshSizeChanged();
 }
 
 
@@ -862,7 +862,7 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     yMeshGrading->setValue(blockMeshParamsJson["yGrading"].toDouble());
     zMeshGrading->setValue(blockMeshParamsJson["zGrading"].toDouble());
 
-    onNumberOfCellsChanged(xAxisNumCells->text());
+    onNumberOfCellsChanged();
 
 
     //************************************************************************
@@ -916,6 +916,8 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
 
     snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();
 
+    onMeshSizeChanged();
+
     return true;
 }
 
@@ -961,19 +963,14 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
     }
 }
 
-void SnappyHexMeshWidget::onNumberOfCellsChanged(const QString &arg1)
+void SnappyHexMeshWidget::onNumberOfCellsChanged()
 {
     xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
     yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
     zAxisMeshSize->setText(QString::number(mainModel->domainHeight()/zAxisNumCells->text().toDouble()));
 }
 
-void SnappyHexMeshWidget::onMeshSizeChanged(const QString &arg1)
-{
-    calculateMeshSize();
-}
-
-void SnappyHexMeshWidget::calculateMeshSize()
+void SnappyHexMeshWidget::onMeshSizeChanged()
 {
     double meshSize = qPow(xAxisMeshSize->text().toDouble()*yAxisMeshSize->text().toDouble()*zAxisMeshSize->text().toDouble(), 1.0/3.0);
 
