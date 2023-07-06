@@ -96,8 +96,9 @@ public slots:
    void onAddSurfaceRefinementChecked(int);
    void onAddEdgeRefinementChecked(int);
    void onNumberOfCellsChanged(const QString &arg1);
+   void onMeshSizeChanged(const QString &arg1);
 
-
+   void calculateMeshSize();
 
 
 private:
