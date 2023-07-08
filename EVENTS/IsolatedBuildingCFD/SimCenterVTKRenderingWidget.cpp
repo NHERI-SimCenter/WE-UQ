@@ -121,9 +121,9 @@ void SimCenterVTKRenderingWidget::initialize()
 
     qvtkWidget = new QVTKRenderWidget();
 
-    QLabel *surfaceRepresentationLabel = new QLabel("Representation");
-    QLabel *transparencyLabel = new QLabel("Transparency");
-    QLabel *viewLabel = new QLabel("View");
+    QLabel *viewLabel = new QLabel("View:");
+    QLabel *surfaceRepresentationLabel = new QLabel("Representation:");
+    QLabel *transparencyLabel = new QLabel("Transparency:");
 
     surfaceRepresentation = new QComboBox();
     surfaceRepresentation->addItem("SurfaceWithGrid");

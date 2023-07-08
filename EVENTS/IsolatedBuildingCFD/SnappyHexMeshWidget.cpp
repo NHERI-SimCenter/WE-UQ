@@ -356,6 +356,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceName  = new QComboBox();
     surfaceName->addItem("Building");
     surfaceName->addItem("Ground");
+    surfaceName->setEnabled(false);
 
     surfaceRefinementLevel = new QSpinBox();
     surfaceRefinementLevel->setRange(numRows + 2, 100);
@@ -411,6 +412,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     refinementEdgeName  = new QComboBox();
     refinementEdgeName->addItem("Building Edges");
+    refinementEdgeName->setEnabled(false);
 
     edgeRefinementLevel = new QSpinBox();
     edgeRefinementLevel->setRange(numRows + 3, 100);
