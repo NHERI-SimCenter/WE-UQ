@@ -247,3 +247,8 @@ double WindCharacteristicsWidget::getTimeScale()
 {
     return mainModel->geometricScale()/velocityScale->text().toDouble();
 }
+
+void WindCharacteristicsWidget::updateWidgets()
+{
+    onVelocityScaleChanged();
+}

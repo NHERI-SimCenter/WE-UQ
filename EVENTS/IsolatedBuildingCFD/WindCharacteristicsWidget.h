@@ -72,6 +72,7 @@ public:
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
+    void updateWidgets();
 
     double getTimeScale();
 

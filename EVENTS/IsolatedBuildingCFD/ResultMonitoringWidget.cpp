@@ -658,3 +658,7 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
+void ResultMonitoringWidget::updateWidgets()
+{
+}
+

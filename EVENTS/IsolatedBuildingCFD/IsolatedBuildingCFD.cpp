@@ -303,8 +303,8 @@ bool IsolatedBuildingCFD::initialize()
 
     //Setting Style
     unitSystemLayout->setAlignment(Qt::AlignLeft);
-    unitSystemLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-    unitSystemLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
+//    unitSystemLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+//    unitSystemLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
 
     dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
     dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
@@ -845,13 +845,12 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
     originOptions->setCurrentText(jsonObject["originOption"].toString());
-    openFoamVersion = jsonObject["openFoamVersion"].toString();
+    openFoamVersion = jsonObject["OpenFOAMVersion"].toString();
 
-
-    windCharacteristics->inputFromJSON(jsonObject);
     snappyHexMesh->inputFromJSON(jsonObject);
-    turbulenceModeling->inputFromJSON(jsonObject);
+    windCharacteristics->inputFromJSON(jsonObject);
     boundaryConditions->inputFromJSON(jsonObject);
+    turbulenceModeling->inputFromJSON(jsonObject);
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
 
@@ -892,13 +891,12 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject["origin"] = originPoint;
     jsonObject["originOption"] = originOptions->currentText();
-    jsonObject["openFoamVersion"] = openFoamVersion;
+    jsonObject["OpenFOAMVersion"] = openFoamVersion;
 
-
-    windCharacteristics->outputToJSON(jsonObject);
     snappyHexMesh->outputToJSON(jsonObject);
-    turbulenceModeling->outputToJSON(jsonObject);
+    windCharacteristics->outputToJSON(jsonObject);
     boundaryConditions->outputToJSON(jsonObject);
+    turbulenceModeling->outputToJSON(jsonObject);
     numericalSetup->outputToJSON(jsonObject);
     resultMonitoring->outputToJSON(jsonObject);
 
