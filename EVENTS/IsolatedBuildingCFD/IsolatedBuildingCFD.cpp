@@ -296,10 +296,8 @@ bool IsolatedBuildingCFD::initialize()
     unitSystemLayout->addRow(tr("Time: "), timeUnit);
     unitSystemLayout->addRow(tr("Angle: "), angleUnit);
 
-    massUnit->setMaximumWidth(250);
-    lengthUnit->setMaximumWidth(250);
-    timeUnit->setMaximumWidth(250);
-    angleUnit->setMaximumWidth(250);
+    unitSystemGroup->setMaximumWidth(250);
+
 
     //Setting Style
     unitSystemLayout->setAlignment(Qt::AlignLeft);
