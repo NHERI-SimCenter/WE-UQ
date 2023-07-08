@@ -187,7 +187,7 @@ private:
    QGridLayout  *caseDirectoryLayout;
 
    QGroupBox    *unitSystemGroup;
-   QFormLayout  *unitSystemLayout;
+   QGridLayout  *unitSystemLayout;
    QComboBox    *massUnit;
    QComboBox    *lengthUnit;
    QComboBox    *timeUnit;

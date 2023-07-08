@@ -127,7 +127,7 @@ bool IsolatedBuildingCFD::initialize()
     caseDirectoryLayout = new QGridLayout();
 
     unitSystemGroup = new QGroupBox("Units");
-    unitSystemLayout = new QFormLayout(unitSystemGroup);
+    unitSystemLayout = new QGridLayout();
 
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
     dimAndScaleLayout = new QGridLayout();
@@ -245,6 +245,12 @@ bool IsolatedBuildingCFD::initialize()
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
+
+    QLabel *massUnitLabel = new QLabel("Mass :");
+    QLabel *lengthUnitLabel = new QLabel("Length :");
+    QLabel *timeUnitLabel = new QLabel("Time :");
+    QLabel *angleUnitLabel = new QLabel("Angle :");
+
     massUnit = new QComboBox ();
     massUnit->addItem("kg");
     massUnit->setEnabled(false);
@@ -291,18 +297,19 @@ bool IsolatedBuildingCFD::initialize()
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
 
-    unitSystemLayout->addRow(tr("Mass: "), massUnit);
-    unitSystemLayout->addRow(tr("Length: "),lengthUnit);
-    unitSystemLayout->addRow(tr("Time: "), timeUnit);
-    unitSystemLayout->addRow(tr("Angle: "), angleUnit);
+    unitSystemLayout->addWidget(massUnitLabel, 0, 0);
+    unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
+    unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
+    unitSystemLayout->addWidget(angleUnitLabel, 3, 0);
 
-    unitSystemGroup->setMaximumWidth(250);
-
+    unitSystemLayout->addWidget(massUnit, 0, 1);
+    unitSystemLayout->addWidget(lengthUnit, 1, 1);
+    unitSystemLayout->addWidget(timeUnit, 2, 1);
+    unitSystemLayout->addWidget(angleUnit, 3, 1);
 
     //Setting Style
     unitSystemLayout->setAlignment(Qt::AlignLeft);
-//    unitSystemLayout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
-//    unitSystemLayout->setRowWrapPolicy(QFormLayout::DontWrapRows);
+
 
     dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
     dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
