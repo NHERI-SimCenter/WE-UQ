@@ -126,6 +126,8 @@ public:
     //Returns a dimention normalized by the building height
     double getNormDim(double dim);
 
+    //Returns the smallest mesh size on the building
+    double getTimeStep();
 
 signals:
 

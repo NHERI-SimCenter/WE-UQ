@@ -74,10 +74,6 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-//    numericalSetupGroup = new QGroupBox("Numerical Setup", this);
-//    numericalSetupLayout = new QVBoxLayout();
-//    numericalSetupGroup->setLayout(numericalSetupLayout);
-
     parallelizationGroup = new QGroupBox("Parallelization", this);
     parallelizationLayout = new QGridLayout();
     parallelizationGroup->setLayout(parallelizationLayout);
@@ -194,6 +190,7 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     maxCourantNumber->setEnabled(false);
     maxCourantNumber->setToolTip("Maximum value of Courant number for adjustable time step");
 
+    calculateTimeStep = new QPushButton("Calculate");
 
 
     durationAndTimeStepLayout->addWidget(durationLabel, 0, 0);
@@ -204,8 +201,9 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     durationAndTimeStepLayout->addWidget(timeStep, 1, 1);
 
 
-    durationAndTimeStepLayout->addWidget(constTimeStep, 1, 2);
-    durationAndTimeStepLayout->addWidget(adjustTimeStep, 1, 3);
+    durationAndTimeStepLayout->addWidget(calculateTimeStep, 1, 2);
+    durationAndTimeStepLayout->addWidget(constTimeStep, 1, 3);
+    durationAndTimeStepLayout->addWidget(adjustTimeStep, 1, 4);
 
     durationAndTimeStepLayout->addWidget(maxCourantNumberLabel, 2, 0);
     durationAndTimeStepLayout->addWidget(maxCourantNumber, 2, 1);
@@ -221,6 +219,7 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
     connect(solverType, SIGNAL(currentIndexChanged(QString)), this, SLOT(solverTypeChanged(QString)));
     connect(adjustTimeStep, SIGNAL(toggled(bool)), this, SLOT(timeStepOptionChanged(bool)));
+    connect(calculateTimeStep, SIGNAL(clicked()), this, SLOT(onCalculateTimeStepClicked()));
 
 }
 
@@ -316,6 +315,11 @@ void NumericalSetupWidget::onRunInParallelChecked(int state)
     numProcessors->setEnabled(runInParallel->isChecked()) ;
 }
 
+void NumericalSetupWidget::onCalculateTimeStepClicked()
+{
+    timeStep->setText(QString::number(mainModel->getTimeStep()));
+}
+
 bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes numerical setup to JSON file.
@@ -357,3 +361,4 @@ bool NumericalSetupWidget::inputFromJSON(QJsonObject &jsonObject)
 
     return true;
 }
+

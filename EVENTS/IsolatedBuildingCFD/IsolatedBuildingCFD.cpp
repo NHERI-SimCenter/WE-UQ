@@ -545,6 +545,7 @@ void IsolatedBuildingCFD::updateJSON()
     jsonFile.close();
 }
 
+
 void IsolatedBuildingCFD::writeOpenFoamFiles()
 {
 
@@ -1266,6 +1267,35 @@ double IsolatedBuildingCFD::getNormDim(double dim)
 }
 
 
+double IsolatedBuildingCFD::getTimeStep()
+{
+    double meshSize = 0.0;
+
+    if(snappyHexMesh->addPrismLayers->isChecked())
+    {
+       meshSize = snappyHexMesh->prismLayerMeshSize->text().toDouble();
+    }
+    else if(snappyHexMesh->addEdgeRefinement->isChecked())
+    {
+        meshSize = snappyHexMesh->edgeRefinementMeshSize->text().toDouble();
+    }
+    else if(snappyHexMesh->addSurfaceRefinement->isChecked())
+    {
+        meshSize = snappyHexMesh->surfaceRefinementMeshSize->text().toDouble();
+    }
+    else
+    {
+        meshSize = snappyHexMesh->refinementBoxesTable->item(snappyHexMesh->refinementBoxesTable->rowCount()-1, 8)->text().toDouble();
+    }
+
+    meshSize = meshSize*buildingHeight()/geometricScale();
+
+
+    double maxCo = numericalSetup->maxCourantNumber->value();
+    double U = windCharacteristics->referenceWindSpeed->text().toDouble();
+
+    return maxCo*meshSize/U;
+}
 
 
 
