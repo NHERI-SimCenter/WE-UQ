@@ -104,6 +104,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTextProperty.h>
 #include <vtkNamedColors.h>
 #include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkLegendBoxActor.h>
+#include <vtkImageActor.h>
+#include <vtkImageData.h>
+#include <vtkJPEGReader.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkImageMapper3D.h>
+#include <vtkTextActor.h>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -319,7 +327,7 @@ void SimCenterVTKRenderingWidget::readMesh()
 //    transparency->setValue(10);
 //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 
-    drawAxis();
+    drawAxisAndLegend();
 }
 
 void SimCenterVTKRenderingWidget::showAllMesh()
@@ -505,24 +513,52 @@ bool SimCenterVTKRenderingWidget::isInitialized()
     return initialized;
 }
 
-void SimCenterVTKRenderingWidget::drawAxis()
+void SimCenterVTKRenderingWidget::drawAxisAndLegend()
 {
 
-    renderWindowInteractor->SetRenderWindow(renderWindow);
+    axisIteractor->SetRenderWindow(renderWindow);
 
     double rgba[4]{0.0, 0.0, 0.0, 0.0};
     axisColors->GetColor("Carrot", rgba);
     axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
     axisWidget->SetOrientationMarker(axisActor);
-    axisWidget->SetInteractor(renderWindowInteractor);
+    axisWidget->SetInteractor(axisIteractor);
     axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
     axisWidget->EnabledOn();
     axisWidget->InteractiveOff();
 
-//    renderer->SetRenderWindow(renderWindow);
-//    renderer->AddActor(actor);
-//    renderWindow->Render();
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
+    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    axisIteractor->SetInteractorStyle(style);
+    axisIteractor->Initialize();
 
+    // Load the image file
+    vtkSmartPointer<vtkJPEGReader> imageReader =
+        vtkSmartPointer<vtkJPEGReader>::New();
+
+    QString imageFileName = "C:\\Users\\fanta\\OneDrive\\Desktop\\SimCenterLogo.jpg";
+
+    imageReader->SetFileName(imageFileName.toStdString().c_str());  // Replace with your image file path
+    imageReader->Update();
+
+    vtkSmartPointer<vtkTextActor> textActor;
+    textActor = vtkSmartPointer<vtkTextActor>::New();
+    textActor->SetInput("SimCenter");
+
+    // Set the font properties of the legend
+    vtkSmartPointer<vtkTextProperty> textProperty;
+    textProperty = vtkSmartPointer<vtkTextProperty>::New();
+    textProperty->SetColor(1.0, 0.0, 0.0);
+    textProperty->SetFontFamilyAsString("Avalon");
+    textProperty->SetBold(true); // Make the font bold
+    textProperty->SetFontSize(30);
+    textActor->SetTextProperty(textProperty);
+    textActor->GetPositionCoordinate()->SetValue(1.7*qvtkWidget->width(), 0);
+
+
+    renderer->AddActor(textActor);
+
+    renderWindow->Render();
 }
 
 

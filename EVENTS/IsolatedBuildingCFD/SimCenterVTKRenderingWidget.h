@@ -82,7 +82,7 @@ public:
     void showBuildingOnly();
 
     bool isInitialized();
-    void drawAxis();
+    void drawAxisAndLegend();
 
     template <class Type>
     Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
@@ -122,7 +122,7 @@ private:
 
    vtkNew<vtkAxesActor> axisActor;
    vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
+   vtkNew<vtkRenderWindowInteractor> axisIteractor;
    vtkNew<vtkOrientationMarkerWidget> axisWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
