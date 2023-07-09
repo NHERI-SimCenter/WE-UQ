@@ -42,15 +42,23 @@ win32 {
     -lvtkFiltersCore-9.2 \
     -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
+    -lvtkCommonColor-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
+    -lvtkInteractionStyle-9.2\
+    -lvtkInteractionWidgets-9.2\
     -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkRenderingFreeType-9.2 \
+    -lvtkRenderingGL2PSOpenGL2-9.2 \
+    -lvtkRenderingAnnotation-9.2 \
     -lvtkCommonExecutionModel-9.2 \
     -lvtkCommonDataModel-9.2 \
     -lvtkGUISupportQt-9.2 \
     -lvtkRenderingOpenGL2-9.2 \
     -lvtkIOGeometry-9.2 \
     -lvtkViewsQt-9.2 \
+    -lvtkImagingCore-9.2 \
+    -lvtkIOImage-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
 
@@ -71,13 +79,18 @@ win32 {
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
+    -lvtkInteractionStyle-9.2\
+    -lvtkInteractionWidgets-9.2\
     -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkRenderingAnnotation-9.2 \
     -lvtkCommonExecutionModel-9.2 \
     -lvtkCommonDataModel-9.2 \
     -lvtkGUISupportQt-9.2 \
     -lvtkRenderingOpenGL2-9.2 \
     -lvtkIOGeometry-9.2 \
     -lvtkViewsQt-9.2 \
+    -lvtkImagingCore-9.2 \
+    -lvtkIOImage-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
     } else {
@@ -90,6 +103,9 @@ win32 {
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
+    -lvtkInteractionStyle-9.2\
+    -lvtkInteractionWidgets-9.2\
+    -lvtkRenderingAnnotation-9.2 \
     -lvtkRenderingContextOpenGL2-9.2 \
     -lvtkCommonExecutionModel-9.2 \
     -lvtkCommonDataModel-9.2 \
@@ -97,6 +113,8 @@ win32 {
     -lvtkRenderingOpenGL2-9.2 \
     -lvtkIOGeometry-9.2 \
     -lvtkViewsQt-9.2 \
+    -lvtkImagingCore-9.2 \
+    -lvtkIOImage-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
     }

@@ -291,6 +291,7 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theCurrentEvent = theIsolatedBuildingCFD;
 
         IsolatedBuildingCFD* theIso  = dynamic_cast<IsolatedBuildingCFD*>(theIsolatedBuildingCFD);
+
         if (!theIso->isInitialize())
         {
             theIso->initialize();
