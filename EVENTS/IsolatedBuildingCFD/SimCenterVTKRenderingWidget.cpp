@@ -545,7 +545,7 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     textProperty->SetFontSize(30);
     textActor->SetTextProperty(textProperty);
     textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-    textActor->SetPosition(0.0, 0.00);
+    textActor->SetPosition(0.75, 0.90);
 
 
     renderer->AddActor(textActor);
