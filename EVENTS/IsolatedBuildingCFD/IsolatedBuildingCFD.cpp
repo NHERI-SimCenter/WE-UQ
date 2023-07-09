@@ -516,6 +516,7 @@ bool IsolatedBuildingCFD::initialize()
     theGI->setLengthUnit("m");
     theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
     theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+
     return true;
 }
 

@@ -99,6 +99,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkAppendPolyData.h>
 #include <vtkCleanPolyData.h>
 #include <vtkSTLReader.h>
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkAxesActor.h>
+#include <vtkTextProperty.h>
+#include <vtkNamedColors.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -119,7 +124,8 @@ void SimCenterVTKRenderingWidget::initialize()
     visLayout = new QGridLayout();
     visGroup->setLayout(visLayout);
 
-    qvtkWidget = new QVTKRenderWidget();
+    renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    qvtkWidget = new QVTKRenderWidget(renderWindow);
 
     QLabel *viewLabel = new QLabel("View:");
     QLabel *surfaceRepresentationLabel = new QLabel("Representation:");
@@ -149,6 +155,9 @@ void SimCenterVTKRenderingWidget::initialize()
     menueLayout->addWidget(transparencyLabel, 0, 4, Qt::AlignRight);
     menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
     menueLayout->addWidget(reloadCase, 0, 6, Qt::AlignCenter);
+
+
+//    renderWindow  = vtkSmartPointer<vtkDataSetMapper>::New();
 
     qvtkWidget->setMinimumSize(QSize(350, 600));
     visLayout->addWidget(qvtkWidget);
@@ -255,6 +264,7 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 
 void SimCenterVTKRenderingWidget::readMesh()
 {
+
     // Setup reader
     reader = vtkSmartPointer<vtkOpenFOAMReader>::New();
     QString foamFileName  = mainModel->caseDir() + "/vis.foam";
@@ -299,12 +309,17 @@ void SimCenterVTKRenderingWidget::readMesh()
     qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
 
+
     surfaceRepresentation->setCurrentIndex(0);
+
+    renderWindow->Render();
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
 //    transparency->setValue(10);
 //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 
+    drawAxis();
 }
 
 void SimCenterVTKRenderingWidget::showAllMesh()
@@ -325,12 +340,10 @@ void SimCenterVTKRenderingWidget::showAllMesh()
     actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
     //   actor->GetProperty()->SetOpacity(0.5);
 
-
     // VTK Renderer
     // Add Actor to renderer
     renderer->AddActor(actor);
     renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
 
     // VTK/Qt wedded
     qvtkWidget->setRenderWindow(renderWindow);
@@ -342,6 +355,10 @@ void SimCenterVTKRenderingWidget::showAllMesh()
     //Set default transparency to 10%
     //    transparency->setValue(10);
     //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+
+    renderWindow->Render();
+    renderer->ResetCamera();
+
 }
 
 
@@ -400,6 +417,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
     //    transparency->setValue(10);
@@ -453,6 +471,7 @@ void SimCenterVTKRenderingWidget::showBuildingOnly()
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
     //    transparency->setValue(10);
@@ -485,4 +504,25 @@ bool SimCenterVTKRenderingWidget::isInitialized()
 {
     return initialized;
 }
+
+void SimCenterVTKRenderingWidget::drawAxis()
+{
+
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+
+    double rgba[4]{0.0, 0.0, 0.0, 0.0};
+    axisColors->GetColor("Carrot", rgba);
+    axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    axisWidget->SetOrientationMarker(axisActor);
+    axisWidget->SetInteractor(renderWindowInteractor);
+    axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
+    axisWidget->EnabledOn();
+    axisWidget->InteractiveOff();
+
+//    renderer->SetRenderWindow(renderWindow);
+//    renderer->AddActor(actor);
+//    renderWindow->Render();
+
+}
+
 
