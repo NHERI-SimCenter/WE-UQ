@@ -381,7 +381,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
     vtkNew<vtkAppendPolyData> appendFilter;
 
     if(mainModel->isSnappyHexMeshCompleted())
-    {
+    {        
         appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
     }
     else
@@ -402,16 +402,15 @@ void SimCenterVTKRenderingWidget::showBreakout()
     mapper = vtkSmartPointer<vtkDataSetMapper>::New();
     mapper->SetInputData(cleanFilter->GetOutput());
     mapper->SetScalarVisibility(false);
+
+
+        // Actor in scene
     actor->GetProperty()->SetRepresentationToSurface();
     //    mapper->SetScalarRange(block0->GetScalarRange());
-
-    // Actor in scene
     actor->GetProperty()->SetEdgeVisibility(true);
     //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
     actor->SetMapper(mapper);
     actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
-
 
     // VTK Renderer
     // Add Actor to renderer
