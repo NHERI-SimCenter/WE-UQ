@@ -167,7 +167,7 @@ void SimCenterVTKRenderingWidget::initialize()
 
 //    renderWindow  = vtkSmartPointer<vtkDataSetMapper>::New();
 
-    qvtkWidget->setMinimumSize(QSize(350, 600));
+    qvtkWidget->setMinimumSize(300, 500);
     visLayout->addWidget(qvtkWidget);
     visGroup->setStyleSheet("border: 2px solid black");
     visLayout->setContentsMargins(0, 0, 0, 0);
@@ -545,7 +545,7 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     textProperty->SetFontSize(30);
     textActor->SetTextProperty(textProperty);
     textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-    textActor->SetPosition(0.75, 0.90);
+    textActor->SetPosition(0.0, 0.00);
 
 
     renderer->AddActor(textActor);
