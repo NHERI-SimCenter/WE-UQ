@@ -77,6 +77,7 @@ win32 {
     -lvtkFiltersCore-9.2 \
     -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
+    -lvtkCommonColor-9.2 \
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
     -lvtkInteractionStyle-9.2\
@@ -99,6 +100,7 @@ win32 {
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
     -lvtkFiltersCore-9.2 \
+    -lvtkCommonColor-9.2 \
     -lvtkFiltersSources-9.2 \
     -lvtkCommonCore-9.2 \
     -lvtkFiltersGeometry-9.2 \

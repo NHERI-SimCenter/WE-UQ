@@ -532,15 +532,6 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     axisIteractor->SetInteractorStyle(style);
     axisIteractor->Initialize();
 
-    // Load the image file
-    vtkSmartPointer<vtkJPEGReader> imageReader =
-        vtkSmartPointer<vtkJPEGReader>::New();
-
-    QString imageFileName = "C:\\Users\\fanta\\OneDrive\\Desktop\\SimCenterLogo.jpg";
-
-    imageReader->SetFileName(imageFileName.toStdString().c_str());  // Replace with your image file path
-    imageReader->Update();
-
     vtkSmartPointer<vtkTextActor> textActor;
     textActor = vtkSmartPointer<vtkTextActor>::New();
     textActor->SetInput("SimCenter");
