@@ -544,7 +544,7 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     textProperty->SetBold(true); // Make the font bold
     textProperty->SetFontSize(30);
     textActor->SetTextProperty(textProperty);
-    textActor->GetPositionCoordinate()->SetValue(1.7*qvtkWidget->width(), 0);
+    textActor->GetPositionCoordinate()->SetValue(1.7*qvtkWidget->width(), 1.85*qvtkWidget->height());
 
 
     renderer->AddActor(textActor);
