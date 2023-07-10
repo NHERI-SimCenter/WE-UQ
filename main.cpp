@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.0.c");
+    QCoreApplication::setApplicationVersion("3.0.0");
 
     Q_INIT_RESOURCE(images1);
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     //Setting Google Analytics Tracking Information
-    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    // GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
     GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
     GoogleAnalytics::CreateSessionId();
     GoogleAnalytics::StartSession();
