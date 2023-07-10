@@ -126,6 +126,8 @@ public:
     //Returns a dimention normalized by the building height
     double getNormDim(double dim);
 
+    //Returns the smallest mesh size on the building
+    double getTimeStep();
 
 signals:
 
@@ -185,13 +187,15 @@ private:
    QGridLayout  *caseDirectoryLayout;
 
    QGroupBox    *unitSystemGroup;
-   QFormLayout  *unitSystemLayout;
+   QGridLayout  *unitSystemLayout;
    QComboBox    *massUnit;
    QComboBox    *lengthUnit;
    QComboBox    *timeUnit;
    QComboBox    *angleUnit;
 
-
+   QGroupBox    *openFoamVersionGroup;
+   QGridLayout  *openFoamVersionLayout;
+   QComboBox    *openFoamVersion;
 
    QGroupBox    *buildingInformationGroup;
    QGridLayout  *buildingInformationLayout;
@@ -219,8 +223,8 @@ private:
    QPushButton  *plotWindProfiles;
    QPushButton  *plotWindLoads;
 
-   QString workingDirPath;
-   QString openFoamVersion;
+   QString      workingDirPath;
+
 
    bool caseInitialized = false;
 

@@ -72,15 +72,17 @@ public:
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
+    void updateWidgets();
+
+    double getTimeScale();
+
 
 signals:
 
 public slots:
    void clear(void);
    void onCalculateReynoldsNumber();
-//   void timeStepOptionChanged(const bool arg1);
-
-
+   void onVelocityScaleChanged();
 
 
 private:
@@ -92,6 +94,8 @@ private:
    QGroupBox            *windCharacteristicsGroup;
    QGridLayout          *windCharacteristicsLayout;
 
+   QLineEdit            *velocityScale;
+   QLineEdit            *timeScale;
    QLineEdit            *referenceWindSpeed;
    QLineEdit            *referenceHeight;
    QLineEdit            *airDensity;
@@ -99,13 +103,6 @@ private:
    QLineEdit            *reynoldsNumber;
    QLineEdit            *aerodynamicRoughnessLength;
    QPushButton          *calculateReynoldsNumber;
-
-   QLabel               *referenceWindSpeedLabel;
-   QLabel               *referenceHeightLabel;
-   QLabel               *airDensityLabel;
-   QLabel               *kinematicViscosityLabel;
-   QLabel               *reynoldsNumberLabel;
-   QLabel               *aerodynamicRoughnessLengthLabel;
 
 public:
 

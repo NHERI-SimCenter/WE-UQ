@@ -80,6 +80,7 @@ public slots:
    void solverTypeChanged(const QString &arg1);
    void timeStepOptionChanged(const bool arg1);
    void onRunInParallelChecked(int);
+   void onCalculateTimeStepClicked();
 
 
 
@@ -89,9 +90,6 @@ private:
    IsolatedBuildingCFD  *mainModel;
 
    QVBoxLayout      *layout;
-
-//   QGroupBox        *numericalSetupGroup;
-//   QVBoxLayout      *numericalSetupLayout;
 
    QGroupBox        *parallelizationGroup;
    QGridLayout      *parallelizationLayout;
@@ -116,6 +114,7 @@ private:
 
    QRadioButton     *constTimeStep;
    QRadioButton     *adjustTimeStep;
+   QPushButton      *calculateTimeStep;
 
    QLabel           *solverTypeLabel ;
    QLabel           *numNonOrthogonalCorrectorsLabel;

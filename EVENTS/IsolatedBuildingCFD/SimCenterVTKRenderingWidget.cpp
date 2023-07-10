@@ -99,6 +99,19 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkAppendPolyData.h>
 #include <vtkCleanPolyData.h>
 #include <vtkSTLReader.h>
+#include <vtkOrientationMarkerWidget.h>
+#include <vtkAxesActor.h>
+#include <vtkTextProperty.h>
+#include <vtkNamedColors.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkLegendBoxActor.h>
+#include <vtkImageActor.h>
+#include <vtkImageData.h>
+#include <vtkJPEGReader.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkImageMapper3D.h>
+#include <vtkTextActor.h>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -119,11 +132,12 @@ void SimCenterVTKRenderingWidget::initialize()
     visLayout = new QGridLayout();
     visGroup->setLayout(visLayout);
 
-    qvtkWidget = new QVTKRenderWidget();
+    renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+    qvtkWidget = new QVTKRenderWidget(renderWindow);
 
-    QLabel *surfaceRepresentationLabel = new QLabel("Representation");
-    QLabel *transparencyLabel = new QLabel("Transparency");
-    QLabel *viewLabel = new QLabel("View");
+    QLabel *viewLabel = new QLabel("View:");
+    QLabel *surfaceRepresentationLabel = new QLabel("Representation:");
+    QLabel *transparencyLabel = new QLabel("Transparency:");
 
     surfaceRepresentation = new QComboBox();
     surfaceRepresentation->addItem("SurfaceWithGrid");
@@ -150,7 +164,10 @@ void SimCenterVTKRenderingWidget::initialize()
     menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
     menueLayout->addWidget(reloadCase, 0, 6, Qt::AlignCenter);
 
-    qvtkWidget->setMinimumSize(QSize(350, 600));
+
+//    renderWindow  = vtkSmartPointer<vtkDataSetMapper>::New();
+
+    qvtkWidget->setMinimumSize(300, 500);
     visLayout->addWidget(qvtkWidget);
     visGroup->setStyleSheet("border: 2px solid black");
     visLayout->setContentsMargins(0, 0, 0, 0);
@@ -255,6 +272,7 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 
 void SimCenterVTKRenderingWidget::readMesh()
 {
+
     // Setup reader
     reader = vtkSmartPointer<vtkOpenFOAMReader>::New();
     QString foamFileName  = mainModel->caseDir() + "/vis.foam";
@@ -299,12 +317,17 @@ void SimCenterVTKRenderingWidget::readMesh()
     qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
 
+
     surfaceRepresentation->setCurrentIndex(0);
+
+    renderWindow->Render();
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
 //    transparency->setValue(10);
 //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 
+    drawAxisAndLegend();
 }
 
 void SimCenterVTKRenderingWidget::showAllMesh()
@@ -325,12 +348,10 @@ void SimCenterVTKRenderingWidget::showAllMesh()
     actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
     //   actor->GetProperty()->SetOpacity(0.5);
 
-
     // VTK Renderer
     // Add Actor to renderer
     renderer->AddActor(actor);
     renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
 
     // VTK/Qt wedded
     qvtkWidget->setRenderWindow(renderWindow);
@@ -342,6 +363,10 @@ void SimCenterVTKRenderingWidget::showAllMesh()
     //Set default transparency to 10%
     //    transparency->setValue(10);
     //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+
+    renderWindow->Render();
+    renderer->ResetCamera();
+
 }
 
 
@@ -356,7 +381,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
     vtkNew<vtkAppendPolyData> appendFilter;
 
     if(mainModel->isSnappyHexMeshCompleted())
-    {
+    {        
         appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
     }
     else
@@ -377,16 +402,15 @@ void SimCenterVTKRenderingWidget::showBreakout()
     mapper = vtkSmartPointer<vtkDataSetMapper>::New();
     mapper->SetInputData(cleanFilter->GetOutput());
     mapper->SetScalarVisibility(false);
+
+
+        // Actor in scene
     actor->GetProperty()->SetRepresentationToSurface();
     //    mapper->SetScalarRange(block0->GetScalarRange());
-
-    // Actor in scene
     actor->GetProperty()->SetEdgeVisibility(true);
     //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
     actor->SetMapper(mapper);
     actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
-
 
     // VTK Renderer
     // Add Actor to renderer
@@ -400,6 +424,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
     //    transparency->setValue(10);
@@ -453,6 +478,7 @@ void SimCenterVTKRenderingWidget::showBuildingOnly()
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
+    renderer->ResetCamera();
 
     //Set default transparency to 10%
     //    transparency->setValue(10);
@@ -485,4 +511,45 @@ bool SimCenterVTKRenderingWidget::isInitialized()
 {
     return initialized;
 }
+
+void SimCenterVTKRenderingWidget::drawAxisAndLegend()
+{
+
+    axisIteractor->SetRenderWindow(renderWindow);
+
+    double rgba[4]{0.0, 0.0, 0.0, 0.0};
+    axisColors->GetColor("Carrot", rgba);
+    axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    axisWidget->SetOrientationMarker(axisActor);
+    axisWidget->SetInteractor(axisIteractor);
+    axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
+    axisWidget->EnabledOn();
+    axisWidget->InteractiveOff();
+
+    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
+    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    axisIteractor->SetInteractorStyle(style);
+    axisIteractor->Initialize();
+
+    vtkSmartPointer<vtkTextActor> textActor;
+    textActor = vtkSmartPointer<vtkTextActor>::New();
+    textActor->SetInput("SimCenter");
+
+    // Set the font properties of the legend
+    vtkSmartPointer<vtkTextProperty> textProperty;
+    textProperty = vtkSmartPointer<vtkTextProperty>::New();
+    textProperty->SetColor(1.0, 0.0, 0.0);
+    textProperty->SetFontFamilyAsString("Avalon");
+    textProperty->SetBold(true); // Make the font bold
+    textProperty->SetFontSize(30);
+    textActor->SetTextProperty(textProperty);
+    textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
+    textActor->SetPosition(0.025, 0.025);
+
+
+    renderer->AddActor(textActor);
+
+    renderWindow->Render();
+}
+
 

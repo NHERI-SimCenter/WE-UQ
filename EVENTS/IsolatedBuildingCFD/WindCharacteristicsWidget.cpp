@@ -84,20 +84,30 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     windCharacteristicsGroup->setLayout(windCharacteristicsLayout);
     windCharacteristicsLayout->setHorizontalSpacing(widgetGap);
 
-
     //==================================================================
     //              Wind Characterstics
     //==================================================================
-//    QLabel *lengthUnitLabel = new QLabel("m");
-    referenceHeightLabel = new QLabel("Reference Height:");
-    referenceWindSpeedLabel = new QLabel("Wind Speed at Reference Height:");
-    aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length:");
-    airDensityLabel = new QLabel("Air Density:");
-    kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");
-    reynoldsNumberLabel = new QLabel("Reynolds Number:");
+    QLabel *velocityScaleLabel = new QLabel("Velocity Scale: ");
+    QLabel *timeScaleLabel = new QLabel("Time Scale: ");
+    QLabel *referenceHeightLabel = new QLabel("Reference Height:");
+    QLabel *referenceWindSpeedLabel = new QLabel("Wind Speed at Reference Height:");
+    QLabel *aerodynamicRoughnessLengthLabel = new QLabel("Aerodynamic Roughness Length:");
+    QLabel *airDensityLabel = new QLabel("Air Density:");
+    QLabel *kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");
+    QLabel *reynoldsNumberLabel = new QLabel("Reynolds Number:");
+
+    velocityScale = new QLineEdit();
+    velocityScale->setText("4.0");
+    velocityScale->setValidator(new QDoubleValidator());
+    velocityScale->setToolTip("Velocity scale of the simulation. The ratio of wind speed in full-scale to model scale");
+
+    timeScale = new QLineEdit();
+    timeScale->setText(QString::number(getTimeScale()));
+    timeScale->setEnabled(false);
+    timeScale->setToolTip("Time scale of the simulation, calculated directely from length and velocity scale");
 
     referenceWindSpeed = new QLineEdit();
-    referenceWindSpeed->setText("12.35");
+    referenceWindSpeed->setText("10.0");
     referenceWindSpeed->setValidator(new QDoubleValidator());
     referenceWindSpeed->setToolTip("Wind speed at reference height in model scale");
 
@@ -105,7 +115,6 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     referenceHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->geometricScale()));
     referenceHeight->setValidator(new QDoubleValidator());
     referenceHeight->setToolTip("Reference height in model scale");
-
 
     aerodynamicRoughnessLength = new QLineEdit();
     aerodynamicRoughnessLength->setText("0.03");
@@ -133,23 +142,29 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
 
 
     calculateReynoldsNumber = new QPushButton("Calculate");
-    windCharacteristicsLayout->addWidget(referenceWindSpeedLabel, 0, 0);
-    windCharacteristicsLayout->addWidget(referenceHeightLabel, 1, 0);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 2, 0);
 
-    windCharacteristicsLayout->addWidget(referenceWindSpeed, 0, 1);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 1, 1);
-//    windCharacteristicsLayout->addWidget(lengthUnitLabel, 1, 2,Qt::AlignLeft);
-    windCharacteristicsLayout->addWidget(referenceHeight, 1, 1);
+    windCharacteristicsLayout->addWidget(velocityScaleLabel, 0, 0);
+    windCharacteristicsLayout->addWidget(velocityScale, 0, 1);
+    windCharacteristicsLayout->addWidget(timeScaleLabel, 0, 2);
+    windCharacteristicsLayout->addWidget(timeScale, 0, 3);
+
+    windCharacteristicsLayout->addWidget(referenceWindSpeedLabel, 1, 0);
+    windCharacteristicsLayout->addWidget(referenceHeightLabel, 2, 0);
+    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 3, 0);
+
+    windCharacteristicsLayout->addWidget(referenceWindSpeed, 1, 1);
     windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 2, 1);
+//    windCharacteristicsLayout->addWidget(lengthUnitLabel, 1, 2,Qt::AlignLeft);
+    windCharacteristicsLayout->addWidget(referenceHeight, 2, 1);
+    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 3, 1);
 
-    windCharacteristicsLayout->addWidget(airDensityLabel, 0, 2);
-    windCharacteristicsLayout->addWidget(kinematicViscosityLabel, 1, 2);
-    windCharacteristicsLayout->addWidget(reynoldsNumberLabel, 2, 2);
-    windCharacteristicsLayout->addWidget(airDensity, 0, 3);
-    windCharacteristicsLayout->addWidget(kinematicViscosity, 1, 3);
-    windCharacteristicsLayout->addWidget(reynoldsNumber, 2, 3);
-    windCharacteristicsLayout->addWidget(calculateReynoldsNumber, 2, 4);
+    windCharacteristicsLayout->addWidget(airDensityLabel, 1, 2);
+    windCharacteristicsLayout->addWidget(kinematicViscosityLabel, 2, 2);
+    windCharacteristicsLayout->addWidget(reynoldsNumberLabel, 3, 2);
+    windCharacteristicsLayout->addWidget(airDensity, 1, 3);
+    windCharacteristicsLayout->addWidget(kinematicViscosity, 2, 3);
+    windCharacteristicsLayout->addWidget(reynoldsNumber, 3, 3);
+    windCharacteristicsLayout->addWidget(calculateReynoldsNumber, 3, 4);
 
     layout->addWidget(windCharacteristicsGroup);
 
@@ -157,6 +172,7 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
 
     //Add signals
     connect(calculateReynoldsNumber, SIGNAL(clicked()), this, SLOT(onCalculateReynoldsNumber()));
+    connect(velocityScale, SIGNAL(textChanged(QString)), this, SLOT(onVelocityScaleChanged()));
 
     onCalculateReynoldsNumber();
 }
@@ -181,12 +197,19 @@ void WindCharacteristicsWidget::onCalculateReynoldsNumber()
     reynoldsNumber->setText(QString::number(Uh*h/kv));
 }
 
+void WindCharacteristicsWidget::onVelocityScaleChanged()
+{
+    timeScale->setText(QString::number(getTimeScale()));
+}
+
 bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind characterstics (flow properties) to JSON file.
 
     QJsonObject windCharJson = QJsonObject();
 
+    windCharJson["velocityScale"] = velocityScale->text().toDouble();
+    windCharJson["timeScale"] = timeScale->text().toDouble();
     windCharJson["referenceWindSpeed"] = referenceWindSpeed->text().toDouble();
     windCharJson["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
     windCharJson["kinematicViscosity"] = kinematicViscosity->text().toDouble();
@@ -206,6 +229,8 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
 
     QJsonObject windCharJson = jsonObject["windCharacteristics"].toObject();
 
+    velocityScale->setText(QString::number(windCharJson["velocityScale"].toDouble()));
+    timeScale->setText(QString::number(windCharJson["timeScale"].toDouble()));
     referenceWindSpeed->setText(QString::number(windCharJson["referenceWindSpeed"].toDouble()));
     referenceHeight->setText(QString::number(windCharJson["referenceHeight"].toDouble()));
     aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));
@@ -213,6 +238,17 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
     kinematicViscosity->setText(QString::number(windCharJson["kinematicViscosity"].toDouble()));
 
     onCalculateReynoldsNumber();
+    onVelocityScaleChanged();
 
     return true;
+}
+
+double WindCharacteristicsWidget::getTimeScale()
+{
+    return mainModel->geometricScale()/velocityScale->text().toDouble();
+}
+
+void WindCharacteristicsWidget::updateWidgets()
+{
+    onVelocityScaleChanged();
 }

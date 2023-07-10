@@ -58,12 +58,14 @@ class QPushButton;
 class QSlider;
 class vtkDataSetMapper;
 class vtkActor;
+class vtkAxesActor;
 class vtkOpenFOAMReader;
 class vtkUnstructuredGrid;
 class vtkMultiBlockDataSet;
 class vtkPolyDataMapper;
+class vtkNamedColors;
+class vtkOrientationMarkerWidget;
 class IsolatedBuildingCFD;
-
 class SimCenterVTKRenderingWidget: public SimCenterAppWidget
 {
     friend class IsolatedBuildingCFD;
@@ -80,6 +82,7 @@ public:
     void showBuildingOnly();
 
     bool isInitialized();
+    void drawAxisAndLegend();
 
     template <class Type>
     Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
@@ -115,7 +118,12 @@ private:
    vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
    vtkNew<vtkActor> actor;// Actor in scene
    vtkNew<vtkRenderer> renderer; // VTK Renderer
-   vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+   vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
+
+   vtkNew<vtkAxesActor> axisActor;
+   vtkNew<vtkNamedColors> axisColors;
+   vtkNew<vtkRenderWindowInteractor> axisIteractor;
+   vtkNew<vtkOrientationMarkerWidget> axisWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

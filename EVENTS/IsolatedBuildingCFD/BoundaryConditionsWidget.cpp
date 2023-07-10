@@ -159,7 +159,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     //=======================================================
     //Inflow boundary condition options
     //=======================================================
-    inflowGroup = new QGroupBox("Inflow Properties", this);
+    inflowGroup = new QGroupBox("Inflow Generation", this);
     inflowLayout = new QGridLayout();
     inflowGroup->setLayout(inflowLayout);
     inflowGroup->setEnabled(false);
