@@ -87,8 +87,8 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
 
 
     turbModelOptions  = new QComboBox();
-    turbModelOptions->addItem("RANS");
     turbModelOptions->addItem("LES");
+    turbModelOptions->addItem("RANS");
     turbModelOptions->addItem("DES");
 
 
@@ -106,6 +106,32 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     QGridLayout* RANSLayout = new QGridLayout(RANSWidget);
     QGridLayout* DESLayout = new QGridLayout(DESWidget);
     QGridLayout* LESLayout = new QGridLayout(LESWidget);
+
+    //============================= ******* ===============================//
+
+    QLabel *LESOptionsLabel = new QLabel("Sub-grid Scale Model:");
+    QLabel *LESCoeffsLabel = new QLabel("Model Coefficients:");
+
+    LESModelCoeffs = new QTextEdit ();
+    QString LESModelCoeffText  = "Ck = 0.094\n"
+                                "Ce = 1.048\n";
+
+    LESModelCoeffs->setText(LESModelCoeffText);
+    LESModelCoeffs->setFontItalic(true);
+    LESModelCoeffs->setReadOnly(true);
+
+    LESOptions  = new QComboBox();
+    LESOptions->addItem("Smagorinsky");
+    LESOptions->addItem("WALE");
+    LESOptions->addItem("kEqn");
+    LESOptions->addItem("dynamicKEqn");
+
+
+    LESLayout->addWidget(LESOptionsLabel, 0, 0);
+    LESLayout->addWidget(LESCoeffsLabel, 1, 0);
+    LESLayout->addWidget(LESOptions, 0, 1);
+    LESLayout->addWidget(LESModelCoeffs, 1, 1);
+    connect(LESOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(LESModelTypeChanged(QString)));
 
     //============================= ******* ===============================//
 
@@ -130,31 +156,6 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     RANSLayout->addWidget(RANSModelCoeffs, 1, 1);
     connect(RANSOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(RANSModelTypeChanged(QString)));
 
-    //============================= ******* ===============================//
-
-    QLabel *LESOptionsLabel = new QLabel("Sub-grid Scale Model:");
-    QLabel *LESCoeffsLabel = new QLabel("Model Coefficients:");
-
-    LESModelCoeffs = new QTextEdit ();
-    QString LESModelCoeffText  = "Ck = 0.094\n"
-                                 "Ce = 1.048\n";
-
-    LESModelCoeffs->setText(LESModelCoeffText);
-    LESModelCoeffs->setFontItalic(true);
-    LESModelCoeffs->setReadOnly(true);
-
-    LESOptions  = new QComboBox();
-    LESOptions->addItem("Smagorinsky");
-    LESOptions->addItem("WALE");
-    LESOptions->addItem("kEqn");
-    LESOptions->addItem("dynamicKEqn");
-
-
-    LESLayout->addWidget(LESOptionsLabel, 0, 0);
-    LESLayout->addWidget(LESCoeffsLabel, 1, 0);
-    LESLayout->addWidget(LESOptions, 0, 1);
-    LESLayout->addWidget(LESModelCoeffs, 1, 1);
-    connect(LESOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(LESModelTypeChanged(QString)));
 
     //============================= ******* ===============================//
 
@@ -180,8 +181,8 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     //============================= ******* ===============================//
     stackedTurbModelWidget = new QStackedWidget;
 
-    stackedTurbModelWidget->addWidget(RANSWidget);
     stackedTurbModelWidget->addWidget(LESWidget);
+    stackedTurbModelWidget->addWidget(RANSWidget);
     stackedTurbModelWidget->addWidget(DESWidget);
 
     turbModelLayout->addWidget(stackedTurbModelWidget);
@@ -192,10 +193,6 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
 
     layout->addWidget(turbModelGroup);
     this->setLayout(layout);
-
-
-    //======================== Default Setup ==============================//
-//    turbModelTypeChanged("LES");
 
 }
 

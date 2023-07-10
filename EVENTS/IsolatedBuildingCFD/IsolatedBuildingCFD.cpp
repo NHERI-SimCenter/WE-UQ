@@ -129,6 +129,9 @@ bool IsolatedBuildingCFD::initialize()
     unitSystemGroup = new QGroupBox("Units");
     unitSystemLayout = new QGridLayout();
 
+    openFoamVersionGroup = new QGroupBox("OpenFOAM Version");
+    openFoamVersionLayout = new QGridLayout();
+
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
     dimAndScaleLayout = new QGridLayout();
 
@@ -267,6 +270,16 @@ bool IsolatedBuildingCFD::initialize()
     angleUnit->addItem("degree");
     angleUnit->setEnabled(false);
 
+
+    QLabel *openFoamVersionLabel = new QLabel("Version of OpenFOAM Distribution: ");
+
+    openFoamVersion = new QComboBox ();
+    openFoamVersion->addItem("7");
+    openFoamVersion->addItem("9");
+    openFoamVersion->addItem("10");
+    openFoamVersion->setCurrentIndex(1);
+
+
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
 
@@ -297,6 +310,11 @@ bool IsolatedBuildingCFD::initialize()
     caseDirectoryLayout->addWidget(caseDirectoryPathWidget, 0, 1);
     caseDirectoryLayout->addWidget(browseCaseDirectoryButton, 0, 2);
 
+    openFoamVersionLayout->addWidget(openFoamVersionLabel, 0, 0);
+    openFoamVersionLayout->addWidget(openFoamVersion, 0, 1);
+    openFoamVersionLayout->setAlignment(Qt::AlignLeft);
+
+
     unitSystemLayout->addWidget(massUnitLabel, 0, 0);
     unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
     unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
@@ -306,10 +324,7 @@ bool IsolatedBuildingCFD::initialize()
     unitSystemLayout->addWidget(lengthUnit, 1, 1);
     unitSystemLayout->addWidget(timeUnit, 2, 1);
     unitSystemLayout->addWidget(angleUnit, 3, 1);
-
-    //Setting Style
     unitSystemLayout->setAlignment(Qt::AlignLeft);
-
 
     dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
     dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
@@ -350,7 +365,6 @@ bool IsolatedBuildingCFD::initialize()
     buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
     buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
 
-
     coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
     coordinateSystemLayout->addWidget(originOptions,0,1);
     coordinateSystemLayout->addWidget(originCoordinateLabel,1,0, Qt::AlignRight);
@@ -361,8 +375,8 @@ bool IsolatedBuildingCFD::initialize()
     coordinateSystemLayout->addWidget(originZLabel,1,5, Qt::AlignLeft);
     coordinateSystemLayout->addWidget(originZWidget,1,6, Qt::AlignLeft);
 
-
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
+    openFoamVersionGroup->setLayout(openFoamVersionLayout);
     unitSystemGroup->setLayout(unitSystemLayout);
     dimAndScaleGroup->setLayout(dimAndScaleLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
@@ -372,7 +386,6 @@ bool IsolatedBuildingCFD::initialize()
     coordinateSystemGroup->setLayout(coordinateSystemLayout);
     cfdResultsGroup->setLayout(cfdResultsLayout);
 
-
     generalWidget->setLayout(generalLayout);
     geometryWidget->setLayout(geometryLayout);
     meshWidget->setLayout(meshLayout);
@@ -380,7 +393,6 @@ bool IsolatedBuildingCFD::initialize()
     numericalSetupWidget->setLayout(numericalSetupLayout);
     monitoringWidget->setLayout(monitoringLayout);
     resultsWidget->setLayout(resultsLayout);
-
 
     //Controls for wind characteristics setup
     windCharacteristics = new WindCharacteristicsWidget(this);
@@ -400,10 +412,10 @@ bool IsolatedBuildingCFD::initialize()
     //Add result monitoring widget
     resultMonitoring = new ResultMonitoringWidget(this);
 
-
     //Populate each tab
     generalLayout->addWidget(generalDescriptionGroup);
     generalLayout->addWidget(caseDirectoryGroup);
+    generalLayout->addWidget(openFoamVersionGroup);
     generalLayout->addWidget(unitSystemGroup);
     generalLayout->addStretch();
 
@@ -437,13 +449,11 @@ bool IsolatedBuildingCFD::initialize()
     inputTab->addTab(monitoringWidget, "Monitoring");
     inputTab->addTab(resultsWidget, "Results");
 
-
     inputWindowLayout->addWidget(inputTab);
     inputWindowGroup->setLayout(inputWindowLayout);
     inputWindowGroup->setMaximumWidth(windowWidth - 100);
 
     mainWindowLayout->addWidget(inputWindowGroup);
-
 
     plotWindProfiles = new QPushButton("Plot Wind Profiles");
     plotWindLoads = new QPushButton("Plot Wind Loads");
@@ -482,8 +492,6 @@ bool IsolatedBuildingCFD::initialize()
     //=====================================================
     // Setup the case directory
     //=====================================================
-
-    openFoamVersion = "10";
 
     if(!isCaseConfigured())
     {
@@ -851,7 +859,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
     originOptions->setCurrentText(jsonObject["originOption"].toString());
-    openFoamVersion = jsonObject["OpenFOAMVersion"].toString();
+    openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
 
     snappyHexMesh->inputFromJSON(jsonObject);
     windCharacteristics->inputFromJSON(jsonObject);
@@ -897,7 +905,7 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject["origin"] = originPoint;
     jsonObject["originOption"] = originOptions->currentText();
-    jsonObject["OpenFOAMVersion"] = openFoamVersion;
+    jsonObject["OpenFoamVersion"] = openFoamVersion->currentText();
 
     snappyHexMesh->outputToJSON(jsonObject);
     windCharacteristics->outputToJSON(jsonObject);

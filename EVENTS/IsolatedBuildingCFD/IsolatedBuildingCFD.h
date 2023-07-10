@@ -193,7 +193,9 @@ private:
    QComboBox    *timeUnit;
    QComboBox    *angleUnit;
 
-
+   QGroupBox    *openFoamVersionGroup;
+   QGridLayout  *openFoamVersionLayout;
+   QComboBox    *openFoamVersion;
 
    QGroupBox    *buildingInformationGroup;
    QGridLayout  *buildingInformationLayout;
@@ -221,8 +223,8 @@ private:
    QPushButton  *plotWindProfiles;
    QPushButton  *plotWindLoads;
 
-   QString workingDirPath;
-   QString openFoamVersion;
+   QString      workingDirPath;
+
 
    bool caseInitialized = false;
 

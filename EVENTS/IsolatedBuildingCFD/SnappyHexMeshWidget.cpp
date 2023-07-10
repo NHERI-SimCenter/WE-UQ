@@ -606,6 +606,8 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
 
 void SnappyHexMeshWidget::onRunCheckMeshClicked()
 {
+    mainModel->updateJSON();
+
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
 }

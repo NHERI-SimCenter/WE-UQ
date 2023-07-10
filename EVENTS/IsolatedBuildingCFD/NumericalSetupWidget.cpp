@@ -119,9 +119,11 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     numCorrectorsLabel->setEnabled(false);
 
     solverType = new QComboBox();
-    solverType->addItem("simpleFoam");
+
     solverType->addItem("pisoFoam");
     solverType->addItem("pimpleFoam");
+    solverType->addItem("simpleFoam");
+
     solverType->setToolTip("Solver type (for LES use pisoFoam or pimpleFoam)");
 
     numNonOrthogonalCorrectors = new QSpinBox();
@@ -130,14 +132,12 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     numNonOrthogonalCorrectors->setValue(1);
     numNonOrthogonalCorrectors->setToolTip("Number of non-orthogonal correction loops (should be at least 1 for non-orthogonal mesh)");
 
-
     numCorrectors = new QSpinBox();
     numCorrectors->setSingleStep(1);
     numCorrectors->setMinimum(2);
     numCorrectors->setValue(2);
     numCorrectors->setEnabled(false);
     numCorrectors->setToolTip("Number of pressure correction loops");
-
 
     numOuterCorrectors = new QSpinBox();
     numOuterCorrectors->setSingleStep(1);
@@ -155,7 +155,6 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     solverSelectionLayout->addWidget(numNonOrthogonalCorrectors, 1, 1);
     solverSelectionLayout->addWidget(numCorrectors, 2, 1);
     solverSelectionLayout->addWidget(numOuterCorrectors, 3, 1);
-
 
     //==================================================================
     //              Duration and time step controls
