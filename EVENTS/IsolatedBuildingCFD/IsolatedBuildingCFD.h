@@ -64,6 +64,7 @@ class QGroupBox;
 class QPushButton;
 class QCheckBox;
 class QFormLayout;
+class QLabel;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -80,6 +81,7 @@ public:
     bool copyFiles(QString &dirName);
 
     bool initialize();
+    bool initializeImportSTLDialog();
     bool isInitialize();
 
     bool setupCase();
@@ -137,7 +139,7 @@ public slots:
    void onBrowseCaseDirectoryButtonClicked(void);
    void originChanged(const QString &arg);
    void useCOSTOptionChecked(int);
-
+   void buildingShapeChanged(const QString &arg);
 private:
    QHBoxLayout  *mainWindowLayout;
 
@@ -154,9 +156,17 @@ private:
    QWidget      *femSpecific;
    QLineEdit    *caseDirectoryPathWidget;
 
+   QComboBox    *buildingShape;
+   QDialog      *importSTLDialog;
+
    QLineEdit    *buildingWidthWidget;
    QLineEdit    *buildingDepthWidget;
    QLineEdit    *buildingHeightWidget;
+
+//   QLabel       *buildingWidthLabel;
+//   QLabel       *buildingDepthLabel;
+//   QLabel       *buildingHeightLabel;
+
    QLineEdit    *geometricScaleWidget;
    QSpinBox     *windDirectionWidget;
    QPushButton  *theBuildingButton;

@@ -150,13 +150,18 @@ bool IsolatedBuildingCFD::initialize()
     cfdResultsGroup = new QGroupBox("CFD Results", this);
     cfdResultsLayout = new QGridLayout();
 
+    QLabel *buildingShapeLabel = new QLabel("Building Shape:");
+    buildingShape = new QComboBox();
+    buildingShape->addItem("Generic");
+    buildingShape->addItem("ImportSTL");
+
     theBuildingButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
 
     theBuildingButton->setIcon(pixmapFlat);
     theBuildingButton->setIconSize(pixmapFlat.rect().size()*.30);
     theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.30);
-    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 4, 1, Qt::AlignVCenter);
+    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 5, 1, Qt::AlignVCenter);
 
     QLabel *buildingWidthLabel = new QLabel("Building Width:");
     buildingWidthWidget = new QLineEdit();
@@ -332,17 +337,20 @@ bool IsolatedBuildingCFD::initialize()
     dimAndScaleLayout->addWidget(geometricScaleLabel, 0, 2, Qt::AlignRight);
     dimAndScaleLayout->addWidget(geometricScaleWidget, 0, 3, Qt::AlignLeft);
 
-    buildingInformationLayout->addWidget(buildingWidthLabel,0,1);
-    buildingInformationLayout->addWidget(buildingWidthWidget,0,3);
+    buildingInformationLayout->addWidget(buildingShapeLabel, 0, 1);
+    buildingInformationLayout->addWidget(buildingShape,0, 3);
 
-    buildingInformationLayout->addWidget(buildingDepthLabel,1,1);
-    buildingInformationLayout->addWidget(buildingDepthWidget,1,3);
+    buildingInformationLayout->addWidget(buildingWidthLabel,1,1);
+    buildingInformationLayout->addWidget(buildingWidthWidget,1,3);
 
-    buildingInformationLayout->addWidget(buildingHeightLabel,2,1);
-    buildingInformationLayout->addWidget(buildingHeightWidget,2,3);
+    buildingInformationLayout->addWidget(buildingDepthLabel,2,1);
+    buildingInformationLayout->addWidget(buildingDepthWidget,2,3);
 
-    buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
-    buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
+    buildingInformationLayout->addWidget(buildingHeightLabel,3,1);
+    buildingInformationLayout->addWidget(buildingHeightWidget,3,3);
+
+    buildingInformationLayout->addWidget(windDirectionLabel, 4, 1);
+    buildingInformationLayout->addWidget(windDirectionWidget, 4, 3);
     //buildingInformationLayout->addWidget(angleUnit, 3, 4);
 
 
@@ -465,6 +473,7 @@ bool IsolatedBuildingCFD::initialize()
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
     connect(originOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(originChanged(QString)));
     connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
+    connect(buildingShape, SIGNAL(currentIndexChanged(QString)), this, SLOT(buildingShapeChanged(QString)));
 
     //=====================================================
     // Sync with general information tab
@@ -648,6 +657,62 @@ void IsolatedBuildingCFD::originChanged(const QString &arg)
         originYWidget->setEnabled(true);
         originZWidget->setEnabled(true);
     }
+}
+
+void IsolatedBuildingCFD::buildingShapeChanged(const QString &arg)
+{
+    if(arg == "STL-Surface")
+    {
+        QDialog *dialog  = new QDialog(this);
+
+        int dialogHeight = 200;
+        int dialogWidth = 400;
+
+        dialog->setMinimumHeight(dialogHeight);
+        dialog->setMinimumWidth(dialogWidth);
+        dialog->setWindowTitle("Import STL Surface");
+
+
+        QWidget* samplePointsWidget = new QWidget();
+
+
+        QGridLayout* dialogLayout = new QGridLayout();
+
+
+        QLabel *importSTL = new QLabel("Yes ");
+
+
+        QPushButton *okButton = new QPushButton("OK");
+        QPushButton *cancelButton = new QPushButton("Canacel");
+        QPushButton *saveButton = new QPushButton("Save");
+
+
+        dialogLayout->addWidget(importSTL, 0, 0);
+        dialogLayout->addWidget(okButton, 1, 0);
+        dialogLayout->addWidget(cancelButton, 1, 1);
+        dialogLayout->addWidget(okButton, 1, 2);
+//        dialogLayout->addWidget(IuPlot, 0, 1);
+//        dialogLayout->addWidget(LuPlot, 0, 2);
+//        dialogLayout->addWidget(SuPlot, 1, 0, 1, 2);
+
+//        dialogLayout->addWidget(samplePointsWidget, 0, 0);
+
+        dialog->setLayout(dialogLayout);
+        dialog->exec();
+
+
+
+
+
+//        buildingDepthWidget->hide();
+//        buildingWidthWidget->hide();
+//        buildingHeightWidget->hide();
+
+//        buildingWidthLabel->hide();
+//        buildingDepthLabel->hide();
+//        buildingHeightLabel->hide();
+    }
+
 }
 
 
