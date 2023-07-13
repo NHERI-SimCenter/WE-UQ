@@ -129,7 +129,7 @@ bool IsolatedBuildingCFD::initialize()
     unitSystemGroup = new QGroupBox("Units");
     unitSystemLayout = new QGridLayout();
 
-    openFoamVersionGroup = new QGroupBox("OpenFOAM Version");
+    openFoamVersionGroup = new QGroupBox("OpenFOAM");
     openFoamVersionLayout = new QGridLayout();
 
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
