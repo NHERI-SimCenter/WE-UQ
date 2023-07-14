@@ -95,6 +95,8 @@ public slots:
     void useCOSTOptionChecked(int);
     void buildingShapeChanged(const QString &arg);
     void onSTLOkButtonClicked();
+    void onSTLImportButtonClicked();
+    void onSTLCancelButtonClicked();
 
 private:
 
@@ -113,7 +115,18 @@ private:
    QLineEdit            *stlScaleFactor;
    QCheckBox            *recenterToOrigin;
    QCheckBox            *accountWindDirection;
+   QCheckBox            *useSTLDimensions;
 
+   QLineEdit            *stlXMin;
+   QLineEdit            *stlXMax;
+   QLineEdit            *stlYMin;
+   QLineEdit            *stlYMax;
+   QLineEdit            *stlZMin;
+   QLineEdit            *stlZMax;
+
+   QLineEdit            *stlXDim;
+   QLineEdit            *stlYDim;
+   QLineEdit            *stlZDim;
 
    QLineEdit            *buildingWidthWidget;
    QLineEdit            *buildingDepthWidget;

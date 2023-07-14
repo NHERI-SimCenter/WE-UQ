@@ -313,6 +313,7 @@ bool  GeometricInputWidget::outputToJSON(QJsonObject &jsonObject)
     geometricDataJson["stlScaleFactor"] = stlScaleFactor->text().toDouble();
     geometricDataJson["recenterToOrigin"] = recenterToOrigin->isChecked();
     geometricDataJson["accountWindDirection"] = accountWindDirection->isChecked();
+    geometricDataJson["useSTLDimensions"] = useSTLDimensions->isChecked();
 
     geometricDataJson["buildingWidth"] = buildingWidthWidget->text().toDouble();
     geometricDataJson["buildingDepth"] = buildingDepthWidget->text().toDouble();
@@ -354,6 +355,7 @@ bool  GeometricInputWidget::inputFromJSON(QJsonObject &jsonObject)
     stlScaleFactor->setText(QString::number(geometricDataJson["stlScaleFactor"].toDouble()));
     recenterToOrigin->setChecked(geometricDataJson["recenterToOrigin"].toBool());
     accountWindDirection->setChecked(geometricDataJson["accountWindDirection"].toBool());
+    useSTLDimensions->setChecked(geometricDataJson["useSTLDimensions"].toBool());
 
     buildingWidthWidget->setText(QString::number(geometricDataJson["buildingWidth"].toDouble()));
     buildingDepthWidget->setText(QString::number(geometricDataJson["buildingDepth"].toDouble()));
@@ -524,7 +526,7 @@ void GeometricInputWidget::onImportSTLButtonClicked()
 void GeometricInputWidget::initializeImportSTLDialog()
 {
     importSTLDialog = new QDialog(this);
-    int dialogHeight = 200;
+    int dialogHeight = 350;
     int dialogWidth = 500;
 
     importSTLDialog->setMinimumHeight(dialogHeight);
@@ -549,9 +551,60 @@ void GeometricInputWidget::initializeImportSTLDialog()
     stlPathLayout->addWidget(stlPathButton,0,2);
 
     //Setup scale factor for the stl file
-    QGroupBox *stlInfoGroup = new QGroupBox("Geometric Information");
+    QGroupBox *stlInfoGroup = new QGroupBox("Bounding Box");
     QGridLayout *stlInfoLayout = new QGridLayout();
     stlInfoGroup->setLayout(stlInfoLayout);
+
+    stlXMin = new QLineEdit();
+    stlXMax = new QLineEdit();
+    stlYMin = new QLineEdit();
+    stlYMax = new QLineEdit();
+    stlZMin = new QLineEdit();
+    stlZMax = new QLineEdit();
+
+    stlXMin->setEnabled(false);
+    stlXMax->setEnabled(false);
+    stlYMin->setEnabled(false);
+    stlYMax->setEnabled(false);
+    stlZMin->setEnabled(false);
+    stlZMax->setEnabled(false);
+
+    QLabel *stlXLabel = new QLabel("  X");
+    QLabel *stlYLabel = new QLabel("  Y");
+    QLabel *stlZLabel = new QLabel("  Z");
+
+    QLabel *stlMinLabel = new QLabel("Min");
+    QLabel *stlMaxLabel = new QLabel("Max");
+
+    stlXDim = new QLineEdit();
+    stlYDim = new QLineEdit();
+    stlZDim = new QLineEdit();
+
+    stlXDim->setEnabled(false);
+    stlYDim->setEnabled(false);
+    stlZDim->setEnabled(false);
+
+    QLabel *stlDimLabel = new QLabel("Size: ");
+
+    stlInfoLayout->addWidget(stlXLabel, 0, 1);
+    stlInfoLayout->addWidget(stlYLabel, 0, 2);
+    stlInfoLayout->addWidget(stlZLabel, 0, 3);
+
+    stlInfoLayout->addWidget(stlMinLabel, 1, 0);
+    stlInfoLayout->addWidget(stlMaxLabel, 2, 0);
+    stlInfoLayout->addWidget(stlDimLabel, 3, 0);
+
+    stlInfoLayout->addWidget(stlXMin, 1, 1);
+    stlInfoLayout->addWidget(stlYMin, 1, 2);
+    stlInfoLayout->addWidget(stlZMin, 1, 3);
+
+    stlInfoLayout->addWidget(stlXMax, 2, 1);
+    stlInfoLayout->addWidget(stlYMax, 2, 2);
+    stlInfoLayout->addWidget(stlZMax, 2, 3);
+
+    stlInfoLayout->addWidget(stlXDim, 3, 1);
+    stlInfoLayout->addWidget(stlYDim, 3, 2);
+    stlInfoLayout->addWidget(stlZDim, 3, 3);
 
     //Setup scale factor for the stl file
     QGroupBox *stlScaleGroup = new QGroupBox("Transform");
@@ -568,15 +621,26 @@ void GeometricInputWidget::initializeImportSTLDialog()
     accountWindDirection = new QCheckBox("Account Wind Direction");
     accountWindDirection->setChecked(true);
 
+    //Setup scale factor for the stl file
+    QGroupBox *stlBuildingDimensionsGroup = new QGroupBox("Building Dimensions");
+    QGridLayout *stlBuildingDimensionsLayout = new QGridLayout();
+    stlBuildingDimensionsGroup->setLayout(stlBuildingDimensionsLayout);
+
+    useSTLDimensions = new QCheckBox("Extract Building Dimensions from STL Surface");
+    useSTLDimensions->setChecked(true);
+    stlBuildingDimensionsLayout->addWidget(useSTLDimensions);
+
     //Ok and Cancel buttons
     QWidget *stlOkCancelGroup = new QWidget();
     QGridLayout * stlOkCancelLayout = new QGridLayout();
     stlOkCancelGroup->setLayout(stlOkCancelLayout);
 
     QPushButton *stlOkButton = new QPushButton("Ok");
+    QPushButton *stlImportButton = new QPushButton("Import");
     QPushButton *stlCancelButton = new QPushButton("Cancel");
     stlOkCancelLayout->addWidget(stlOkButton, 0, 0);
-    stlOkCancelLayout->addWidget(stlCancelButton, 0, 1);
+    stlOkCancelLayout->addWidget(stlImportButton, 0, 1);
+    stlOkCancelLayout->addWidget(stlCancelButton, 0, 2);
 
     stlScaleLayout->addWidget(recenterToOrigin, 0, 0);
     stlScaleLayout->addWidget(accountWindDirection, 0, 1);
@@ -585,7 +649,8 @@ void GeometricInputWidget::initializeImportSTLDialog()
 
     //Add groups to dialog
     dialogLayout->addWidget(stlPathGroup);
-//    dialogLayout->addWidget(stlInfoGroup);
+    dialogLayout->addWidget(stlInfoGroup);
+    dialogLayout->addWidget(stlBuildingDimensionsGroup);
     dialogLayout->addWidget(stlScaleGroup);
     dialogLayout->addWidget(stlOkCancelGroup);
 
@@ -594,7 +659,8 @@ void GeometricInputWidget::initializeImportSTLDialog()
     //Connect signals
     connect(stlPathButton, SIGNAL(clicked()), this, SLOT(onBrowseSTLPathButtonClicked()));
     connect(stlOkButton, SIGNAL(clicked()), this, SLOT(onSTLOkButtonClicked()));
-//    connect(stlCancelButton, SIGNAL(clicked()), this, SLOT(onBrowseSTLPathButtonClicked()));
+    connect(stlImportButton, SIGNAL(clicked()), this, SLOT(onSTLImportButtonClicked()));
+    connect(stlCancelButton, SIGNAL(clicked()), this, SLOT(onSTLCancelButtonClicked()));
 }
 
 void GeometricInputWidget::onBrowseSTLPathButtonClicked()
@@ -605,79 +671,84 @@ void GeometricInputWidget::onBrowseSTLPathButtonClicked()
     if (stlFileName != "")
     {
         importedSTLPath->setText(stlFileName);
+    }
+}
 
-//        mainModel->updateJSON();
+void GeometricInputWidget::onSTLImportButtonClicked()
+{
 
-//        //Run python script to prepare case directory
-//        QString scriptPath = mainModel->pyScriptsPath() + "/import_building_geometry.py";
-//        QString jsonPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter" + QDir::separator() + "input";
-//        QString templatePath = mainModel->templateDictDir();
-//        QString outputPath =mainModel->caseDir();
+    mainModel->writeOpenFoamFiles();
 
-//        QString program = SimCenterPreferences::getInstance()->getPython();
-//        QStringList arguments;
+    //Read extent of the Geometry
 
-//        arguments << scriptPath << jsonPath << templatePath << outputPath;
-
-//        QProcess *process = new QProcess(this);
-
-//        process->start(program, arguments);
-
-//        process->waitForFinished(-1);
-
-    //        QMessageBox msgBox;
-    //        msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    //        msgBox.exec();
-
-//        process->close();
+    //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
+    //In future only one JSON file in temp.SimCenter directory might be enough
+    QString inputFilePath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                            + QDir::separator() + "input" + QDir::separator() + "stlGeometrySummary.json";
 
 
-    //        importSTLGeometry();
-
-    //        QUrl stlData = QUrl::fromLocalFile(stlFileName);
-
-    //        Qt3DRender::QMesh *stlMesh = new Qt3DRender::QMesh();
-    ////        stlMesh->setMeshName("building");
-    //        stlMesh->setSource(stlData);
-    //        stlM
-
-
-    //        Qt3DRender::QGeometry *geometry = stlMesh->geometry();
-
-
-    //        qDebug() << "File name: " + QString::number(geometry->maxExtent().z());
-    //        qDebug() << "File name: " + stlMesh->status();
-
-    //        float width = geometry->maxExtent().y()-geometry->minExtent().y();
-    //        float depth = geometry->maxExtent().x()-geometry->minExtent().x();
-    //        float height = geometry->maxExtent().z()-geometry->minExtent().z();
-
-    //        buildingWidthWidget->setText(QString::number(width*geometricScale()));
-    //        buildingDepthWidget->setText(QString::number(depth*geometricScale()));
-    //        buildingHeightWidget->setText(QString::number(height*geometricScale()));
-
-
-
-    //        stlMesh->addComponent(flyingwedgeMesh);
-    //        stlMesh->addComponent(material);
-
+    QFile jsonFile(inputFilePath);
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Cannot find the path: " << inputFilePath;
     }
 
-    ////    QFileDialog dialog(this);
-    ////    dialog.setFileMode(QFileDialog::AnyFile);
+    QString val = jsonFile.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject jsonObject = doc.object();
 
-    //    //    QMessageBox msgBox;
-    //    //    msgBox.setText("Wind profile path: " + windProfilePath);
-    //    //    msgBox.exec();
+    double xMin = jsonObject["xMin"].toDouble();
+    double yMin = jsonObject["yMin"].toDouble();
+    double zMin = jsonObject["zMin"].toDouble();
+    double xMax = jsonObject["xMax"].toDouble();
+    double yMax = jsonObject["yMax"].toDouble();
+    double zMax = jsonObject["zMax"].toDouble();
 
+    stlXMin->setText(QString::number(xMin));
+    stlYMin->setText(QString::number(yMin));
+    stlZMin->setText(QString::number(zMin));
 
+    stlXMax->setText(QString::number(xMax));
+    stlYMax->setText(QString::number(yMax));
+    stlZMax->setText(QString::number(zMax));
 
+    stlXDim->setText(QString::number(xMax-xMin));
+    stlYDim->setText(QString::number(yMax-yMin));
+    stlZDim->setText(QString::number(zMax-zMin));
+
+    // close file
+    jsonFile.close();
+
+    if(useSTLDimensions->isChecked())
+    {
+        //Update the GI Tabe once the data is read
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+
+        double scale = mainModel->geometricScale()*stlScaleFactor->text().toDouble();
+
+        double width = (xMax-xMin)*scale;
+        double depth = (yMax-yMin)*scale;
+        double height = (zMax-zMin)*scale;
+
+        theGI->setLengthUnit("m");
+        theGI->setNumStoriesAndHeight(mainModel->numberOfFloors(), height);
+        theGI->setBuildingDimensions(width, depth, width*depth);
+
+        mainModel->writeOpenFoamFiles();
+    }
+
+    mainModel->reloadMesh();
 }
 
 void GeometricInputWidget::onSTLOkButtonClicked()
 {
 
-    mainModel->writeOpenFoamFiles();
+    onSTLImportButtonClicked();
 
+    importSTLDialog->close();
 }
 
+void GeometricInputWidget::onSTLCancelButtonClicked()
+{
+    importSTLDialog->close();
+}

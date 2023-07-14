@@ -266,6 +266,10 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
     {
         readMesh();
+        actor->GetProperty()->SetRepresentationToSurface();
+
+        surfaceRepresentation->setCurrentIndex(1);
+        viewObject->setCurrentIndex(0);
         renderWindow->Render();
     }
 }
