@@ -1,5 +1,5 @@
-#ifndef IMPORT_STL_GEOMETRY_DIALOG_H
-#define IMPORT_STL_GEOMETRY_DIALOG_H
+#ifndef GEOMETRIC_INPUT_WIDGET_H
+#define GEOMETRIC_INPUT_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -61,52 +61,101 @@ class QLabel;
 class QRadioButton;
 class QDialog;
 
-class ImportSTLGeometryDialog: public QDialog
+class  GeometricInputWidget: public SimCenterAppWidget
 {
     friend class IsolatedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ImportSTLGeometryDialog(IsolatedBuildingCFD *parent = 0);
-    ~ImportSTLGeometryDialog();
+    explicit  GeometricInputWidget(IsolatedBuildingCFD *parent = 0);
+    ~ GeometricInputWidget();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
+    void initializeImportSTLDialog();
+
     void updateWidgets();
 
-    double getTimeScale();
+    QVector<double> coordSysOrigin();
 
+    double convertToMeter(double dim, QString units);
+    double convertFromMeter(double dim, QString units);
+
+    //Returns a dimention normalized by the building height
+    double getNormDim(double dim);
 
 signals:
 
 public slots:
    void clear(void);
-   void onCalculateReynoldsNumber();
-   void onVelocityScaleChanged();
-
+    void onBrowseSTLPathButtonClicked(void);
+    void onImportSTLButtonClicked();
+    void originChanged(const QString &arg);
+    void useCOSTOptionChecked(int);
+    void buildingShapeChanged(const QString &arg);
+    void onSTLOkButtonClicked();
 
 private:
 
+   QVBoxLayout          *layout;
    IsolatedBuildingCFD  *mainModel;
 
-   QVBoxLayout          *layout;
+   QGroupBox            *dimAndScaleGroup;
+   QGridLayout          *dimAndScaleLayout;
+   QComboBox            *normalizationTypeWidget;
 
-   QGroupBox            *windCharacteristicsGroup;
-   QGridLayout          *windCharacteristicsLayout;
+   QComboBox            *buildingShape;
+   QDialog              *importSTLDialog;
+   QPushButton          *importSTLButton;
+   QLabel               *importSTLLabel;
+   QLineEdit            *importedSTLPath;
+   QLineEdit            *stlScaleFactor;
+   QCheckBox            *recenterToOrigin;
+   QCheckBox            *accountWindDirection;
 
-   QLineEdit            *velocityScale;
-   QLineEdit            *timeScale;
-   QLineEdit            *referenceWindSpeed;
-   QLineEdit            *referenceHeight;
-   QLineEdit            *airDensity;
-   QLineEdit            *kinematicViscosity;
-   QLineEdit            *reynoldsNumber;
-   QLineEdit            *aerodynamicRoughnessLength;
-   QPushButton          *calculateReynoldsNumber;
+
+   QLineEdit            *buildingWidthWidget;
+   QLineEdit            *buildingDepthWidget;
+   QLineEdit            *buildingHeightWidget;
+
+   QLineEdit            *geometricScaleWidget;
+   QSpinBox             *windDirectionWidget;
+   QPushButton          *theBuildingButton;
+
+   QLineEdit            *domainLengthWidget;
+   QLineEdit            *domainWidthWidget;
+   QLineEdit            *domainHeightWidget;
+
+   QLineEdit            *fetchLengthWidget;
+
+   QCheckBox            *useCOSTDimWidget;
+
+   QComboBox            *originOptions;
+
+   QLineEdit            *originXWidget;
+   QLineEdit            *originYWidget;
+   QLineEdit            *originZWidget;
+
+   QGroupBox            *buildingTypeGroup;
+   QGridLayout          *buildingTypeLayout;
+
+   QGroupBox            *buildingInformationGroup;
+   QGridLayout          *buildingInformationLayout;
+
+   QGroupBox            *domainInformationGroup;
+   QGridLayout          *domainInformationLayout;
+
+   QWidget              *buildingAndDomainInformationGroup;
+   QGridLayout          *buildingAndDomainInformationLayout;
+
+   QGroupBox            *coordinateSystemGroup;
+   QGridLayout          *coordinateSystemLayout;
+
+   bool                 stlSurfaceDefined = false;
 
 public:
 
 };
 
-#endif // IMPORT_STL_GEOMETRY_DIALOG_H
+#endif // GEOMETRIC_INPUT_WIDGET_H

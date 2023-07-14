@@ -38,6 +38,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "IsolatedBuildingCFD.h"
 #include "QVector3D"
+#include "GeometricInputWidget.h"
 #include "SnappyHexMeshWidget.h"
 #include "BoundaryConditionsWidget.h"
 #include "TurbulenceModelingWidget.h"
@@ -80,6 +81,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonDocument>
 #include <QTextEdit>
 #include <QFormLayout>
+#include <Qt3DRender/QMesh>
 
 
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
@@ -111,7 +113,7 @@ bool IsolatedBuildingCFD::initialize()
     QWidget *monitoringWidget = new QWidget();
     QWidget *resultsWidget = new QWidget();
 
-    QVBoxLayout* generalLayout  = new QVBoxLayout();
+    QVBoxLayout* startLayout  = new QVBoxLayout();
     QVBoxLayout* geometryLayout  = new QVBoxLayout();
     QVBoxLayout* meshLayout  = new QVBoxLayout();
     QVBoxLayout* BCLayout  = new QVBoxLayout();
@@ -132,107 +134,10 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionGroup = new QGroupBox("OpenFOAM");
     openFoamVersionLayout = new QGridLayout();
 
-    dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
-    dimAndScaleLayout = new QGridLayout();
-
-    buildingAndDomainInformationGroup = new QWidget();
-    buildingAndDomainInformationLayout = new QGridLayout();
-
-    coordinateSystemGroup = new QGroupBox("Coordinate System");
-    coordinateSystemLayout = new QGridLayout();
-
-    buildingInformationGroup = new QGroupBox("Building Geometry");
-    buildingInformationLayout = new QGridLayout();
-
-    domainInformationGroup = new QGroupBox("Domain Dimensions");
-    domainInformationLayout = new QGridLayout();
 
     cfdResultsGroup = new QGroupBox("CFD Results", this);
     cfdResultsLayout = new QGridLayout();
 
-    QLabel *buildingShapeLabel = new QLabel("Building Shape:");
-    buildingShape = new QComboBox();
-    buildingShape->addItem("Generic");
-    buildingShape->addItem("ImportSTL");
-
-    theBuildingButton = new QPushButton();
-    QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/buildingGeometry.png");
-
-    theBuildingButton->setIcon(pixmapFlat);
-    theBuildingButton->setIconSize(pixmapFlat.rect().size()*.30);
-    theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.30);
-    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 5, 1, Qt::AlignVCenter);
-
-    QLabel *buildingWidthLabel = new QLabel("Building Width:");
-    buildingWidthWidget = new QLineEdit();
-    buildingWidthWidget->setText("45.72");
-
-    QLabel *buildingDepthLabel = new QLabel("Building Depth:");
-    buildingDepthWidget = new QLineEdit();
-    buildingDepthWidget->setText("30.48");
-
-    QLabel *buildingHeightLabel = new QLabel("Building Height:");
-    buildingHeightWidget = new QLineEdit();
-    buildingHeightWidget->setText("182.88");
-
-    QLabel *geometricScaleLabel = new QLabel("Geometric Scale:");
-    geometricScaleWidget = new QLineEdit();
-    geometricScaleWidget->setText("400.0");
-
-    QLabel *windDirectionLabel = new QLabel("Wind Direction:");
-    //QLabel *angleUnit = new QLabel("degrees");
-    windDirectionWidget = new QSpinBox;
-    windDirectionWidget->setRange(0, 90);
-    windDirectionWidget->setSingleStep(10);
-    windDirectionWidget->setValue(0);
-
-    QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
-    domainLengthWidget = new QLineEdit();
-    domainLengthWidget->setText("20");
-
-    QLabel *domainWidthLabel = new QLabel("Domain Width (Y-axis):");
-    domainWidthWidget = new QLineEdit();
-    domainWidthWidget->setText("10");
-
-    QLabel *domainHeightLabel = new QLabel("Domain Height (Z-axis):");
-    domainHeightWidget = new QLineEdit();
-    domainHeightWidget->setText("6");
-
-    QLabel *fetchLengthLabel = new QLabel("Fetch Length (X-axis):");
-    fetchLengthWidget = new QLineEdit();
-    fetchLengthWidget->setText("5");
-
-    QLabel *useCOSTDimLabel = new QLabel("COST Recommendation:");
-    useCOSTDimWidget = new QCheckBox();
-    useCOSTDimWidget->setChecked(true);
-
-    QLabel *normalizationTypeLabel = new QLabel("Input Dimension Normalization:");
-    normalizationTypeWidget = new QComboBox();
-    normalizationTypeWidget->addItem("Relative");
-    normalizationTypeWidget->addItem("Absolute");
-
-    QLabel *originOptionsLabel = new QLabel("Location of Absolute Origin: ");
-    QLabel *originCoordinateLabel = new QLabel("Coordinate: ");
-    QLabel *originXLabel = new QLabel("X<sub>o</sub>:");
-    QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");
-    QLabel *originZLabel = new QLabel("Z<sub>o</sub>:");
-
-    originOptions = new QComboBox();
-    originOptions->addItem("Building Bottom Center");
-    originOptions->addItem("Domain Bottom Left Corner");
-    originOptions->addItem("Custom");
-
-    originXWidget = new QLineEdit();
-    originYWidget = new QLineEdit();
-    originZWidget = new QLineEdit();
-
-    originXWidget->setText("0");
-    originYWidget->setText("0");
-    originZWidget->setText("0");
-
-    originXWidget->setEnabled(false);
-    originYWidget->setEnabled(false);
-    originZWidget->setEnabled(false);
 
     QLabel *casePathLabel = new QLabel("Path: ");
     QPushButton* browseCaseDirectoryButton  = new QPushButton("Browse");
@@ -285,9 +190,6 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersion->setCurrentIndex(1);
 
 
-    QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
-
-
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
 
@@ -331,70 +233,13 @@ bool IsolatedBuildingCFD::initialize()
     unitSystemLayout->addWidget(angleUnit, 3, 1);
     unitSystemLayout->setAlignment(Qt::AlignLeft);
 
-    dimAndScaleLayout->addWidget(normalizationTypeLabel, 0, 0);
-    dimAndScaleLayout->addWidget(normalizationTypeWidget, 0, 1);
-
-    dimAndScaleLayout->addWidget(geometricScaleLabel, 0, 2, Qt::AlignRight);
-    dimAndScaleLayout->addWidget(geometricScaleWidget, 0, 3, Qt::AlignLeft);
-
-    buildingInformationLayout->addWidget(buildingShapeLabel, 0, 1);
-    buildingInformationLayout->addWidget(buildingShape,0, 3);
-
-    buildingInformationLayout->addWidget(buildingWidthLabel,1,1);
-    buildingInformationLayout->addWidget(buildingWidthWidget,1,3);
-
-    buildingInformationLayout->addWidget(buildingDepthLabel,2,1);
-    buildingInformationLayout->addWidget(buildingDepthWidget,2,3);
-
-    buildingInformationLayout->addWidget(buildingHeightLabel,3,1);
-    buildingInformationLayout->addWidget(buildingHeightWidget,3,3);
-
-    buildingInformationLayout->addWidget(windDirectionLabel, 4, 1);
-    buildingInformationLayout->addWidget(windDirectionWidget, 4, 3);
-    //buildingInformationLayout->addWidget(angleUnit, 3, 4);
-
-
-    domainInformationLayout->addWidget(domainLengthLabel,0,0);
-    domainInformationLayout->addWidget(domainLengthWidget,0,1);
-
-    domainInformationLayout->addWidget(domainWidthLabel,1,0);
-    domainInformationLayout->addWidget(domainWidthWidget,1,1);
-
-    domainInformationLayout->addWidget(domainHeightLabel,2,0);
-    domainInformationLayout->addWidget(domainHeightWidget,2,1);
-
-    domainInformationLayout->addWidget(fetchLengthLabel,3,0);
-    domainInformationLayout->addWidget(fetchLengthWidget,3,1);
-
-    domainInformationLayout->addWidget(useCOSTDimLabel,5,0);
-    domainInformationLayout->addWidget(useCOSTDimWidget,5,1);
-
-    buildingAndDomainInformationLayout->addWidget(buildingInformationGroup, 0, 0);
-    buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
-    buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
-
-    coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
-    coordinateSystemLayout->addWidget(originOptions,0,1);
-    coordinateSystemLayout->addWidget(originCoordinateLabel,1,0, Qt::AlignRight);
-    coordinateSystemLayout->addWidget(originXLabel,1,1, Qt::AlignRight);
-    coordinateSystemLayout->addWidget(originXWidget,1,2, Qt::AlignLeft);
-    coordinateSystemLayout->addWidget(originYLabel,1,3, Qt::AlignLeft);
-    coordinateSystemLayout->addWidget(originYWidget,1,4, Qt::AlignLeft);
-    coordinateSystemLayout->addWidget(originZLabel,1,5, Qt::AlignLeft);
-    coordinateSystemLayout->addWidget(originZWidget,1,6, Qt::AlignLeft);
-
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
     unitSystemGroup->setLayout(unitSystemLayout);
-    dimAndScaleGroup->setLayout(dimAndScaleLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
-    buildingInformationGroup->setLayout(buildingInformationLayout);
-    domainInformationGroup->setLayout(domainInformationLayout);
-    buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
-    coordinateSystemGroup->setLayout(coordinateSystemLayout);
     cfdResultsGroup->setLayout(cfdResultsLayout);
 
-    generalWidget->setLayout(generalLayout);
+    generalWidget->setLayout(startLayout);
     geometryWidget->setLayout(geometryLayout);
     meshWidget->setLayout(meshLayout);
     BCWidget->setLayout(BCLayout);
@@ -402,17 +247,20 @@ bool IsolatedBuildingCFD::initialize()
     monitoringWidget->setLayout(monitoringLayout);
     resultsWidget->setLayout(resultsLayout);
 
-    //Controls for wind characteristics setup
-    windCharacteristics = new WindCharacteristicsWidget(this);
+    //Controls for geometric input
+    geometry = new GeometricInputWidget(this);
 
     //Controls for snappyHexMesh
     snappyHexMesh = new SnappyHexMeshWidget(this);
 
-    //Controle for turbulence modeling
-    turbulenceModeling = new TurbulenceModelingWidget(this);
+    //Controls for wind characteristics setup
+    windCharacteristics = new WindCharacteristicsWidget(this);
 
     //Controls for boundary conditions
     boundaryConditions = new BoundaryConditionsWidget(this);
+
+    //Controle for turbulence modeling
+    turbulenceModeling = new TurbulenceModelingWidget(this);
 
     //Controls for numerical setup
     numericalSetup = new NumericalSetupWidget(this);
@@ -421,15 +269,13 @@ bool IsolatedBuildingCFD::initialize()
     resultMonitoring = new ResultMonitoringWidget(this);
 
     //Populate each tab
-    generalLayout->addWidget(generalDescriptionGroup);
-    generalLayout->addWidget(caseDirectoryGroup);
-    generalLayout->addWidget(openFoamVersionGroup);
-    generalLayout->addWidget(unitSystemGroup);
-    generalLayout->addStretch();
+    startLayout->addWidget(generalDescriptionGroup);
+    startLayout->addWidget(caseDirectoryGroup);
+    startLayout->addWidget(openFoamVersionGroup);
+    startLayout->addWidget(unitSystemGroup);
+    startLayout->addStretch();
 
-    geometryLayout->addWidget(dimAndScaleGroup);
-    geometryLayout->addWidget(buildingAndDomainInformationGroup);
-    geometryLayout->addWidget(coordinateSystemGroup);
+    geometryLayout->addWidget(geometry);
     geometryLayout->addStretch();
 
     meshLayout->addWidget(snappyHexMesh);
@@ -471,32 +317,6 @@ bool IsolatedBuildingCFD::initialize()
 
     connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
-    connect(originOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(originChanged(QString)));
-    connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
-    connect(buildingShape, SIGNAL(currentIndexChanged(QString)), this, SLOT(buildingShapeChanged(QString)));
-
-    //=====================================================
-    // Sync with general information tab
-    //=====================================================
-
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-
-
-    connect(theGI, &GeneralInformationWidget::buildingDimensionsChanged ,
-            [=] (double width, double depth, double area) {
-                buildingWidthWidget->setText(QString::number(convertToMeter(width, theGI->getLengthUnit())));
-                buildingDepthWidget->setText(QString::number(convertToMeter(depth, theGI->getLengthUnit())));
-            });
-
-    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged ,
-            [=] (int nFloors, double height) {
-                buildingHeightWidget->setText(QString::number(convertToMeter(height, theGI->getLengthUnit())));
-            });
-
-    //Disable editing in the event section
-    buildingWidthWidget->setEnabled(false);
-    buildingHeightWidget->setEnabled(false);
-    buildingDepthWidget->setEnabled(false);
 
     //=====================================================
     // Setup the case directory
@@ -530,6 +350,8 @@ bool IsolatedBuildingCFD::initialize()
 
     caseInitialized = true;
 
+    //Update the GI Tabe once the data is read
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
     theGI->setLengthUnit("m");
     theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
     theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
@@ -598,11 +420,8 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
     process->close();
 }
 
-
-
 void IsolatedBuildingCFD::readCaseData()
 {
-
     //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
     //In future only one JSON file in temp.SimCenter directory might be enough
     QString inputFilePath = caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
@@ -627,94 +446,6 @@ void IsolatedBuildingCFD::readCaseData()
 
     removeOldFiles();
 }
-
-
-void IsolatedBuildingCFD::originChanged(const QString &arg)
-{
-    if(arg == "Building Bottom Center")
-    {
-       originXWidget->setText("0");
-       originYWidget->setText("0");
-       originZWidget->setText("0");
-
-       originXWidget->setEnabled(false);
-       originYWidget->setEnabled(false);
-       originZWidget->setEnabled(false);
-    }
-    else if(arg == "Domain Bottom Left Corner")
-    {
-       originXWidget->setText(QString::number(-fetchLength()));
-       originYWidget->setText(QString::number(-domainWidth()/2.0));
-       originZWidget->setText(QString::number(0.0));
-
-       originXWidget->setEnabled(false);
-       originYWidget->setEnabled(false);
-       originZWidget->setEnabled(false);
-    }
-    else if(arg == "Custom")
-    {
-        originXWidget->setEnabled(true);
-        originYWidget->setEnabled(true);
-        originZWidget->setEnabled(true);
-    }
-}
-
-void IsolatedBuildingCFD::buildingShapeChanged(const QString &arg)
-{
-    if(arg == "STL-Surface")
-    {
-        QDialog *dialog  = new QDialog(this);
-
-        int dialogHeight = 200;
-        int dialogWidth = 400;
-
-        dialog->setMinimumHeight(dialogHeight);
-        dialog->setMinimumWidth(dialogWidth);
-        dialog->setWindowTitle("Import STL Surface");
-
-
-        QWidget* samplePointsWidget = new QWidget();
-
-
-        QGridLayout* dialogLayout = new QGridLayout();
-
-
-        QLabel *importSTL = new QLabel("Yes ");
-
-
-        QPushButton *okButton = new QPushButton("OK");
-        QPushButton *cancelButton = new QPushButton("Canacel");
-        QPushButton *saveButton = new QPushButton("Save");
-
-
-        dialogLayout->addWidget(importSTL, 0, 0);
-        dialogLayout->addWidget(okButton, 1, 0);
-        dialogLayout->addWidget(cancelButton, 1, 1);
-        dialogLayout->addWidget(okButton, 1, 2);
-//        dialogLayout->addWidget(IuPlot, 0, 1);
-//        dialogLayout->addWidget(LuPlot, 0, 2);
-//        dialogLayout->addWidget(SuPlot, 1, 0, 1, 2);
-
-//        dialogLayout->addWidget(samplePointsWidget, 0, 0);
-
-        dialog->setLayout(dialogLayout);
-        dialog->exec();
-
-
-
-
-
-//        buildingDepthWidget->hide();
-//        buildingWidthWidget->hide();
-//        buildingHeightWidget->hide();
-
-//        buildingWidthLabel->hide();
-//        buildingDepthLabel->hide();
-//        buildingHeightLabel->hide();
-    }
-
-}
-
 
 void IsolatedBuildingCFD::onShowResultsClicked()
 {
@@ -840,8 +571,6 @@ void IsolatedBuildingCFD::onShowResultsClicked()
     SuPlot->xAxis->setTicker(logTicker);
     SuPlot->replot();
 
-
-
     dialogLayout->addWidget(UavPlot, 0, 0);
     dialogLayout->addWidget(IuPlot, 0, 1);
     dialogLayout->addWidget(LuPlot, 0, 2);
@@ -873,22 +602,8 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     }
 }
 
-
 void IsolatedBuildingCFD::clear(void)
 {
-
-}
-
-void IsolatedBuildingCFD::useCOSTOptionChecked(int state)
-{
-    //Works fine when Height > Width
-    if (useCOSTDimWidget->isChecked())
-    {
-        domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeight())));
-        domainWidthWidget->setText(QString::number(getNormDim(10.0*buildingHeight())));
-        domainHeightWidget->setText(QString::number(getNormDim(6.0*buildingHeight())));
-        fetchLengthWidget->setText(QString::number(getNormDim(5.0*buildingHeight())));
-    }
 
 }
 
@@ -901,31 +616,10 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
-    normalizationTypeWidget->setCurrentText(jsonObject["normalizationType"].toString());
-    geometricScaleWidget->setText(QString::number(jsonObject["geometricScale"].toDouble()));
     caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
-
-    buildingWidthWidget->setText(QString::number(jsonObject["buildingWidth"].toDouble()));
-    buildingDepthWidget->setText(QString::number(jsonObject["buildingDepth"].toDouble()));
-    buildingHeightWidget->setText(QString::number(jsonObject["buildingHeight"].toDouble()));
-
-    windDirectionWidget->setValue(jsonObject["windDirection"].toInt());
-
-    domainLengthWidget->setText(QString::number(jsonObject["domainLength"].toDouble()));
-    domainWidthWidget->setText(QString::number(jsonObject["domainWidth"].toDouble()));
-    domainHeightWidget->setText(QString::number(jsonObject["domainHeight"].toDouble()));
-    fetchLengthWidget->setText(QString::number(jsonObject["fetchLength"].toDouble()));
-    useCOSTDimWidget->setChecked(jsonObject["useCOST"].toBool());
-
-    QJsonArray originPoint  = jsonObject["origin"].toArray();
-
-    originXWidget->setText(QString::number(originPoint[0].toDouble()));
-    originYWidget->setText(QString::number(originPoint[1].toDouble()));
-    originZWidget->setText(QString::number(originPoint[2].toDouble()));
-
-    originOptions->setCurrentText(jsonObject["originOption"].toString());
     openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
 
+    geometry->inputFromJSON(jsonObject);
     snappyHexMesh->inputFromJSON(jsonObject);
     windCharacteristics->inputFromJSON(jsonObject);
     boundaryConditions->inputFromJSON(jsonObject);
@@ -942,36 +636,16 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
     jsonObject["EventClassification"] = "Wind";
     jsonObject["type"] = "IsolatedBuildingCFD";
 
-    jsonObject["normalizationType"] = normalizationTypeWidget->currentText();
-    jsonObject["geometricScale"]  = geometricScaleWidget->text().toDouble();
     jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
-
-    jsonObject["buildingWidth"] = buildingWidthWidget->text().toDouble();
-    jsonObject["buildingDepth"] = buildingDepthWidget->text().toDouble();
-    jsonObject["buildingHeight"] = buildingHeightWidget->text().toDouble();
-
-    jsonObject["windDirection"] = windDirectionWidget->value();
-
-    jsonObject["domainLength"] = domainLengthWidget->text().toDouble();
-    jsonObject["domainWidth"] = domainWidthWidget->text().toDouble();
-    jsonObject["domainHeight"] = domainHeightWidget->text().toDouble();
-    jsonObject["fetchLength"] = fetchLengthWidget->text().toDouble();
-    jsonObject["useCOST"] = useCOSTDimWidget->isChecked();
+    jsonObject["OpenFoamVersion"] = openFoamVersion->currentText();
 
     jsonObject["massUnit"] = massUnit->currentText();
     jsonObject["lengthUnit"] = lengthUnit->currentText();
     jsonObject["timeUnit"] = timeUnit->currentText();
     jsonObject["angleUnit"] = angleUnit->currentText();
 
-    QJsonArray originPoint;
-    originPoint.append(coordSysOrigin()[0]);
-    originPoint.append(coordSysOrigin()[1]);
-    originPoint.append(coordSysOrigin()[2]);
 
-    jsonObject["origin"] = originPoint;
-    jsonObject["originOption"] = originOptions->currentText();
-    jsonObject["OpenFoamVersion"] = openFoamVersion->currentText();
-
+    geometry->outputToJSON(jsonObject);
     snappyHexMesh->outputToJSON(jsonObject);
     windCharacteristics->outputToJSON(jsonObject);
     boundaryConditions->outputToJSON(jsonObject);
@@ -1178,37 +852,37 @@ bool IsolatedBuildingCFD::isSnappyHexMeshCompleted()
 
 double IsolatedBuildingCFD::domainLength()
 {
-    return domainLengthWidget->text().toDouble();
+    return geometry->domainLengthWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::domainWidth()
 {
-    return domainWidthWidget->text().toDouble();
+    return geometry->domainWidthWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::domainHeight()
 {
-    return domainHeightWidget->text().toDouble();
+    return geometry->domainHeightWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::fetchLength()
 {
-    return fetchLengthWidget->text().toDouble();
+    return geometry->fetchLengthWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::buildingWidth()
 {
-    return buildingWidthWidget->text().toDouble();
+    return geometry->buildingWidthWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::buildingDepth()
 {
-    return buildingDepthWidget->text().toDouble();
+    return geometry->buildingDepthWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::buildingHeight()
 {
-    return buildingHeightWidget->text().toDouble();
+    return geometry->buildingHeightWidget->text().toDouble();
 }
 int IsolatedBuildingCFD::numberOfFloors()
 {
@@ -1218,24 +892,18 @@ int IsolatedBuildingCFD::numberOfFloors()
 
 double IsolatedBuildingCFD::geometricScale()
 {
-    return geometricScaleWidget->text().toDouble();
+    return geometry->geometricScaleWidget->text().toDouble();
 }
 
 double IsolatedBuildingCFD::windDirection()
 {
-    return windDirectionWidget->text().toDouble();
+    return geometry->windDirectionWidget->text().toDouble();
 }
 
-QVector<double> IsolatedBuildingCFD::coordSysOrigin()
-{
-    QVector<double> origin = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
-
-    return origin;
-}
 
 QString IsolatedBuildingCFD::normalizationType()
 {
-    return normalizationTypeWidget->currentText();
+    return geometry->normalizationTypeWidget->currentText();
 }
 
 QString IsolatedBuildingCFD::caseDir()
@@ -1279,71 +947,6 @@ bool IsolatedBuildingCFD::isInitialize()
     return caseInitialized;
 }
 
-double IsolatedBuildingCFD::convertToMeter(double dim, QString unit)
-{
-    // Converts to meter from other unit system;
-    if (unit == "m")
-    {
-       return dim;
-    }
-    else if (unit == "in")
-    {
-       return dim*0.0254;
-    }
-    else if (unit == "cm")
-    {
-       return dim*100.0;
-    }
-    else if (unit == "mm")
-    {
-       return dim*1000.0;
-    }
-    else if (unit == "ft")
-    {
-       return dim*0.3048;
-    }
-    else
-       qDebug() << "Unit system not recognized";
-}
-
-double IsolatedBuildingCFD::convertFromMeter(double dim, QString unit)
-{
-    //Convert from meters to other units
-    if (unit == "m")
-    {
-       return dim;
-    }
-    else if (unit == "in")
-    {
-       return dim/0.0254;
-    }
-    else if (unit == "cm")
-    {
-       return dim/100.0;
-    }
-    else if (unit == "mm")
-    {
-       return dim/1000.0;
-    }
-    else if (unit == "ft")
-    {
-       return dim/0.3048;
-    }
-    else
-       qDebug() << "Unit system not recognized";
-}
-
-double IsolatedBuildingCFD::getNormDim(double dim)
-{
-    if(normalizationTypeWidget->currentText() == "Relative")
-    {
-       return dim/buildingHeight();
-    }
-
-    return dim/geometricScale();
-}
-
-
 double IsolatedBuildingCFD::getTimeStep()
 {
     double meshSize = 0.0;
@@ -1366,7 +969,6 @@ double IsolatedBuildingCFD::getTimeStep()
     }
 
     meshSize = meshSize*buildingHeight()/geometricScale();
-
 
     double maxCo = numericalSetup->maxCourantNumber->value();
     double U = windCharacteristics->referenceWindSpeed->text().toDouble();
