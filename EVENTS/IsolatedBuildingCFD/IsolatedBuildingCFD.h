@@ -47,6 +47,7 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
+class GeometricInputWidget;
 class SnappyHexMeshWidget;
 class BoundaryConditionsWidget;
 class TurbulenceModelingWidget;
@@ -64,6 +65,7 @@ class QGroupBox;
 class QPushButton;
 class QCheckBox;
 class QFormLayout;
+class QLabel;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -111,20 +113,12 @@ public:
     double geometricScale();
     double windDirection();
 
-    QVector<double> coordSysOrigin();
-
     QString normalizationType();
     QString caseDir();
     QString foamDictsPath();
     QString templateDictDir();
     QString pyScriptsPath();
     QString simulationType();
-
-    double convertToMeter(double dim, QString units);
-    double convertFromMeter(double dim, QString units);
-
-    //Returns a dimention normalized by the building height
-    double getNormDim(double dim);
 
     //Returns the smallest mesh size on the building
     double getTimeStep();
@@ -135,85 +129,46 @@ public slots:
    void clear(void);
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
-   void originChanged(const QString &arg);
-   void useCOSTOptionChecked(int);
 
 private:
-   QHBoxLayout  *mainWindowLayout;
+   QHBoxLayout          *mainWindowLayout;
 
-   QVBoxLayout  *inputWindowLayout;
-   QGroupBox    *inputWindowGroup;
-
-
-   QVBoxLayout  *visWindowLayout;
-   QGroupBox    *visWindowGroup;
-
-   QGroupBox    *cfdResultsGroup;
-   QGridLayout  *cfdResultsLayout;
-
-   QWidget      *femSpecific;
-   QLineEdit    *caseDirectoryPathWidget;
-
-   QLineEdit    *buildingWidthWidget;
-   QLineEdit    *buildingDepthWidget;
-   QLineEdit    *buildingHeightWidget;
-   QLineEdit    *geometricScaleWidget;
-   QSpinBox     *windDirectionWidget;
-   QPushButton  *theBuildingButton;
-
-   QLineEdit    *domainLengthWidget;
-   QLineEdit    *domainWidthWidget;
-   QLineEdit    *domainHeightWidget;
-
-   QLineEdit    *fetchLengthWidget;
-
-   QCheckBox    *useCOSTDimWidget;
-
-   QComboBox*   originOptions;
-
-   QLineEdit   *originXWidget;
-   QLineEdit   *originYWidget;
-   QLineEdit   *originZWidget;
-
-   QGroupBox    *generalDescriptionGroup;
-   QHBoxLayout  *generalDescriptionLayout;
-
-   QGroupBox    *dimAndScaleGroup;
-   QGridLayout  *dimAndScaleLayout;
-   QComboBox    *normalizationTypeWidget;
+   QVBoxLayout          *inputWindowLayout;
+   QGroupBox            *inputWindowGroup;
 
 
-   QGroupBox    *caseDirectoryGroup;
-   QGridLayout  *caseDirectoryLayout;
+   QVBoxLayout          *visWindowLayout;
+   QGroupBox            *visWindowGroup;
 
-   QGroupBox    *unitSystemGroup;
-   QGridLayout  *unitSystemLayout;
-   QComboBox    *massUnit;
-   QComboBox    *lengthUnit;
-   QComboBox    *timeUnit;
-   QComboBox    *angleUnit;
+   QGroupBox            *cfdResultsGroup;
+   QGridLayout          *cfdResultsLayout;
 
-   QGroupBox    *openFoamVersionGroup;
-   QGridLayout  *openFoamVersionLayout;
-   QComboBox    *openFoamVersion;
+   QWidget              *femSpecific;
+   QLineEdit            *caseDirectoryPathWidget;
 
-   QGroupBox    *buildingInformationGroup;
-   QGridLayout  *buildingInformationLayout;
+   QGroupBox            *generalDescriptionGroup;
+   QHBoxLayout          *generalDescriptionLayout;
 
-   QGroupBox    *domainInformationGroup;
-   QGridLayout  *domainInformationLayout;
+   QGroupBox            *caseDirectoryGroup;
+   QGridLayout          *caseDirectoryLayout;
 
-   QGroupBox    *coordinateSystemGroup;
-   QGridLayout  *coordinateSystemLayout;
+   QGroupBox            *unitSystemGroup;
+   QGridLayout          *unitSystemLayout;
+   QComboBox            *massUnit;
+   QComboBox            *lengthUnit;
+   QComboBox            *timeUnit;
+   QComboBox            *angleUnit;
 
-   QWidget      *buildingAndDomainInformationGroup;
-   QGridLayout  *buildingAndDomainInformationLayout;
+   QGroupBox            *openFoamVersionGroup;
+   QGridLayout          *openFoamVersionLayout;
+   QComboBox            *openFoamVersion;
 
-   WindCharacteristicsWidget    *windCharacteristics;
+   GeometricInputWidget         *geometry;
    SnappyHexMeshWidget          *snappyHexMesh;
    SimCenterVTKRenderingWidget  *visWidget;
-   BoundaryConditionsWidget     *boundaryConditions;
+   WindCharacteristicsWidget    *windCharacteristics;
    TurbulenceModelingWidget     *turbulenceModeling;
+   BoundaryConditionsWidget     *boundaryConditions;
    NumericalSetupWidget         *numericalSetup;
    ResultMonitoringWidget       *resultMonitoring;
 
@@ -224,7 +179,6 @@ private:
    QPushButton  *plotWindLoads;
 
    QString      workingDirPath;
-
 
    bool caseInitialized = false;
 
