@@ -587,18 +587,33 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), caseDir(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
-
-
     caseDirectoryPathWidget->setText(fileName);
+
 
     if(!isCaseConfigured())
     {
         setupCase();
+        snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return;
     }
 
-    if (!isMeshed())
+    if(!isMeshed())
     {
         snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return;
+    }
+    else
+    {
+        readCaseData();
+
+        //Change it back if the case file is pointing to somethings else
+        caseDirectoryPathWidget->setText(fileName);
+        reloadMesh();
+        return;
     }
 }
 
@@ -759,9 +774,6 @@ bool IsolatedBuildingCFD::setupCase()
 
     //Write dictionary files
     writeOpenFoamFiles();
-
-
-    snappyHexMesh->snappyHexMeshCompleted = false;
 
     return true;
 }

@@ -151,7 +151,7 @@ private:
    //Add prism layers
    QCheckBox        *addPrismLayers;
    QSpinBox         *numberOfPrismLayers;
-   QDoubleSpinBox   *prismLayerExpantionRatio;
+   QDoubleSpinBox   *prismLayerExpansionRatio;
    QDoubleSpinBox   *finalPrismLayerThickness;
    QComboBox        *prismLayerSurfaceName;
    QLineEdit        *prismLayerMeshSize;

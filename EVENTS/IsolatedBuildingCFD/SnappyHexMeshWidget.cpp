@@ -455,7 +455,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *addPrismLayersLabel = new QLabel("Add Prism Layers:");
     QLabel *prismLayerSurfaceNameLabel = new QLabel("Surface Name:");
     QLabel *numberOfPrismLayersLabel = new QLabel("Number of Layers:");
-    QLabel *prismLayerExpantionRatioLabel = new QLabel("Expantion Ratio:");
+    QLabel *prismLayerExpansionRatioLabel = new QLabel("Expansion Ratio:");
     QLabel *finalLayerThicknessLabel = new QLabel("Final Layer Thickness:");
     QLabel *prismLayerMeshSizeLabel = new QLabel("Aprox. Smallest Grid Size: ");
 
@@ -469,10 +469,10 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     numberOfPrismLayers->setRange(5, 100);
     numberOfPrismLayers->setSingleStep(1);
 
-    prismLayerExpantionRatio = new QDoubleSpinBox();
-    prismLayerExpantionRatio->setRange(1.0, 1.5);
-    prismLayerExpantionRatio->setValue(1.15);
-    prismLayerExpantionRatio->setSingleStep(0.05);
+    prismLayerExpansionRatio = new QDoubleSpinBox();
+    prismLayerExpansionRatio->setRange(1.0, 1.5);
+    prismLayerExpansionRatio->setValue(1.15);
+    prismLayerExpansionRatio->setSingleStep(0.05);
 
     finalPrismLayerThickness = new QDoubleSpinBox();
     finalPrismLayerThickness->setRange(0.0, 1.0);
@@ -492,14 +492,14 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     prismLayerLayout->addWidget(addPrismLayersLabel, 0, 0);
     prismLayerLayout->addWidget(prismLayerSurfaceNameLabel, 1, 0);
     prismLayerLayout->addWidget(numberOfPrismLayersLabel, 2, 0);
-    prismLayerLayout->addWidget(prismLayerExpantionRatioLabel, 3, 0);
+    prismLayerLayout->addWidget(prismLayerExpansionRatioLabel, 3, 0);
     prismLayerLayout->addWidget(finalLayerThicknessLabel, 4, 0);
     prismLayerLayout->addWidget(prismLayerMeshSizeLabel, 5, 0);
 
     prismLayerLayout->addWidget(addPrismLayers, 0, 1);
     prismLayerLayout->addWidget(prismLayerSurfaceName, 1, 1);
     prismLayerLayout->addWidget(numberOfPrismLayers, 2, 1);
-    prismLayerLayout->addWidget(prismLayerExpantionRatio, 3, 1);
+    prismLayerLayout->addWidget(prismLayerExpansionRatio, 3, 1);
     prismLayerLayout->addWidget(finalPrismLayerThickness, 4, 1);
     prismLayerLayout->addWidget(prismLayerMeshSize, 5, 1);
 
@@ -840,7 +840,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
     //Add prism layers
     snappyMeshParamsJson["addPrismLayers"] = addPrismLayers->isChecked();
     snappyMeshParamsJson["numberOfPrismLayers"] = numberOfPrismLayers->value();
-    snappyMeshParamsJson["prismLayerExpantionRatio"] = prismLayerExpantionRatio->value();
+    snappyMeshParamsJson["prismLayerExpansionRatio"] = prismLayerExpansionRatio->value();
     snappyMeshParamsJson["finalPrismLayerThickness"] = finalPrismLayerThickness->value();
     snappyMeshParamsJson["prismLayerSurfaceName"] = "building";
 
@@ -914,7 +914,7 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     //Set prism layers
     addPrismLayers->setChecked(snappyMeshParamsJson["addPrismLayers"].toBool());
     numberOfPrismLayers->setValue(snappyMeshParamsJson["numberOfPrismLayers"].toInt());
-    prismLayerExpantionRatio->setValue(snappyMeshParamsJson["prismLayerExpantionRatio"].toDouble());
+    prismLayerExpansionRatio->setValue(snappyMeshParamsJson["prismLayerExpansionRatio"].toDouble());
     finalPrismLayerThickness->setValue(snappyMeshParamsJson["finalPrismLayerThickness"].toDouble());
     prismLayerSurfaceName->setCurrentText(snappyMeshParamsJson["prismLayerSurfaceName"].toString());
 
@@ -948,7 +948,7 @@ void SnappyHexMeshWidget::onAddPrismLayersChecked(int)
 {
     numberOfPrismLayers->setEnabled(addPrismLayers->isChecked());
     finalPrismLayerThickness->setEnabled(addPrismLayers->isChecked());
-    prismLayerExpantionRatio->setEnabled(addPrismLayers->isChecked());
+    prismLayerExpansionRatio->setEnabled(addPrismLayers->isChecked());
     prismLayerSurfaceName->setEnabled(addPrismLayers->isChecked());
 }
 
