@@ -84,6 +84,10 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     runMeshLayout = new QHBoxLayout();
     runMeshGroup->setLayout(runMeshLayout);
 
+    saveMeshGroup = new QGroupBox("Save Mesh", this);
+    saveMeshLayout = new QHBoxLayout();
+    saveMeshGroup->setLayout( saveMeshLayout);
+
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
@@ -515,14 +519,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QPushButton *runBlockMeshButton = new QPushButton("Run blockMesh");
     QPushButton *runSnappyMeshButton = new QPushButton("Run snappyHexMesh");
     QPushButton *runCheckMeshButton = new QPushButton("Run checkMesh");
+    QPushButton *saveMeshButton = new QPushButton("Save OpenFOAM Files");
 
     runMeshLayout->addWidget(runBlockMeshButton);
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
+    saveMeshLayout->addWidget(saveMeshButton);
 
     layout->addWidget(snappyHexMeshTab);
     layout->addWidget(generalOptionsGroup);
     layout->addWidget(runMeshGroup);
+    layout->addWidget(saveMeshGroup);
 
     //=============================================================================
 
@@ -541,6 +548,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
@@ -610,6 +618,15 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
 
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
+}
+
+void SnappyHexMeshWidget::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
+
+    mainModel->writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
 }
 
 
