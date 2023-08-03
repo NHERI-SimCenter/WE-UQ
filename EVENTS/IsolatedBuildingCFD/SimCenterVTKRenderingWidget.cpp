@@ -154,7 +154,7 @@ void SimCenterVTKRenderingWidget::initialize()
     transparency->setValue(0);
     transparency->setMaximumWidth(100);
 
-    reloadCase = new QPushButton("Reload");
+    reloadCase = new QPushButton("Update");
 
     menueLayout->addWidget(viewLabel, 0, 0, Qt::AlignRight);
     menueLayout->addWidget(viewObject, 0, 1, Qt::AlignLeft);
@@ -268,7 +268,7 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
         readMesh();
         actor->GetProperty()->SetRepresentationToSurface();
 
-        surfaceRepresentation->setCurrentIndex(1);
+        surfaceRepresentation->setCurrentIndex(0);
         viewObject->setCurrentIndex(0);
         renderWindow->Render();
     }
