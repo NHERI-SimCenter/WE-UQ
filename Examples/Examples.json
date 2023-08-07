@@ -19,6 +19,11 @@
       "name": "E4: Stochastic Wind Force Regenerator using Experimental Data",
       "description": "",
       "inputFile": "weuq-0012/src/input.json"
+    },
+    {
+      "name": "E5: Isolated Building CFD-based Wind Load Evaluation",
+      "description": "",
+      "inputFile": "weuq-0013/src/input.json"
     }
   ]
 }

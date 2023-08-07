@@ -171,7 +171,36 @@
       },
       "tags": [
       ]
-    } 
+    },
+    "weuq-0013": {
+      "id": "weuq-0013",
+      "base": "weuq-0013",
+      "title": "CFD-Based Wind Load Generation for Isolated Building",
+      "published": "2023-07-28T21:26:53.946381-08:00\"",
+      "doc": [
+          "weuq-0013/README.rst",   
+          "weuq-0013/figures/we13_schematic_wind_building_domain.svg",
+          "weuq-0013/figures/we12_2.png",
+          "weuq-0013/figures/we12_3.png",
+          "weuq-0013/figures/we12_UQ.png",
+          "weuq-0013/figures/we12_GI.png",
+          "weuq-0013/figures/we12_SIM.png",
+          "weuq-0013/figures/we12_EVT.png",
+          "weuq-0013/figures/we12_RV.png",
+          "weuq-0013/figures/we12_RES1.png",
+          "weuq-0013/figures/we12_RES2.png",
+          "weuq-0013/figures/we12_RES3.png"    
+      ],
+      "entry_point": "weuq-0013/./input.json",
+      "summary": "This example demonstrates application of CFD for generating wind loads on buildings and estimating the resulting structural responses",
+      "logo": "figures/we13_schematic_wind_building_domain.svg",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
+    }
   },
   "categories": {
     "Difficulty": {
