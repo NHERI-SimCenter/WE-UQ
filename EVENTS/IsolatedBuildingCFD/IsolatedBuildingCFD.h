@@ -104,6 +104,7 @@ public:
     double domainWidth();
     double domainHeight();
     double fetchLength();
+    QVector<double> getBuildingCenter();
 
     double buildingWidth();
     double buildingDepth();

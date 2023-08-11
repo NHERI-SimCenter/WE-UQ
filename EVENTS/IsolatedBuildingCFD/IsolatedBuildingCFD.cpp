@@ -928,6 +928,17 @@ QString IsolatedBuildingCFD::normalizationType()
     return geometry->normalizationTypeWidget->currentText();
 }
 
+QVector<double> IsolatedBuildingCFD::getBuildingCenter()
+{
+    QVector<double> origin = geometry->coordSysOrigin();
+
+    //The origin is configured relative to the building center so
+    //the building center is defined relative to origin in reverse direction
+    QVector<double> buildingCenter = {-origin[0], -origin[1], -origin[2]};
+
+    return buildingCenter;
+}
+
 QString IsolatedBuildingCFD::caseDir()
 {
     return caseDirectoryPathWidget->text();
