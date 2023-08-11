@@ -352,7 +352,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *surfaceNameLabel = new QLabel("Surface Name:");
     QLabel *refinementLevelLabel = new QLabel("Refinement Level:");
     QLabel *refinementDistanceLabel = new QLabel("Refinement Distance:");
-    QLabel *surfaceRefinementMeshSizeLabel = new QLabel("Aprox. Smallest Mesh Size::");
+    QLabel *surfaceRefinementMeshSizeLabel = new QLabel("Approx. Smallest Mesh Size:");
 
     addSurfaceRefinement = new QCheckBox();
     addSurfaceRefinement->setChecked(true);
@@ -584,7 +584,10 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
 
     runBlockMeshCommand();
 
+    runExtractSurfaceFeaturesCommand();
+
     mainModel->removeOldFiles();
+
     mainModel->updateJSON();
     mainModel->reloadMesh();
 }

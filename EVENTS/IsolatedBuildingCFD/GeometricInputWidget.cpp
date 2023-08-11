@@ -86,7 +86,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     buildingAndDomainInformationGroup = new QWidget();
     buildingAndDomainInformationLayout = new QGridLayout();
 
-    buildingInformationGroup = new QGroupBox("Building Dimention and Orientation");
+    buildingInformationGroup = new QGroupBox("Building Dimension and Orientation");
     buildingInformationLayout = new QGridLayout();
 
     domainInformationGroup = new QGroupBox("Domain Dimensions");
@@ -104,7 +104,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     geometricScaleWidget = new QLineEdit();
     geometricScaleWidget->setText("400.0");
 
-    QLabel *buildingShapeLabel = new QLabel("Shape of the Building: ");
+    QLabel *buildingShapeLabel = new QLabel("Building Shape: ");
     buildingShape = new QComboBox();
     buildingShape->addItem("Simple");
     buildingShape->addItem("Complex");
@@ -163,7 +163,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
 
-    QLabel *originOptionsLabel = new QLabel("Location of Absolute Origin: ");
+    QLabel *originOptionsLabel = new QLabel("Absolute Origin: ");
     QLabel *originCoordinateLabel = new QLabel("Coordinate: ");
     QLabel *originXLabel = new QLabel("X<sub>o</sub>:");
     QLabel *originYLabel = new QLabel("Y<sub>o</sub>:");

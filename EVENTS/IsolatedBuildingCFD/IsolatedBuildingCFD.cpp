@@ -312,6 +312,10 @@ bool IsolatedBuildingCFD::initialize()
     plotWindProfiles = new QPushButton("Plot Wind Profiles");
     plotWindLoads = new QPushButton("Plot Wind Loads");
 
+    //not functional for now
+    plotWindProfiles->setEnabled(false);
+    plotWindLoads->setEnabled(false);
+
     cfdResultsLayout->addWidget(plotWindProfiles);
     cfdResultsLayout->addWidget(plotWindLoads);
 
@@ -702,6 +706,12 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
      QString caseName = "IsolatedBuildingCFD";
 
      bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
+
+     //Remove the 'constant/polyMesh' directory
+     // Makes it slow to transfer the mesh to DesignSafe
+     // The mesh will be run on the remote machine anyway
+     QDir polyMeshDir(destDir + QDir::separator() + caseName + QDir::separator() + "constant" + QDir::separator() + "polyMesh");
+     polyMeshDir.removeRecursively();
 
      if (result == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;

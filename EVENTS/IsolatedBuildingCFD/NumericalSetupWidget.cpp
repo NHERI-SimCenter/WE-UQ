@@ -185,7 +185,7 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     maxCourantNumber = new QDoubleSpinBox();
     maxCourantNumber->setSingleStep(1);
     maxCourantNumber->setMinimum(0.5);
-    maxCourantNumber->setValue(5);
+    maxCourantNumber->setValue(1);
     maxCourantNumber->setEnabled(false);
     maxCourantNumber->setToolTip("Maximum value of Courant number for adjustable time step");
 
