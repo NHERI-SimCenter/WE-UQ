@@ -244,7 +244,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     pressureWriteInterval->setToolTip("Writing interval as a multiple of time step for pressure");
 
 
-    monitorSurfacePressure = new QCheckBox("Sample Presssure Data on the Building Surface");
+    monitorSurfacePressure = new QCheckBox("Sample Pressure Data on the Building Surface");
     monitorSurfacePressure->setChecked(true);
     monitorSurfacePressure->setToolTip("Monitor surface pressure fluctuations at selected points");
 
