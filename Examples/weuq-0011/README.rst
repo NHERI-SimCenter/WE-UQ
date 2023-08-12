@@ -1,6 +1,6 @@
 .. _weuq-0011:
 
-Digital Wind Tunnel I
+Digital Wind Tunnel I: Empty Domain Simulation 
 ===================
 
 +----------------+-------------------------+
