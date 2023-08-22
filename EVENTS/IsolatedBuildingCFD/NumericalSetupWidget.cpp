@@ -96,10 +96,10 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     runInParallel->setToolTip("Run the CFD simulation in parallel or not");
 
     numProcessors = new QSpinBox();
-    numProcessors->setSingleStep(16);
+    numProcessors->setSingleStep(10);
     numProcessors->setMinimum(1);
     numProcessors->setMaximum(1024);
-    numProcessors->setValue(32);
+    numProcessors->setValue(56);
     numProcessors->setToolTip("Number of processors to run the simulation with");
 
     parallelizationLayout->addWidget(runInParallel, 0, 0);
@@ -165,7 +165,7 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     maxCourantNumberLabel->setEnabled(false);
 
     duration = new QLineEdit();
-    duration->setText("36.0");
+    duration->setText("10.0");
     duration->setToolTip("Duration or end time of the simulation");
 
 

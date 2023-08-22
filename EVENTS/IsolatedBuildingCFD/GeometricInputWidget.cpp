@@ -89,7 +89,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     buildingInformationGroup = new QGroupBox("Building Dimension and Orientation");
     buildingInformationLayout = new QGridLayout();
 
-    domainInformationGroup = new QGroupBox("Domain Dimensions");
+    domainInformationGroup = new QGroupBox("Domain Size");
     domainInformationLayout = new QGridLayout();
 
     coordinateSystemGroup = new QGroupBox("Coordinate System");

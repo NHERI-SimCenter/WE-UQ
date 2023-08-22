@@ -103,6 +103,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     sidesBCType  = new QComboBox();
     sidesBCType->addItem("symmetry");
     sidesBCType->addItem("slip");
+    sidesBCType->addItem("cyclic");
     sidesBCType->addItem("noSlip");
 
     topBCType  = new QComboBox();

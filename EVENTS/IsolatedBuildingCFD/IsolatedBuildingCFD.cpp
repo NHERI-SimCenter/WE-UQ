@@ -305,7 +305,7 @@ bool IsolatedBuildingCFD::initialize()
 
     inputWindowLayout->addWidget(inputTab);
     inputWindowGroup->setLayout(inputWindowLayout);
-    inputWindowGroup->setMaximumWidth(windowWidth - 100);
+    inputWindowGroup->setMaximumWidth(windowWidth - 125);
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
@@ -359,6 +359,8 @@ bool IsolatedBuildingCFD::initialize()
     theGI->setLengthUnit("m");
     theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
     theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+
+    this->adjustSize();
 
     return true;
 }
@@ -591,6 +593,14 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), caseDir(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
+
+    QDir newCaseDir(fileName);
+
+    if (!newCaseDir.exists())
+    {
+       return;
+    }
+
     caseDirectoryPathWidget->setText(fileName);
 
 

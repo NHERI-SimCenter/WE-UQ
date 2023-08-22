@@ -94,9 +94,9 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection = new QComboBox();
 
     eventSelection->addItem(tr("Stochastic Wind"));
-    eventSelection->addItem(tr("CFD - Basic"));
+//    eventSelection->addItem(tr("CFD - Basic"));
     eventSelection->addItem(tr("CFD - Wind Loads on Isolated Building"));    
-    eventSelection->addItem(tr("CFD - Expert"));
+//    eventSelection->addItem(tr("CFD - Expert"));
     eventSelection->addItem(tr("CFD - Digital Wind Tunnel"));
     eventSelection->addItem(tr("Experimental Wind Forces"));
     eventSelection->addItem(tr("Wind Force Spectrum (CPSD)"));
@@ -107,17 +107,17 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(0, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
-    eventSelection->setItemData(1, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
-    eventSelection->setItemData(2, "Wind Load Simulation on a Rectangular Isolated Tall Building with Automatic Meshing", Qt::ToolTipRole);    
-    eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
-    eventSelection->setItemData(4, "Digital Wind Tunnel: OpenFOAM Simulation of the UF facility", Qt::ToolTipRole);
-    eventSelection->setItemData(5, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
-    eventSelection->setItemData(6, "Experimental Wind Force Spectrum", Qt::ToolTipRole);
-    eventSelection->setItemData(7, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);    
-    eventSelection->setItemData(8, "Forces using Low Rise TPU Wind Tunnel Datasets", Qt::ToolTipRole);
-    eventSelection->setItemData(9, "Forces using High Rise TPU Wind Tunnel Datasets", Qt::ToolTipRole);        
-    eventSelection->setItemData(10, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
-    eventSelection->setItemData(11, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
+//    eventSelection->setItemData(1, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
+    eventSelection->setItemData(1, "Wind Load Simulation on a Rectangular Isolated Building with Automated Meshing", Qt::ToolTipRole);
+//    eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
+    eventSelection->setItemData(2, "Digital Wind Tunnel: OpenFOAM Simulation of the UF facility", Qt::ToolTipRole);
+    eventSelection->setItemData(3, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
+    eventSelection->setItemData(4, "Experimental Wind Force Spectrum", Qt::ToolTipRole);
+    eventSelection->setItemData(5, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
+    eventSelection->setItemData(6, "Forces using Low Rise TPU Wind Tunnel Datasets", Qt::ToolTipRole);
+    eventSelection->setItemData(7, "Forces using High Rise TPU Wind Tunnel Datasets", Qt::ToolTipRole);
+    eventSelection->setItemData(8, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
+    eventSelection->setItemData(9, "Existing SimCenter Wind Loading Event Files", Qt::ToolTipRole);
     eventSelection->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     eventSelection->setMinimumWidth(250);
@@ -140,14 +140,14 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-    CFDBeginnerEventWidget = new BasicCFDv2(theRandomVariablesContainer);
-    theStackedWidget->addWidget(CFDBeginnerEventWidget);
+//    CFDBeginnerEventWidget = new BasicCFDv2(theRandomVariablesContainer);
+//    theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
     theIsolatedBuildingCFD = new IsolatedBuildingCFD(theRandomVariablesContainer);
     theStackedWidget->addWidget(theIsolatedBuildingCFD);
     
-    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
-    theStackedWidget->addWidget(CFDExpertEventWidget);
+//    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
+//    theStackedWidget->addWidget(CFDExpertEventWidget);
 
     theDigitalWindTunnel = new DigitalWindTunnel(theRandomVariablesContainer);
     theStackedWidget->addWidget(theDigitalWindTunnel);
@@ -180,9 +180,10 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     connect(eventSelection,SIGNAL(currentIndexChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 
     // status and error messaging
-    connect(CFDExpertEventWidget,SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
-    connect(CFDExpertEventWidget,SIGNAL(statusMessage(QString)),this,SLOT(sendStatusMessage(QString)));
-    connect(CFDExpertEventWidget,SIGNAL(fatalMessage(QString)), this,SLOT(sendFatalMessage(QString)));
+    connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+//    connect(CFDExpertEventWidget,SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+//    connect(CFDExpertEventWidget,SIGNAL(statusMessage(QString)),this,SLOT(sendStatusMessage(QString)));
+//    connect(CFDExpertEventWidget,SIGNAL(fatalMessage(QString)), this,SLOT(sendFatalMessage(QString)));
 }
 
 WindEventSelection::~WindEventSelection()
@@ -230,28 +231,28 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 
     if (type.contains(QString("StochasticWind"))) {
         index = 0;
-    } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
-        index = 1;
+//    } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
+//        index = 1;
     } else if ((type == QString("CFD - Wind Loads on Isolated Building")) || (type == QString("IsolatedBuildingCFD"))) {
-        index = 2;
-    } else if (type == QString("CFD - Expert")) {
-        index = 3;
+        index = 1;
+//    } else if (type == QString("CFD - Expert")) {
+//        index = 3;
     } else if ((type == QString("CFD - Digital Wind Tunnel")) || (type == QString("DigitalWindTunnel"))) {
-        index = 4;
+        index = 2;
     } else if ((type == QString("Experimental Wind Forces")) || (type == QString("ExperimentalWindForces"))) {
-        index = 5;
+        index = 3;
     } else if ((type == QString("Wind Force Spectrum (CPSD)")) || (type == QString("WindForceSpectrum"))) {
-        index = 6;	
+        index = 4;
     } else if (type == QString("DEDM_HRP")) {
-        index = 7;
+        index = 5;
     } else if (type.contains(QString("LowRiseTPU"))) {
-        index = 8;
+        index = 6;
     } else if (type.contains(QString("HighRiseTPU"))) {
-        index = 9;	
+        index = 7;
     } else if (type.contains(QString("WindTunnelExperiment"))) {
-        index = 10;
+        index = 8;
     } else if ((type == QString("Existing Events")) || (type == QString("ExistingSimCenterEvents"))) {
-        index = 11;
+        index = 9;
     } else {
         return false;
     }
@@ -281,13 +282,13 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theStackedWidget->setCurrentIndex(0);
         theCurrentEvent = theStochasticModel;
     }
-    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE") || (arg1 == "BasicCFD")) {
-        theStackedWidget->setCurrentIndex(1);
-        theCurrentEvent = CFDBeginnerEventWidget;
-    }
+//    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE") || (arg1 == "BasicCFD")) {
+//        theStackedWidget->setCurrentIndex(1);
+//        theCurrentEvent = CFDBeginnerEventWidget;
+//    }
 
     else if(arg1 == "CFD - Wind Loads on Isolated Building") {
-        theStackedWidget->setCurrentIndex(2);
+        theStackedWidget->setCurrentIndex(1);
         theCurrentEvent = theIsolatedBuildingCFD;
 
         IsolatedBuildingCFD* theIso  = dynamic_cast<IsolatedBuildingCFD*>(theIsolatedBuildingCFD);
@@ -298,48 +299,48 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         }
     }
     
-    else if(arg1 == "CFD - Expert") {
-        theStackedWidget->setCurrentIndex(3);
-        theCurrentEvent = CFDExpertEventWidget;
-    }
+//    else if(arg1 == "CFD - Expert") {
+//        theStackedWidget->setCurrentIndex(3);
+//        theCurrentEvent = CFDExpertEventWidget;
+//    }
 
     else if(arg1 == "CFD - Digital Wind Tunnel") {
-        theStackedWidget->setCurrentIndex(4);
+        theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = theDigitalWindTunnel;
     }
     
     else if(arg1 == "Experimental Wind Forces") {
-        theStackedWidget->setCurrentIndex(5);
+        theStackedWidget->setCurrentIndex(3);
         theCurrentEvent = theExperimentalWindForces;
     }
 
     else if(arg1 == "Wind Force Spectrum (CPSD)") {
-        theStackedWidget->setCurrentIndex(6);
+        theStackedWidget->setCurrentIndex(4);
         theCurrentEvent = theWindForceSpectrum;
     }
 
     else if (arg1 == "DEDM_HRP") {
-      theStackedWidget->setCurrentIndex(7);
+      theStackedWidget->setCurrentIndex(5);
       theCurrentEvent = theDEDM_HRP_Widget;
     }
     
     else if (arg1 == "LowRiseTPU") {
-        theStackedWidget->setCurrentIndex(8);
+        theStackedWidget->setCurrentIndex(6);
         theCurrentEvent = theLowRiseTPU_Widget;
     }
 
     else if (arg1 == "HighRiseTPU") {
-        theStackedWidget->setCurrentIndex(9);
+        theStackedWidget->setCurrentIndex(7);
         theCurrentEvent = theHighRiseTPU_Widget;
     }    
     
     else if(arg1 == "Wind Tunnel Experiment") {
-        theStackedWidget->setCurrentIndex(10);
+        theStackedWidget->setCurrentIndex(8);
         theCurrentEvent = theWindTunnelExperiment;
     }
     
     else if(arg1 == "Existing") {
-      theStackedWidget->setCurrentIndex(11);
+      theStackedWidget->setCurrentIndex(9);
         theCurrentEvent = theExistingEvents;
     }
 

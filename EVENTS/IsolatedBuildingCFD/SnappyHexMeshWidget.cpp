@@ -516,9 +516,9 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     //=============================================================================
 
-    QPushButton *runBlockMeshButton = new QPushButton("Run blockMesh");
-    QPushButton *runSnappyMeshButton = new QPushButton("Run snappyHexMesh");
-    QPushButton *runCheckMeshButton = new QPushButton("Run checkMesh");
+    QPushButton *runBlockMeshButton = new QPushButton("Run Background Mesh");
+    QPushButton *runSnappyMeshButton = new QPushButton("Run Final Mesh");
+    QPushButton *runCheckMeshButton = new QPushButton("Check Mesh");
     QPushButton *saveMeshButton = new QPushButton("Save OpenFOAM Files");
 
     runMeshLayout->addWidget(runBlockMeshButton);
