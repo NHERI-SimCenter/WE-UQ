@@ -305,12 +305,16 @@ bool IsolatedBuildingCFD::initialize()
 
     inputWindowLayout->addWidget(inputTab);
     inputWindowGroup->setLayout(inputWindowLayout);
-    inputWindowGroup->setMaximumWidth(windowWidth - 100);
+    inputWindowGroup->setMaximumWidth(windowWidth - 125);
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
     plotWindProfiles = new QPushButton("Plot Wind Profiles");
     plotWindLoads = new QPushButton("Plot Wind Loads");
+
+    //not functional for now
+    plotWindProfiles->setEnabled(false);
+    plotWindLoads->setEnabled(false);
 
     cfdResultsLayout->addWidget(plotWindProfiles);
     cfdResultsLayout->addWidget(plotWindLoads);
@@ -355,6 +359,8 @@ bool IsolatedBuildingCFD::initialize()
     theGI->setLengthUnit("m");
     theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
     theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+
+    this->adjustSize();
 
     return true;
 }
@@ -587,6 +593,14 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), caseDir(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
+
+    QDir newCaseDir(fileName);
+
+    if (!newCaseDir.exists())
+    {
+       return;
+    }
+
     caseDirectoryPathWidget->setText(fileName);
 
 
@@ -702,6 +716,12 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
      QString caseName = "IsolatedBuildingCFD";
 
      bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
+
+     //Remove the 'constant/polyMesh' directory
+     // Makes it slow to transfer the mesh to DesignSafe
+     // The mesh will be run on the remote machine anyway
+     QDir polyMeshDir(destDir + QDir::separator() + caseName + QDir::separator() + "constant" + QDir::separator() + "polyMesh");
+     polyMeshDir.removeRecursively();
 
      if (result == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;
@@ -916,6 +936,17 @@ double IsolatedBuildingCFD::windDirection()
 QString IsolatedBuildingCFD::normalizationType()
 {
     return geometry->normalizationTypeWidget->currentText();
+}
+
+QVector<double> IsolatedBuildingCFD::getBuildingCenter()
+{
+    QVector<double> origin = geometry->coordSysOrigin();
+
+    //The origin is configured relative to the building center so
+    //the building center is defined relative to origin in reverse direction
+    QVector<double> buildingCenter = {-origin[0], -origin[1], -origin[2]};
+
+    return buildingCenter;
 }
 
 QString IsolatedBuildingCFD::caseDir()

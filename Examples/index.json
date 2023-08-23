@@ -113,36 +113,6 @@
         "UM.1.1"
       ]
     },
-    "weuq-0011": {
-      "id": "weuq-0011",
-      "base": "weuq-0011",
-      "title": "Digital Wind Tunnel",
-      "published": "2022-03-06T21:26:53.946381-08:00\"",
-      "doc": [
-          "weuq-0011/README.rst",   
-          "weuq-0011/figures/UFWindTunnel.png",
-          "weuq-0011/figures/openfoam_structure.png",
-          "weuq-0011/figures/DWTsketch.png",
-          "weuq-0011/figures/User-interface.png",   
-          "weuq-0011/figures/Direct_table.png",
-          "weuq-0011/figures/Mesh.png",   
-          "weuq-0011/figures/table.png",
-          "weuq-0011/figures/TInF_function.png",
-          "weuq-0011/figures/Post-processsing.png"    
-      ],
-      "entry_point": "weuq-0011/./input.json",
-      "summary": "This study uses WE-UQ's built-in interface 'Digital Wind Tunnel' to run a CFD simulation.",
-      "logo": "figures/DWTsketch.png",
-      "categories": {
-        "Difficulty": "0",
-        "Simulation": "OpenSees-Simulation"
-      },
-      "tags": [
-        "UV.1.1",
-        "UM.1.1.1",
-        "UM.1.1"
-      ]
-    },
     "weuq-0012": {
       "id": "weuq-0012",
       "base": "weuq-0012",
@@ -171,7 +141,84 @@
       },
       "tags": [
       ]
-    } 
+    },
+    "weuq-0011": {
+      "id": "weuq-0011",
+      "base": "weuq-0011",
+      "title": "Digital Wind Tunnel I: Empty Domain Simulation",
+      "published": "2022-03-06T21:26:53.946381-08:00\"",
+      "doc": [
+          "weuq-0011/README.rst",   
+          "weuq-0011/figures/UFWindTunnel.png",
+          "weuq-0011/figures/openfoam_structure.png",
+          "weuq-0011/figures/DWTsketch.png",
+          "weuq-0011/figures/User-interface.png",   
+          "weuq-0011/figures/Direct_table.png",
+          "weuq-0011/figures/Mesh.png",   
+          "weuq-0011/figures/table.png",
+          "weuq-0011/figures/TInF_function.png",
+          "weuq-0011/figures/Post-processsing.png"    
+      ],
+      "entry_point": "weuq-0011/./input.json",
+      "summary": "This study uses WE-UQ's built-in interface 'Digital Wind Tunnel' to run a CFD simulation.",
+      "logo": "figures/DWTsketch.png",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+        "UV.1.1",
+        "UM.1.1.1",
+        "UM.1.1"
+      ]
+    },
+    "weuq-0013": {
+      "id": "weuq-0013",
+      "base": "weuq-0013",
+      "title": "Digital Wind Tunnel II: Wind Load on Isolated Building",
+      "doc": [
+          "weuq-0013/README.rst",   
+          "weuq-0013/figures/we13_CFD_Results_StreamLines.svg",
+          "weuq-0013/figures/we13_schematic_wind_building_domain.svg",
+          "weuq-0013/figures/we13_CFD_Results.svg",
+          "weuq-0013/figures/we13_EDP_panel.svg",
+          "weuq-0013/figures/we13_EVT_BoundaryConditions.svg",
+          "weuq-0013/figures/we13_EVT_Geometry_tab.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_AdvancedOptions.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_EdgeRefinement_tab.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_PrismLayers_tab.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_RegionalRefinement_tab.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_Run.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_SurfaceRefinement_tab.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_View.svg",
+          "weuq-0013/figures/we13_EVT_Mesh_tab.svg",
+          "weuq-0013/figures/we13_EVT_Monitoring.svg",
+          "weuq-0013/figures/we13_EVT_NumericalSetup.svg",
+          "weuq-0013/figures/we13_EVT_RegionalRefinement_tab.svg",
+          "weuq-0013/figures/we13_EVT_Start_tab.svg",
+          "weuq-0013/figures/we13_FEM_panel.svg",
+          "weuq-0013/figures/we13_GI_panel.svg",
+          "weuq-0013/figures/we13_MonitorJob.svg",
+          "weuq-0013/figures/we13_RES_DataValues.svg",
+          "weuq-0013/figures/we13_RES_Summary.svg",
+          "weuq-0013/figures/we13_RV_panel.svg",
+          "weuq-0013/figures/we13_RunJob.svg",
+          "weuq-0013/figures/we13_SIM_panel.svg",
+          "weuq-0013/figures/we13_UQ_panel.svg",
+          "weuq-0013/figures/we13_mean_velocity_profile_fitting.svg",
+          "weuq-0013/figures/we13_tpu_building_demo.jpg"  
+      ],
+      "entry_point": "weuq-0013/./input.json",
+      "summary": "This example demonstrates application of CFD for generating wind loads on buildings and estimating the resulting structural responses",
+      "logo": "figures/we13_CFD_Results_StreamLines.svg",
+      "published": "2023-08-12T21:26:53.946381-08:00\"",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
+    }
   },
   "categories": {
     "Difficulty": {

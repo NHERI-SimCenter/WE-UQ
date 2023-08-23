@@ -89,11 +89,11 @@ private:
 
    QVBoxLayout          *layout;
 
-//   QGroupBox            *resultMonitoringGroup;
-//   QVBoxLayout          *resultMonitoringLayout;
+   QGroupBox            *monitorBaseLoadGroup;
+   QGridLayout          *monitorBaseLoadLayout;
 
-   QGroupBox            *monitorIntegratedLoadGroup;
-   QGridLayout          *monitorIntegratedLoadLayout;
+   QGroupBox            *monitorStoryLoadGroup;
+   QGridLayout          *monitorStoryLoadLayout;
 
    QGroupBox            *monitorPressureGroup;
    QGridLayout          *monitorPressureLayout;
@@ -118,10 +118,11 @@ private:
 
    QLineEdit            *floorHeight;
    QSpinBox             *numStories;
-   QLineEdit            *centerOfRotationX;
-   QLineEdit            *centerOfRotationY;
-   QLineEdit            *centerOfRotationZ;
+//   QLineEdit            *centerOfRotationX;
+//   QLineEdit            *centerOfRotationY;
+//   QLineEdit            *centerOfRotationZ;
 
+   QSpinBox             *baseLoadWriteInterval;
    QSpinBox             *storyLoadWriteInterval;
    QSpinBox             *pressureWriteInterval;
 

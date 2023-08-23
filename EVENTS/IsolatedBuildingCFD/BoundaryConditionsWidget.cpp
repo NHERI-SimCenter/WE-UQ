@@ -103,6 +103,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     sidesBCType  = new QComboBox();
     sidesBCType->addItem("symmetry");
     sidesBCType->addItem("slip");
+    sidesBCType->addItem("cyclic");
     sidesBCType->addItem("noSlip");
 
     topBCType  = new QComboBox();
@@ -112,11 +113,13 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
     groundBCType  = new QComboBox();
     groundBCType->addItem("noSlip");
-    groundBCType->addItem("wallFunction");
+    groundBCType->addItem("smoothWallFunction");
+    groundBCType->addItem("roughWallFunction");
 
     buildingBCType  = new QComboBox();
     buildingBCType->addItem("noSlip");
-    buildingBCType->addItem("wallFunction");
+    buildingBCType->addItem("smoothWallFunction");
+    buildingBCType->addItem("roughWallFunction");
 
     QPushButton* domainButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/boundaryConditions.png");

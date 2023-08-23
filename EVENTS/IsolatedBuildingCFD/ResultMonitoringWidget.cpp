@@ -109,13 +109,13 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
-//    resultMonitoringGroup = new QGroupBox("Result Monitoring");
-//    resultMonitoringLayout = new QVBoxLayout();
-//    resultMonitoringGroup->setLayout(resultMonitoringLayout);
+    monitorBaseLoadGroup = new QGroupBox("Base Loads");
+    monitorBaseLoadLayout = new QGridLayout();
+    monitorBaseLoadGroup->setLayout(monitorBaseLoadLayout);
 
-    monitorIntegratedLoadGroup = new QGroupBox("Story Loads");
-    monitorIntegratedLoadLayout = new QGridLayout();
-    monitorIntegratedLoadGroup->setLayout(monitorIntegratedLoadLayout);
+    monitorStoryLoadGroup = new QGroupBox("Story Loads");
+    monitorStoryLoadLayout = new QGridLayout();
+    monitorStoryLoadGroup->setLayout(monitorStoryLoadLayout);
     
     monitorPressureGroup = new QGroupBox("Pressure Data");
     monitorPressureLayout = new QGridLayout();
@@ -139,78 +139,92 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     //==================================================================
 
     QLabel* floorHeightOptionsLabel = new QLabel("Floor Height Specification: ");
-    QLabel* floorHeightLabel = new QLabel("Floor to Floor Height: ");
+    QLabel* floorHeightLabel = new QLabel("Floor to Floor Distance (CFD): ");
     QLabel* numStoriesLabel = new QLabel("Number of Stories: ");
+    QLabel* baseLoadWriteIntervalLabel = new QLabel("Write Interval: ");
     QLabel* storyLoadWriteIntervalLabel = new QLabel("Write Interval: ");
-    QLabel* centerOfRotationLabel = new QLabel("Center of Rotation:");
-    QLabel* centerOfRotationXLabel = new QLabel("X");
-    QLabel* centerOfRotationYLabel = new QLabel("Y");
-    QLabel* centerOfRotationZLabel = new QLabel("Z");
-    //    QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
+//    QLabel* centerOfRotationLabel = new QLabel("Center of Rotation:");
+//    QLabel* centerOfRotationXLabel = new QLabel("X");
+//    QLabel* centerOfRotationYLabel = new QLabel("Y");
+//    QLabel* centerOfRotationZLabel = new QLabel("Z");
+    QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
     
     floorHeightOptions = new QComboBox();
     floorHeightOptions->addItem("Uniform Floor Height");
     //    floorHeightOptions->addItem("Variable Floor Height");
     floorHeightOptions->setToolTip("Choose constant or variable floor height options");
 
+    baseLoadWriteInterval = new QSpinBox();
+    baseLoadWriteInterval->setSingleStep(1);
+    baseLoadWriteInterval->setMinimum(1);
+    baseLoadWriteInterval->setValue(10);
+    baseLoadWriteInterval->setEnabled(true);
+    baseLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for base loads");
 
     storyLoadWriteInterval = new QSpinBox();
     storyLoadWriteInterval->setSingleStep(1);
     storyLoadWriteInterval->setMinimum(1);
     storyLoadWriteInterval->setValue(10);
     storyLoadWriteInterval->setEnabled(true);
-    storyLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for integrated loads");
+    storyLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for story loads");
 
     numStories = new QSpinBox();
     numStories->setSingleStep(5);
     numStories->setMinimum(1);
     numStories->setValue(60);
-//    numStories->setEnabled(false);
+    numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
 
     floorHeight = new QLineEdit();
-    //    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()));
     floorHeight->setEnabled(false);
-    floorHeight->setToolTip("Calculated floor height");
+    floorHeight->setToolTip("Calculated floor to floor height in model-scale");
 
-    centerOfRotationX = new QLineEdit();
-    centerOfRotationX->setText("0.0");
-    centerOfRotationX->setToolTip("X-coordinate of the center of rotation ");
+//    centerOfRotationX = new QLineEdit();
+//    centerOfRotationX->setText("0.0");
+//    centerOfRotationX->setToolTip("X-coordinate of the center of rotation ");
 
-    centerOfRotationY = new QLineEdit();
-    centerOfRotationY->setText("0.0");
-    centerOfRotationY->setToolTip("Y-coordinate of the center of rotation ");
+//    centerOfRotationY = new QLineEdit();
+//    centerOfRotationY->setText("0.0");
+//    centerOfRotationY->setToolTip("Y-coordinate of the center of rotation ");
 
-    centerOfRotationZ = new QLineEdit();
-    centerOfRotationZ->setText("0.0");
-    centerOfRotationZ->setToolTip("Z-coordinate of the center of rotation ");
+//    centerOfRotationZ = new QLineEdit();
+//    centerOfRotationZ->setText("0.0");
+//    centerOfRotationZ->setToolTip("Z-coordinate of the center of rotation ");
 
-    monitorBaseLoad = new QCheckBox("Monitor Base Loads");
+    monitorBaseLoad = new QCheckBox();
     monitorBaseLoad->setChecked(true);
     monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
 
-    monitorIntegratedLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
-    monitorIntegratedLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
-    monitorIntegratedLoadLayout->addWidget(numStoriesLabel, 1, 0);
-    monitorIntegratedLoadLayout->addWidget(numStories, 1, 1, 1, 4);
-    monitorIntegratedLoadLayout->addWidget(floorHeightLabel, 2, 0);
-    monitorIntegratedLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
-    monitorIntegratedLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
-    monitorIntegratedLoadLayout->addWidget(storyLoadWriteInterval, 3, 1, 1, 4);
 
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 4, 5, Qt::AlignRight);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoadLabel, 0, 0);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoad, 0, 1);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteIntervalLabel, 1, 0);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteInterval, 1, 1);
+    baseLoadWriteInterval->setMinimumWidth(250);
+    monitorBaseLoadLayout->setAlignment(Qt::AlignLeft);
 
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 4, 0);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 4, 2);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
-    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
+    monitorStoryLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
+    monitorStoryLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(numStoriesLabel, 1, 0);
+    monitorStoryLoadLayout->addWidget(numStories, 1, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(floorHeightLabel, 2, 0);
+    monitorStoryLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
+    monitorStoryLoadLayout->addWidget(storyLoadWriteInterval, 3, 1, 1, 4);
+    storyLoadWriteInterval->setMinimumWidth(250);
+    monitorStoryLoadLayout->setAlignment(Qt::AlignLeft);
 
-//    monitorIntegratedLoadLayout->addWidget(monitorBaseLoadLabel, 4, 0);
-    monitorIntegratedLoadLayout->addWidget(monitorBaseLoad, 5, 0);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 4, 5, Qt::AlignRight);
 
-    layout->addWidget(monitorIntegratedLoadGroup);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 4, 0);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 4, 2);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
+//    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
+
+    layout->addWidget(monitorBaseLoadGroup);
+    layout->addWidget(monitorStoryLoadGroup);
 
     //==================================================================
     //              Monitor Local Pressure
@@ -230,7 +244,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     pressureWriteInterval->setToolTip("Writing interval as a multiple of time step for pressure");
 
 
-    monitorSurfacePressure = new QCheckBox("Sample Presssure Data on the Building Surface");
+    monitorSurfacePressure = new QCheckBox("Sample Pressure Data on the Building Surface");
     monitorSurfacePressure->setChecked(true);
     monitorSurfacePressure->setToolTip("Monitor surface pressure fluctuations at selected points");
 
@@ -306,7 +320,8 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
     connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
 	    [=] (int nFl, double ht) {
-	      numStories->setValue(nFl);
+         numStories->setValue(nFl);
+         floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
 	});
 
 }
@@ -325,7 +340,7 @@ void ResultMonitoringWidget::clear(void)
 
 void ResultMonitoringWidget::onMonitorBaseLoadChecked(int state)
 {
-//    monitorBaseLoadGroup->setVisible(monitorBaseLoad->isChecked());
+    baseLoadWriteInterval->setEnabled(monitorBaseLoad->isChecked());
 }
 
 void ResultMonitoringWidget::onMonitorPressureChecked(int state)
@@ -595,10 +610,11 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
     resMonitoringJson["numStories"] = numStories->value();
     resMonitoringJson["floorHeight"] = floorHeight->text().toDouble();
 
-    QJsonArray centerOfRotation = {centerOfRotationX->text().toDouble(), centerOfRotationY->text().toDouble(), centerOfRotationZ->text().toDouble()};
+    QJsonArray centerOfRotation = {mainModel->getBuildingCenter()[0], mainModel->getBuildingCenter()[1], mainModel->getBuildingCenter()[2]};
     resMonitoringJson["centerOfRotation"] = centerOfRotation;
 
     resMonitoringJson["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
+    resMonitoringJson["baseLoadWriteInterval"] = baseLoadWriteInterval->value();
     resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
 
     resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
@@ -637,13 +653,14 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
     numStories->setValue(resMonitoringJson["numStories"].toInt());
     floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
 
-    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
+//    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
 
-    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
-    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
-    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
+//    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
+//    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
+//    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
 
     storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
+    baseLoadWriteInterval->setValue(resMonitoringJson["baseLoadWriteInterval"].toInt());
     monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
 
     monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
@@ -654,6 +671,7 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
 
     pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
 
+    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
 
     return true;
 }

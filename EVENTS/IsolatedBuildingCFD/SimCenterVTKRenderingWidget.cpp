@@ -167,7 +167,8 @@ void SimCenterVTKRenderingWidget::initialize()
 
 //    renderWindow  = vtkSmartPointer<vtkDataSetMapper>::New();
 
-    qvtkWidget->setMinimumSize(300, 500);
+//    qvtkWidget->setMinimumSize(300, 500);
+
     visLayout->addWidget(qvtkWidget);
     visGroup->setStyleSheet("border: 2px solid black");
     visLayout->setContentsMargins(0, 0, 0, 0);
