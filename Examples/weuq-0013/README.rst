@@ -421,7 +421,7 @@ In addition, by switching to *Data Values* tab, you can see all the realizations
    :width: 1000
    :figclass: align-center
 
-   (scatter-plot) Top-floor acceleration vs floor stiffness, (table) EDPs report for all realizations   
+   (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
 
 .. note::
 
@@ -454,7 +454,7 @@ Similarly, in :numref:`fig-we13-CFD-result2`, the instantaneous velocity contour
    :width: 1000
    :figclass: align-center
 
-   Instantaneous velocity contour around the building.
+   Instantaneous velocity field around the building.
 
 
 .. [Cook1997] Cook, N.J., 1997. The Deaves and Harris ABL model applied to heterogeneous terrain. Journal of wind engineering and industrial aerodynamics, 66(3), pp.197-214.
