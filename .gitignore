@@ -76,6 +76,7 @@ EVENTS/DigitalWindTunnel/.DS_Store
 # Test folders 
 tests/WEUQ-FSI/ZOOM instructions/
 tests/IsolatedBuildingCFDTest/
+<<<<<<< HEAD
 
 #Remove .vscode
 .vscode
