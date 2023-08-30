@@ -126,14 +126,14 @@ Specify the details of uncertainty analysis in the **UQ** panel. This example us
    :width: 1000
    :figclass: align-center
 
-   Selection of the Uncertainty Quantification technique
+   Selection of the Uncertainty Quantification Technique
 
 General Information
 """""""""""""""""""
-Next, in the **GI** panel, specify properties of the building and the unit system. For the **# Stories** use 50 assuming a floor height of 4 m. Set the **Height**, **Width** and **Depth** to 200, 40 and 40 with a **Plan Area** of 1600. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
+Next, in the **GI** panel, specify the properties of the building and the unit system. For the **# Stories** use 50 assuming a floor height of 4 m. Set the **Height**, **Width** and **Depth** to 200, 40 and 40 with a **Plan Area** of 1600. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
 
    .. warning::
-      Note that the CFD model is created at a reduced or model-scale (i.e., 1 to 400) just like the target wind tunnel model. However, the building dimensions specified here need to be in full-scale (actual building dimensions). 
+      Note that the CFD model is created at a reduced or model scale (i.e., 1 to 400) just like the target wind tunnel model. However, the building dimensions specified here need to be in full-scale (actual building dimensions). 
 
 .. figure:: figures/we13_GI_panel.svg
    :align: center
@@ -144,7 +144,7 @@ Next, in the **GI** panel, specify properties of the building and the unit syste
 
 Structural Properties
 """""""""""""""""""""
-In the SIM panel, the structural properties are defined. For the structural model, select "MDOF" generator. The number of stories and floor height are automatically populated based based on **GI** panel. For the **Floor Weights** put :math:`1.5 \times 10^7`. Replace the **Story Stiffness** with **k** to designate it as a random variable. Later the statistical properties of this random variable will be defined in **RV** panel. Then, input damping, yield strength, hardening ratio and other parameters as shown in :numref:`fig-we13-SIM-panel`. 
+In the SIM panel, the structural properties are defined. For the structural model, select "MDOF" generator. The number of stories and floor height are automatically populated based on **GI** panel. For the **Floor Weights** put :math:`1.5 \times 10^7`. Replace the **Story Stiffness** with **k** to designate it as a random variable. Later the statistical properties of this random variable will be defined in **RV** panel. Then, input damping, yield strength, hardening ratio and other parameters as shown in :numref:`fig-we13-SIM-panel`. 
 
 .. _fig-we13-SIM-panel:
    
@@ -158,9 +158,9 @@ In the SIM panel, the structural properties are defined. For the structural mode
 
 CFD Model
 """""""""""""""""""
-In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Isolated Building" option to create the CFD model. Here, a brief instruction to define the CFD parameters is provided. For detailed procedure to setup the CFD model, the user is advised to refer :ref:`the user manual<lblIsolatedBuildingCFD>`.   
+In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Isolated Building" option to create the CFD model. Here, a brief instruction to define the CFD parameters is provided. For a detailed procedure to setup the CFD model, the user is advised to refer :ref:`the user manual<lblIsolatedBuildingCFD>`.   
 
-1. In the *Start* tab, specify the path where your CFD model will be saved by clicking **Browse** button. It is recommended to put it in the default path i.e., ``Documents\WE-UQ\LocalWorkDir\IsolatedBuildingCFD``. Select the **Version of OpenFOAM Distribution** to 9. Use the steps outlined in **Modeling Process** box to guid you through procedure. 
+1. In the *Start* tab, specify the path where your CFD model will be saved by clicking **Browse** button. It is recommended to put it in the default path i.e., ``Documents\WE-UQ\LocalWorkDir\IsolatedBuildingCFD``. Select the **Version of OpenFOAM Distribution** to 9. Use the steps outlined in **Modeling Process** box to guide you through procedure. 
 
    .. note::
       The CFD model are defined in metric system. Here after please use kilograms for **Mass**, meters for **Length**, second for **Time** and degrees for **Angle**. 
@@ -172,7 +172,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    Setup the path and version of OpenFOAM in *Start* tab
 
-2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domains dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system,specify the **Absolute Origin** as *Building Bottom Center*.
+2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domains dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*.
 
    .. note::
       If the objective is to replicate a target wind tunnel setup fully, one might need to set the **Domain Length**, **Domain Width**, **Domain Height** and **Fetch Length** manually matching the dimensions of the actual testing facility.
@@ -185,7 +185,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    Define the building and domain geometry in *Geometry* tab
 
 
-3. Generate the computational grid in the *Mesh* tab. Follow these steps to setup the mesh parameters:
+3. Generate the computational grid in the *Mesh* tab. Follow these steps to set the mesh parameters:
    
    **Background Mesh:**
 
@@ -200,7 +200,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    **Regional Refinements:**
    
-   Create 4 boxes to set different refinement regions using the table shown bellow. Each refinement box need to have name, refinement level, min and max coordinates. Set the **Level** with successive increment of 1 (i.e., 1 for *Box1*, 2 for *Box2*, etc.). The **Mesh Size** for each region is automatically calculated and provided in the last column of the table.
+   Create 4 boxes to set different refinement regions using the table shown below. Each refinement box needs to have name, refinement level, min and max coordinates. Set the **Level** with successive increments of 1 (i.e., 1 for *Box1*, 2 for *Box2*, etc.). The **Mesh Size** for each region is automatically calculated and provided in the last column of the table.
 
    .. figure:: figures/we13_EVT_Mesh_RegionalRefinement_tab.svg
       :align: center
@@ -212,7 +212,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    **Surface Refinements:**
    
-   In the *Surface Refinements* sub-tab, check the *Add Surface Refinements* box. Set the **Refinement Level** to 6 adding addition 2 level of refinement from the last refinement box (*Box4*). These refinements are automatically applied to the *building* surface. For the **Refinement Distance**, use 0.1 which restricts the near surface refinements within :math:`0.1 \times H` distance from the building.  **Approx. Smallest Mesh Size** gives the estimated size of the smallest mesh element(cell) near the surface of the building.
+   In the *Surface Refinements* sub-tab, check the *Add Surface Refinements* box. Set the **Refinement Level** to 6 adding an additional 2 levels of refinement from the last refinement box (*Box4*). These refinements are automatically applied to the *building* surface. For the **Refinement Distance**, use 0.1 which restricts the near-surface refinements within :math:`0.1 \times H` distance from the building.  **Approx. Smallest Mesh Size** gives the estimated size of the smallest mesh element(cell) near the surface of the building.
 
    .. figure:: figures/we13_EVT_Mesh_SurfaceRefinement_tab.svg
       :align: center
@@ -223,7 +223,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    
    **Edge Refinements:**
    
-   Select *Edge Refinements* sub-tab and check *Add Edge Refinements* box. For the **Refinement Level** use 7 effectively making the building edges have one level finer refinement than the rest of the building surface. Similarly, the estimated smallest cell size given in **Approx. Smallest Mesh Size**.
+   Select *Edge Refinements* sub-tab and check *Add Edge Refinements* box. For the **Refinement Level** use 7 effectively making the building edges have one level finer refinement than the rest of the building surface. Similarly, the estimated smallest cell size is given in **Approx. Smallest Mesh Size**.
 
    .. figure:: figures/we13_EVT_Mesh_EdgeRefinement_tab.svg
       :align: center
@@ -361,7 +361,7 @@ The random variables are defined in **RV** tab. Here, the floor stiffness named 
 
 Running the Simulation 
 """""""""""""""""""""""
-Considering the high cost of running the CFD simulation, the whole workflow can only be run remotely. Thus, once setting up the workflow is completed, the user needs to first login to *DesignSafe* with their credential by clicking **Login** button at the top right corner of the window as seen :numref:`fig-we13-submit-job`. Then, by pressing **RUN at DesignSafe** information needed for submitting the job to the remote server is specified. Put a meaningful identifier for the **Job Name** e.g., "TPU_LES_Example1". Set **Num Nodes** to 1 and **# Processes Per Node** to 32 . For **Max Run Time**, specify *17:00:00* which requests a total of 17 hours 0 minutes and 0 seconds. Finally, click the **Submit** button to send the job to *DesignSafe*   
+Considering the high cost of running the CFD simulation, the whole workflow can only be run remotely. Thus, once setting up the workflow is completed, the user needs to first login to *DesignSafe* with their credential by clicking **Login** button at the top right corner of the window as seen :numref:`fig-we13-submit-job`. Then, by pressing **RUN at DesignSafe** information needed for submitting the job to the remote server is specified. Put a meaningful identifier for the **Job Name** e.g., "TPU_LES_Example1". Set **Num Nodes** to 1 and **# Processes Per Node** to 32. For **Max Run Time**, specify *17:00:00* which requests a total of 17 hours 0 minutes and 0 seconds. Finally, click the **Submit** button to send the job to *DesignSafe*   
 
    .. note::
       We know 17 hours is a really long time!! This is quite common in most LES-based wind loads evaluation studies. If you only want to test the example, please set **Duration** of the simulation in **Numerical Setup** tab of the **EVT** panel to a smaller value, say :math:`0.1s`, and submit the simulation.
@@ -370,7 +370,7 @@ Considering the high cost of running the CFD simulation, the whole workflow can 
       Note that the total number of processors used in the simulation equals **Num Nodes** :math:`\times` **# Processes Per Node**. This value must be the same as what is specified for **Number of Processors** in **Numerical Setup** tab of the CFD model (see :numref:`fig-we13-CFD-num-setup`). 
 
    .. warning::
-      If the simulation could not finish within the allocated time, it will be terminated and none of your remote simulation data can be retried. Thus, it is recommended to make **Max Run Time** slightly longer than what is needed to be safe.
+      If the simulation cannot finish within the allocated time, it will be terminated and none of your remote simulation data can be retried. Thus, it is recommended to make **Max Run Time** slightly longer than what is needed to be safe.
 
 .. _fig-we13-submit-job:
 
@@ -427,7 +427,7 @@ In addition, by switching to *Data Values* tab, you can see all the realizations
 
    The user can interact with the plot as follows.
 
-   - Windows: left-click sets the Y axis (ordinate). right-click sets the X axis (abscissa).
+   - Windows: left-click sets the Y axis (ordinate), while right-click sets the X axis (abscissa).
    - MAC: fn-clink, option-click, and command-click all set the Y axis (ordinate). ctrl-click sets the X axis (abscissa).
 
 Visualizing the CFD Output
