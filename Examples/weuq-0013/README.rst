@@ -23,7 +23,7 @@ Target Experimental Measurement
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Relevant geometric and flow properties taken from TPU database are provided :numref:`tbl-we13-1`. These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
 
-.. _fig-we12-2:
+.. _fig-we13-2:
 
 .. figure:: figures/we13_tpu_building_demo.jpg
    :align: center
