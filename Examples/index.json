@@ -179,7 +179,7 @@
       "doc": [
           "weuq-0013/README.rst",   
           "weuq-0013/figures/we13_CFD_Results_StreamLines.svg",
-          "weuq-0013/figures/we13_schematic_wind_building_domain.svg",
+          "weuq-0013/figures/we13_computational_domain.svg",
           "weuq-0013/figures/we13_CFD_Results.svg",
           "weuq-0013/figures/we13_EDP_panel.svg",
           "weuq-0013/figures/we13_EVT_BoundaryConditions.svg",
@@ -210,7 +210,7 @@
       ],
       "entry_point": "weuq-0013/./input.json",
       "summary": "This example demonstrates application of CFD for generating wind loads on buildings and estimating the resulting structural responses",
-      "logo": "figures/we13_CFD_Results_StreamLines.svg",
+      "logo": "we13_CFD_Results_StreamLines.svg",
       "published": "2023-08-12T21:26:53.946381-08:00\"",
       "categories": {
         "Difficulty": "0",
