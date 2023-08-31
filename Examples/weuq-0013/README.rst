@@ -11,8 +11,7 @@ This example demonstrates Computational Fluid Dynamics (CFD) based procedure for
 
 .. _fig-we13-1:
 
-.. .. figure:: figures/we13_computational_domain.svg
-.. figure:: figures/we13_tpu_building_demo.jpg
+.. figure:: figures/we13_computational_domain.svg
    :align: center
    :figclass: align-center
    :width: 600
