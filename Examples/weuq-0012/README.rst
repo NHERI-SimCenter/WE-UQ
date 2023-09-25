@@ -162,7 +162,7 @@ Workflow
 
 7. Once all the information is provided, click the Run or Run at DesignSafe button to run the analysis.
 
-Preparation of "Wind Force Time History File"
+Results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Once the analysis is done, the sampling results will be displayed in the RES tab. Note that the EDP name consists of the quantity of interest, story number, and the direction of interest - for example:
