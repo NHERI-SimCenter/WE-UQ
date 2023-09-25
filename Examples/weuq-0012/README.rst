@@ -8,7 +8,7 @@ Wind Tunnel-Informed Stochastic Wind Load Generation
 +----------------+-------------------------+
 
 
-This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind load. This example uses the experimental data obtained in University of Florida (UF) NHERI Experimental Facility (EF), and applies the generated load to a 25-story rectangular shape building response simulation model.
+This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind loads. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular shaped building model for response simulation.
 
 .. _fig-we12-1:
 
@@ -27,7 +27,7 @@ This example uses the data presented in [Duarte2023]_.
 
 Preparation of "Wind Force Time History File"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The experimental records should first be post-processed by the user such that **wind force time histories applied at each floor and each component** can be directly imported in WE-UQ at the EVT tab. The dataset can be imported as either a matlab binary file or a json file. Additionally, the model-scale dimensions and additional information on the experiment should be provided. Please refer to :ref:`the user manual<lblExperimentalWindForce>` for the list of variables the file should contain. In this example, the variables in the below table is imported as a json file. Note that the x- and y- directional forces and z-directional moments at each of the 25 stories are recorded for 32 sec with dt=0.0016 sec (20,000 time points). The reference wind speed (Vref) was measured on top of the building model. 
+The experimental records should first be reformatted by the user such that **wind force time histories recorded at each floor in x-, y-, and z- directions (Fx, Fy, and Tz, respectively)** can be directly imported in WE-UQ in the EVT tab. The dataset can be imported as either a MATLAB binary file or a json file. Additionally, the model-scale dimensions and additional information on the experiment should be provided. Please refer to :ref:`the User Manual<lblExperimentalWindForce>` for the list of variables the file should contain. In this example, the variables in the table below are imported as a json file. Note that the x- and y- directional forces and z-directional moments at each of the 25 stories are recorded for 32 sec with dt=0.0016 sec (20,000 time points). The reference wind speed (Vref) was measured at top of the building model.
 
 
 .. table:: Variables imported to WE-UQ
@@ -42,15 +42,15 @@ The experimental records should first be post-processed by the user such that **
    +---------+------------------+---------------+
    |H        |0.5               | m             |
    +---------+------------------+---------------+
-   |fs       |625               | m             |
+   |fs       |625               | Hz            |
    +---------+------------------+---------------+
-   |Vref     |12.25             | m             |
+   |Vref     |12.25             | m/s           |
    +---------+------------------+---------------+
    | Fx      | [25x20000] array | N             |
    +---------+------------------+---------------+
    | Fy      | [25x20000] array | N             |
    +---------+------------------+---------------+
-   | Tz      | [25x20000] array | N             |
+   | Tz      | [25x20000] array | N·m           |
    +---------+------------------+---------------+
    | t       | [1x20000] array  | sec           |
    +---------+------------------+---------------+
@@ -147,7 +147,7 @@ Workflow
 
 
 
-6. In the RV tab, only a ``dummy`` variable that is not used in the UQ analysis is specified. This is because, in this example, we are interested in only the uncertainty that comes from the stochasticity of the wind time history. 
+6. In the RV tab, only a ``dummy`` variable that is not used in the UQ analysis is specified. This is because, in this example, we are only interested in the uncertainty (stochasticity) that arises in the wind load time histories.
 
 .. figure:: figures/we12_RV.png
    :align: center
