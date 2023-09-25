@@ -13,7 +13,6 @@ This example demonstrates Computational Fluid Dynamics (CFD) based procedure for
 
 .. figure:: figures/we13_computational_domain.svg
    :align: center
-   :figclass: align-center
    :width: 600
 
    Setup of the CFD model: approaching wind, computational domain and the study building.
@@ -27,7 +26,6 @@ Relevant geometric and flow properties taken from TPU database are provided :num
 
 .. figure:: figures/we13_tpu_building_demo.jpg
    :align: center
-   :figclass: align-center
    :width: 400
 
 .. _tbl-we13-1:
@@ -95,7 +93,6 @@ As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of
 
 .. figure:: figures/we13_mean_velocity_profile_fitting.svg
    :align: center
-   :figclass: align-center
    :width: 500
 
    Log-law fitting of the mean velocity profile from the experimental measurement.
@@ -124,7 +121,6 @@ Specify the details of uncertainty analysis in the **UQ** panel. This example us
 .. figure:: figures/we13_UQ_panel.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    Selection of the Uncertainty Quantification Technique
 
@@ -138,7 +134,6 @@ Next, in the **GI** panel, specify the properties of the building and the unit s
 .. figure:: figures/we13_GI_panel.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    Set the building properties in **GI** panel
 
@@ -152,7 +147,6 @@ In the SIM panel, the structural properties are defined. For the structural mode
 .. figure:: figures/we13_SIM_panel.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    Define the structural properties in **SIM** panel
 
@@ -168,7 +162,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 .. figure:: figures/we13_EVT_Start_tab.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Setup the path and version of OpenFOAM in *Start* tab
 
@@ -180,7 +173,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 .. figure:: figures/we13_EVT_Geometry_tab.svg
    :align: center
    :width: 1100
-   :figclass: align-center
 
    Define the building and domain geometry in *Geometry* tab
 
@@ -194,7 +186,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_tab.svg
       :align: center
       :width: 1100
-      :figclass: align-center
 
       Define the computational grid in *Mesh* tab
 
@@ -205,7 +196,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_RegionalRefinement_tab.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Create regional refinements
 
@@ -217,7 +207,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_SurfaceRefinement_tab.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Create surface refinements
    
@@ -228,7 +217,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_EdgeRefinement_tab.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Apply further refinements along the building edges
 
@@ -239,7 +227,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_PrismLayers_tab.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Adding Prism Layers
 
@@ -250,7 +237,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_AdvancedOptions.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Set *Advanced Options*
 
@@ -261,14 +247,12 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Mesh_Run.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Running the mesh
 
    .. figure:: figures/we13_EVT_Mesh_View.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Breakout View of the Mesh
    
@@ -281,7 +265,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_BoundaryConditions.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Setup the *Boundary Conditions*  
 
@@ -300,7 +283,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 .. figure:: figures/we13_EVT_NumericalSetup.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Edit the *Numerical Setup* options
 
@@ -316,7 +298,6 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    .. figure:: figures/we13_EVT_Monitoring.svg
       :align: center
       :width: 800
-      :figclass: align-center
 
       Specify the CFD outputs in the *Monitoring* tab
 
@@ -331,7 +312,6 @@ To set the finite element analysis options, select the **FEM** panel. Here we wi
 .. figure:: figures/we13_FEM_panel.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    Setup the Finite Element analysis options
 
@@ -342,7 +322,6 @@ Next, select the quantity of interest from the analysis in the **EDP** panel. Th
 .. figure:: figures/we13_EDP_panel.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Select the EDPs to measure
 
@@ -355,7 +334,6 @@ The random variables are defined in **RV** tab. Here, the floor stiffness named 
 .. figure:: figures/we13_RV_panel.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Define the Random Variable (RV)
 
@@ -377,7 +355,6 @@ Considering the high cost of running the CFD simulation, the whole workflow can 
 .. figure:: figures/we13_RunJob.svg
    :align: center
    :width: 1100
-   :figclass: align-center
 
    Submit the simulation to the remote server (DesignSafe-CI)
 
@@ -390,7 +367,6 @@ The progress (status) of the submitted job can be tracked by clicking **GET from
 .. figure:: figures/we13_MonitorJob.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Monitor the submitted job
 
@@ -408,7 +384,6 @@ The four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewne
 .. figure:: figures/we13_RES_Summary.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Summary of the recorded EDPs in **RES** panel
 
@@ -419,7 +394,6 @@ In addition, by switching to *Data Values* tab, you can see all the realizations
 .. figure:: figures/we13_RES_DataValues.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
 
@@ -441,7 +415,6 @@ In :numref:`fig-we13-CFD-result1`, the streamlines of the approaching flow, as i
 .. figure:: figures/we13_CFD_Results_StreamLines.svg
    :align: center
    :width: 800
-   :figclass: align-center
 
    Streamlines of the instantaneous velocity field around the building.
 
@@ -452,7 +425,6 @@ Similarly, in :numref:`fig-we13-CFD-result2`, the instantaneous velocity contour
 .. figure:: figures/we13_CFD_Results.svg
    :align: center
    :width: 1000
-   :figclass: align-center
 
    Instantaneous velocity field around the building.
 
