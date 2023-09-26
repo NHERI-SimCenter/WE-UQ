@@ -80,7 +80,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     dimAndScaleGroup = new QGroupBox("Dimentions and Scale");
     dimAndScaleLayout = new QGridLayout();
 
-    buildingTypeGroup = new QGroupBox("Building Topology");
+    buildingTypeGroup = new QGroupBox("Building Shape");
     buildingTypeLayout = new QGridLayout();
 
     buildingAndDomainInformationGroup = new QWidget();
@@ -104,7 +104,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     geometricScaleWidget = new QLineEdit();
     geometricScaleWidget->setText("400.0");
 
-    QLabel *buildingShapeLabel = new QLabel("Building Shape: ");
+    QLabel *buildingShapeLabel = new QLabel("Shape Type: ");
     buildingShape = new QComboBox();
     buildingShape->addItem("Simple");
     buildingShape->addItem("Complex");
@@ -573,8 +573,8 @@ void GeometricInputWidget::initializeImportSTLDialog()
     QLabel *stlYLabel = new QLabel("  Y");
     QLabel *stlZLabel = new QLabel("  Z");
 
-    QLabel *stlMinLabel = new QLabel("Min");
-    QLabel *stlMaxLabel = new QLabel("Max");
+    QLabel *stlMinLabel = new QLabel("Min:");
+    QLabel *stlMaxLabel = new QLabel("Max:");
 
     stlXDim = new QLineEdit();
     stlYDim = new QLineEdit();
@@ -681,7 +681,7 @@ void GeometricInputWidget::onSTLImportButtonClicked()
 
     //Read extent of the Geometry
 
-    //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
+    //Write it to JSON because it is needed for the mesh generation before the final simulation is run.
     //In future only one JSON file in temp.SimCenter directory might be enough
     QString inputFilePath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
                             + QDir::separator() + "input" + QDir::separator() + "stlGeometrySummary.json";
