@@ -7,7 +7,7 @@ Digital Wind Tunnel II: Wind Loads on Isolated Building
 | Problem files  | :weuq-0013:`/`          |
 +----------------+-------------------------+
 
-This example demonstrates Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building subjected to wind loading. The example demonstrates a step-by-step processes for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
+This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
 
 .. _fig-we13-1:
 
@@ -20,15 +20,17 @@ This example demonstrates Computational Fluid Dynamics (CFD) based procedure for
 
 Target Experimental Measurement 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Relevant geometric and flow properties taken from TPU database are provided :numref:`tbl-we13-1`. These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
+Relevant geometric and flow properties taken from TPU database are provided :numref:`tbl-we13-1` . These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
 
-.. _fig-we13-2:
+.. _fig-we13-tpu-model:
 
 .. figure:: figures/we13_tpu_building_demo.jpg
    :align: center
    :width: 400
 
+
 .. _tbl-we13-1:
+
 .. table:: Parameters needed to define the CFD model (taken from TPU database)
    :align: center
     
@@ -87,7 +89,7 @@ where :math:`u_*`, :math:`\kappa = 0.4` and :math:`d` are the shear friction vel
    u_* = \frac{\kappa U_H}{\log(H/z_0)}. 
 
 
-As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of the boundary layer height. However, in the upper part of the domain i.e., :math:`z > H(200 m)` it shows some deviation. For cases with larger deviation from log-law, a more accurate wind profiles develope by Deaves and Harris (D&H model) need to be used ([Cook1997]_). These profiles present a better description the ABL turbulence , and are also adopted in [ESDU2001]_ standards.  
+As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of the boundary layer height. However, in the upper part of the domain i.e., :math:`z > H(200 m)` it shows some deviation. For cases with larger deviations from log-law, a more accurate wind profiles developed by Deaves and Harris (D&H model) need to be used ([Cook1997]_). These profiles present a better description of the ABL turbulence and are also adopted in [ESDU2001]_ standards.  
 
 .. _fig-we13-2:
 
@@ -116,7 +118,7 @@ In this example, the overall workflow is demonstrated by introducing uncertainty
 
 UQ Method
 """""""""""
-Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for UQ Engine driver. For specific UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
+Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for UQ Engine driver. For the UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
 
 .. figure:: figures/we13_UQ_panel.svg
    :align: center
@@ -165,7 +167,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    Setup the path and version of OpenFOAM in *Start* tab
 
-2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domains dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*.
+2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domain dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*.
 
    .. note::
       If the objective is to replicate a target wind tunnel setup fully, one might need to set the **Domain Length**, **Domain Width**, **Domain Height** and **Fetch Length** manually matching the dimensions of the actual testing facility.
