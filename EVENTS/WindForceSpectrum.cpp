@@ -262,7 +262,7 @@ void WindForceSpectrum::hideCitation(bool tog) {
     if (!tog)
         citationQuoteLabel->setText("");
     else
-        citationQuoteLabel->setText("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nDuarte, T.G.A., Arunachalam, S., Subgranon, A. and Spence, S.M., 2023. Uncertainty Quantification of a Wind Tunnel-Informed Stochastic Wind Load Model for Wind Engineering Applications. arXiv preprint arXiv:2305.06253.");
+        citationQuoteLabel->setText("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nDuarte, T.G., Arunachalam, S., Subgranon, A. and Spence, S.M., (2023). Uncertainty Quantification and Simulation of Wind-Tunnel-Informed Stochastic Wind Loads. Wind, 3(3), pp.375-393.");
 }
 
 void
