@@ -21,8 +21,7 @@ This example estimates the probabilistic response of a building model excited by
 
 This example uses the data presented in [Duarte2023]_.
 
-.. [Duarte2023] Duarte, T. G. A., Arunachalam, S., Subgranon, A., & Spence, S. M. (2023). Uncertainty Quantification of a Wind Tunnel-Informed Stochastic Wind Load Model for Wind Engineering Applications. arXiv preprint arXiv:2305.06253.
-
+.. [Duarte2023] Duarte, T.G., Arunachalam, S., Subgranon, A. and Spence, S.M., (2023). Uncertainty Quantification and Simulation of Wind-Tunnel-Informed Stochastic Wind Loads. Wind, 3(3), pp.375-393.
 
 
 Preparation of "Wind Force Time History File"
