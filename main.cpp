@@ -106,13 +106,6 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    //Setting Google Analytics Tracking Information
-    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
-    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
-    GoogleAnalytics::CreateSessionId();
-    GoogleAnalytics::StartSession();
-
-
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 
     if (envVar.isEmpty())
@@ -233,33 +226,24 @@ int main(int argc, char *argv[])
       qDebug() << "could not open stylesheet";
     }
 
+    //Setting Google Analytics Tracking Information
+    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+    GoogleAnalytics::CreateSessionId();
+    GoogleAnalytics::StartSession();
 
+    // Opening a QWebEngineView and using github to get app geographic usage
+    QWebEngineView view;
+    view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
+    view.resize(1024, 750);
+    view.show();
+    view.hide();
 
-/*
-    QFile fileCommon(":/styleCommon/common_experimental.qss");
-    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
-
-    if(fileCommon.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
-      QString styleSheet = QLatin1String(fileCommon.readAll());
-      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
-
-      //      a.setStyleSheet(styleSheet+styleSheetEEUQ);
-      a.setStyleSheet(styleSheet);
-      fileCommon.close();
-      fileEEUQ.close();
-    }
-*/
-    /*
-    theInputApp->setStyleSheet("QComboBox {background: #E0E0E0;} \
-                               QGroupBox {font-weight: bold;}\
-                               QLineEdit {background-color: #E0E0E0; border: 2px solid darkgray;} \
-                               QTabWidget::pane {background-color: #ECECEC; border: 1px solid rgb(244, 244, 244);}");
-    */
-
-    //a.setStyleSheet(openStyleFiles());
-
+    //
+    // exe application event-loop
+    //
+    
     int res = a.exec();
-
 
     //
     // on done with event loop, logout & stop the thread
