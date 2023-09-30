@@ -19,6 +19,7 @@
 #include <QDir>
 #include <SimCenterPreferences.h>
 #include <QStatusBar>
+#include <QWebEngineView>
 
 #ifdef ENDLN
 #undef ENDLN
@@ -232,15 +233,17 @@ int main(int argc, char *argv[])
     GoogleAnalytics::CreateSessionId();
     GoogleAnalytics::StartSession();
 
+    /******************* TRY LATER
     // Opening a QWebEngineView and using github to get app geographic usage
     QWebEngineView view;
     view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
     view.resize(1024, 750);
     view.show();
     view.hide();
+    *******************************/
 
     //
-    // exe application event-loop
+    // RUN the GUI
     //
     
     int res = a.exec();
