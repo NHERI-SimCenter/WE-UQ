@@ -1,57 +1,49 @@
-.. _weuq-0013:
+.. _weuq-0014:
 
-Digital Wind Tunnel II: Wind Loads on Isolated Building
+Digital Wind Tunnel II: Wind Loads on Isolated Building with Complex Shape
 ==================================================
 
 +----------------+-------------------------+
-| Problem files  | :weuq-0013:`/`          |
+| Problem files  | :weuq-0014:`/`          |
 +----------------+-------------------------+
 
-This example demonstrates Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building subjected to wind loading. The example demonstrates a step-by-step processes for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
+In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The study building resembles a landmark tall building after simplifying its geometry. In full-scale, the study building measures 442.1 m high and the shape is similar to Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
 
-.. _fig-we13-1:
+.. _fig-we14-1:
 
-.. figure:: figures/we13_computational_domain.svg
+.. figure:: figures/we14_study_building.svg
    :align: center
-   :figclass: align-center
-   :width: 600
+   :width: 30%
 
-   Setup of the CFD model: approaching wind, computational domain and the study building.
+   The geometry and configuration of the study building.
 
 
-Target Experimental Measurement 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Relevant geometric and flow properties taken from TPU database are provided :numref:`tbl-we13-1`. These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
 
-.. _fig-we13-2:
+In this example, the simulation is conducted in full-scale. The geometric and flow properties are given in :numref:`tbl-we14-1`. The detailed CFD-based workflow is illustrated in :ref:`workflow-section`.  
 
-.. figure:: figures/we13_tpu_building_demo.jpg
-   :align: center
-   :figclass: align-center
-   :width: 400
 
-.. _tbl-we13-1:
-.. table:: Parameters needed to define the CFD model (taken from TPU database)
+.. _tbl-we14-1:
+.. table:: Parameters needed to define the CFD model 
    :align: center
     
    +---------------------+----------------------------------------------+------------------+---------------+
    |Parameter            |Description                                   |Value             | Unit          |
    +=====================+==============================================+==================+===============+
-   |:math:`B`            |Building width                                | 0.1              | m             |
+   |:math:`B`            |Building width                                | 68.58            | m             |
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`D`            |Building depth                                | 0.1              | m             | 
+   |:math:`D`            |Building depth                                | 68.58            | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`H`            |Building height                               | 0.5              | m             | 
+   |:math:`H`            |Building height                               | 442.1            | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_L`    |Geometric scale of the model                  | 1/400            |               | 
+   |:math:`\lambda_L`    |Geometric scale                               | 1.0              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_V`    |Velocity scale of the model                   | 1/4              |               | 
+   |:math:`\lambda_V`    |Velocity scale                                | 1.0              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_T`    |Time scale of the model                       | 100              |               | 
+   |:math:`\lambda_T`    |Time scale                                    | 1.0              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`U_H`          |Roof-height mean wind speed                   | 11.2518          | m/s           | 
+   |:math:`U_H`          |Roof-height mean wind speed                   | 60.00            | m/s           | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`T`            |Duration of the simulation in model scale     | 10               | s             | 
+   |:math:`T`            |Duration of the simulation                    | 1200             | s             | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\theta`       |Wind direction                                | 0                |degrees        | 
    +---------------------+----------------------------------------------+------------------+---------------+
@@ -61,50 +53,12 @@ Relevant geometric and flow properties taken from TPU database are provided :num
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\nu_{air}`    |Kinematic viscosity of air                    | :math:`1.5e^{-5}`| m^2/s         | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`f_{s}`        |Sampling frequency (rate)                     | 1000             | Hz            | 
+   |:math:`f_{s}`        |Sampling frequency (rate)                     | 10               | Hz            | 
    +---------------------+----------------------------------------------+------------------+---------------+
 
-..
-   |:math:`H_{dom}`      |Domain height                                 | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`B_{dom}`      |Domain width                                  | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`L_{dom}`      |Domain length                                 | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
 
-   Setup of the experimental model taken from TPU database [TPU2005]_.
-
-The upwind condition chosen for this example is open exposure type with a power-law coefficient :math:`\alpha = 1/6`, which approximately translates to a log-law aerodynamic roughness length of :math:`z_0 = 0.03` m. :numref:`fig-we13-2` shows the log-law fit of the mean velocity profile extracted from the experiment. The logarithmic mean velocity profile shown in the figure is expressed by: 
-
-.. math::
-   :name: Log-law wind profile
-
-   \overline{U}(z)
-    = \frac{u_*}{\kappa} \log\left[\frac{z-d}{z_0}\right], 
-where :math:`u_*`, :math:`\kappa = 0.4` and :math:`d` are the shear friction velocity, von Karman constant and displacement height, respectively. The value of :math:`d` is set to zero, considering it is open exposure (for rough terrains it needs to be higher than 0). The shear friction velocity is determined by evaluating the log-law profile at the reference location (building height). Thus, :math:`u_*` is computed as
-
-.. math::
-   :name: Log-law wind profile
-
-   u_* = \frac{\kappa U_H}{\log(H/z_0)}. 
-
-
-As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of the boundary layer height. However, in the upper part of the domain i.e., :math:`z > H(200 m)` it shows some deviation. For cases with larger deviation from log-law, a more accurate wind profiles develope by Deaves and Harris (D&H model) need to be used ([Cook1997]_). These profiles present a better description the ABL turbulence , and are also adopted in [ESDU2001]_ standards.  
-
-.. _fig-we13-2:
-
-.. figure:: figures/we13_mean_velocity_profile_fitting.svg
-   :align: center
-   :figclass: align-center
-   :width: 500
-
-   Log-law fitting of the mean velocity profile from the experimental measurement.
-
-
-.. note::
-   For ease of demonstration, in this example, the wind is assumed to a smooth flow with no significant upcoming turbulence. However, realistic wind load simulation needs to account the turbulence in the upcoming flow using appropriate inflow boundary conditions. 
-
-The experiment was run for a duration :math:`T = 32.768s`. But for the CFD model, considering the computational cost of running long duration simulation, we used :math:`T = 10s`. Also, since we used smooth inflow boundary conditions at the inlet, the wind loads will converge faster as compared to the case with a turbulent inlet. For monitoring the forces from the CFD model, we will specify the same sampling rate used in experimental measurement (:math:`f_{s} = 1000 Hz`).    
+The upwind condition chosen for this example is open exposure type with aerodynamic roughness length of :math:`z_0 = 0.03` for wind direction :math:`\theta = 0^o`. For simplicity, the effect of the surrounding buildings is neglected and a smooth inflow boundary condition is adopted at the inlet.  
+    
 
 
 .. _workflow-section:
@@ -114,7 +68,7 @@ Workflow
 In this example, the overall workflow is demonstrated by introducing uncertainty in the structural model. No uncertainties were considered in the wind parameters or CFD simulations. The user needs to go through the following procedure to define the Uncertainty Quantification (UQ) technique, building information, structural properties, and CFD model parameters. 
 
    .. note::
-      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E5: Wind Load Evaluation on an Isolated Building using CFD with Uncertainty Quantification". 
+      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E6: Wind Load Evaluation on a Complex Shaped Building using CFD with Uncertainty Quantification". 
 
 
 UQ Method
@@ -123,22 +77,19 @@ Specify the details of uncertainty analysis in the **UQ** panel. This example us
 
 .. figure:: figures/we13_UQ_panel.svg
    :align: center
-   :width: 1000
+   :width: 80%
    :figclass: align-center
 
    Selection of the Uncertainty Quantification Technique
 
 General Information
 """""""""""""""""""
-Next, in the **GI** panel, specify the properties of the building and the unit system. For the **# Stories** use 50 assuming a floor height of 4 m. Set the **Height**, **Width** and **Depth** to 200, 40 and 40 with a **Plan Area** of 1600. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
+Next, in the **GI** panel, specify the properties of the building and the unit system. For the **# Stories** use 108 assuming a floor height of approximately 4 m. Set the **Height**, **Width** and **Depth** to 442.1, 68.58 and 68.58 with a **Plan Area** of 4703.22. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
 
-   .. warning::
-      Note that the CFD model is created at a reduced or model scale (i.e., 1 to 400) just like the target wind tunnel model. However, the building dimensions specified here need to be in full-scale (actual building dimensions). 
 
 .. figure:: figures/we13_GI_panel.svg
    :align: center
-   :width: 1000
-   :figclass: align-center
+   :width: 80%
 
    Set the building properties in **GI** panel
 
