@@ -1,4 +1,4 @@
-`#-------------------------------------------------
+#-------------------------------------------------
 #
 # Project created by QtCreator 2017-06-06T06:31:52
 #
@@ -8,7 +8,7 @@ include($$PWD/ConanHelper.pri)
 
 QT += core gui charts concurrent network
 QT += 3dcore 3drender 3dextras
-QT += printsupport opengl widgets webengineidgets
+QT += printsupport opengl widgets webenginewidgets
 
 CONFIG += c++17
 
