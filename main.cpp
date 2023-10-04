@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1) Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, & Michael Gardner. (2023). NHERI-SimCenter/WE-UQ: Version 3.0.0 (v3.0.0). Zenodo. https://doi.org/10.5281/zenodo.8133017 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, & Michael Gardner. (2023). NHERI-SimCenter/WE-UQ: Version 3.1.0 (v3.1.0). Zenodo. https://doi.org/10.5281/zenodo.8396121 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
     
     w.setCite(citeText);
 
@@ -233,14 +233,12 @@ int main(int argc, char *argv[])
     GoogleAnalytics::CreateSessionId();
     GoogleAnalytics::StartSession();
 
-    /******************* TRY LATER
     // Opening a QWebEngineView and using github to get app geographic usage
     QWebEngineView view;
     view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
     view.resize(1024, 750);
     view.show();
     view.hide();
-    *******************************/
 
     //
     // RUN the GUI
