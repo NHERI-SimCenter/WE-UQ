@@ -272,7 +272,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
 5. Specify turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. 
    
-   * For this since time-series of the wind forces are needed for the structural solver, we use transient CFD simulation. Thus, in **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**. The coefficients of the standard *Smagorinsky* model are printed in the following text box. 
+   * For this example, since time-series of the wind forces are needed for the structural solver, we use transient CFD simulation. Thus, in **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**. The coefficients of the standard *Smagorinsky* model are printed in the following text box. 
   
    * For the **Solver Type** select *pisoFoam* in **Solver Selection** group . Set the **Number of Non-Orthogonal Correctors** to 1 to add additional solver iteration. This option will give better stability to the solver as the generated mesh is non-orthogonal (irregular) near the building surface.   
   
