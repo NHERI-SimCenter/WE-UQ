@@ -932,6 +932,11 @@ double IsolatedBuildingCFD::windDirection()
     return geometry->windDirectionWidget->text().toDouble();
 }
 
+QString IsolatedBuildingCFD::buildingShape()
+{
+    return geometry->buildingShape->currentText();
+}
+
 
 QString IsolatedBuildingCFD::normalizationType()
 {
