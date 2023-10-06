@@ -66,7 +66,7 @@
                 "domainWidth": 10,
                 "fetchLength": 5,
                 "geometricScale": 1,
-                "importedSTLPath": "C:/Users/fanta/Downloads/Willis_Tower.stl",
+                "importedSTLPath": "{Current_Dir}/C:/Users/fanta/Downloads/Willis_Tower.stl",
                 "normalizationType": "Relative",
                 "origin": [
                     0,
@@ -104,12 +104,12 @@
                 "sidesBoundaryCondition": "symmetry",
                 "topBoundaryCondition": "symmetry"
             },
-            "caseDirectoryPath": "{Current_Dir}/.",
+            "caseDirectoryPath": "{Current_Dir}/C:/Users/fanta/OneDrive/Documents/WE-UQ/LocalWorkDir/IsolatedBuildingCFD",
             "lengthUnit": "m",
             "massUnit": "kg",
             "numericalSetup": {
                 "adjustTimeStep": false,
-                "duration": 1200,
+                "duration": 200,
                 "maxCourantNumber": 1,
                 "numCorrectors": 2,
                 "numNonOrthogonalCorrectors": 1,
@@ -120,7 +120,7 @@
                 "timeStep": 0.01
             },
             "resultMonitoring": {
-                "baseLoadWriteInterval": 1,
+                "baseLoadWriteInterval": 10,
                 "centerOfRotation": [
                     0,
                     0,
@@ -4104,7 +4104,7 @@
     "correlationMatrix": [
         1
     ],
-    "localAppDir": "C:/Users/fanta/SimCenter/SourceCode/NHERI-SimCenter/SimCenterBackendApplications",
+    "localAppDir": "{Current_Dir}/C:/Users/fanta/SimCenter/SourceCode/NHERI-SimCenter/SimCenterBackendApplications",
     "randomVariables": [
         {
             "distribution": "Normal",
@@ -4117,7 +4117,7 @@
             "variableClass": "Uncertain"
         }
     ],
-    "remoteAppDir": "/work2/00477/tg457427/frontera/SimCenterBackendApplications/v4.2.0",
-    "runType": "runningRemote",
-    "workingDir": "C:/Users/fanta/OneDrive/Documents/WE-UQ/RemoteWorkDir"
+    "remoteAppDir": "{Current_Dir}/C:/Users/fanta/SimCenter/SourceCode/NHERI-SimCenter/SimCenterBackendApplications",
+    "runType": "runningLocal",
+    "workingDir": "{Current_Dir}/C:/Users/fanta/OneDrive/Documents/WE-UQ/LocalWorkDir"
 }
