@@ -1,13 +1,13 @@
 .. _weuq-0013:
 
-Digital Wind Tunnel II: Wind Loads on Isolated Building
+Digital Wind Tunnel II: Wind Loads on Isolated Building with Simple Geometry
 ==================================================
 
 +----------------+-------------------------+
 | Problem files  | :weuq-0013:`/`          |
 +----------------+-------------------------+
 
-This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
+This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building with simple box type geometry subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
 
 .. _fig-we13-1:
 
@@ -113,7 +113,7 @@ Workflow
 In this example, the overall workflow is demonstrated by introducing uncertainty in the structural model. No uncertainties were considered in the wind parameters or CFD simulations. The user needs to go through the following procedure to define the Uncertainty Quantification (UQ) technique, building information, structural properties, and CFD model parameters. 
 
    .. note::
-      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E5: Wind Load Evaluation on an Isolated Building using CFD with Uncertainty Quantification". 
+      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E5: Wind Load Evaluation on a Generic Isolated Building Using CFD". 
 
 
 UQ Method

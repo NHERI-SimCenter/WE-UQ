@@ -21,9 +21,14 @@
       "inputFile": "weuq-0012/src/input.json"
     },
     {
-      "name": "E5: Wind Load Evaluation on an Isolated Building Using CFD",
+      "name": "E5: Wind Load Evaluation on a Generic Isolated Building Using CFD",
       "description": "",
       "inputFile": "weuq-0013/src/input.json"
+    },
+    {
+      "name": "E6: Wind Load Evaluation on a Complex Shape Isolated Building Using CFD",
+      "description": "",
+      "inputFile": "weuq-0014/src/input.json"
     }
   ]
 }

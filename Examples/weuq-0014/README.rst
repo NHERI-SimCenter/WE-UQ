@@ -7,7 +7,7 @@ Digital Wind Tunnel II: Wind Loads on Isolated Building with Complex Shape
 | Problem files  | :weuq-0014:`/`          |
 +----------------+-------------------------+
 
-In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The study building resembles a landmark tall building after simplifying its geometry. In full-scale, the study building measures 442.1 m high and the shape is similar to Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
+In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The shape of the study building resembles a landmark tall building i.e., Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. In full-scale, the building measures 442.1 m high after some geometric simplification. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
 
 .. _fig-we14-1:
 
@@ -15,7 +15,7 @@ In this example, the CFD-based workflow for determining the wind-induced respons
    :align: center
    :width: 30%
 
-   The geometry and configuration of the study building.
+   Geometry and configuration of the study building
 
 
 
@@ -68,7 +68,7 @@ Workflow
 In this example, the overall workflow is demonstrated by introducing uncertainty in the structural model. No uncertainties were considered in the wind parameters or CFD simulations. The user needs to go through the following procedure to define the Uncertainty Quantification (UQ) technique, building information, structural properties, and CFD model parameters. 
 
    .. note::
-      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E6: Wind Load Evaluation on a Complex Shaped Building using CFD with Uncertainty Quantification". 
+      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E6: Wind Load Evaluation on a Complex Shape Isolated Building Using CFD". 
 
 
 UQ Method
@@ -304,7 +304,7 @@ Running the Simulation
 
 .. figure:: figures/we14_RunJob.svg
    :align: center
-   :width: 75%
+   :width: 80%
 
    Submit the simulation to the remote server (DesignSafe-CI)
 
@@ -315,23 +315,21 @@ The status of the remote job can be tracked by clicking **GET from DesignSafe**.
       * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
       * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
       * 1-PID-3-1: represents  **peak inter-story drift ratio** of the **3rd floor** for **component 1** (x-dir) and
-      * 1-RMSA-50-1: represents **root-mean-squared acceleration** of the **50th floor** for **component 1** (x-dir).   
+      * 1-RMSA-108-1: represents **root-mean-squared acceleration** of the **106th floor** for **component 1** (x-dir).   
 
 The *Summary* tab of the panel, shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
 
 .. figure:: figures/we14_RES_Summary.svg
    :align: center
-   :width: 100%
+   :width: 75%
 
    Summary of the recorded EDPs in **RES** panel
 
-By switch ing to *Data Values* tab, the user can also visualize all the realizations of the simulation. For instance, :numref:`fig-we13-RES-scatter` shows the variation of the top-floor acceleration with floor stiffness. 
-
-.. _fig-we14-RES-scatter:
+By switch ing to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
 
 .. figure:: figures/we14_RES_DataValues.svg
    :align: center
-   :width: 100%
+   :width: 75%
    :figclass: align-center
 
    (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
@@ -340,26 +338,13 @@ By switch ing to *Data Values* tab, the user can also visualize all the realizat
 
 Flow visualization 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result1` shows the velocity contour taken on a vertical stream wise section. The following plots show sample visualization of the instantaneous flow field.  
+The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the velocity contour taken on a vertical stream wise section. From the plots, it is clear visible that important flow features such as vortex shading and turbulence at the wake are captured.  
 
-In :numref:`fig-we14-CFD-result1`, the streamlines of the approaching flow, as it passes around the building, are shown. On the building surface, the result pressure coefficient are displayed. It also shows the inside view of the mesh underlying.    
-
-.. _fig-we14-CFD-result1:
-
-.. figure:: figures/we14_CFD_Results_StreamLines.svg
-   :align: center
-   :width: 100%
-   :figclass: align-center
-
-   Streamlines of the instantaneous velocity field around the building.
-
-Similarly, in :numref:`fig-we14-CFD-result2`, the instantaneous velocity contours on the horizontal and vertical sections taken in the vicinity of the building are shown. The figure also shows the flow structure (bottom right plot) around the building. It can be seen that important flow features such as vortex shading, turbulence at the wake, and horseshoe vortex in the front of the building are captured. We recommend the user first inspect the CFD output before proceeding with results in the **RES** panel. This type of qualitative check constitutes the first step of verification (quality assurance) for the predicted wind loads.     
-
-.. _fig-we14-CFD-result2:
+.. _fig-we14-CFD-result:
 
 .. figure:: figures/we14_CFD_Results.svg
    :align: center
-   :width: 100%
+   :width: 75%
    :figclass: align-center
 
    Instantaneous velocity field around the building.
