@@ -1,6 +1,6 @@
 .. _weuq-0014:
 
-Digital Wind Tunnel II: Wind Loads on Isolated Building with Complex Shape
+Digital Wind Tunnel II: Wind Loads on Isolated Building with Complex Geometry
 ==================================================
 
 +----------------+-------------------------+
