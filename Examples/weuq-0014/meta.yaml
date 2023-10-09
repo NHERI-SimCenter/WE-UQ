@@ -1,0 +1,2 @@
+summary: "This example demonstrated the Computational Fluid Dynamics (CFD) based wind load generator for a building with complex geometry. The study building used in the example resembles a landmark tall building. The workflow uses a transient CFD-solver for simulation wind loads and evaluates the response the building with uncertainty in the structural properties"
+difficulty: 2

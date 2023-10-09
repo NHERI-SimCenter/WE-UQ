@@ -210,11 +210,11 @@ void TurbulenceModelingWidget::clear(void)
 
 void TurbulenceModelingWidget::turbModelTypeChanged(const QString &arg1)
 {
-    if (arg1 == "RANS")
+    if (arg1 == "LES")
     {
         stackedTurbModelWidget->setCurrentIndex(0);
     }
-    else if (arg1 == "LES")
+    else if (arg1 == "RANS")
     {
         stackedTurbModelWidget->setCurrentIndex(1);
     }

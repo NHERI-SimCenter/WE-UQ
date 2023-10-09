@@ -186,11 +186,11 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
     inflowDFSEM = new QRadioButton("DFSEM");
     inflowDFSEM->setChecked(false);
-    inflowDFSEM->setToolTip("Uses the Divergence-free Synthetic Eddy Method(DFSEM)");
+    inflowDFSEM->setToolTip("Uses the Divergence-free Synthetic Eddy Method (DFSEM)");
 
     inflowTSM = new QRadioButton("TSM");
     inflowTSM->setChecked(false);
-    inflowTSM->setToolTip("Uses the Turbulent Spot Method(TSM)");
+    inflowTSM->setToolTip("Uses the Turbulent Spot Method (TSM)");
 
 
     inflowTimeStep = new QLineEdit();
