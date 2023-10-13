@@ -171,6 +171,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numStories = new QSpinBox();
     numStories->setSingleStep(5);
     numStories->setMinimum(1);
+    numStories->setMaximum(1000);
     numStories->setValue(60);
     numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
