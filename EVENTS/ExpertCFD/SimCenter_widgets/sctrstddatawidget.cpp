@@ -68,7 +68,7 @@ QString SCtrStdDataWidget::savableValue()
 void SCtrStdDataWidget::initUI()
 {
     QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    //layout->setMargin(0);
 
     theValue = new QLineEdit(this);
     label_unit = new QLabel(getTypeInfo().unit, this);

@@ -70,7 +70,7 @@ QString SCtrChoiceDataWidget::shownValue()
 void SCtrChoiceDataWidget::initUI()
 {
     QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+   // layout->setMargin(0);
 
     label_unit = new QLabel(getTypeInfo().unit, this);
     label_varName = new QLabel(getTypeInfo().displayName, this);

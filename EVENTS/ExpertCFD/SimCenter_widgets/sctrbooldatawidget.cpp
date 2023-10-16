@@ -60,7 +60,7 @@ QString SCtrBoolDataWidget::shownValue()
 void SCtrBoolDataWidget::initUI()
 {
     QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    //layout->setMargin(0);
 
     theCheckBox = new QCheckBox(this);
     label_varName = new QLabel(getTypeInfo().displayName, this);

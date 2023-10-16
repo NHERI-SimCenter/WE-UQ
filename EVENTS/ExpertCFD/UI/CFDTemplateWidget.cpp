@@ -120,7 +120,7 @@ void CFDTemplateWidget::initializeUI()
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(parameterWidget);
-    layout->setMargin(0);
+    //layout->setMargin(0);
     this->setLayout(layout);
     this->setEnabled(true);
 }

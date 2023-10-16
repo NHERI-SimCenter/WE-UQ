@@ -175,7 +175,7 @@ void CWE_TabWidget::setParameterConfig(CFDanalysisType *myType)
     QVBoxLayout *tablayout = (QVBoxLayout *)ui->tabsBar->layout();
     delete tablayout;
     tablayout = new QVBoxLayout();
-    tablayout->setMargin(0);
+    //tablayout->setMargin(0);
     tablayout->setSpacing(0);
     ui->tabsBar->setLayout(tablayout);
 

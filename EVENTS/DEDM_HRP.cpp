@@ -229,10 +229,10 @@ DEDM_HRP::DEDM_HRP(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     windSpeedBox->setMaximumWidth(width);
 
     layout->setSpacing(10);
-    layout->setMargin(0);
+    //layout->setMargin(0);
     layout->addStretch();
 
-    layout->setMargin(0);
+    //layout->setMargin(0);
     layout->addStretch();
 
 

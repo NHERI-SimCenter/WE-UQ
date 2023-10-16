@@ -1,9 +1,20 @@
 #include "Edged3DBox.h"
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <Qt3DRender>
+#else
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QPointSize>
+#endif
+
+//#include <Qt3DRender/QAttribute>
+//#include <Qt3DRender/QBuffer>
+//#include <Qt3DRender/QTechnique>
+//#include <Qt3DRender/QEffect>
+//#include <Qt3DRender/QPointSize>
 
 Edged3DBox::Edged3DBox(Qt3DCore::QEntity* rootEntity, QObject *parent) : QObject(parent)
 {
@@ -64,8 +75,12 @@ void Edged3DBox::setGrid(int n, int m)
 void Edged3DBox::setup3DEdges()
 {
     Qt3DCore::QEntity* edgeEntity = new Qt3DCore::QEntity(rootEntity);
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    Qt3DCore::QBuffer *coordsBuffer = new Qt3DCore::QBuffer();
+#else
     auto coordsBuffer = new Qt3DRender::QBuffer();
+#endif
+
     float coords[24]{-0.5f, -0.5f, 0.5f,
                     0.5f, -0.5f, 0.5f,
                     0.5f, -0.5f, -0.5f,
@@ -77,6 +92,53 @@ void Edged3DBox::setup3DEdges()
 
     QByteArray coordsBytes(reinterpret_cast<const char *>(&coords), sizeof (float) * 24);
     coordsBuffer->setData(coordsBytes);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QString name = Qt3DCore::QAttribute::defaultPositionAttributeName();
+    auto lineVerticesAttribute = new Qt3DCore::QAttribute(
+        coordsBuffer,
+        name,
+        Qt3DCore::QAttribute::Float,
+        3,
+        8,
+        0,
+        3 * sizeof (float));
+
+    Qt3DCore::QGeometry *lineGeometry = new Qt3DCore::QGeometry();
+    lineGeometry->addAttribute(lineVerticesAttribute);
+
+
+    Qt3DCore::QBuffer *connectivityBuffer = new Qt3DCore::QBuffer();
+    uint connectivity[24]{0, 1, 1, 2, 2, 3, 3, 0,
+                          4, 5, 5, 6, 6, 7, 7, 4,
+                          0, 4, 1, 5, 2, 6, 3, 7};
+
+    QByteArray connectivityBytes(reinterpret_cast<const char *>(&connectivity), sizeof (uint) * 24);
+    connectivityBuffer->setData(connectivityBytes);
+
+    auto lineConnectivityAttribute = new Qt3DCore::QAttribute(
+        connectivityBuffer,
+        Qt3DCore::QAttribute::defaultJointIndicesAttributeName(),
+        Qt3DCore::QAttribute::UnsignedInt,
+        2,
+        24,
+        0,
+        2 * sizeof (uint));
+
+    lineConnectivityAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
+
+
+    lineGeometry->addAttribute(lineConnectivityAttribute);
+
+
+    auto lineRenderer = new Qt3DRender::QGeometryRenderer();
+    lineRenderer->setGeometry(lineGeometry);
+    lineRenderer->setFirstVertex(0);
+    lineRenderer->setVertexCount(24);
+    lineRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+
+
+#else
 
     auto lineVerticesAttribute = new Qt3DRender::QAttribute(
                 coordsBuffer,
@@ -109,6 +171,7 @@ void Edged3DBox::setup3DEdges()
                 2 * sizeof (uint));
 
     lineConnectivityAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+
     lineGeometry->addAttribute(lineConnectivityAttribute);
 
 
@@ -118,7 +181,7 @@ void Edged3DBox::setup3DEdges()
     lineRenderer->setVertexCount(24);
     lineRenderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
 
-
+#endif
 
     auto edgeMaterial = new Qt3DExtras::QPhongAlphaMaterial(edgeEntity);
     edgeMaterial->setAmbient(QColor(0.0, 0.0, 0.0));
@@ -136,6 +199,28 @@ void Edged3DBox::setup3DEdges()
 void Edged3DBox::setupGrid()
 {
     Qt3DCore::QEntity* gridPointsEntity = new Qt3DCore::QEntity(rootEntity);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    auto coordsBuffer = new Qt3DCore::QBuffer();
+
+    auto coords = getGridVertices(2, 2);
+
+    QByteArray coordsBytes(reinterpret_cast<const char *>(coords.data()),
+                           static_cast<int>(sizeof (float)) * coords.size());
+
+    coordsBuffer->setData(coordsBytes);
+
+    gridPointsVerticesAttribute = new Qt3DCore::QAttribute(
+        coordsBuffer,
+        Qt3DCore::QAttribute::defaultPositionAttributeName(),
+        Qt3DCore::QAttribute::Float,
+        3,
+        1,
+        0,
+        3 * sizeof (float));
+
+    auto gridPointsGeometry = new Qt3DCore::QGeometry();
+    gridPointsGeometry->addAttribute(gridPointsVerticesAttribute);
+#else
 
     auto coordsBuffer = new Qt3DRender::QBuffer();
 
@@ -157,6 +242,8 @@ void Edged3DBox::setupGrid()
 
     auto gridPointsGeometry = new Qt3DRender::QGeometry();
     gridPointsGeometry->addAttribute(gridPointsVerticesAttribute);
+
+#endif
 
     gridPointsRenderer = new Qt3DRender::QGeometryRenderer();
     gridPointsRenderer->setGeometry(gridPointsGeometry);

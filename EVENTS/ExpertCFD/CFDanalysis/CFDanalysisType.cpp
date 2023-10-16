@@ -34,6 +34,7 @@
 
 #include "CFDanalysisType.h"
 #include <QDebug>
+#include <QJsonValue>
 
 CFDanalysisType::CFDanalysisType(QString configFile)
 {
@@ -96,6 +97,17 @@ QString CFDanalysisType::getStageName(QString stage)
     QJsonObject obj = myConfiguration.object();
     QJsonArray stages = obj["stages"].toArray();
 
+    for (int i=0; i<stages.size(); i++) {
+      QJsonValue stageValue = stages.at(i);
+        if (stageValue.isObject()) {
+          QJsonObject stageObject = stageValue.toObject();
+            if (stageObject.contains("internalName"))
+              if (stageObject["internalName"].toString() == stage)
+                    return stageObject["displayName"].toString();
+        }
+    }
+
+    /*
     foreach (auto stageObject,  stages)
     {
         if (stageObject["internalName"].toString() == stage)
@@ -104,7 +116,7 @@ QString CFDanalysisType::getStageName(QString stage)
             break;
         }
     }
-
+    */
     return name;
 }
 
@@ -116,6 +128,18 @@ QStringList CFDanalysisType::getStageGroups(QString stage)
     QJsonObject obj = myConfiguration.object();
     QJsonArray stages = obj["stages"].toArray();
 
+    for (int i=0; i<stages.size(); i++) {
+        QJsonValue stageValue = stages.at(i);
+        if (stageValue.isObject()) {
+            QJsonObject stageObject = stageValue.toObject();
+
+            if (stageObject.contains("internalName"))
+              if (stageObject["internalName"].toString() == stage)
+                    groups = stageObject["groups"].toArray();
+        }
+    }
+
+    /*
     foreach (auto stageObject,  stages)
     {
         if (stageObject["internalName"].toString() == stage)
@@ -124,6 +148,7 @@ QStringList CFDanalysisType::getStageGroups(QString stage)
             break;
         }
     }
+    */
 
     foreach (QJsonValue item, groups)
     {
@@ -161,7 +186,9 @@ QString CFDanalysisType::getGroupName(QString group)
 {
     QJsonObject obj = myConfiguration.object();
     QJsonArray stages = obj["stages"].toArray();
+    QString name = "noname";
 
+    /*
     foreach (auto stageObject,  stages)
     {
         foreach (auto groupObject,  stageObject["groups"].toArray() )
@@ -173,8 +200,27 @@ QString CFDanalysisType::getGroupName(QString group)
             }
         }
     }
+*/
+    for (int i=0; i<stages.size(); i++) {
+        QJsonValue stageValue = stages.at(i);
+        if (stageValue.isObject()) {
+            QJsonObject stageObject = stageValue.toObject();
 
-    return group;
+            if (stageObject.contains("groups")) {
+              QJsonArray groups = stageObject["groups"].toArray();
+              for (int j=0; j<groups.count(); j++) {
+                    QJsonValue groupValue = groups.at(j);
+                    if (groupValue.isObject()) {
+                        QJsonObject groupObject = groupValue.toObject();
+                        if (groupObject["internalName"].toString() == group)
+                            return groupObject["displayName"].toString();
+                    }
+              }
+            }
+        }
+    }
+
+    return name;
 }
 
 QList<VARIABLE_TYPE> CFDanalysisType::getVarGroup(QString group)
@@ -184,6 +230,7 @@ QList<VARIABLE_TYPE> CFDanalysisType::getVarGroup(QString group)
     QJsonObject obj = myConfiguration.object();
     QJsonArray stages = obj["stages"].toArray();
 
+    /*
     foreach (auto stageObject,  stages)
     {
         foreach (auto groupObject,  stageObject["groups"].toArray() )
@@ -200,6 +247,35 @@ QList<VARIABLE_TYPE> CFDanalysisType::getVarGroup(QString group)
 
                 return list;
             }
+        }
+    }
+*/
+    for (int i=0; i<stages.size(); i++) {
+        QJsonValue stageValue = stages.at(i);
+        if (stageValue.isObject()) {
+              QJsonObject stageObject = stageValue.toObject();
+
+              if (stageObject.contains("groups")) {
+                    QJsonArray groups = stageObject["groups"].toArray();
+                    for (int j=0; j<groups.count(); j++) {
+                        QJsonValue groupValue = groups.at(j);
+                        if (groupValue.isObject()) {
+                            QJsonObject groupObject = groupValue.toObject();
+                            if (groupObject["internalName"].toString() == group) {
+
+                                QJsonArray vars = groupObject["vars"].toArray();
+
+                                foreach (QJsonValue var, vars)
+                                {
+                                    QJsonObject varObj = var.toObject();
+                                    list.append( getVariableInfoFromJson(varObj) );
+                                }
+
+                                return list;
+                            }
+                        }
+                    }
+              }
         }
     }
 

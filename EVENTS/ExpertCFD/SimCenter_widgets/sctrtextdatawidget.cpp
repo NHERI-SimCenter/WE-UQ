@@ -54,7 +54,7 @@ QString SCtrTextDataWidget::shownValue()
 void SCtrTextDataWidget::initUI()
 {
     QBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
+    //layout->setMargin(0);
 
     theValue = new QLineEdit(this);
     label_varName = new QLabel(getTypeInfo().displayName, this);

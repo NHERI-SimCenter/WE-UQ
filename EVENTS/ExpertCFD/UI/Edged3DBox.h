@@ -32,7 +32,11 @@ private:
     Qt3DCore::QTransform* transform;
     Qt3DCore::QTransform* edgeTransform;
     Qt3DCore::QTransform* gridPointsTransform;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    Qt3DCore::QAttribute *gridPointsVerticesAttribute;
+#else
     Qt3DRender::QAttribute* gridPointsVerticesAttribute;
+#endif
     Qt3DRender::QGeometryRenderer* gridPointsRenderer;
 
     void setup3DEdges();

@@ -52,7 +52,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
     : SimCenterWidget(parent)
 {
   auto layout = new QGridLayout();
-  layout->setMargin(0);
+  //layout->setMargin(0);
   layout->setSpacing(6);
 
   // control
@@ -84,7 +84,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   processorsBox->setToolTip(tr("Number of processors used to run OpenFOAM in parallel."));
 
   QGridLayout *controlLayout=new QGridLayout();
-  controlLayout->setMargin(6);
+ // controlLayout->setMargin(6);
   controlLayout->setSpacing(6);
 
   controlLayout->addWidget(new QLabel("Duration"),0,0);
@@ -126,7 +126,7 @@ SimulationParametersCWE::SimulationParametersCWE(QWidget *parent)
   nonOrthogonalCorrectors->setValidator(positiveIntValidator);
     
   QGridLayout *advancedLayout=new QGridLayout();
-  advancedLayout->setMargin(6);
+  //advancedLayout->setMargin(6);
   advancedLayout->setSpacing(6);
 
   advancedLayout->addWidget(new QLabel("Turbulence Model"),0,0);

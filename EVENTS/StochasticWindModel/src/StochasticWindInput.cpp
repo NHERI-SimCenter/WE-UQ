@@ -82,9 +82,7 @@ StochasticWindInput::StochasticWindInput(
   this->setLayout(layout);
 
   // Connect model selection slot
-  connect(modelSelection,
-          QOverload<const QString&>::of(&QComboBox::currentIndexChanged), this,
-          &StochasticWindInput::modelSelectionChanged);
+  connect(modelSelection, SIGNAL(currentTextChanged()), this, SLOT(modelSelectionChanged));
 }
 
 
