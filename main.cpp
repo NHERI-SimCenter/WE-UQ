@@ -19,6 +19,7 @@
 #include <QDir>
 #include <SimCenterPreferences.h>
 #include <QStatusBar>
+#include <QWebEngineView>
 
 #ifdef ENDLN
 #undef ENDLN
@@ -72,7 +73,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.0.1");
+    QCoreApplication::setApplicationVersion("3.1.0");
 
     Q_INIT_RESOURCE(images1);
 
@@ -105,13 +106,6 @@ int main(int argc, char *argv[])
     // debugFile.remove();
 
     QApplication a(argc, argv);
-
-    //Setting Google Analytics Tracking Information
-    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
-    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
-    GoogleAnalytics::CreateSessionId();
-    GoogleAnalytics::StartSession();
-
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 
@@ -157,7 +151,7 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1) Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, & Michael Gardner. (2023). NHERI-SimCenter/WE-UQ: Version 3.0.0 (v3.0.0). Zenodo. https://doi.org/10.5281/zenodo.8133017 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, & Michael Gardner. (2023). NHERI-SimCenter/WE-UQ: Version 3.1.0 (v3.1.0). Zenodo. https://doi.org/10.5281/zenodo.8396121 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
     
     w.setCite(citeText);
 
@@ -233,33 +227,24 @@ int main(int argc, char *argv[])
       qDebug() << "could not open stylesheet";
     }
 
+    //Setting Google Analytics Tracking Information
+    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+    GoogleAnalytics::CreateSessionId();
+    GoogleAnalytics::StartSession();
 
+    // Opening a QWebEngineView and using github to get app geographic usage
+    QWebEngineView view;
+    view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
+    view.resize(1024, 750);
+    view.show();
+    view.hide();
 
-/*
-    QFile fileCommon(":/styleCommon/common_experimental.qss");
-    QFile fileEEUQ(":/styles/stylesheet_eeuq.qss");
-
-    if(fileCommon.open(QFile::ReadOnly) && fileEEUQ.open(QFile::ReadOnly)) {
-      QString styleSheet = QLatin1String(fileCommon.readAll());
-      QString styleSheetEEUQ = QLatin1String(fileEEUQ.readAll());
-
-      //      a.setStyleSheet(styleSheet+styleSheetEEUQ);
-      a.setStyleSheet(styleSheet);
-      fileCommon.close();
-      fileEEUQ.close();
-    }
-*/
-    /*
-    theInputApp->setStyleSheet("QComboBox {background: #E0E0E0;} \
-                               QGroupBox {font-weight: bold;}\
-                               QLineEdit {background-color: #E0E0E0; border: 2px solid darkgray;} \
-                               QTabWidget::pane {background-color: #ECECEC; border: 1px solid rgb(244, 244, 244);}");
-    */
-
-    //a.setStyleSheet(openStyleFiles());
-
+    //
+    // RUN the GUI
+    //
+    
     int res = a.exec();
-
 
     //
     // on done with event loop, logout & stop the thread

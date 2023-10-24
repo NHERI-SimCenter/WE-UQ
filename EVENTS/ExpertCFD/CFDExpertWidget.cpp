@@ -546,7 +546,7 @@ void CFDExpertWidget::initializeUI()
     // here the actual contents
 
     auto layout = new QGridLayout(container);
-    layout->setMargin(0);
+    //layout->setMargin(0);
     layout->setSpacing(6);
 
     loginRequiredLabel = new QLabel(tr("Logging into DesignSafe is required to use CFD - Expert.\n"));
@@ -555,7 +555,7 @@ void CFDExpertWidget::initializeUI()
     QGroupBox* CFDGroupBox = new QGroupBox("OpenFOAM Parameters", this);
 
     QGridLayout *parametersLayout = new QGridLayout(CFDGroupBox);
-    parametersLayout->setMargin(6);
+    //parametersLayout->setMargin(6);
     parametersLayout->setSpacing(6);
     int row = 0;
 

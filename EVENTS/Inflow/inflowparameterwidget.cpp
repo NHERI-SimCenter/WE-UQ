@@ -1055,8 +1055,12 @@ void InflowParameterWidget::on_sourceLocateBtn_clicked()
 
     // select the openFOAM input source tree
     QFileDialog *dlg = new QFileDialog();
-    dlg->setReadOnly(true);
-    dlg->setFileMode(QFileDialog::DirectoryOnly);
+    //dlg->setReadOnly(true);
+    dlg->setOption(QFileDialog::ReadOnly);
+    dlg->setOption(QFileDialog::ShowDirsOnly);
+    //dlg->setFileMode(QFileDialog::DirectoryOnly);
+    dlg->setFileMode(QFileDialog::Directory);
+
     dlg->exec();
     QDir fileTreeLocation = dlg->directory();
 

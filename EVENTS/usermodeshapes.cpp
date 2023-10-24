@@ -8,7 +8,7 @@
 #include <QTextStream>
 #include <QStandardItemModel>
 #include <QStandardItem>
-
+#include <QRegularExpression>
 #include <QDebug>
 
 UserModeShapes::UserModeShapes(QWidget *parent) :
@@ -145,18 +145,31 @@ bool UserModeShapes::validateFile(const QString &filename)
                 if (line.contains("length")) {
                     QStringList data = line.split(" ");
                     if (data.length()>=3) {
+                        /* ***************************************
                         QRegExp rxlen("(\\d+)(?:\\s*)(\\{|\\()");
                         int pos = rxlen.indexIn(data[2]);
                         if (pos > -1) {
                             floorsCount = rxlen.cap(1).toInt();
                         }
+                        *************************************** */
+                        QString data2 = data[2];
+                        QRegularExpression rxlen("(\\d+)(?:\\s*)(\\{|\\()");
+                        while (data2.length() > 0 && data2.lastIndexOf(rxlen) == data2.length() - 1) {
+                            data2.chop(1);
+                        }
+                        floorsCount = data2.toInt();
                     }
                     else if (data.length()>=2) {
-                        QRegExp rxlen("(\\d+)(?:\\s*)(\\{|\\()");
-                        int pos = rxlen.indexIn(data[1]);
-                        if (pos > -1) {
-                            floorsCount = rxlen.cap(1).toInt();
+                        QString data1 = data[1];
+                        QRegularExpression rxlen("(\\d+)(?:\\s*)(\\{|\\()");
+                        //int pos = rxlen.indexIn(data[1]);
+                        //if (pos > -1) {
+                        //    floorsCount = rxlen.cap(1).toInt();
+                        //}
+                        while (data1.length() > 0 && data1.lastIndexOf(rxlen) == data1.length() - 1) {
+                            data1.chop(1);
                         }
+                        floorsCount = data1.toInt();
                     }
                     else { floorsCount = 0; }
                 }

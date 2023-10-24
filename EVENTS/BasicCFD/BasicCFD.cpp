@@ -83,7 +83,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
     //
 
     auto layout = new QGridLayout(this);
-    layout->setMargin(0);
+    //layout->setMargin(0);
     layout->setSpacing(6);
 
     //Building Forces
@@ -98,7 +98,7 @@ BasicCFD::BasicCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *paren
 
     QLabel *startTimeLabel = new QLabel("Start time", this);
     buildingForcesLayout->addWidget(startTimeLabel, 1, 0);
-    buildingForcesLayout->setMargin(6);
+   // buildingForcesLayout->setMargin(6);
     startTimeBox = new QDoubleSpinBox(this);
     buildingForcesLayout->addWidget(startTimeBox, 1, 1);
     startTimeBox->setDecimals(3);

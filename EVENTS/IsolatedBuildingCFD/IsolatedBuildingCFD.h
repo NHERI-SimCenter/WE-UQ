@@ -113,6 +113,7 @@ public:
 
     double geometricScale();
     double windDirection();
+    QString buildingShape();
 
     QString normalizationType();
     QString caseDir();
