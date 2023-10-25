@@ -122,7 +122,7 @@ private:
 
    vtkNew<vtkAxesActor> axisActor;
    vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> axisIteractor;
+   vtkNew<vtkRenderWindowInteractor> axisInteractor;
    vtkNew<vtkOrientationMarkerWidget> axisWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;

@@ -66,7 +66,7 @@
                 "domainWidth": 10,
                 "fetchLength": 5,
                 "geometricScale": 1,
-                "importedSTLPath": "{Current_Dir}/C:/Users/fanta/Downloads/Willis_Tower.stl",
+                "importedSTLPath": "{Current_Dir}/buildingGeometry/Willis_Tower.stl",
                 "normalizationType": "Relative",
                 "origin": [
                     0,
