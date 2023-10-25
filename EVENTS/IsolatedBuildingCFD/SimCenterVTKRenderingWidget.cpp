@@ -573,7 +573,6 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
     textActor->SetPosition(0.025, 0.025);
 
-
     renderer->AddActor(textActor);
 }
 
