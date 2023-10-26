@@ -9,6 +9,7 @@ include($$PWD/ConanHelper.pri)
 QT += core gui charts concurrent network
 QT += 3dcore 3drender 3dextras
 QT += printsupport opengl widgets webenginewidgets
+QT += webenginewidgets
 
 CONFIG += c++17
 
@@ -37,7 +38,7 @@ win32 {
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
     DEPENDPATH += $$PWD/../VTK/Release/bin
     INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
-    LIBS += -L$$PWD/../VTK/lib \
+    LIBS += -L$$PWD/../VTK/Release/lib \
     -lvtkViewsCore-9.2 \
     -lvtkFiltersCore-9.2 \
     -lvtkFiltersSources-9.2 \
@@ -46,6 +47,7 @@ win32 {
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
     -lvtkInteractionStyle-9.2\
+    -lvtkCommonTransforms-9.2\
     -lvtkInteractionWidgets-9.2\
     -lvtkRenderingContextOpenGL2-9.2 \
     -lvtkRenderingFreeType-9.2 \
@@ -66,7 +68,7 @@ win32 {
 
     mac {
     ICON = icons/NHERI-WEuq-Icon.icns
-    #    DEPENDPATH += $$PWD/../VTK/lib
+#    DEPENDPATH += $$PWD/../VTK/lib
 #    DEPENDPATH += $$PWD/../VTK/Release/bin
 #    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
     INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
@@ -81,8 +83,11 @@ win32 {
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
     -lvtkInteractionStyle-9.2\
+    -lvtkCommonTransforms-9.2\
     -lvtkInteractionWidgets-9.2\
     -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkRenderingFreeType-9.2 \
+    -lvtkRenderingGL2PSOpenGL2-9.2 \
     -lvtkRenderingAnnotation-9.2 \
     -lvtkCommonExecutionModel-9.2 \
     -lvtkCommonDataModel-9.2 \
@@ -106,9 +111,12 @@ win32 {
     -lvtkFiltersGeometry-9.2 \
     -lvtkRenderingCore-9.2 \
     -lvtkInteractionStyle-9.2\
+    -lvtkCommonTransforms-9.2\
     -lvtkInteractionWidgets-9.2\
     -lvtkRenderingAnnotation-9.2 \
     -lvtkRenderingContextOpenGL2-9.2 \
+    -lvtkRenderingFreeType-9.2 \
+    -lvtkRenderingGL2PSOpenGL2-9.2 \
     -lvtkCommonExecutionModel-9.2 \
     -lvtkCommonDataModel-9.2 \
     -lvtkGUISupportQt-9.2 \

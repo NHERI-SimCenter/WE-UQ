@@ -535,7 +535,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     this->setLayout(layout);
 
-    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
+//    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
     connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
     connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
     connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
@@ -659,7 +659,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");	
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
 
 
@@ -710,7 +710,7 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"");
 
 	qDebug() << commands;
@@ -759,7 +759,7 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"");
 
         //Actual command on the terminal
@@ -809,7 +809,7 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 	} else
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; checkMesh; exit\"");
 
         //Actual command on the terminal
