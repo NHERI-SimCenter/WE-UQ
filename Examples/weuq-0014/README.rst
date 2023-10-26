@@ -13,7 +13,7 @@ In this example, the CFD-based workflow for determining the wind-induced respons
 
 .. figure:: figures/we14_study_building.svg
    :align: center
-   :width: 30%
+   :width: 50%
 
    Geometry and configuration of the study building
 
