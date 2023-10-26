@@ -177,7 +177,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     this->setLayout(layout);
     theCurrentEvent=theStochasticModel;
 
-    connect(eventSelection,SIGNAL(currentIndexChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
+    connect(eventSelection,SIGNAL(currentTextChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 
     // status and error messaging
     connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
