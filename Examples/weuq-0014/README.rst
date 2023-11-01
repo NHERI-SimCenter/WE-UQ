@@ -325,7 +325,7 @@ The *Summary* tab of the panel, shows the four statistical moments of the EDPs w
 
    Summary of the recorded EDPs in **RES** panel
 
-By switch ing to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
+By switching to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
 
 .. figure:: figures/we14_RES_DataValues.svg
    :align: center
@@ -338,13 +338,13 @@ By switch ing to *Data Values* tab, the user can also visualize all the realizat
 
 Flow visualization 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the velocity contour taken on a vertical stream wise section. From the plots, it is clear visible that important flow features such as vortex shading and turbulence at the wake are captured.  
+The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is clearly visible that important flow features such as vortex shading and turbulence at the wake are captured.  
 
 .. _fig-we14-CFD-result:
 
 .. figure:: figures/we14_CFD_Results.svg
    :align: center
-   :width: 75%
+   :width: 100%
    :figclass: align-center
 
    Instantaneous velocity field around the building.
