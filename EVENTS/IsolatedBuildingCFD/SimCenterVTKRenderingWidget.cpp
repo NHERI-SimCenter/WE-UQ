@@ -530,9 +530,9 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
 
 
     axisActor->SetShaftTypeToCylinder();
-    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
-    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
-    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
+//    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
+//    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
+//    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
 
     vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
     tprop->ItalicOff();
