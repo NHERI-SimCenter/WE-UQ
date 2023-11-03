@@ -657,7 +657,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     resultMonitoring->inputFromJSON(jsonObject);
 
     //Run a background mesh after loading JSON File
-    snappyHexMesh->onRunBlockMeshClicked();
+//    snappyHexMesh->onRunBlockMeshClicked();
 
     return true;
 }
