@@ -179,8 +179,8 @@ void SimCenterVTKRenderingWidget::initialize()
     layout->addWidget(visGroup);
     this->setLayout(layout);
 
-    connect(viewObject, SIGNAL(currentIndexChanged(QString)), this, SLOT(viewObjectChanged(QString)));
-    connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
+    connect(viewObject, SIGNAL(currentTextChanged(QString)), this, SLOT(viewObjectChanged(QString)));
+    connect(surfaceRepresentation, SIGNAL(currentTextChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
 
