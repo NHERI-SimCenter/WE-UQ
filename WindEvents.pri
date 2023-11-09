@@ -19,7 +19,6 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
 INCLUDEPATH += $$PWD/EVENTS/IsolatedBuildingCFD
-#INCLUDEPATH += $$PWD/EVENTS/EmptyDomainCFD
 
 SOURCES += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \
@@ -33,15 +32,6 @@ SOURCES += \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyDomainCFD.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyVTKRendering.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyGeometricInput.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptySnappyHexMesh.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyBoundaryConditions.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyTurbulenceModeling.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyNumericalSetup.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.cpp \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -97,15 +87,6 @@ HEADERS  += \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyDomainCFD.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyVTKRendering.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyGeometricInput.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptySnappyHexMesh.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyBoundaryConditions.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyTurbulenceModeling.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyNumericalSetup.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.h \
-#    $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \
