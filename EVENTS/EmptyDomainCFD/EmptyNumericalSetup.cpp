@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD.h"
-#include "NumericalSetupWidget.h"
+#include "EmptyDomainCFD.h"
+#include "EmptyNumericalSetup.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -69,7 +69,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
-NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
+EmptyNumericalSetup::EmptyNumericalSetup( EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -223,17 +223,17 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
 }
 
 
-NumericalSetupWidget::~NumericalSetupWidget()
+EmptyNumericalSetup::~EmptyNumericalSetup()
 {
 
 }
 
-void NumericalSetupWidget::clear(void)
+void EmptyNumericalSetup::clear(void)
 {
 
 }
 
-void NumericalSetupWidget::updateWidgets(void)
+void EmptyNumericalSetup::updateWidgets(void)
 {
     if(mainModel->simulationType() == "RANS")
     {
@@ -252,7 +252,7 @@ void NumericalSetupWidget::updateWidgets(void)
     }
 }
 
-void NumericalSetupWidget::solverTypeChanged(const QString &arg1)
+void EmptyNumericalSetup::solverTypeChanged(const QString &arg1)
 {
     if (arg1 == "simpleFoam")
     {
@@ -284,7 +284,7 @@ void NumericalSetupWidget::solverTypeChanged(const QString &arg1)
     }
 }
 
-void NumericalSetupWidget::timeStepOptionChanged(const bool arg1)
+void EmptyNumericalSetup::timeStepOptionChanged(const bool arg1)
 {
     if (adjustTimeStep->isChecked() && solverType->currentText()=="pimpleFoam")
     {
@@ -299,7 +299,7 @@ void NumericalSetupWidget::timeStepOptionChanged(const bool arg1)
     }
 }
 
-void NumericalSetupWidget::onRunInParallelChecked(int state)
+void EmptyNumericalSetup::onRunInParallelChecked(int state)
 {
 
     if (!runInParallel->isChecked())
@@ -314,12 +314,12 @@ void NumericalSetupWidget::onRunInParallelChecked(int state)
     numProcessors->setEnabled(runInParallel->isChecked()) ;
 }
 
-void NumericalSetupWidget::onCalculateTimeStepClicked()
+void EmptyNumericalSetup::onCalculateTimeStepClicked()
 {
     timeStep->setText(QString::number(mainModel->getTimeStep()));
 }
 
-bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyNumericalSetup::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes numerical setup to JSON file.
 
@@ -341,7 +341,7 @@ bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool NumericalSetupWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyNumericalSetup::inputFromJSON(QJsonObject &jsonObject)
 {
     // Input numerical setup information to JSON file.
 

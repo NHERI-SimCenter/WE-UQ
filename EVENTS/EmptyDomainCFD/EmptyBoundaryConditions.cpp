@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "BoundaryConditionsWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "EmptyBoundaryConditions.h"
+#include "EmptyDomainCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QLabel>
@@ -67,7 +67,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QMessageBox>
 #include <QTableWidget>
 
-BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
+BoundaryConditionsWidget::BoundaryConditionsWidget(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
 

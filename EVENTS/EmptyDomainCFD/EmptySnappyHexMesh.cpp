@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD.h"
-#include "SnappyHexMeshWidget.h"
+#include "EmptyDomainCFD.h"
+#include "EmptySnappyHexMeshWidget.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -70,7 +70,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
-SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
+EmptySnappyHexMeshWidget::EmptySnappyHexMeshWidget( EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -236,7 +236,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 //    backgroundMeshLayout->setHorizontalSpacing(50);
 
     QPushButton *blockMeshDemoView = new QPushButton("");
-    QPixmap pixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/blockMeshDemoMeshView.png");
+    QPixmap pixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMeshWidget/blockMeshDemoMeshView.png");
     blockMeshDemoView->setIcon(pixmap);
     blockMeshDemoView->setIconSize(pixmap.rect().size()*.30);
     blockMeshDemoView->setFixedSize(pixmap.rect().size()*.30);
@@ -375,7 +375,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
 
     QPushButton *surfaceMeshDemoView = new QPushButton("");
-    QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/surfaceRefinementDemoView.png");
+    QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMeshWidget/surfaceRefinementDemoView.png");
     surfaceMeshDemoView->setIcon(surfaceMeshPixmap);
     surfaceMeshDemoView->setIconSize(surfaceMeshPixmap.rect().size()*.25);
     surfaceMeshDemoView->setFixedSize(surfaceMeshPixmap.rect().size()*.25);
@@ -427,7 +427,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     edgeRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())));
 
     QPushButton *edgeMeshDemoView = new QPushButton("");
-    QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/edgeRefinementDemoView.svg");
+    QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMeshWidget/edgeRefinementDemoView.svg");
     edgeMeshDemoView->setIcon(edgeMeshPixmap);
     edgeMeshDemoView->setIconSize(edgeMeshPixmap.rect().size()*.25);
     edgeMeshDemoView->setFixedSize(edgeMeshPixmap.rect().size()*.25);
@@ -488,7 +488,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     prismLayerMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
 
     QPushButton *prismLayersDemoView = new QPushButton("");
-    QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png");
+    QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMeshWidget/prismLayersDemoView.png");
     prismLayersDemoView->setIcon(prismLayersPixmap);
     prismLayersDemoView->setIconSize(prismLayersPixmap.rect().size()*.25);
     prismLayersDemoView->setFixedSize(prismLayersPixmap.rect().size()*.25);
@@ -562,17 +562,17 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 }
 
 
-SnappyHexMeshWidget::~SnappyHexMeshWidget()
+EmptySnappyHexMeshWidget::~EmptySnappyHexMeshWidget()
 {
 
 }
 
-void SnappyHexMeshWidget::clear(void)
+void EmptySnappyHexMeshWidget::clear(void)
 {
 
 }
 
-void SnappyHexMeshWidget::onRunBlockMeshClicked()
+void EmptySnappyHexMeshWidget::onRunBlockMeshClicked()
 {
     statusMessage("Generating background mesh with blockMesh");
 
@@ -592,7 +592,7 @@ void SnappyHexMeshWidget::onRunBlockMeshClicked()
     mainModel->reloadMesh();
 }
 
-void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
+void EmptySnappyHexMeshWidget::onRunSnappyHexMeshClicked()
 {
     onRunBlockMeshClicked();
 
@@ -615,7 +615,7 @@ void SnappyHexMeshWidget::onRunSnappyHexMeshClicked()
     mainModel->reloadMesh();
 }
 
-void SnappyHexMeshWidget::onRunCheckMeshClicked()
+void EmptySnappyHexMeshWidget::onRunCheckMeshClicked()
 {
     mainModel->updateJSON();
 
@@ -623,7 +623,7 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
     runCheckMeshCommand();
 }
 
-void SnappyHexMeshWidget::onSaveMeshClicked()
+void EmptySnappyHexMeshWidget::onSaveMeshClicked()
 {
     statusMessage("Writing OpenFOAM dictionary files ... ");
 
@@ -633,7 +633,7 @@ void SnappyHexMeshWidget::onSaveMeshClicked()
 }
 
 
-bool SnappyHexMeshWidget::runBlockMeshCommand()
+bool EmptySnappyHexMeshWidget::runBlockMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
@@ -686,7 +686,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
     return true;
 }
 
-bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
+bool EmptySnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 {
     QString casePath = mainModel->caseDir();
     QString commands;
@@ -734,7 +734,7 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
     return true;
 }
 
-bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
+bool EmptySnappyHexMeshWidget::runSnappyHexMeshCommand()
 {
     QString casePath = mainModel->caseDir();
     QString commands;
@@ -784,7 +784,7 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 }
 
 
-bool SnappyHexMeshWidget::runCheckMeshCommand()
+bool EmptySnappyHexMeshWidget::runCheckMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
@@ -831,7 +831,7 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
     return true;
 }
 
-bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptySnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 {
     //Write blockMesh configuration parameters
     QJsonObject blockMeshParamsJson = QJsonObject();
@@ -928,7 +928,7 @@ bool SnappyHexMeshWidget::outputToJSON(QJsonObject &jsonObject)
 }
 
 
-bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptySnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
 {
     //Read blockMesh configuration parameters
     QJsonObject blockMeshParamsJson = jsonObject["blockMeshParameters"].toObject();
@@ -1001,25 +1001,25 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
 }
 
 
-void SnappyHexMeshWidget::onRunInParallelChecked(int)
+void EmptySnappyHexMeshWidget::onRunInParallelChecked(int)
 {
     numProcessors->setEnabled(runInParallel->isChecked()) ;
 }
 
-void SnappyHexMeshWidget::onAddSurfaceRefinementChecked(int)
+void EmptySnappyHexMeshWidget::onAddSurfaceRefinementChecked(int)
 {
     surfaceRefinementDistance->setEnabled(addSurfaceRefinement->isChecked()) ;
     surfaceRefinementLevel->setEnabled(addSurfaceRefinement->isChecked()) ;
     surfaceName->setEnabled(addSurfaceRefinement->isChecked());
 }
 
-void SnappyHexMeshWidget::onAddEdgeRefinementChecked(int)
+void EmptySnappyHexMeshWidget::onAddEdgeRefinementChecked(int)
 {
     edgeRefinementLevel->setEnabled(addEdgeRefinement->isChecked()) ;
     refinementEdgeName->setEnabled(addEdgeRefinement->isChecked()) ;
 }
 
-void SnappyHexMeshWidget::onAddPrismLayersChecked(int)
+void EmptySnappyHexMeshWidget::onAddPrismLayersChecked(int)
 {
     numberOfPrismLayers->setEnabled(addPrismLayers->isChecked());
     finalPrismLayerThickness->setEnabled(addPrismLayers->isChecked());
@@ -1027,12 +1027,12 @@ void SnappyHexMeshWidget::onAddPrismLayersChecked(int)
     prismLayerSurfaceName->setEnabled(addPrismLayers->isChecked());
 }
 
-void SnappyHexMeshWidget::onAddRegionClicked()
+void EmptySnappyHexMeshWidget::onAddRegionClicked()
 {
     refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
 }
 
-void SnappyHexMeshWidget::onRemoveRegionClicked()
+void EmptySnappyHexMeshWidget::onRemoveRegionClicked()
 {
     QItemSelectionModel *selected = refinementBoxesTable->selectionModel();
 
@@ -1042,14 +1042,14 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
     }
 }
 
-void SnappyHexMeshWidget::onNumberOfCellsChanged()
+void EmptySnappyHexMeshWidget::onNumberOfCellsChanged()
 {
     xAxisMeshSize->setText(QString::number(mainModel->domainLength()/xAxisNumCells->text().toDouble()));
     yAxisMeshSize->setText(QString::number(mainModel->domainWidth()/yAxisNumCells->text().toDouble()));
     zAxisMeshSize->setText(QString::number(mainModel->domainHeight()/zAxisNumCells->text().toDouble()));
 }
 
-void SnappyHexMeshWidget::onMeshSizeChanged()
+void EmptySnappyHexMeshWidget::onMeshSizeChanged()
 {
     double meshSize = qPow(xAxisMeshSize->text().toDouble()*yAxisMeshSize->text().toDouble()*zAxisMeshSize->text().toDouble(), 1.0/3.0);
 

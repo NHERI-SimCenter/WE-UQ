@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD.h"
-#include "ResultMonitoringWidget.h"
+#include "EmptyDomainCFD.h"
+#include "EmptyResultMonitoring.h"
 #include <GeneralInformationWidget.h>
 
 #include <QPushButton>
@@ -104,7 +104,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTextStream>
 #include <QtMath>
 
-ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
+EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -328,34 +328,34 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 }
 
 
-ResultMonitoringWidget::~ResultMonitoringWidget()
+EmptyResultMonitoring::~EmptyResultMonitoring()
 {
 
 }
 
-void ResultMonitoringWidget::clear(void)
+void EmptyResultMonitoring::clear(void)
 {
 
 }
 
 
-void ResultMonitoringWidget::onMonitorBaseLoadChecked(int state)
+void EmptyResultMonitoring::onMonitorBaseLoadChecked(int state)
 {
     baseLoadWriteInterval->setEnabled(monitorBaseLoad->isChecked());
 }
 
-void ResultMonitoringWidget::onMonitorPressureChecked(int state)
+void EmptyResultMonitoring::onMonitorPressureChecked(int state)
 {
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 }
 
-void ResultMonitoringWidget::onCreatePressurePointsToggled(bool checked)
+void EmptyResultMonitoring::onCreatePressurePointsToggled(bool checked)
 {
     createPressurePointsGroup->setEnabled(createPressurePoints->isChecked());
     openCSVFile->setEnabled(importPressurePoints->isChecked());
 }
 
-void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
+void EmptyResultMonitoring::onShowCoordinateOfPointsClicked()
 {
     QDialog *dialog  = new QDialog(this);
 
@@ -412,7 +412,7 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
 }
 
-void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
+void EmptyResultMonitoring::visCoordinateOfPoints(QGridLayout* dialogLayout)
 {
     QVTKRenderWidget *qvtkWidget;
     vtkSmartPointer<vtkSTLReader> buildingReader;
@@ -473,7 +473,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
     renderWindow->BordersOn();
 }
 
-void ResultMonitoringWidget::onOpenCSVFileClicked()
+void EmptyResultMonitoring::onOpenCSVFileClicked()
 {
    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
 
@@ -482,7 +482,7 @@ void ResultMonitoringWidget::onOpenCSVFileClicked()
 }
 
 
-QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
+QList<QVector3D> EmptyResultMonitoring::calculatePointCoordinates()
 {
     QList<QVector3D> points;
 
@@ -602,7 +602,7 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
     return transPoints;
 }
 
-bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyResultMonitoring::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
@@ -644,7 +644,7 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
 }
 
 
-bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
@@ -677,7 +677,7 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-void ResultMonitoringWidget::updateWidgets()
+void EmptyResultMonitoring::updateWidgets()
 {
 }
 

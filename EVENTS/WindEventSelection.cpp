@@ -231,13 +231,9 @@ WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
 
     if (type.contains(QString("StochasticWind"))) {
         index = 0;
-//    } else if ((type == QString("CWE")) || (type == QString("BasicCFD"))) {
-//        index = 1;
     } else if ((type == QString("CFD - Wind Loads on Isolated Building")) || (type == QString("IsolatedBuildingCFD"))) {
         index = 1;
-//    } else if (type == QString("CFD - Expert")) {
-//        index = 3;
-    } else if ((type == QString("CFD - Digital Wind Tunnel")) || (type == QString("DigitalWindTunnel"))) {
+    } else if ((type == QString("CFD - Empty Domain Simulation")) || (type == QString("EmptyDomainCFD"))) {
         index = 2;
     } else if ((type == QString("Experimental Wind Forces")) || (type == QString("ExperimentalWindForces"))) {
         index = 3;
@@ -282,10 +278,6 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         theStackedWidget->setCurrentIndex(0);
         theCurrentEvent = theStochasticModel;
     }
-//    else if ((arg1 == "CFD - Basic") || (arg1 == "CWE") || (arg1 == "BasicCFD")) {
-//        theStackedWidget->setCurrentIndex(1);
-//        theCurrentEvent = CFDBeginnerEventWidget;
-//    }
 
     else if(arg1 == "CFD - Wind Loads on Isolated Building") {
         theStackedWidget->setCurrentIndex(1);
@@ -298,15 +290,17 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
             theIso->initialize();
         }
     }
-    
-//    else if(arg1 == "CFD - Expert") {
-//        theStackedWidget->setCurrentIndex(3);
-//        theCurrentEvent = CFDExpertEventWidget;
-//    }
 
-    else if(arg1 == "CFD - Digital Wind Tunnel") {
+    else if(arg1 == "CFD - Empty Domain Simulation") {
         theStackedWidget->setCurrentIndex(2);
-        theCurrentEvent = theDigitalWindTunnel;
+        theCurrentEvent = theEmptyDomainCFD;
+
+        IsolatedBuildingCFD* theEmp  = dynamic_cast<IsolatedBuildingCFD*>(theEmptyDomainCFD);
+
+        if (!theEmp->isInitialize())
+        {
+            theEmp->initialize();
+        }
     }
     
     else if(arg1 == "Experimental Wind Forces") {

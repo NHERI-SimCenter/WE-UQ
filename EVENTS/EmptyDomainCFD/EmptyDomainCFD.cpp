@@ -37,15 +37,15 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: abiy
 
 #include "EmptyDomainCFD.h"
+#include "EmptyGeometricInput.h"
+#include "EmptySnappyHexMesh.h"
+#include "EmptyBoundaryConditions.h"
+#include "EmptyTurbulenceModeling.h"
+#include "EmptyVTKRendering.h"
+#include "EmptyNumericalSetup.h"
+#include "EmptyWindCharacteristics.h"
+#include "EmptyResultMonitoring.h"
 #include "QVector3D"
-#include "GeometricInputWidget.h"
-#include "SnappyHexMeshWidget.h"
-#include "BoundaryConditionsWidget.h"
-#include "TurbulenceModelingWidget.h"
-#include "SimCenterVTKRenderingWidget.h"
-#include "NumericalSetupWidget.h"
-#include "WindCharacteristicsWidget.h"
-#include "ResultMonitoringWidget.h"
 #include <qcustomplot.h>
 #include <QPushButton>
 #include <QScrollArea>
@@ -87,7 +87,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 EmptyDomainCFD::EmptyDomainCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
-
+    //Constructor for first time empty initialization
 }
 
 bool EmptyDomainCFD::initialize()
@@ -109,7 +109,7 @@ bool EmptyDomainCFD::initialize()
     QWidget *geometryWidget = new QWidget();
     QWidget *meshWidget = new QWidget();
     QWidget *BCWidget = new QWidget();
-    QWidget *numericalSetupWidget = new QWidget();
+    QWidget *EmptyNumericalSetup = new QWidget();
     QWidget *monitoringWidget = new QWidget();
     QWidget *resultsWidget = new QWidget();
 
@@ -243,30 +243,30 @@ bool EmptyDomainCFD::initialize()
     geometryWidget->setLayout(geometryLayout);
     meshWidget->setLayout(meshLayout);
     BCWidget->setLayout(BCLayout);
-    numericalSetupWidget->setLayout(numericalSetupLayout);
+    EmptyNumericalSetup->setLayout(numericalSetupLayout);
     monitoringWidget->setLayout(monitoringLayout);
     resultsWidget->setLayout(resultsLayout);
 
     //Controls for geometric input
-    geometry = new GeometricInputWidget(this);
+    geometry = new EmptyGeometricInput(this);
 
     //Controls for snappyHexMesh
-    snappyHexMesh = new SnappyHexMeshWidget(this);
+    snappyHexMesh = new EmptySnappyHexMesh(this);
 
     //Controls for wind characteristics setup
-    windCharacteristics = new WindCharacteristicsWidget(this);
+    windCharacteristics = new EmptyWindCharacteristics(this);
 
     //Controls for boundary conditions
-    boundaryConditions = new BoundaryConditionsWidget(this);
+    boundaryConditions = new EmptyBoundaryConditions(this);
 
     //Controle for turbulence modeling
-    turbulenceModeling = new TurbulenceModelingWidget(this);
+    turbulenceModeling = new EmptyTurbulenceModeling(this);
 
     //Controls for numerical setup
-    numericalSetup = new NumericalSetupWidget(this);
+    numericalSetup = new EmptyNumericalSetup(this);
 
     //Add result monitoring widget
-    resultMonitoring = new ResultMonitoringWidget(this);
+    resultMonitoring = new EmptyResultMonitoring(this);
 
     //Populate each tab
     startLayout->addWidget(generalDescriptionGroup);
@@ -299,7 +299,7 @@ bool EmptyDomainCFD::initialize()
     inputTab->addTab(geometryWidget, "Geometry");
     inputTab->addTab(meshWidget, "Mesh");
     inputTab->addTab(BCWidget, "Boundary Conditions");
-    inputTab->addTab(numericalSetupWidget, "Numerical Setup");
+    inputTab->addTab(EmptyNumericalSetup, "Numerical Setup");
     inputTab->addTab(monitoringWidget, "Monitoring");
     inputTab->addTab(resultsWidget, "Results");
 
@@ -346,7 +346,7 @@ bool EmptyDomainCFD::initialize()
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
-    visWidget = new SimCenterVTKRenderingWidget(this);
+    visWidget = new EmptyVTKRendering(this);
 
     visWindowLayout->addWidget(visWidget);
 

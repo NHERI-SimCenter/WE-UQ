@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "GeometricInputWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "EmptyGeometricInput.h"
+#include "EmptyDomainCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -72,7 +72,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 //#include <InputWidgetParameters.h>
 
- GeometricInputWidget:: GeometricInputWidget(IsolatedBuildingCFD *parent)
+ EmptyGeometricInput:: EmptyGeometricInput(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -289,18 +289,18 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 }
 
 
-GeometricInputWidget::~ GeometricInputWidget()
+EmptyGeometricInput::~ EmptyGeometricInput()
 {
 
 }
 
-void  GeometricInputWidget::clear(void)
+void  EmptyGeometricInput::clear(void)
 {
 
 }
 
 
-bool  GeometricInputWidget::outputToJSON(QJsonObject &jsonObject)
+bool  EmptyGeometricInput::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind characterstics (flow properties) to JSON file.
     QJsonObject geometricDataJson = QJsonObject();
@@ -340,7 +340,7 @@ bool  GeometricInputWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool  GeometricInputWidget::inputFromJSON(QJsonObject &jsonObject)
+bool  EmptyGeometricInput::inputFromJSON(QJsonObject &jsonObject)
 {
     // Read geometric information including wind direction from a JSON file.
     //The JSON file is located in caseDir/constant/simCenter
@@ -380,19 +380,19 @@ bool  GeometricInputWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-void  GeometricInputWidget::updateWidgets()
+void  EmptyGeometricInput::updateWidgets()
 {
 //    onVelocityScaleChanged();
 }
 
-QVector<double> GeometricInputWidget::coordSysOrigin()
+QVector<double> EmptyGeometricInput::coordSysOrigin()
 {
     QVector<double> origin = {originXWidget->text().toDouble(), originYWidget->text().toDouble(), originZWidget->text().toDouble()};
 
     return origin;
 }
 
-void GeometricInputWidget::useCOSTOptionChecked(int state)
+void EmptyGeometricInput::useCOSTOptionChecked(int state)
 {
     //Works fine when Height > Width
     if (useCOSTDimWidget->isChecked())
@@ -405,7 +405,7 @@ void GeometricInputWidget::useCOSTOptionChecked(int state)
 
 }
 
-void GeometricInputWidget::originChanged(const QString &arg)
+void EmptyGeometricInput::originChanged(const QString &arg)
 {
     if(arg == "Building Bottom Center")
     {
@@ -435,7 +435,7 @@ void GeometricInputWidget::originChanged(const QString &arg)
     }
 }
 
-void GeometricInputWidget::buildingShapeChanged(const QString &arg)
+void EmptyGeometricInput::buildingShapeChanged(const QString &arg)
 {
     if(arg == "Simple")
     {
@@ -449,7 +449,7 @@ void GeometricInputWidget::buildingShapeChanged(const QString &arg)
     }
 }
 
-double GeometricInputWidget::getNormDim(double dim)
+double EmptyGeometricInput::getNormDim(double dim)
 {
     if(normalizationTypeWidget->currentText() == "Relative")
     {
@@ -460,7 +460,7 @@ double GeometricInputWidget::getNormDim(double dim)
 }
 
 
-double GeometricInputWidget::convertToMeter(double dim, QString unit)
+double EmptyGeometricInput::convertToMeter(double dim, QString unit)
 {
     // Converts to meter from other unit system;
     if (unit == "m")
@@ -487,7 +487,7 @@ double GeometricInputWidget::convertToMeter(double dim, QString unit)
         qDebug() << "Unit system not recognized";
 }
 
-double GeometricInputWidget::convertFromMeter(double dim, QString unit)
+double EmptyGeometricInput::convertFromMeter(double dim, QString unit)
 {
     //Convert from meters to other units
     if (unit == "m")
@@ -514,7 +514,7 @@ double GeometricInputWidget::convertFromMeter(double dim, QString unit)
         qDebug() << "Unit system not recognized";
 }
 
-void GeometricInputWidget::onImportSTLButtonClicked()
+void EmptyGeometricInput::onImportSTLButtonClicked()
 {
     if(buildingShape->currentText() == "Complex")
     {
@@ -523,7 +523,7 @@ void GeometricInputWidget::onImportSTLButtonClicked()
 }
 
 
-void GeometricInputWidget::initializeImportSTLDialog()
+void EmptyGeometricInput::initializeImportSTLDialog()
 {
     importSTLDialog = new QDialog(this);
     int dialogHeight = 350;
@@ -663,7 +663,7 @@ void GeometricInputWidget::initializeImportSTLDialog()
     connect(stlCancelButton, SIGNAL(clicked()), this, SLOT(onSTLCancelButtonClicked()));
 }
 
-void GeometricInputWidget::onBrowseSTLPathButtonClicked()
+void EmptyGeometricInput::onBrowseSTLPathButtonClicked()
 {
 
     QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open STL File"), importedSTLPath->text(), tr("STL Files (*.stl)"));
@@ -674,7 +674,7 @@ void GeometricInputWidget::onBrowseSTLPathButtonClicked()
     }
 }
 
-void GeometricInputWidget::onSTLImportButtonClicked()
+void EmptyGeometricInput::onSTLImportButtonClicked()
 {
 
     mainModel->writeOpenFoamFiles();
@@ -740,7 +740,7 @@ void GeometricInputWidget::onSTLImportButtonClicked()
     mainModel->reloadMesh();
 }
 
-void GeometricInputWidget::onSTLOkButtonClicked()
+void EmptyGeometricInput::onSTLOkButtonClicked()
 {
 
     onSTLImportButtonClicked();
@@ -748,7 +748,7 @@ void GeometricInputWidget::onSTLOkButtonClicked()
     importSTLDialog->close();
 }
 
-void GeometricInputWidget::onSTLCancelButtonClicked()
+void EmptyGeometricInput::onSTLCancelButtonClicked()
 {
     importSTLDialog->close();
 }
