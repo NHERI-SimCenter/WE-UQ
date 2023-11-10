@@ -1,5 +1,5 @@
-#ifndef GEOMETRIC_INPUT_WIDGET_H
-#define GEOMETRIC_INPUT_WIDGET_H
+#ifndef EMPTY_GEOMETRIC_INPUT_H
+#define EMPTY_GEOMETRIC_INPUT_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,20 +55,20 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 class QDialog;
+class EmptyDomainCFD;
 
-class  GeometricInputWidget: public SimCenterAppWidget
+class  EmptyGeometricInput: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit  GeometricInputWidget(IsolatedBuildingCFD *parent = 0);
-    ~ GeometricInputWidget();
+    explicit  EmptyGeometricInput(EmptyDomainCFD *parent = 0);
+    ~ EmptyGeometricInput();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -101,7 +101,7 @@ public slots:
 private:
 
    QVBoxLayout          *layout;
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD       *mainModel;
 
    QGroupBox            *dimAndScaleGroup;
    QGridLayout          *dimAndScaleLayout;
@@ -171,4 +171,4 @@ public:
 
 };
 
-#endif // GEOMETRIC_INPUT_WIDGET_H
+#endif // EMPTY_GEOMETRIC_INPUT_H

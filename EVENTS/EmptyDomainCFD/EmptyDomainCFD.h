@@ -1,5 +1,5 @@
-#ifndef ISOLATED_BUILDING_CFD_H
-#define ISOLATED_BUILDING_CFD_H
+#ifndef EMPTY_DOMAIN_CFD_H
+#define EMPTY_DOMAIN_CFD_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -47,14 +47,14 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
-class GeometricInputWidget;
-class SnappyHexMeshWidget;
-class BoundaryConditionsWidget;
-class TurbulenceModelingWidget;
-class SimCenterVTKRenderingWidget;
-class NumericalSetupWidget;
-class WindCharacteristicsWidget;
-class ResultMonitoringWidget;
+class EmptyGeometricInput;
+class EmptySnappyHexMesh;
+class EmptyBoundaryConditions;
+class EmptyTurbulenceModeling;
+class EmptyVTKRendering;
+class EmptyNumericalSetup;
+class EmptyWindCharacteristics;
+class EmptyResultMonitoring;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -165,14 +165,14 @@ private:
    QGridLayout          *openFoamVersionLayout;
    QComboBox            *openFoamVersion;
 
-   GeometricInputWidget         *geometry;
-   SnappyHexMeshWidget          *snappyHexMesh;
-   SimCenterVTKRenderingWidget  *visWidget;
-   WindCharacteristicsWidget    *windCharacteristics;
-   TurbulenceModelingWidget     *turbulenceModeling;
-   BoundaryConditionsWidget     *boundaryConditions;
-   NumericalSetupWidget         *numericalSetup;
-   ResultMonitoringWidget       *resultMonitoring;
+   EmptyGeometricInput          *geometry;
+   EmptySnappyHexMesh           *snappyHexMesh;
+   EmptyVTKRendering            *visWidget;
+   EmptyWindCharacteristics     *windCharacteristics;
+   EmptyTurbulenceModeling      *turbulenceModeling;
+   EmptyBoundaryConditions      *boundaryConditions;
+   EmptyNumericalSetup          *numericalSetup;
+   EmptyResultMonitoring        *resultMonitoring;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
@@ -186,4 +186,4 @@ private:
 
 };
 
-#endif // ISOLATED_BUILDING_CFD_H
+#endif // EMPTY_DOMAIN_CFD_H

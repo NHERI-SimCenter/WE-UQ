@@ -67,7 +67,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QMessageBox>
 #include <QTableWidget>
 
-BoundaryConditionsWidget::BoundaryConditionsWidget(EmptyDomainCFD *parent)
+EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
 
@@ -248,17 +248,17 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(EmptyDomainCFD *parent)
 }
 
 
-BoundaryConditionsWidget::~BoundaryConditionsWidget()
+EmptyBoundaryConditions::~EmptyBoundaryConditions()
 {
 
 }
 
-void BoundaryConditionsWidget::clear(void)
+void EmptyBoundaryConditions::clear(void)
 {
 
 }
 
-void BoundaryConditionsWidget::inletBCTypeChanged(const QString &arg1)
+void EmptyBoundaryConditions::inletBCTypeChanged(const QString &arg1)
 {
     if(arg1 == "TInf")
     {
@@ -270,7 +270,7 @@ void BoundaryConditionsWidget::inletBCTypeChanged(const QString &arg1)
     }
 }
 
-void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
+void EmptyBoundaryConditions::windProfileOptionChanged(const QString &arg1)
 {
     if(arg1 == "ESDU")
     {
@@ -286,13 +286,13 @@ void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
     }
 }
 
-void BoundaryConditionsWidget::inflowTimeStepChanged(const QString &arg1)
+void EmptyBoundaryConditions::inflowTimeStepChanged(const QString &arg1)
 {
     inflowMaxFreq->setText(QString::number(0.5/arg1.toDouble()));
 }
 
 
-void BoundaryConditionsWidget::onImportWindProfilesClicked()
+void EmptyBoundaryConditions::onImportWindProfilesClicked()
 {
     QString windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
 
@@ -306,7 +306,7 @@ void BoundaryConditionsWidget::onImportWindProfilesClicked()
     readCSV(windProfilePath);
 }
 
-bool BoundaryConditionsWidget::readCSV(QString &fileName)
+bool EmptyBoundaryConditions::readCSV(QString &fileName)
 {
     windProfiles.clear();
 
@@ -341,7 +341,7 @@ bool BoundaryConditionsWidget::readCSV(QString &fileName)
     return true;
 }
 
-void BoundaryConditionsWidget::onShowWindProfilesClicked()
+void EmptyBoundaryConditions::onShowWindProfilesClicked()
 {
     QDialog *dialog  = new QDialog(this);
 
@@ -386,7 +386,7 @@ void BoundaryConditionsWidget::onShowWindProfilesClicked()
     dialog->exec();
 }
 
-bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyBoundaryConditions::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes physical boundary information to JSON file.
     QJsonObject boundaryCondJson = QJsonObject();
@@ -457,7 +457,7 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyBoundaryConditions::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes physical boundary information to JSON file.
     QJsonObject boundaryCondJson = jsonObject["boundaryConditions"].toObject();

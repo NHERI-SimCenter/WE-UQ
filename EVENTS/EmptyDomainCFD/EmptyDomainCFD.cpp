@@ -109,7 +109,7 @@ bool EmptyDomainCFD::initialize()
     QWidget *geometryWidget = new QWidget();
     QWidget *meshWidget = new QWidget();
     QWidget *BCWidget = new QWidget();
-    QWidget *EmptyNumericalSetup = new QWidget();
+    QWidget *numericalSetupWidget = new QWidget();
     QWidget *monitoringWidget = new QWidget();
     QWidget *resultsWidget = new QWidget();
 
@@ -243,7 +243,7 @@ bool EmptyDomainCFD::initialize()
     geometryWidget->setLayout(geometryLayout);
     meshWidget->setLayout(meshLayout);
     BCWidget->setLayout(BCLayout);
-    EmptyNumericalSetup->setLayout(numericalSetupLayout);
+    numericalSetup->setLayout(numericalSetupLayout);
     monitoringWidget->setLayout(monitoringLayout);
     resultsWidget->setLayout(resultsLayout);
 
@@ -299,7 +299,7 @@ bool EmptyDomainCFD::initialize()
     inputTab->addTab(geometryWidget, "Geometry");
     inputTab->addTab(meshWidget, "Mesh");
     inputTab->addTab(BCWidget, "Boundary Conditions");
-    inputTab->addTab(EmptyNumericalSetup, "Numerical Setup");
+    inputTab->addTab(numericalSetupWidget, "Numerical Setup");
     inputTab->addTab(monitoringWidget, "Monitoring");
     inputTab->addTab(resultsWidget, "Results");
 

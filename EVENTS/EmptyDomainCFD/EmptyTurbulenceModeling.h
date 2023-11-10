@@ -1,5 +1,5 @@
-#ifndef TURBULENCE_MODELINNG_WIDGET_H
-#define TURBULENCE_MODELINNG_WIDGET_H
+#ifndef EMPTY_TURBULENCE_MODELINNG_H
+#define EMPTY_TURBULENCE_MODELINNG_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -54,14 +54,14 @@ class LineEditRV;
 class QTabWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 
-class TurbulenceModelingWidget: public SimCenterAppWidget
+class EmptyTurbulenceModeling: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit TurbulenceModelingWidget(IsolatedBuildingCFD *parent = 0);
-    ~TurbulenceModelingWidget();
+    explicit EmptyTurbulenceModeling(EmptyDomainCFD *parent = 0);
+    ~EmptyTurbulenceModeling();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -76,7 +76,7 @@ public slots:
    void LESModelTypeChanged(const QString &arg1);
 
 private:
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
@@ -100,4 +100,4 @@ private:
    QStringList varNamesAndValues;
 };
 
-#endif // TURBULENCE_MODELINNG_WIDGET_H
+#endif // EMPTY_TURBULENCE_MODELINNG_H

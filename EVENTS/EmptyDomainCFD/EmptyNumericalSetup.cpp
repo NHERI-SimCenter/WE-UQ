@@ -69,7 +69,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SimCenterPreferences.h>
 #include <GeneralInformationWidget.h>
 
-EmptyNumericalSetup::EmptyNumericalSetup( EmptyDomainCFD *parent)
+EmptyNumericalSetup::EmptyNumericalSetup(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();

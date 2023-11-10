@@ -1,5 +1,5 @@
-#ifndef NUMERICAL_SETUP_WIDGET_H
-#define NUMERICAL_SETUP_WIDGET_H
+#ifndef EMPTY_NUMERICAL_SETUP_H
+#define EMPTY_NUMERICAL_SETUP_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,19 +55,19 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 
-class NumericalSetupWidget: public SimCenterAppWidget
+class EmptyNumericalSetup: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit NumericalSetupWidget(IsolatedBuildingCFD *parent = 0);
-    ~NumericalSetupWidget();
+    explicit EmptyNumericalSetup(EmptyDomainCFD *parent = 0);
+    ~EmptyNumericalSetup();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -87,7 +87,7 @@ public slots:
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout      *layout;
 
@@ -132,4 +132,4 @@ public:
 
 };
 
-#endif // NUMERICAL_SETUP_WIDGET_H
+#endif // EMPTY_NUMERICAL_SETUP_H

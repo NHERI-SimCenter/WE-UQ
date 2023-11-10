@@ -1,5 +1,5 @@
-#ifndef SNAPPY_HEX_MESH_WIDGET_H
-#define SNAPPY_HEX_MESH_WIDGET_H
+#ifndef EMPTY_SNAPPY_HEX_MESH_H
+#define EMPTY_SNAPPY_HEX_MESH_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,17 +55,17 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 
-class SnappyHexMeshWidget: public SimCenterAppWidget
+class EmptySnappyHexMesh: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit SnappyHexMeshWidget(IsolatedBuildingCFD *parent = 0);
-    ~SnappyHexMeshWidget();
+    explicit EmptySnappyHexMesh(EmptyDomainCFD *parent = 0);
+    ~EmptySnappyHexMesh();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -103,7 +103,7 @@ public slots:
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout  *layout;
 
@@ -171,4 +171,4 @@ public:
 
 };
 
-#endif // SNAPPY_HEX_MESH_WIDGET_H
+#endif // EMPTY_SNAPPY_HEX_MESH_H
