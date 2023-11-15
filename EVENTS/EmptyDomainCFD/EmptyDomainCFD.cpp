@@ -158,7 +158,6 @@ bool EmptyDomainCFD::initialize()
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
-
     QLabel *massUnitLabel = new QLabel("Mass :");
     QLabel *lengthUnitLabel = new QLabel("Length :");
     QLabel *timeUnitLabel = new QLabel("Time :");
@@ -189,7 +188,6 @@ bool EmptyDomainCFD::initialize()
     openFoamVersion->addItem("10");
     openFoamVersion->setCurrentIndex(1);
 
-
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
 
@@ -209,7 +207,6 @@ bool EmptyDomainCFD::initialize()
     cursor->insertText(" Monitor wind loads\n");
     cursor->insertText(" Run simulation\n");
     cursor->insertText(" Post-process results");
-
 
     generalDescriptionLayout->addWidget(modelingProcedureText);
 
@@ -243,7 +240,7 @@ bool EmptyDomainCFD::initialize()
     geometryWidget->setLayout(geometryLayout);
     meshWidget->setLayout(meshLayout);
     BCWidget->setLayout(BCLayout);
-    numericalSetup->setLayout(numericalSetupLayout);
+    numericalSetupWidget->setLayout(numericalSetupLayout);
     monitoringWidget->setLayout(monitoringLayout);
     resultsWidget->setLayout(resultsLayout);
 

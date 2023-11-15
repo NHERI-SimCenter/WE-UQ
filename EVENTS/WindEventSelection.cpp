@@ -70,10 +70,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "Utils/ProgramOutputDialog.h"
 
 #include <UserDefinedApplication.h>
-//#include <BasicCFD.h>
-#include <BasicCFDv2.h>
 #include <DigitalWindTunnel.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
+#include <EmptyDomainCFD/EmptyDomainCFD.h>
 
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
@@ -94,10 +93,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection = new QComboBox();
 
     eventSelection->addItem(tr("Stochastic Wind"));
-//    eventSelection->addItem(tr("CFD - Basic"));
-    eventSelection->addItem(tr("CFD - Wind Loads on Isolated Building"));    
-//    eventSelection->addItem(tr("CFD - Expert"));
-    eventSelection->addItem(tr("CFD - Digital Wind Tunnel"));
+    eventSelection->addItem(tr("CFD - Wind Loads on Isolated Building"));
+    eventSelection->addItem(tr("CFD - Empty Domain Simulation"));
     eventSelection->addItem(tr("Experimental Wind Forces"));
     eventSelection->addItem(tr("Wind Force Spectrum (CPSD)"));
     eventSelection->addItem(tr("DEDM_HRP"));
@@ -107,10 +104,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     eventSelection->addItem(tr("Existing"));
 
     eventSelection->setItemData(0, "Stochastically Generated Wind Forces", Qt::ToolTipRole);
-//    eventSelection->setItemData(1, "Basic OpenFOAM Simulation", Qt::ToolTipRole);
     eventSelection->setItemData(1, "Wind Load Simulation on a Rectangular Isolated Building with Automated Meshing", Qt::ToolTipRole);
-//    eventSelection->setItemData(3, "Expert OpenFOAM Simulation", Qt::ToolTipRole);
-    eventSelection->setItemData(2, "Digital Wind Tunnel: OpenFOAM Simulation of the UF facility", Qt::ToolTipRole);
+    eventSelection->setItemData(2, "Empty Domain Simulation: OpenFOAM Simulation to Characterize the Incident Flow", Qt::ToolTipRole);
     eventSelection->setItemData(3, "Forces using Wind Tunnel Experiment Data", Qt::ToolTipRole);
     eventSelection->setItemData(4, "Experimental Wind Force Spectrum", Qt::ToolTipRole);
     eventSelection->setItemData(5, "Forces from Vortex-Winds DEDM_HRP server", Qt::ToolTipRole);
@@ -140,17 +135,12 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-//    CFDBeginnerEventWidget = new BasicCFDv2(theRandomVariablesContainer);
-//    theStackedWidget->addWidget(CFDBeginnerEventWidget);
 
     theIsolatedBuildingCFD = new IsolatedBuildingCFD(theRandomVariablesContainer);
     theStackedWidget->addWidget(theIsolatedBuildingCFD);
-    
-//    CFDExpertEventWidget = new CFDExpertWidget(theRandomVariablesContainer, remoteService);
-//    theStackedWidget->addWidget(CFDExpertEventWidget);
 
-    theDigitalWindTunnel = new DigitalWindTunnel(theRandomVariablesContainer);
-    theStackedWidget->addWidget(theDigitalWindTunnel);
+    theEmptyDomainCFD = new EmptyDomainCFD(theRandomVariablesContainer);
+    theStackedWidget->addWidget(theEmptyDomainCFD);
 
     theExperimentalWindForces = new ExperimentalWindForces(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExperimentalWindForces);
@@ -181,9 +171,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     // status and error messaging
     connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
-//    connect(CFDExpertEventWidget,SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
-//    connect(CFDExpertEventWidget,SIGNAL(statusMessage(QString)),this,SLOT(sendStatusMessage(QString)));
-//    connect(CFDExpertEventWidget,SIGNAL(fatalMessage(QString)), this,SLOT(sendFatalMessage(QString)));
+    connect(theEmptyDomainCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
 }
 
 WindEventSelection::~WindEventSelection()
@@ -291,11 +279,13 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
         }
     }
 
-    else if(arg1 == "CFD - Empty Domain Simulation") {
+    else if(arg1 == "CFD - Empty Domain Simulation"){
         theStackedWidget->setCurrentIndex(2);
         theCurrentEvent = theEmptyDomainCFD;
 
-        IsolatedBuildingCFD* theEmp  = dynamic_cast<IsolatedBuildingCFD*>(theEmptyDomainCFD);
+        EmptyDomainCFD* theEmp  = dynamic_cast<EmptyDomainCFD*>(theEmptyDomainCFD);
+
+
 
         if (!theEmp->isInitialize())
         {
