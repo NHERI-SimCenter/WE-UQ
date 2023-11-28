@@ -89,8 +89,8 @@ private:
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *monitorWindProfileGroup;
+   QGridLayout          *monitorWindProfileLayout;
 
    QGroupBox            *monitorStoryLoadGroup;
    QGridLayout          *monitorStoryLoadLayout;

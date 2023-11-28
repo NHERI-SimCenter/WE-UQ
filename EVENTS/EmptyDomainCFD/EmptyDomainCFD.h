@@ -106,16 +106,16 @@ public:
     double fetchLength();
     QVector<double> getBuildingCenter();
 
-    double buildingWidth();
-    double buildingDepth();
-    double buildingHeight();
+//    double buildingWidth();
+//    double buildingDepth();
+//    double buildingHeight();
+//    double windDirection();
+
     int numberOfFloors();
 
     double geometricScale();
-    double windDirection();
-    QString buildingShape();
-
-    QString normalizationType();
+//    QString buildingShape();
+//    QString normalizationType();
     QString caseDir();
     QString foamDictsPath();
     QString templateDictDir();

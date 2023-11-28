@@ -73,8 +73,6 @@ public:
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
-    void initializeImportSTLDialog();
-
     void updateWidgets();
 
     QVector<double> coordSysOrigin();
@@ -89,52 +87,24 @@ signals:
 
 public slots:
    void clear(void);
-    void onBrowseSTLPathButtonClicked(void);
-    void onImportSTLButtonClicked();
+    void onImportSetupButtonClicked();
     void originChanged(const QString &arg);
     void useCOSTOptionChecked(int);
-    void buildingShapeChanged(const QString &arg);
-    void onSTLOkButtonClicked();
-    void onSTLImportButtonClicked();
-    void onSTLCancelButtonClicked();
 
 private:
 
    QVBoxLayout          *layout;
    EmptyDomainCFD       *mainModel;
 
-   QGroupBox            *dimAndScaleGroup;
-   QGridLayout          *dimAndScaleLayout;
-   QComboBox            *normalizationTypeWidget;
+   QGroupBox            *domainSetupGroup;
+   QGridLayout          *domainSetupLayout;
 
-   QComboBox            *buildingShape;
-   QDialog              *importSTLDialog;
-   QPushButton          *importSTLButton;
-   QLabel               *importSTLLabel;
-   QLineEdit            *importedSTLPath;
-   QLineEdit            *stlScaleFactor;
-   QCheckBox            *recenterToOrigin;
-   QCheckBox            *accountWindDirection;
-   QCheckBox            *useSTLDimensions;
+   QPushButton          *importSetupButton;
+   QLabel               *importSetupLabel;
 
-   QLineEdit            *stlXMin;
-   QLineEdit            *stlXMax;
-   QLineEdit            *stlYMin;
-   QLineEdit            *stlYMax;
-   QLineEdit            *stlZMin;
-   QLineEdit            *stlZMax;
-
-   QLineEdit            *stlXDim;
-   QLineEdit            *stlYDim;
-   QLineEdit            *stlZDim;
-
-   QLineEdit            *buildingWidthWidget;
-   QLineEdit            *buildingDepthWidget;
-   QLineEdit            *buildingHeightWidget;
 
    QLineEdit            *geometricScaleWidget;
-   QSpinBox             *windDirectionWidget;
-   QPushButton          *theBuildingButton;
+   QPushButton          *theDomainImageButton;
 
    QLineEdit            *domainLengthWidget;
    QLineEdit            *domainWidthWidget;
@@ -150,17 +120,8 @@ private:
    QLineEdit            *originYWidget;
    QLineEdit            *originZWidget;
 
-   QGroupBox            *buildingTypeGroup;
-   QGridLayout          *buildingTypeLayout;
-
-   QGroupBox            *buildingInformationGroup;
-   QGridLayout          *buildingInformationLayout;
-
    QGroupBox            *domainInformationGroup;
    QGridLayout          *domainInformationLayout;
-
-   QWidget              *buildingAndDomainInformationGroup;
-   QGridLayout          *buildingAndDomainInformationLayout;
 
    QGroupBox            *coordinateSystemGroup;
    QGridLayout          *coordinateSystemLayout;

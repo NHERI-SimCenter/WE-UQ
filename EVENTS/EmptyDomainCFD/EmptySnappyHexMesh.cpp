@@ -236,7 +236,7 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
 //    backgroundMeshLayout->setHorizontalSpacing(50);
 
     QPushButton *blockMeshDemoView = new QPushButton("");
-    QPixmap pixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMesh/blockMeshDemoMeshView.png");
+    QPixmap pixmap(":/Resources/EmptyDomainCFD/blockMeshDemoMeshView.png");
     blockMeshDemoView->setIcon(pixmap);
     blockMeshDemoView->setIconSize(pixmap.rect().size()*.30);
     blockMeshDemoView->setFixedSize(pixmap.rect().size()*.30);
@@ -247,7 +247,6 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
 
     backgroundMeshWidget->setLayout(backgroundMeshLayout);
     snappyHexMeshTab->addTab(backgroundMeshWidget, "Background Mesh");
-
 
 
     //-----------------------------------------------------------------
@@ -280,36 +279,36 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     }
 
     //Box # 1
-    refinementBoxesTable->item(0, 2)->setText("-6.60");
-    refinementBoxesTable->item(0, 3)->setText("-2.75");
+    refinementBoxesTable->item(0, 2)->setText("-3.02");
+    refinementBoxesTable->item(0, 3)->setText("-1.50");
     refinementBoxesTable->item(0, 4)->setText("0.00");
-    refinementBoxesTable->item(0, 5)->setText("6.65");
-    refinementBoxesTable->item(0, 6)->setText("2.75");
-    refinementBoxesTable->item(0, 7)->setText("3.75");
+    refinementBoxesTable->item(0, 5)->setText("3.04");
+    refinementBoxesTable->item(0, 6)->setText("1.50");
+    refinementBoxesTable->item(0, 7)->setText("2.00");
 
     //Box # 2
-    refinementBoxesTable->item(1, 2)->setText("-6.60");
-    refinementBoxesTable->item(1, 3)->setText("-1.64");
+    refinementBoxesTable->item(1, 2)->setText("-3.02");
+    refinementBoxesTable->item(1, 3)->setText("-1.00");
     refinementBoxesTable->item(1, 4)->setText("0.00");
-    refinementBoxesTable->item(1, 5)->setText("4.37");
-    refinementBoxesTable->item(1, 6)->setText("1.64");
-    refinementBoxesTable->item(1, 7)->setText("2.75");
+    refinementBoxesTable->item(1, 5)->setText("2.00");
+    refinementBoxesTable->item(1, 6)->setText("1.00");
+    refinementBoxesTable->item(1, 7)->setText("1.50");
 
     //Box # 3
-    refinementBoxesTable->item(2, 2)->setText("-0.77");
-    refinementBoxesTable->item(2, 3)->setText("-0.87");
+    refinementBoxesTable->item(2, 2)->setText("-0.42");
+    refinementBoxesTable->item(2, 3)->setText("-0.50");
     refinementBoxesTable->item(2, 4)->setText("0.00");
-    refinementBoxesTable->item(2, 5)->setText("2.19");
-    refinementBoxesTable->item(2, 6)->setText("0.87");
-    refinementBoxesTable->item(2, 7)->setText("1.75");
+    refinementBoxesTable->item(2, 5)->setText("1.20");
+    refinementBoxesTable->item(2, 6)->setText("0.50");
+    refinementBoxesTable->item(2, 7)->setText("0.95");
 
     //Box # 4
-    refinementBoxesTable->item(3, 2)->setText("-0.44");
-    refinementBoxesTable->item(3, 3)->setText("-0.55");
+    refinementBoxesTable->item(3, 2)->setText("-0.24");
+    refinementBoxesTable->item(3, 3)->setText("-0.30");
     refinementBoxesTable->item(3, 4)->setText("0.00");
-    refinementBoxesTable->item(3, 5)->setText("1.31");
-    refinementBoxesTable->item(3, 6)->setText("0.55");
-    refinementBoxesTable->item(3, 7)->setText("1.35");
+    refinementBoxesTable->item(3, 5)->setText("0.72");
+    refinementBoxesTable->item(3, 6)->setText("0.30");
+    refinementBoxesTable->item(3, 7)->setText("0.75");
 
 
     for (int i=0; i < numRows; i++)
@@ -340,180 +339,6 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     regionalRefinementWidget->setLayout(regionalRefinementLayout);
     snappyHexMeshTab->addTab(regionalRefinementWidget, "Regional Refinements");
 
-    //-------------------------------------------------------------------------------
-    // Add surface Refinement Tab
-    QWidget* surfaceRefinementWidget = new QWidget();
-    QGridLayout* surfaceRefinementLayout = new QGridLayout(surfaceRefinementWidget);
-
-//    surfaceRefinementWidget->setMaximumHeight(100);
-    surfaceRefinementLayout->setHorizontalSpacing(widgetGap);
-
-    QLabel *addSurfaceRefinementLabel = new QLabel("Add Surface Refinement:");
-    QLabel *surfaceNameLabel = new QLabel("Surface Name:");
-    QLabel *refinementLevelLabel = new QLabel("Refinement Level:");
-    QLabel *refinementDistanceLabel = new QLabel("Refinement Distance:");
-    QLabel *surfaceRefinementMeshSizeLabel = new QLabel("Approx. Smallest Mesh Size:");
-
-    addSurfaceRefinement = new QCheckBox();
-    addSurfaceRefinement->setChecked(true);
-
-    surfaceName  = new QComboBox();
-    surfaceName->addItem("Building");
-    surfaceName->addItem("Ground");
-    surfaceName->setEnabled(false);
-
-    surfaceRefinementLevel = new QSpinBox();
-    surfaceRefinementLevel->setRange(numRows + 2, 100);
-    surfaceRefinementLevel->setSingleStep(1);
-
-    surfaceRefinementDistance = new QLineEdit();
-    surfaceRefinementDistance->setText("0.10");
-
-    surfaceRefinementMeshSize = new QLineEdit();
-    surfaceRefinementMeshSize->setEnabled(false);
-    surfaceRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, surfaceRefinementLevel->value())));
-
-
-    QPushButton *surfaceMeshDemoView = new QPushButton("");
-    QPixmap surfaceMeshPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMesh/surfaceRefinementDemoView.png");
-    surfaceMeshDemoView->setIcon(surfaceMeshPixmap);
-    surfaceMeshDemoView->setIconSize(surfaceMeshPixmap.rect().size()*.25);
-    surfaceMeshDemoView->setFixedSize(surfaceMeshPixmap.rect().size()*.25);
-
-    surfaceRefinementLayout->addWidget(addSurfaceRefinementLabel, 0, 0);
-    surfaceRefinementLayout->addWidget(surfaceNameLabel, 1, 0);
-    surfaceRefinementLayout->addWidget(refinementLevelLabel, 2, 0);
-    surfaceRefinementLayout->addWidget(refinementDistanceLabel, 3, 0);
-    surfaceRefinementLayout->addWidget(surfaceRefinementMeshSizeLabel, 4, 0);
-
-    surfaceRefinementLayout->addWidget(addSurfaceRefinement, 0, 1);
-    surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
-    surfaceRefinementLayout->addWidget(surfaceRefinementLevel, 2, 1);
-    surfaceRefinementLayout->addWidget(surfaceRefinementDistance, 3, 1);
-    surfaceRefinementLayout->addWidget(surfaceRefinementMeshSize, 4, 1);
-
-    surfaceRefinementLayout->addWidget(surfaceMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-
-    surfaceRefinementWidget->setLayout(surfaceRefinementLayout);
-    snappyHexMeshTab->addTab(surfaceRefinementWidget, "Surface Refinements");
-
-    //-------------------------------------------------------------------------------
-
-    // Add edge Refinement Tab
-    QWidget* edgeRefinementWidget = new QWidget();
-    QGridLayout* edgeRefinementLayout = new QGridLayout(edgeRefinementWidget);
-
-    edgeRefinementLayout->setHorizontalSpacing(widgetGap);
-
-
-    QLabel *addEdgeRefinementLabel = new QLabel("Add Edge Refinement:");
-    QLabel *edgeNameLabel = new QLabel("Refinement Edge:");
-    QLabel *edgeRefinementLevelLabel = new QLabel("Refinement Level:");
-    QLabel *edgeRefinementMeshSizeLabel = new QLabel("Aprox. Smallest Mesh Size:");
-
-    addEdgeRefinement = new QCheckBox();
-    addEdgeRefinement->setChecked(true);
-
-    refinementEdgeName  = new QComboBox();
-    refinementEdgeName->addItem("Building Edges");
-    refinementEdgeName->setEnabled(false);
-
-    edgeRefinementLevel = new QSpinBox();
-    edgeRefinementLevel->setRange(numRows + 3, 100);
-    edgeRefinementLevel->setSingleStep(1);
-
-    edgeRefinementMeshSize = new QLineEdit();
-    edgeRefinementMeshSize->setEnabled(false);
-    edgeRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())));
-
-    QPushButton *edgeMeshDemoView = new QPushButton("");
-    QPixmap edgeMeshPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMesh/edgeRefinementDemoView.svg");
-    edgeMeshDemoView->setIcon(edgeMeshPixmap);
-    edgeMeshDemoView->setIconSize(edgeMeshPixmap.rect().size()*.25);
-    edgeMeshDemoView->setFixedSize(edgeMeshPixmap.rect().size()*.25);
-
-    edgeRefinementLayout->addWidget(addEdgeRefinementLabel, 0, 0);
-    edgeRefinementLayout->addWidget(edgeNameLabel, 1, 0);
-    edgeRefinementLayout->addWidget(edgeRefinementLevelLabel, 2, 0);
-    edgeRefinementLayout->addWidget(edgeRefinementMeshSizeLabel, 3, 0);
-
-    edgeRefinementLayout->addWidget(addEdgeRefinement, 0, 1);
-    edgeRefinementLayout->addWidget(refinementEdgeName, 1, 1);
-    edgeRefinementLayout->addWidget(edgeRefinementLevel, 2, 1);
-    edgeRefinementLayout->addWidget(edgeRefinementMeshSize, 3, 1);
-
-    edgeRefinementLayout->addWidget(edgeMeshDemoView,0,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-
-
-    edgeRefinementWidget->setLayout(edgeRefinementLayout);
-    snappyHexMeshTab->addTab(edgeRefinementWidget, "Edge Refinements");
-
-    //-------------------------------------------------------------------------------
-
-    // Add prism layer Tab
-    QWidget* prismLayerWidget = new QWidget();
-    QGridLayout* prismLayerLayout = new QGridLayout(prismLayerWidget);
-    prismLayerLayout->setHorizontalSpacing(widgetGap);
-
-
-    QLabel *addPrismLayersLabel = new QLabel("Add Prism Layers:");
-    QLabel *prismLayerSurfaceNameLabel = new QLabel("Surface Name:");
-    QLabel *numberOfPrismLayersLabel = new QLabel("Number of Layers:");
-    QLabel *prismLayerExpansionRatioLabel = new QLabel("Expansion Ratio:");
-    QLabel *finalLayerThicknessLabel = new QLabel("Final Layer Thickness:");
-    QLabel *prismLayerMeshSizeLabel = new QLabel("Aprox. Smallest Grid Size: ");
-
-    addPrismLayers = new QCheckBox();
-    addPrismLayers->setChecked(true);
-
-    prismLayerSurfaceName  = new QComboBox();
-    prismLayerSurfaceName->addItem("Building Surface");
-
-    numberOfPrismLayers = new QSpinBox();
-    numberOfPrismLayers->setRange(5, 100);
-    numberOfPrismLayers->setSingleStep(1);
-
-    prismLayerExpansionRatio = new QDoubleSpinBox();
-    prismLayerExpansionRatio->setRange(1.0, 1.5);
-    prismLayerExpansionRatio->setValue(1.15);
-    prismLayerExpansionRatio->setSingleStep(0.05);
-
-    finalPrismLayerThickness = new QDoubleSpinBox();
-    finalPrismLayerThickness->setRange(0.0, 1.0);
-    finalPrismLayerThickness->setValue(0.5);
-    finalPrismLayerThickness->setSingleStep(0.1);
-
-    prismLayerMeshSize = new QLineEdit();
-    prismLayerMeshSize->setEnabled(false);
-    prismLayerMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
-
-    QPushButton *prismLayersDemoView = new QPushButton("");
-    QPixmap prismLayersPixmap(":/Resources/IsolatedBuildingCFD/EmptySnappyHexMesh/prismLayersDemoView.png");
-    prismLayersDemoView->setIcon(prismLayersPixmap);
-    prismLayersDemoView->setIconSize(prismLayersPixmap.rect().size()*.25);
-    prismLayersDemoView->setFixedSize(prismLayersPixmap.rect().size()*.25);
-
-    prismLayerLayout->addWidget(addPrismLayersLabel, 0, 0);
-    prismLayerLayout->addWidget(prismLayerSurfaceNameLabel, 1, 0);
-    prismLayerLayout->addWidget(numberOfPrismLayersLabel, 2, 0);
-    prismLayerLayout->addWidget(prismLayerExpansionRatioLabel, 3, 0);
-    prismLayerLayout->addWidget(finalLayerThicknessLabel, 4, 0);
-    prismLayerLayout->addWidget(prismLayerMeshSizeLabel, 5, 0);
-
-    prismLayerLayout->addWidget(addPrismLayers, 0, 1);
-    prismLayerLayout->addWidget(prismLayerSurfaceName, 1, 1);
-    prismLayerLayout->addWidget(numberOfPrismLayers, 2, 1);
-    prismLayerLayout->addWidget(prismLayerExpansionRatio, 3, 1);
-    prismLayerLayout->addWidget(finalPrismLayerThickness, 4, 1);
-    prismLayerLayout->addWidget(prismLayerMeshSize, 5, 1);
-
-    prismLayerLayout->addWidget(prismLayersDemoView,0,2,6,1,Qt::AlignVCenter); // Qt::AlignVCenter
-
-
-    prismLayerWidget->setLayout(prismLayerLayout);
-    snappyHexMeshTab->addTab(prismLayerWidget, "Prism Layers");
-
-
     //=============================================================================
 
     QPushButton *runBlockMeshButton = new QPushButton("Run Background Mesh");
@@ -541,18 +366,12 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
 
     connect(runInParallel, SIGNAL(stateChanged(int)), this, SLOT(onRunInParallelChecked(int)));
-    connect(addSurfaceRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddSurfaceRefinementChecked(int)));
-    connect(addEdgeRefinement, SIGNAL(stateChanged(int)), this, SLOT(onAddEdgeRefinementChecked(int)));
-    connect(addPrismLayers, SIGNAL(stateChanged(int)), this, SLOT(onAddPrismLayersChecked(int)));
 
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
     connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
-    connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
-    connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
-    connect(prismLayerMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
@@ -584,8 +403,6 @@ void EmptySnappyHexMesh::onRunBlockMeshClicked()
 
     runBlockMeshCommand();
 
-    runExtractSurfaceFeaturesCommand();
-
     mainModel->removeOldFiles();
 
     mainModel->updateJSON();
@@ -603,8 +420,6 @@ void EmptySnappyHexMesh::onRunSnappyHexMeshClicked()
     mainModel->writeOpenFoamFiles();
 
     statusMessage("Extracting building surface features ...");
-
-    runExtractSurfaceFeaturesCommand();
 
     statusMessage("Running snappyHexMesh ...");
 
@@ -686,53 +501,6 @@ bool EmptySnappyHexMesh::runBlockMeshCommand()
     return true;
 }
 
-bool EmptySnappyHexMesh::runExtractSurfaceFeaturesCommand()
-{
-    QString casePath = mainModel->caseDir();
-    QString commands;
-    QProcess *process = new QProcess(this);
-    process->setWorkingDirectory(casePath);
-
-    #ifdef Q_OS_MACOS
-        QString localFoamPath = "/home/openfoam";
-        QString dockerImage = "openfoam/openfoam10-paraview510";
-
-	QDir homeDir(QDir::homePath());
-	QString sourceBash("");
-	if (homeDir.exists(".bash_profile")) {
-	  sourceBash = QString("source $HOME/.bash_profile; ");
-	} else if (homeDir.exists(".bashrc")) {
-	  sourceBash = QString("source $HOME/.bashrc; ");
-	} else if (homeDir.exists(".zprofile")) {
-	  sourceBash = QString("source $HOME/.zprofile; ");
-	} else if (homeDir.exists(".zshrc")) {
-	  sourceBash = QString("source $HOME/.zshrc; ");
-	} else
-	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
-	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"");
-
-	qDebug() << commands;
-	
-        //Actual command on the terminal
-        //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures; exit"
-
-    #else
-
-        commands  = "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
-
-    #endif
-
-    process->start("bash", QStringList() << "-c" << commands);
-    process->waitForFinished(-1);
-
-    statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-
-    process->close();
-
-    return true;
-}
 
 bool EmptySnappyHexMesh::runSnappyHexMeshCommand()
 {
@@ -857,7 +625,6 @@ bool EmptySnappyHexMesh::outputToJSON(QJsonObject &jsonObject)
 
     //Write snappy configuration parameters
     QJsonObject snappyMeshParamsJson = QJsonObject();
-    snappyMeshParamsJson["buildingSTLName"] = "building";
     snappyMeshParamsJson["numCellsBetweenLevels"] = numCellsBetweenLevels->value();
     snappyMeshParamsJson["resolveFeatureAngle"] = resolveFeatureAngle->value();
     snappyMeshParamsJson["numProcessors"] = numProcessors->value();
@@ -898,26 +665,6 @@ bool EmptySnappyHexMesh::outputToJSON(QJsonObject &jsonObject)
     }
 
     snappyMeshParamsJson["refinementBoxes"] = regions;
-
-
-    //Add surface refinment
-    snappyMeshParamsJson["addSurfaceRefinement"] = addSurfaceRefinement->isChecked();
-    snappyMeshParamsJson["surfaceRefinementLevel"] = surfaceRefinementLevel->value();
-    snappyMeshParamsJson["surfaceRefinementDistance"] = surfaceRefinementDistance->text().toDouble();
-    snappyMeshParamsJson["refinementSurfaceName"] = "building";
-
-
-    //Add edge refinment
-    snappyMeshParamsJson["addEdgeRefinement"] = addEdgeRefinement->isChecked();
-    snappyMeshParamsJson["edgeRefinementLevel"] = edgeRefinementLevel->value();
-    snappyMeshParamsJson["refinementEdgeName"] = "building";
-
-    //Add prism layers
-    snappyMeshParamsJson["addPrismLayers"] = addPrismLayers->isChecked();
-    snappyMeshParamsJson["numberOfPrismLayers"] = numberOfPrismLayers->value();
-    snappyMeshParamsJson["prismLayerExpansionRatio"] = prismLayerExpansionRatio->value();
-    snappyMeshParamsJson["finalPrismLayerThickness"] = finalPrismLayerThickness->value();
-    snappyMeshParamsJson["prismLayerSurfaceName"] = "building";
 
     //Replace with the unit system from "General Information" window
     snappyMeshParamsJson["lengthUnit"] = "m";
@@ -975,24 +722,6 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
 
     }
 
-    //Set surface refinment
-    addSurfaceRefinement->setChecked(snappyMeshParamsJson["addSurfaceRefinement"].toBool());
-    surfaceName->setCurrentText(snappyMeshParamsJson["refinementSurfaceName"].toString());
-    surfaceRefinementLevel->setValue(snappyMeshParamsJson["surfaceRefinementLevel"].toInt());
-    surfaceRefinementDistance->setText(QString::number(snappyMeshParamsJson["surfaceRefinementDistance"].toDouble()));
-
-    //Set edge refinment
-    addEdgeRefinement->setChecked(snappyMeshParamsJson["addEdgeRefinement"].toBool());
-    edgeRefinementLevel->setValue(snappyMeshParamsJson["edgeRefinementLevel"].toInt());
-    refinementEdgeName->setCurrentText(snappyMeshParamsJson["refinementEdgeName"].toString());
-
-    //Set prism layers
-    addPrismLayers->setChecked(snappyMeshParamsJson["addPrismLayers"].toBool());
-    numberOfPrismLayers->setValue(snappyMeshParamsJson["numberOfPrismLayers"].toInt());
-    prismLayerExpansionRatio->setValue(snappyMeshParamsJson["prismLayerExpansionRatio"].toDouble());
-    finalPrismLayerThickness->setValue(snappyMeshParamsJson["finalPrismLayerThickness"].toDouble());
-    prismLayerSurfaceName->setCurrentText(snappyMeshParamsJson["prismLayerSurfaceName"].toString());
-
     snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();
 
     onMeshSizeChanged();
@@ -1004,27 +733,6 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
 void EmptySnappyHexMesh::onRunInParallelChecked(int)
 {
     numProcessors->setEnabled(runInParallel->isChecked()) ;
-}
-
-void EmptySnappyHexMesh::onAddSurfaceRefinementChecked(int)
-{
-    surfaceRefinementDistance->setEnabled(addSurfaceRefinement->isChecked()) ;
-    surfaceRefinementLevel->setEnabled(addSurfaceRefinement->isChecked()) ;
-    surfaceName->setEnabled(addSurfaceRefinement->isChecked());
-}
-
-void EmptySnappyHexMesh::onAddEdgeRefinementChecked(int)
-{
-    edgeRefinementLevel->setEnabled(addEdgeRefinement->isChecked()) ;
-    refinementEdgeName->setEnabled(addEdgeRefinement->isChecked()) ;
-}
-
-void EmptySnappyHexMesh::onAddPrismLayersChecked(int)
-{
-    numberOfPrismLayers->setEnabled(addPrismLayers->isChecked());
-    finalPrismLayerThickness->setEnabled(addPrismLayers->isChecked());
-    prismLayerExpansionRatio->setEnabled(addPrismLayers->isChecked());
-    prismLayerSurfaceName->setEnabled(addPrismLayers->isChecked());
 }
 
 void EmptySnappyHexMesh::onAddRegionClicked()
@@ -1057,8 +765,4 @@ void EmptySnappyHexMesh::onMeshSizeChanged()
     {
         refinementBoxesTable->item(i, 8)->setText(QString::number(meshSize/qPow(2, refinementBoxesTable->item(i, 1)->text().toInt())));
     }
-
-    edgeRefinementMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())));
-    surfaceRefinementMeshSize->setText(QString::number(meshSize/qPow(2, surfaceRefinementLevel->value())));
-    prismLayerMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
 }

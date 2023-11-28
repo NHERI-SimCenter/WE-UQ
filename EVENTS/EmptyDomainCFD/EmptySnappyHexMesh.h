@@ -70,12 +70,10 @@ public:
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
-    bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();
     bool createSnappyHexMeshDict();
 
     bool runBlockMeshCommand();
-    bool runExtractSurfaceFeaturesCommand();
     bool runSnappyHexMeshCommand();
     bool runCheckMeshCommand();
 
@@ -93,9 +91,6 @@ public slots:
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();
    void onRunInParallelChecked(int);
-   void onAddPrismLayersChecked(int);
-   void onAddSurfaceRefinementChecked(int);
-   void onAddEdgeRefinementChecked(int);
    void onNumberOfCellsChanged();
 
    void onMeshSizeChanged();
@@ -106,9 +101,6 @@ private:
    EmptyDomainCFD  *mainModel;
 
    QVBoxLayout  *layout;
-
-//   QGroupBox    *snappyHexMeshGroup;
-//   QVBoxLayout  *snappyHexMeshLayout;
 
    QGroupBox    *generalOptionsGroup;
    QGridLayout  *generalOptionsLayout;
@@ -139,26 +131,6 @@ private:
    //Regional refinements
    QTableWidget *refinementBoxesTable;
 
-   //Surface refinments
-   QCheckBox    *addSurfaceRefinement;
-   QComboBox    *surfaceName;
-   QSpinBox     *surfaceRefinementLevel;
-   QLineEdit    *surfaceRefinementDistance;
-   QLineEdit    *surfaceRefinementMeshSize;
-
-   //Add edge refinment
-   QCheckBox    *addEdgeRefinement;
-   QSpinBox     *edgeRefinementLevel;
-   QComboBox    *refinementEdgeName;
-   QLineEdit    *edgeRefinementMeshSize;
-
-   //Add prism layers
-   QCheckBox        *addPrismLayers;
-   QSpinBox         *numberOfPrismLayers;
-   QDoubleSpinBox   *prismLayerExpansionRatio;
-   QDoubleSpinBox   *finalPrismLayerThickness;
-   QComboBox        *prismLayerSurfaceName;
-   QLineEdit        *prismLayerMeshSize;
 
    QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;

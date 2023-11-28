@@ -112,7 +112,7 @@ EmptyWindCharacteristics::EmptyWindCharacteristics(EmptyDomainCFD *parent)
     referenceWindSpeed->setToolTip("Wind speed at reference height in model scale");
 
     referenceHeight = new QLineEdit();
-    referenceHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->geometricScale()));
+    referenceHeight->setText(QString::number(182.88/mainModel->geometricScale()));
     referenceHeight->setValidator(new QDoubleValidator());
     referenceHeight->setToolTip("Reference height in model scale");
 
@@ -190,7 +190,7 @@ void EmptyWindCharacteristics::clear(void)
 
 void EmptyWindCharacteristics::onCalculateReynoldsNumber()
 {
-    double h = mainModel->buildingHeight()/mainModel->geometricScale();
+    double h = referenceHeight->text().toDouble();
     double Uh = referenceWindSpeed->text().toDouble();
     double kv = kinematicViscosity->text().toDouble();
 

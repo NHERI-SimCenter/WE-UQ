@@ -34,7 +34,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: abiy
+// Written: Abiy F. Melaku
 
 #include "EmptyDomainCFD.h"
 #include "EmptyGeometricInput.h"
@@ -204,7 +204,7 @@ bool EmptyDomainCFD::initialize()
     cursor->insertText(" Generate mesh\n");
     cursor->insertText(" Define boundary conditions\n");
     cursor->insertText(" Specify numerical setup\n");
-    cursor->insertText(" Monitor wind loads\n");
+    cursor->insertText(" Monitor wind profiles\n");
     cursor->insertText(" Run simulation\n");
     cursor->insertText(" Post-process results");
 
@@ -217,7 +217,6 @@ bool EmptyDomainCFD::initialize()
     openFoamVersionLayout->addWidget(openFoamVersionLabel, 0, 0);
     openFoamVersionLayout->addWidget(openFoamVersion, 0, 1);
     openFoamVersionLayout->setAlignment(Qt::AlignLeft);
-
 
     unitSystemLayout->addWidget(massUnitLabel, 0, 0);
     unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
@@ -354,8 +353,8 @@ bool EmptyDomainCFD::initialize()
     //Update the GI Tabe once the data is read
     GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
     theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+//    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+//    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
 
     this->adjustSize();
 
@@ -497,7 +496,7 @@ void EmptyDomainCFD::onShowResultsClicked()
     QString profName  = caseDir() + "/constant/simCenter/output/windProfiles.txt";
     QVector<QVector<double>> windProfile  =  readTxtData(profName) ;
 
-    double H = buildingHeight()/geometricScale();
+//    double H = buildingHeight()/geometricScale();
 
     QPen pen;
     pen.setColor(QColor(0,0,0));
@@ -902,20 +901,20 @@ double EmptyDomainCFD::fetchLength()
     return geometry->fetchLengthWidget->text().toDouble();
 }
 
-double EmptyDomainCFD::buildingWidth()
-{
-    return geometry->buildingWidthWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingWidth()
+//{
+////    return geometry->buildingWidthWidget->text().toDouble();
+//}
 
-double EmptyDomainCFD::buildingDepth()
-{
-    return geometry->buildingDepthWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingDepth()
+//{
+////    return geometry->buildingDepthWidget->text().toDouble();
+//}
 
-double EmptyDomainCFD::buildingHeight()
-{
-    return geometry->buildingHeightWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingHeight()
+//{
+////    return geometry->buildingHeightWidget->text().toDouble();
+//}
 int EmptyDomainCFD::numberOfFloors()
 {
     return resultMonitoring->numStories->value();
@@ -927,21 +926,21 @@ double EmptyDomainCFD::geometricScale()
     return geometry->geometricScaleWidget->text().toDouble();
 }
 
-double EmptyDomainCFD::windDirection()
-{
-    return geometry->windDirectionWidget->text().toDouble();
-}
+//double EmptyDomainCFD::windDirection()
+//{
+////    return geometry->windDirectionWidget->text().toDouble();
+//}
 
-QString EmptyDomainCFD::buildingShape()
-{
-    return geometry->buildingShape->currentText();
-}
+//QString EmptyDomainCFD::buildingShape()
+//{
+////    return geometry->buildingShape->currentText();
+//}
 
 
-QString EmptyDomainCFD::normalizationType()
-{
-    return geometry->normalizationTypeWidget->currentText();
-}
+//QString EmptyDomainCFD::normalizationType()
+//{
+//    return geometry->normalizationTypeWidget->currentText();
+//}
 
 QVector<double> EmptyDomainCFD::getBuildingCenter()
 {
@@ -997,26 +996,9 @@ bool EmptyDomainCFD::isInitialize()
 
 double EmptyDomainCFD::getTimeStep()
 {
-    double meshSize = 0.0;
+    double meshSize =  snappyHexMesh->refinementBoxesTable->item(snappyHexMesh->refinementBoxesTable->rowCount()-1, 8)->text().toDouble();
 
-    if(snappyHexMesh->addPrismLayers->isChecked())
-    {
-       meshSize = snappyHexMesh->prismLayerMeshSize->text().toDouble();
-    }
-    else if(snappyHexMesh->addEdgeRefinement->isChecked())
-    {
-        meshSize = snappyHexMesh->edgeRefinementMeshSize->text().toDouble();
-    }
-    else if(snappyHexMesh->addSurfaceRefinement->isChecked())
-    {
-        meshSize = snappyHexMesh->surfaceRefinementMeshSize->text().toDouble();
-    }
-    else
-    {
-        meshSize = snappyHexMesh->refinementBoxesTable->item(snappyHexMesh->refinementBoxesTable->rowCount()-1, 8)->text().toDouble();
-    }
-
-    meshSize = meshSize*buildingHeight()/geometricScale();
+//    meshSize = meshSize*buildingHeight()/geometricScale();
 
     double maxCo = numericalSetup->maxCourantNumber->value();
     double U = windCharacteristics->referenceWindSpeed->text().toDouble();
