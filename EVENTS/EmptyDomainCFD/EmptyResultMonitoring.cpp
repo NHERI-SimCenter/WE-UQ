@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "IsolatedBuildingCFD.h"
-#include "ResultMonitoringWidget.h"
+#include "EmptyDomainCFD.h"
+#include "EmptyResultMonitoring.h"
 #include <GeneralInformationWidget.h>
 
 #include <QPushButton>
@@ -104,14 +104,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTextStream>
 #include <QtMath>
 
-ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
+EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
 
-    monitorBaseLoadGroup = new QGroupBox("Base Loads");
-    monitorBaseLoadLayout = new QGridLayout();
-    monitorBaseLoadGroup->setLayout(monitorBaseLoadLayout);
+    monitorWindProfileGroup = new QGroupBox("Wind Profile");
+    monitorWindProfileLayout = new QGridLayout();
+    monitorWindProfileGroup->setLayout(monitorWindProfileLayout);
 
     monitorStoryLoadGroup = new QGroupBox("Story Loads");
     monitorStoryLoadLayout = new QGridLayout();
@@ -141,7 +141,11 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     QLabel* floorHeightOptionsLabel = new QLabel("Floor Height Specification: ");
     QLabel* floorHeightLabel = new QLabel("Floor to Floor Distance (CFD): ");
     QLabel* numStoriesLabel = new QLabel("Number of Stories: ");
-    QLabel* baseLoadWriteIntervalLabel = new QLabel("Write Interval: ");
+
+
+    QLabel* windProfileWriteIntervalLabel = new QLabel("Write Interval: ");
+//    QLabel* baseLoadWriteIntervalLabel = new QLabel("Write Interval: ");
+
     QLabel* storyLoadWriteIntervalLabel = new QLabel("Write Interval: ");
 //    QLabel* centerOfRotationLabel = new QLabel("Center of Rotation:");
 //    QLabel* centerOfRotationXLabel = new QLabel("X");
@@ -197,12 +201,12 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
 
 
-    monitorBaseLoadLayout->addWidget(monitorBaseLoadLabel, 0, 0);
-    monitorBaseLoadLayout->addWidget(monitorBaseLoad, 0, 1);
-    monitorBaseLoadLayout->addWidget(baseLoadWriteIntervalLabel, 1, 0);
-    monitorBaseLoadLayout->addWidget(baseLoadWriteInterval, 1, 1);
+    monitorWindProfileLayout->addWidget(monitorBaseLoadLabel, 0, 0);
+    monitorWindProfileLayout->addWidget(monitorBaseLoad, 0, 1);
+    monitorWindProfileLayout->addWidget(windProfileWriteIntervalLabel, 1, 0);
+    monitorWindProfileLayout->addWidget(baseLoadWriteInterval, 1, 1);
     baseLoadWriteInterval->setMinimumWidth(250);
-    monitorBaseLoadLayout->setAlignment(Qt::AlignLeft);
+    monitorWindProfileLayout->setAlignment(Qt::AlignLeft);
 
     monitorStoryLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
     monitorStoryLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
@@ -224,7 +228,7 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 //    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
 //    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
 
-    layout->addWidget(monitorBaseLoadGroup);
+    layout->addWidget(monitorWindProfileGroup);
     layout->addWidget(monitorStoryLoadGroup);
 
     //==================================================================
@@ -319,43 +323,43 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
 
     GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
-	    [=] (int nFl, double ht) {
-         numStories->setValue(nFl);
-         floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
-	});
+//    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
+//	    [=] (int nFl, double ht) {
+//         numStories->setValue(nFl);
+//         floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+//	});
 
 }
 
 
-ResultMonitoringWidget::~ResultMonitoringWidget()
+EmptyResultMonitoring::~EmptyResultMonitoring()
 {
 
 }
 
-void ResultMonitoringWidget::clear(void)
+void EmptyResultMonitoring::clear(void)
 {
 
 }
 
 
-void ResultMonitoringWidget::onMonitorBaseLoadChecked(int state)
+void EmptyResultMonitoring::onMonitorBaseLoadChecked(int state)
 {
     baseLoadWriteInterval->setEnabled(monitorBaseLoad->isChecked());
 }
 
-void ResultMonitoringWidget::onMonitorPressureChecked(int state)
+void EmptyResultMonitoring::onMonitorPressureChecked(int state)
 {
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 }
 
-void ResultMonitoringWidget::onCreatePressurePointsToggled(bool checked)
+void EmptyResultMonitoring::onCreatePressurePointsToggled(bool checked)
 {
     createPressurePointsGroup->setEnabled(createPressurePoints->isChecked());
     openCSVFile->setEnabled(importPressurePoints->isChecked());
 }
 
-void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
+void EmptyResultMonitoring::onShowCoordinateOfPointsClicked()
 {
     QDialog *dialog  = new QDialog(this);
 
@@ -412,7 +416,7 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
 }
 
-void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
+void EmptyResultMonitoring::visCoordinateOfPoints(QGridLayout* dialogLayout)
 {
     QVTKRenderWidget *qvtkWidget;
     vtkSmartPointer<vtkSTLReader> buildingReader;
@@ -473,7 +477,7 @@ void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
     renderWindow->BordersOn();
 }
 
-void ResultMonitoringWidget::onOpenCSVFileClicked()
+void EmptyResultMonitoring::onOpenCSVFileClicked()
 {
    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
 
@@ -482,7 +486,7 @@ void ResultMonitoringWidget::onOpenCSVFileClicked()
 }
 
 
-QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
+QList<QVector3D> EmptyResultMonitoring::calculatePointCoordinates()
 {
     QList<QVector3D> points;
 
@@ -495,11 +499,11 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
     float z = 0.0;
     float tol = 1.0e-6; //tolerance to keep it just away from the face
 
-    double W = mainModel->buildingWidth()/mainModel->geometricScale();
-    double D = mainModel->buildingDepth()/mainModel->geometricScale();
-    double H = mainModel->buildingHeight()/mainModel->geometricScale();
+    double W = 1.0;//mainModel->buildingWidth()/mainModel->geometricScale();
+    double D = 1.0;//mainModel->buildingDepth()/mainModel->geometricScale();
+    double H = 1.0;//mainModel->buildingHeight()/mainModel->geometricScale();
 
-    double angle = qDegreesToRadians(mainModel->windDirection());
+    double angle = 1.0;//qDegreesToRadians(mainModel->windDirection());
 
 
     float dW = W/(nWidth + 1.0e-10);
@@ -602,7 +606,7 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
     return transPoints;
 }
 
-bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyResultMonitoring::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
@@ -644,7 +648,7 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
 }
 
 
-bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
@@ -672,12 +676,12 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
 
     pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
 
-    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+//    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
 
     return true;
 }
 
-void ResultMonitoringWidget::updateWidgets()
+void EmptyResultMonitoring::updateWidgets()
 {
 }
 

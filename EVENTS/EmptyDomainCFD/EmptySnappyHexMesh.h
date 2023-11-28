@@ -1,5 +1,5 @@
-#ifndef SNAPPY_HEX_MESH_WIDGET_H
-#define SNAPPY_HEX_MESH_WIDGET_H
+#ifndef EMPTY_SNAPPY_HEX_MESH_H
+#define EMPTY_SNAPPY_HEX_MESH_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,27 +55,25 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 
-class SnappyHexMeshWidget: public SimCenterAppWidget
+class EmptySnappyHexMesh: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit SnappyHexMeshWidget(IsolatedBuildingCFD *parent = 0);
-    ~SnappyHexMeshWidget();
+    explicit EmptySnappyHexMesh(EmptyDomainCFD *parent = 0);
+    ~EmptySnappyHexMesh();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
-    bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();
     bool createSnappyHexMeshDict();
 
     bool runBlockMeshCommand();
-    bool runExtractSurfaceFeaturesCommand();
     bool runSnappyHexMeshCommand();
     bool runCheckMeshCommand();
 
@@ -93,9 +91,6 @@ public slots:
    void onRemoveRegionClicked();
 //   void onCheckRegionClicked();
    void onRunInParallelChecked(int);
-   void onAddPrismLayersChecked(int);
-   void onAddSurfaceRefinementChecked(int);
-   void onAddEdgeRefinementChecked(int);
    void onNumberOfCellsChanged();
 
    void onMeshSizeChanged();
@@ -103,12 +98,9 @@ public slots:
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout  *layout;
-
-//   QGroupBox    *snappyHexMeshGroup;
-//   QVBoxLayout  *snappyHexMeshLayout;
 
    QGroupBox    *generalOptionsGroup;
    QGridLayout  *generalOptionsLayout;
@@ -139,26 +131,6 @@ private:
    //Regional refinements
    QTableWidget *refinementBoxesTable;
 
-   //Surface refinments
-   QCheckBox    *addSurfaceRefinement;
-   QComboBox    *surfaceName;
-   QSpinBox     *surfaceRefinementLevel;
-   QLineEdit    *surfaceRefinementDistance;
-   QLineEdit    *surfaceRefinementMeshSize;
-
-   //Add edge refinment
-   QCheckBox    *addEdgeRefinement;
-   QSpinBox     *edgeRefinementLevel;
-   QComboBox    *refinementEdgeName;
-   QLineEdit    *edgeRefinementMeshSize;
-
-   //Add prism layers
-   QCheckBox        *addPrismLayers;
-   QSpinBox         *numberOfPrismLayers;
-   QDoubleSpinBox   *prismLayerExpansionRatio;
-   QDoubleSpinBox   *finalPrismLayerThickness;
-   QComboBox        *prismLayerSurfaceName;
-   QLineEdit        *prismLayerMeshSize;
 
    QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
@@ -171,4 +143,4 @@ public:
 
 };
 
-#endif // SNAPPY_HEX_MESH_WIDGET_H
+#endif // EMPTY_SNAPPY_HEX_MESH_H

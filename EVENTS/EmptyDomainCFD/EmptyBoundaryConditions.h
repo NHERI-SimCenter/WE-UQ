@@ -1,5 +1,5 @@
-#ifndef BOUNDARY_CONDITIONS_WIDGET_H
-#define BOUNDARY_CONDITIONS_WIDGET_H
+#ifndef EMPTY_BOUNDARY_CONDITIONS_H
+#define EMPTY_BOUNDARY_CONDITIONS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -53,14 +53,14 @@ class QTableWidget;
 class QGroupBox;
 class QPushButton;
 class QRadioButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 
-class BoundaryConditionsWidget: public SimCenterAppWidget
+class EmptyBoundaryConditions: public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit BoundaryConditionsWidget(IsolatedBuildingCFD *parent = 0);
-    ~BoundaryConditionsWidget();
+    explicit EmptyBoundaryConditions(EmptyDomainCFD *parent = 0);
+    ~EmptyBoundaryConditions();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -77,7 +77,7 @@ public slots:
    void onShowWindProfilesClicked();
 
 private:
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout  *layout;
 
@@ -111,4 +111,4 @@ private:
    QStringList varNamesAndValues;
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // EMPTY_BOUNDARY_CONDITIONS_H

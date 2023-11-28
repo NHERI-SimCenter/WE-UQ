@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "SimCenterVTKRenderingWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "EmptyVTKRendering.h"
+#include "EmptyDomainCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QLabel>
@@ -115,13 +115,13 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTransform.h>
 #include <vtkCaptionActor2D.h>
 
-SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
+EmptyVTKRendering::EmptyVTKRendering(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     initialize();
 }
 
-void SimCenterVTKRenderingWidget::initialize()
+void EmptyVTKRendering::initialize()
 {
     layout = new QVBoxLayout();
 
@@ -194,18 +194,18 @@ void SimCenterVTKRenderingWidget::initialize()
 }
 
 
-SimCenterVTKRenderingWidget::~SimCenterVTKRenderingWidget()
+EmptyVTKRendering::~EmptyVTKRendering()
 {
 
 }
 
 
-void SimCenterVTKRenderingWidget::clear(void)
+void EmptyVTKRendering::clear(void)
 {
 
 }
 
-void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &arg1)
+void EmptyVTKRendering::surfaceRepresentationChanged(const QString &arg1)
 {
     if (arg1 == "Wireframe")
     {
@@ -235,7 +235,7 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
     renderWindow->Render();
 }
 
-void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
+void EmptyVTKRendering::viewObjectChanged(const QString &arg1)
 {
     if (arg1 == "AllMesh")
     {
@@ -260,13 +260,13 @@ void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
 }
 
 
-void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
+void EmptyVTKRendering::onTransparencyChanged(const int value)
 {
     actor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
     renderWindow->Render();
 }
 
-void SimCenterVTKRenderingWidget::onReloadCaseClicked()
+void EmptyVTKRendering::onReloadCaseClicked()
 {
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
     {
@@ -279,7 +279,7 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
     }
 }
 
-void SimCenterVTKRenderingWidget::readMesh()
+void EmptyVTKRendering::readMesh()
 {
 
     // Setup reader
@@ -341,7 +341,7 @@ void SimCenterVTKRenderingWidget::readMesh()
 
 }
 
-void SimCenterVTKRenderingWidget::showAllMesh()
+void EmptyVTKRendering::showAllMesh()
 {
     block0 = vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()->GetBlock(0));
 
@@ -381,7 +381,7 @@ void SimCenterVTKRenderingWidget::showAllMesh()
 }
 
 
-void SimCenterVTKRenderingWidget::showBreakout()
+void EmptyVTKRendering::showBreakout()
 {
     vtkSmartPointer<vtkSTLReader> stlReader = vtkSmartPointer<vtkSTLReader>::New();
     stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
@@ -443,7 +443,7 @@ void SimCenterVTKRenderingWidget::showBreakout()
 }
 
 
-void SimCenterVTKRenderingWidget::showBuildingOnly()
+void EmptyVTKRendering::showBuildingOnly()
 {
     vtkPolyData* bldgBlock;
     vtkSmartPointer<vtkSTLReader> stlReader;
@@ -499,7 +499,7 @@ void SimCenterVTKRenderingWidget::showBuildingOnly()
 
 // Get named block of specified type
 template <class Type>
-Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
+Type* EmptyVTKRendering::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
 {
     Type* dataset = nullptr;
     const unsigned int nblocks = (mb ? mb->GetNumberOfBlocks() : 0u);
@@ -518,12 +518,12 @@ Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const cha
     return dataset;
 }
 
-bool SimCenterVTKRenderingWidget::isInitialized()
+bool EmptyVTKRendering::isInitialized()
 {
     return initialized;
 }
 
-void SimCenterVTKRenderingWidget::drawAxisAndLegend()
+void EmptyVTKRendering::drawAxisAndLegend()
 {
 
     axisWidget->SetCurrentRenderer(renderer);

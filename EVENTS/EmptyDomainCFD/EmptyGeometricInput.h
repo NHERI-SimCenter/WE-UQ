@@ -1,5 +1,5 @@
-#ifndef GEOMETRIC_INPUT_WIDGET_H
-#define GEOMETRIC_INPUT_WIDGET_H
+#ifndef EMPTY_GEOMETRIC_INPUT_H
+#define EMPTY_GEOMETRIC_INPUT_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,25 +55,23 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 class QDialog;
+class EmptyDomainCFD;
 
-class  GeometricInputWidget: public SimCenterAppWidget
+class  EmptyGeometricInput: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit  GeometricInputWidget(IsolatedBuildingCFD *parent = 0);
-    ~ GeometricInputWidget();
+    explicit  EmptyGeometricInput(EmptyDomainCFD *parent = 0);
+    ~ EmptyGeometricInput();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
-
-    void initializeImportSTLDialog();
 
     void updateWidgets();
 
@@ -89,52 +87,24 @@ signals:
 
 public slots:
    void clear(void);
-    void onBrowseSTLPathButtonClicked(void);
-    void onImportSTLButtonClicked();
+    void onImportSetupButtonClicked();
     void originChanged(const QString &arg);
     void useCOSTOptionChecked(int);
-    void buildingShapeChanged(const QString &arg);
-    void onSTLOkButtonClicked();
-    void onSTLImportButtonClicked();
-    void onSTLCancelButtonClicked();
 
 private:
 
    QVBoxLayout          *layout;
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD       *mainModel;
 
-   QGroupBox            *dimAndScaleGroup;
-   QGridLayout          *dimAndScaleLayout;
-   QComboBox            *normalizationTypeWidget;
+   QGroupBox            *domainSetupGroup;
+   QGridLayout          *domainSetupLayout;
 
-   QComboBox            *buildingShape;
-   QDialog              *importSTLDialog;
-   QPushButton          *importSTLButton;
-   QLabel               *importSTLLabel;
-   QLineEdit            *importedSTLPath;
-   QLineEdit            *stlScaleFactor;
-   QCheckBox            *recenterToOrigin;
-   QCheckBox            *accountWindDirection;
-   QCheckBox            *useSTLDimensions;
+   QPushButton          *importSetupButton;
+   QLabel               *importSetupLabel;
 
-   QLineEdit            *stlXMin;
-   QLineEdit            *stlXMax;
-   QLineEdit            *stlYMin;
-   QLineEdit            *stlYMax;
-   QLineEdit            *stlZMin;
-   QLineEdit            *stlZMax;
-
-   QLineEdit            *stlXDim;
-   QLineEdit            *stlYDim;
-   QLineEdit            *stlZDim;
-
-   QLineEdit            *buildingWidthWidget;
-   QLineEdit            *buildingDepthWidget;
-   QLineEdit            *buildingHeightWidget;
 
    QLineEdit            *geometricScaleWidget;
-   QSpinBox             *windDirectionWidget;
-   QPushButton          *theBuildingButton;
+   QPushButton          *theDomainImageButton;
 
    QLineEdit            *domainLengthWidget;
    QLineEdit            *domainWidthWidget;
@@ -150,17 +120,8 @@ private:
    QLineEdit            *originYWidget;
    QLineEdit            *originZWidget;
 
-   QGroupBox            *buildingTypeGroup;
-   QGridLayout          *buildingTypeLayout;
-
-   QGroupBox            *buildingInformationGroup;
-   QGridLayout          *buildingInformationLayout;
-
    QGroupBox            *domainInformationGroup;
    QGridLayout          *domainInformationLayout;
-
-   QWidget              *buildingAndDomainInformationGroup;
-   QGridLayout          *buildingAndDomainInformationLayout;
 
    QGroupBox            *coordinateSystemGroup;
    QGridLayout          *coordinateSystemLayout;
@@ -171,4 +132,4 @@ public:
 
 };
 
-#endif // GEOMETRIC_INPUT_WIDGET_H
+#endif // EMPTY_GEOMETRIC_INPUT_H
