@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "WindCharacteristicsWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "EmptyWindCharacteristics.h"
+#include "EmptyDomainCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -72,7 +72,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 //#include <InputWidgetParameters.h>
 
-WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent)
+EmptyWindCharacteristics::EmptyWindCharacteristics(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -112,7 +112,7 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     referenceWindSpeed->setToolTip("Wind speed at reference height in model scale");
 
     referenceHeight = new QLineEdit();
-    referenceHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->geometricScale()));
+    referenceHeight->setText(QString::number(182.88/mainModel->geometricScale()));
     referenceHeight->setValidator(new QDoubleValidator());
     referenceHeight->setToolTip("Reference height in model scale");
 
@@ -178,31 +178,31 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
 }
 
 
-WindCharacteristicsWidget::~WindCharacteristicsWidget()
+EmptyWindCharacteristics::~EmptyWindCharacteristics()
 {
 
 }
 
-void WindCharacteristicsWidget::clear(void)
+void EmptyWindCharacteristics::clear(void)
 {
 
 }
 
-void WindCharacteristicsWidget::onCalculateReynoldsNumber()
+void EmptyWindCharacteristics::onCalculateReynoldsNumber()
 {
-    double h = mainModel->buildingHeight()/mainModel->geometricScale();
+    double h = referenceHeight->text().toDouble();
     double Uh = referenceWindSpeed->text().toDouble();
     double kv = kinematicViscosity->text().toDouble();
 
     reynoldsNumber->setText(QString::number(Uh*h/kv));
 }
 
-void WindCharacteristicsWidget::onVelocityScaleChanged()
+void EmptyWindCharacteristics::onVelocityScaleChanged()
 {
     timeScale->setText(QString::number(getTimeScale()));
 }
 
-bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyWindCharacteristics::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind characterstics (flow properties) to JSON file.
 
@@ -221,7 +221,7 @@ bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyWindCharacteristics::inputFromJSON(QJsonObject &jsonObject)
 {
     // Read wind characterstics (flow properties) from a JSON file.
     //The JSON file is located in caseDir/constant/simCenter
@@ -243,12 +243,12 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-double WindCharacteristicsWidget::getTimeScale()
+double EmptyWindCharacteristics::getTimeScale()
 {
     return mainModel->geometricScale()/velocityScale->text().toDouble();
 }
 
-void WindCharacteristicsWidget::updateWidgets()
+void EmptyWindCharacteristics::updateWidgets()
 {
     onVelocityScaleChanged();
 }

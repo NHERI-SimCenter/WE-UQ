@@ -34,18 +34,18 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: abiy
+// Written: Abiy F. Melaku
 
 #include "EmptyDomainCFD.h"
+#include "EmptyGeometricInput.h"
+#include "EmptySnappyHexMesh.h"
+#include "EmptyBoundaryConditions.h"
+#include "EmptyTurbulenceModeling.h"
+#include "EmptyVTKRendering.h"
+#include "EmptyNumericalSetup.h"
+#include "EmptyWindCharacteristics.h"
+#include "EmptyResultMonitoring.h"
 #include "QVector3D"
-#include "GeometricInputWidget.h"
-#include "SnappyHexMeshWidget.h"
-#include "BoundaryConditionsWidget.h"
-#include "TurbulenceModelingWidget.h"
-#include "SimCenterVTKRenderingWidget.h"
-#include "NumericalSetupWidget.h"
-#include "WindCharacteristicsWidget.h"
-#include "ResultMonitoringWidget.h"
 #include <qcustomplot.h>
 #include <QPushButton>
 #include <QScrollArea>
@@ -87,7 +87,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 EmptyDomainCFD::EmptyDomainCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
-
+    //Constructor for first time empty initialization
 }
 
 bool EmptyDomainCFD::initialize()
@@ -158,7 +158,6 @@ bool EmptyDomainCFD::initialize()
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
-
     QLabel *massUnitLabel = new QLabel("Mass :");
     QLabel *lengthUnitLabel = new QLabel("Length :");
     QLabel *timeUnitLabel = new QLabel("Time :");
@@ -189,7 +188,6 @@ bool EmptyDomainCFD::initialize()
     openFoamVersion->addItem("10");
     openFoamVersion->setCurrentIndex(1);
 
-
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
 
@@ -206,10 +204,9 @@ bool EmptyDomainCFD::initialize()
     cursor->insertText(" Generate mesh\n");
     cursor->insertText(" Define boundary conditions\n");
     cursor->insertText(" Specify numerical setup\n");
-    cursor->insertText(" Monitor wind loads\n");
+    cursor->insertText(" Monitor wind profiles\n");
     cursor->insertText(" Run simulation\n");
     cursor->insertText(" Post-process results");
-
 
     generalDescriptionLayout->addWidget(modelingProcedureText);
 
@@ -220,7 +217,6 @@ bool EmptyDomainCFD::initialize()
     openFoamVersionLayout->addWidget(openFoamVersionLabel, 0, 0);
     openFoamVersionLayout->addWidget(openFoamVersion, 0, 1);
     openFoamVersionLayout->setAlignment(Qt::AlignLeft);
-
 
     unitSystemLayout->addWidget(massUnitLabel, 0, 0);
     unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
@@ -248,25 +244,25 @@ bool EmptyDomainCFD::initialize()
     resultsWidget->setLayout(resultsLayout);
 
     //Controls for geometric input
-    geometry = new GeometricInputWidget(this);
+    geometry = new EmptyGeometricInput(this);
 
     //Controls for snappyHexMesh
-    snappyHexMesh = new SnappyHexMeshWidget(this);
+    snappyHexMesh = new EmptySnappyHexMesh(this);
 
     //Controls for wind characteristics setup
-    windCharacteristics = new WindCharacteristicsWidget(this);
+    windCharacteristics = new EmptyWindCharacteristics(this);
 
     //Controls for boundary conditions
-    boundaryConditions = new BoundaryConditionsWidget(this);
+    boundaryConditions = new EmptyBoundaryConditions(this);
 
     //Controle for turbulence modeling
-    turbulenceModeling = new TurbulenceModelingWidget(this);
+    turbulenceModeling = new EmptyTurbulenceModeling(this);
 
     //Controls for numerical setup
-    numericalSetup = new NumericalSetupWidget(this);
+    numericalSetup = new EmptyNumericalSetup(this);
 
     //Add result monitoring widget
-    resultMonitoring = new ResultMonitoringWidget(this);
+    resultMonitoring = new EmptyResultMonitoring(this);
 
     //Populate each tab
     startLayout->addWidget(generalDescriptionGroup);
@@ -346,7 +342,7 @@ bool EmptyDomainCFD::initialize()
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
-    visWidget = new SimCenterVTKRenderingWidget(this);
+    visWidget = new EmptyVTKRendering(this);
 
     visWindowLayout->addWidget(visWidget);
 
@@ -357,8 +353,8 @@ bool EmptyDomainCFD::initialize()
     //Update the GI Tabe once the data is read
     GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
     theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+//    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+//    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
 
     this->adjustSize();
 
@@ -500,7 +496,7 @@ void EmptyDomainCFD::onShowResultsClicked()
     QString profName  = caseDir() + "/constant/simCenter/output/windProfiles.txt";
     QVector<QVector<double>> windProfile  =  readTxtData(profName) ;
 
-    double H = buildingHeight()/geometricScale();
+//    double H = buildingHeight()/geometricScale();
 
     QPen pen;
     pen.setColor(QColor(0,0,0));
@@ -905,20 +901,20 @@ double EmptyDomainCFD::fetchLength()
     return geometry->fetchLengthWidget->text().toDouble();
 }
 
-double EmptyDomainCFD::buildingWidth()
-{
-    return geometry->buildingWidthWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingWidth()
+//{
+////    return geometry->buildingWidthWidget->text().toDouble();
+//}
 
-double EmptyDomainCFD::buildingDepth()
-{
-    return geometry->buildingDepthWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingDepth()
+//{
+////    return geometry->buildingDepthWidget->text().toDouble();
+//}
 
-double EmptyDomainCFD::buildingHeight()
-{
-    return geometry->buildingHeightWidget->text().toDouble();
-}
+//double EmptyDomainCFD::buildingHeight()
+//{
+////    return geometry->buildingHeightWidget->text().toDouble();
+//}
 int EmptyDomainCFD::numberOfFloors()
 {
     return resultMonitoring->numStories->value();
@@ -930,21 +926,21 @@ double EmptyDomainCFD::geometricScale()
     return geometry->geometricScaleWidget->text().toDouble();
 }
 
-double EmptyDomainCFD::windDirection()
-{
-    return geometry->windDirectionWidget->text().toDouble();
-}
+//double EmptyDomainCFD::windDirection()
+//{
+////    return geometry->windDirectionWidget->text().toDouble();
+//}
 
-QString EmptyDomainCFD::buildingShape()
-{
-    return geometry->buildingShape->currentText();
-}
+//QString EmptyDomainCFD::buildingShape()
+//{
+////    return geometry->buildingShape->currentText();
+//}
 
 
-QString EmptyDomainCFD::normalizationType()
-{
-    return geometry->normalizationTypeWidget->currentText();
-}
+//QString EmptyDomainCFD::normalizationType()
+//{
+//    return geometry->normalizationTypeWidget->currentText();
+//}
 
 QVector<double> EmptyDomainCFD::getBuildingCenter()
 {
@@ -1000,26 +996,9 @@ bool EmptyDomainCFD::isInitialize()
 
 double EmptyDomainCFD::getTimeStep()
 {
-    double meshSize = 0.0;
+    double meshSize =  snappyHexMesh->refinementBoxesTable->item(snappyHexMesh->refinementBoxesTable->rowCount()-1, 8)->text().toDouble();
 
-    if(snappyHexMesh->addPrismLayers->isChecked())
-    {
-       meshSize = snappyHexMesh->prismLayerMeshSize->text().toDouble();
-    }
-    else if(snappyHexMesh->addEdgeRefinement->isChecked())
-    {
-        meshSize = snappyHexMesh->edgeRefinementMeshSize->text().toDouble();
-    }
-    else if(snappyHexMesh->addSurfaceRefinement->isChecked())
-    {
-        meshSize = snappyHexMesh->surfaceRefinementMeshSize->text().toDouble();
-    }
-    else
-    {
-        meshSize = snappyHexMesh->refinementBoxesTable->item(snappyHexMesh->refinementBoxesTable->rowCount()-1, 8)->text().toDouble();
-    }
-
-    meshSize = meshSize*buildingHeight()/geometricScale();
+//    meshSize = meshSize*buildingHeight()/geometricScale();
 
     double maxCo = numericalSetup->maxCourantNumber->value();
     double U = windCharacteristics->referenceWindSpeed->text().toDouble();

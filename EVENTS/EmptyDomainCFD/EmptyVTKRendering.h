@@ -1,5 +1,5 @@
-#ifndef SIMCENTER_VTK_RENDERING_WIDGET_H
-#define SIMCENTER_VTK_RENDERING_WIDGET_H
+#ifndef EMPTY_VTK_RENDERING_H
+#define EMPTY_VTK_RENDERING_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -65,15 +65,15 @@ class vtkMultiBlockDataSet;
 class vtkPolyDataMapper;
 class vtkNamedColors;
 class vtkOrientationMarkerWidget;
-class IsolatedBuildingCFD;
-class SimCenterVTKRenderingWidget: public SimCenterAppWidget
+class EmptyDomainCFD;
+class EmptyVTKRendering: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
     Q_OBJECT
 
 public:
-    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
-    ~SimCenterVTKRenderingWidget();
+    explicit EmptyVTKRendering(EmptyDomainCFD *parent = 0);
+    ~EmptyVTKRendering();
 
     void initialize();
     void readMesh();
@@ -97,7 +97,7 @@ public slots:
    void onTransparencyChanged(const int value);
 
 private:
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD *mainModel;
 
    QVBoxLayout  *layout;
    QGridLayout  *menueLayout;
@@ -131,4 +131,4 @@ private:
    bool initialized = false;
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // EMPTY_VTK_RENDERING_H

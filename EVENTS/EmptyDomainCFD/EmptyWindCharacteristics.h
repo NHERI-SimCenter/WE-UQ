@@ -1,5 +1,5 @@
-#ifndef WIND_CHARACTERISTICS_WIDGET_H
-#define WIND_CHARACTERISTICS_WIDGET_H
+#ifndef EMPTY_WIND_CHARACTERISTICS_H
+#define EMPTY_WIND_CHARACTERISTICS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,19 +55,19 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 
-class WindCharacteristicsWidget: public SimCenterAppWidget
+class EmptyWindCharacteristics: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit WindCharacteristicsWidget(IsolatedBuildingCFD *parent = 0);
-    ~WindCharacteristicsWidget();
+    explicit EmptyWindCharacteristics(EmptyDomainCFD *parent = 0);
+    ~EmptyWindCharacteristics();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -87,7 +87,7 @@ public slots:
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
@@ -108,4 +108,4 @@ public:
 
 };
 
-#endif // WIND_CHARACTERISTICS_WIDGET_H
+#endif // EMPTY_WIND_CHARACTERISTICS_H

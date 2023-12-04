@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef EMPTY_RESULT_MONITORING_H
+#define EMPTY_RESULT_MONITORING_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,19 +55,19 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class EmptyResultMonitoring: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit EmptyResultMonitoring(EmptyDomainCFD *parent = 0);
+    ~EmptyResultMonitoring();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -85,12 +85,12 @@ public slots:
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *monitorWindProfileGroup;
+   QGridLayout          *monitorWindProfileLayout;
 
    QGroupBox            *monitorStoryLoadGroup;
    QGridLayout          *monitorStoryLoadLayout;
@@ -141,4 +141,4 @@ public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // EMPTY_RESULT_MONITORING_H

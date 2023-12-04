@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "TurbulenceModelingWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "EmptyTurbulenceModeling.h"
+#include "EmptyDomainCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -68,7 +68,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <GeneralInformationWidget.h>
 
 
-TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
+EmptyTurbulenceModeling::EmptyTurbulenceModeling(EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
@@ -197,18 +197,18 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
 }
 
 
-TurbulenceModelingWidget::~TurbulenceModelingWidget()
+EmptyTurbulenceModeling::~EmptyTurbulenceModeling()
 {
 
 }
 
-void TurbulenceModelingWidget::clear(void)
+void EmptyTurbulenceModeling::clear(void)
 {
 
 }
 
 
-void TurbulenceModelingWidget::turbModelTypeChanged(const QString &arg1)
+void EmptyTurbulenceModeling::turbModelTypeChanged(const QString &arg1)
 {
     if (arg1 == "LES")
     {
@@ -232,7 +232,7 @@ void TurbulenceModelingWidget::turbModelTypeChanged(const QString &arg1)
     mainModel->updateWidgets();
 }
 
-void TurbulenceModelingWidget::RANSModelTypeChanged(const QString &arg1)
+void EmptyTurbulenceModeling::RANSModelTypeChanged(const QString &arg1)
 {
     if (arg1 == "kEpsilon")
     {
@@ -259,7 +259,7 @@ void TurbulenceModelingWidget::RANSModelTypeChanged(const QString &arg1)
     RANSWidget->repaint();
 }
 
-void TurbulenceModelingWidget::LESModelTypeChanged(const QString &arg1)
+void EmptyTurbulenceModeling::LESModelTypeChanged(const QString &arg1)
 {
     if (arg1 == "Smagorinsky")
     {
@@ -291,7 +291,7 @@ void TurbulenceModelingWidget::LESModelTypeChanged(const QString &arg1)
 }
 
 
-bool TurbulenceModelingWidget::outputToJSON(QJsonObject &jsonObject)
+bool EmptyTurbulenceModeling::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes turbulence modeling options RANS, LES and DES.
 
@@ -308,7 +308,7 @@ bool TurbulenceModelingWidget::outputToJSON(QJsonObject &jsonObject)
     return true;
 }
 
-bool TurbulenceModelingWidget::inputFromJSON(QJsonObject &jsonObject)
+bool EmptyTurbulenceModeling::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes turbulence modeling options RANS, LES and DES.
     QJsonObject turbModelingJson = jsonObject["turbulenceModeling"].toObject();
@@ -322,7 +322,7 @@ bool TurbulenceModelingWidget::inputFromJSON(QJsonObject &jsonObject)
     return true;
 }
 
-const QString TurbulenceModelingWidget::simulationType()
+const QString EmptyTurbulenceModeling::simulationType()
 {
     return turbModelOptions->currentText();
 }

@@ -84,10 +84,8 @@ private:
    SimCenterAppWidget *theCurrentEvent;
 
    SimCenterAppWidget *theStochasticModel;
-//   SimCenterAppWidget *CFDBeginnerEventWidget;
-   SimCenterAppWidget *theIsolatedBuildingCFD;  
-//   SimCenterAppWidget *CFDExpertEventWidget;
-   //   SimCenterAppWidget *CFDTemplateEventWidget;
+   SimCenterAppWidget *theIsolatedBuildingCFD;
+   SimCenterAppWidget *theEmptyDomainCFD;
    SimCenterAppWidget *theDigitalWindTunnel;
    SimCenterAppWidget *theExperimentalWindForces;
    SimCenterAppWidget *theWindForceSpectrum;
