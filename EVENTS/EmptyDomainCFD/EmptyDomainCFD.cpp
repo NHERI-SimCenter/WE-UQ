@@ -915,10 +915,10 @@ double EmptyDomainCFD::fetchLength()
 //{
 ////    return geometry->buildingHeightWidget->text().toDouble();
 //}
-int EmptyDomainCFD::numberOfFloors()
-{
-    return resultMonitoring->numStories->value();
-}
+//int EmptyDomainCFD::numberOfFloors()
+//{
+//    return resultMonitoring->numStories->value();
+//}
 
 
 double EmptyDomainCFD::geometricScale()

@@ -746,7 +746,10 @@ void EmptySnappyHexMesh::onRemoveRegionClicked()
 
     if(selected->hasSelection())
     {
-        refinementBoxesTable->removeRow(selected->selectedRows()[0].row());
+        for (int i = 0; i <selected->selectedRows().size(); i++)
+        {
+            refinementBoxesTable->removeRow(selected->selectedRows()[i].row());
+        }
     }
 }
 
