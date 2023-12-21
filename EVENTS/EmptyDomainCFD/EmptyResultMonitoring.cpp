@@ -108,11 +108,13 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    monitorWindProfileGroup = new QGroupBox("Wind Profile");
+    monitorWindProfileGroup = new QGroupBox("Sample Wind Profile");
     monitorWindProfileLayout = new QGridLayout();
     monitorWindProfileGroup->setLayout(monitorWindProfileLayout);
 
-
+    vtkSampleGroup = new QGroupBox("Sample Planes");
+    vtkSampleLayout = new QGridLayout();
+    vtkSampleGroup->setLayout(vtkSampleLayout);
     //==================================================================
     //              Record Wind Profiles
     //==================================================================
@@ -184,7 +186,82 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
     connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
 
+
+    //==================================================================
+    //              Sample On Plane
+    //==================================================================
+
+    int vtkNumCols = 8;
+    int vtkNumRows = 2;
+
+    vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
+
+    QStringList vtkTitles = {"Name", "X", "Y", "Z", "Normal", "Start Time", "End Time", "Field"};
+
+    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
+
+    for (int i=0; i < vtkNumCols; i++)
+    {
+        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
+
+        for (int j=0; j < vtkNumRows; j++)
+        {
+            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
+        }
+    }
+
+
+    for (int j=0; j < vtkNumRows; j++)
+    {
+        QComboBox* fieldName  = new QComboBox();
+        fieldName->addItem("Velocity");
+        fieldName->addItem("Pressure");
+        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+        vtkSampleTable->setCellWidget(j, vtkNumCols-1, fieldName);
+    }
+
+    for (int i=0; i < vtkNumRows; i++)
+    {
+        vtkSampleTable->item(i, 0)->setText(tr("Profile%1").arg(i + 1));
+    }
+
+    //Line Probe #1
+    vtkSampleTable->item(0, 1)->setText("0.0");
+    vtkSampleTable->item(0, 2)->setText("0.0");
+    vtkSampleTable->item(0, 3)->setText("0.0");
+    vtkSampleTable->item(0, 4)->setText("0.0");
+    vtkSampleTable->item(0, 5)->setText("0.0");
+    vtkSampleTable->item(0, 6)->setText(QString::number(mainModel->domainHeight()));
+    vtkSampleTable->item(0, 7)->setText("50");
+
+    //Line Probe #2
+    vtkSampleTable->item(1, 1)->setText(QString::number(-mainModel->fetchLength()));
+    vtkSampleTable->item(1, 2)->setText("0.0");
+    vtkSampleTable->item(1, 3)->setText("0.0");
+    vtkSampleTable->item(1, 4)->setText("0.0");
+    vtkSampleTable->item(1, 5)->setText("0.0");
+    vtkSampleTable->item(1, 6)->setText(QString::number(mainModel->domainHeight()));
+    vtkSampleTable->item(1, 7)->setText("50");
+
+    vtkSampleLayout->addWidget(vtkSampleTable, 0, 0, 1, 3);
+
+//    QPushButton* addProfile = new QPushButton("Add Profile");
+//    QPushButton* removeProfile = new QPushButton("Remove Profile");
+//    QPushButton* showProfiles = new QPushButton("Show Profiles");
+
+//    monitorWindProfileLayout->addWidget(addProfile, 1, 0);
+//    monitorWindProfileLayout->addWidget(removeProfile, 1, 1);
+//    monitorWindProfileLayout->addWidget(showProfiles, 1, 2);
+
+//    connect(addProfile,SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
+//    connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
+//    connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
+
+
+
     layout->addWidget(monitorWindProfileGroup);
+    layout->addWidget(vtkSampleGroup);
     this->setLayout(layout);
 
 

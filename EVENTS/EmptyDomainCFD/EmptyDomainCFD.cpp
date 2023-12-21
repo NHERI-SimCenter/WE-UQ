@@ -218,16 +218,34 @@ bool EmptyDomainCFD::initialize()
     openFoamVersionLayout->addWidget(openFoamVersion, 0, 1);
     openFoamVersionLayout->setAlignment(Qt::AlignLeft);
 
-    unitSystemLayout->addWidget(massUnitLabel, 0, 0);
-    unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
-    unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
-    unitSystemLayout->addWidget(angleUnitLabel, 3, 0);
+    unitSystemLayout->addWidget(massUnitLabel, 0, 0, Qt::AlignRight);
+    unitSystemLayout->addWidget(lengthUnitLabel, 0, 2, Qt::AlignRight);
+    unitSystemLayout->addWidget(timeUnitLabel, 0, 4, Qt::AlignRight);
+    unitSystemLayout->addWidget(angleUnitLabel, 0, 6, Qt::AlignRight);
+
+    massUnit->setMinimumWidth(50);
+    lengthUnit->setMinimumWidth(50);
+    timeUnit->setMinimumWidth(50);
+    angleUnit->setMinimumWidth(75);
 
     unitSystemLayout->addWidget(massUnit, 0, 1);
-    unitSystemLayout->addWidget(lengthUnit, 1, 1);
-    unitSystemLayout->addWidget(timeUnit, 2, 1);
-    unitSystemLayout->addWidget(angleUnit, 3, 1);
+    unitSystemLayout->addWidget(lengthUnit, 0, 3);
+    unitSystemLayout->addWidget(timeUnit, 0, 5);
+    unitSystemLayout->addWidget(angleUnit, 0, 7);
     unitSystemLayout->setAlignment(Qt::AlignLeft);
+
+
+    QLabel *citeLabel = new QLabel("\n\Parts of the workflow for this event are developed based on the work of Melaku and Bitsuamlak (2024).\n"
+                                   "The user should cite the work as follows:\n"
+                                   "\nMelaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings:\n"
+                                   "A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.");
+
+    QFont citeFont( "Arial", 8);
+    citeFont.setPointSize(7);
+    citeFont.setItalic(true);
+
+
+    citeLabel->setFont(citeFont);
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
@@ -269,6 +287,7 @@ bool EmptyDomainCFD::initialize()
     startLayout->addWidget(caseDirectoryGroup);
     startLayout->addWidget(openFoamVersionGroup);
     startLayout->addWidget(unitSystemGroup);
+    startLayout->addWidget(citeLabel);
     startLayout->addStretch();
 
     geometryLayout->addWidget(geometry);

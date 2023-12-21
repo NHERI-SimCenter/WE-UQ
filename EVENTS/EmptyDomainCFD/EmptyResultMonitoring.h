@@ -98,14 +98,13 @@ private:
    QGridLayout          *monitorWindProfileLayout;
 
    QTableWidget         *profileTable;
-
-//   QLineEdit            *floorHeight;
-//   QSpinBox             *numStories;
+   QSpinBox             *profileWriteInterval;
 
 
-//   QSpinBox             *baseLoadWriteInterval;
-//   QSpinBox             *storyLoadWriteInterval;
-//   QSpinBox             *pressureWriteInterval;
+   QGroupBox            *vtkSampleGroup;
+   QGridLayout          *vtkSampleLayout;
+   QTableWidget         *vtkSampleTable;
+   QSpinBox             *vtkWriteInterval;
 
 //   QSpinBox             *numTapsAlongWidth;
 //   QSpinBox             *numTapsAlongDepth;
