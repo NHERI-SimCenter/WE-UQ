@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.1.0");
+    QCoreApplication::setApplicationVersion("3.1.1");
 
     Q_INIT_RESOURCE(images1);
 
@@ -228,19 +228,21 @@ int main(int argc, char *argv[])
     }
 
     //Setting Google Analytics Tracking Information
-    //GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
-    //GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+    
+    /* ***********************************************************************
+    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
     GoogleAnalytics::CreateSessionId();
     GoogleAnalytics::StartSession();
 
     // Opening a QWebEngineView and using github to get app geographic usage
-    /*
     QWebEngineView view;
     view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
     view.resize(1024, 750);
     view.show();
     view.hide();
-    */
+    * *********************************************************************** */
+    
     //
     // RUN the GUI
     //
