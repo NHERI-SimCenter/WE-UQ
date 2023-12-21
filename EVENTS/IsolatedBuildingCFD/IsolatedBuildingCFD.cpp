@@ -243,7 +243,11 @@ bool IsolatedBuildingCFD::initialize()
                                    "\nMelaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings:\n"
                                    "A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.");
 
+
     QFont citeFont( "Arial", 7);
+    citeFont.setPointSize(7);
+    citeFont.setItalic(true);
+
     citeLabel->setFont(citeFont);
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
