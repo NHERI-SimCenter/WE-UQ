@@ -45,6 +45,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "EmptyNumericalSetup.h"
 #include "EmptyWindCharacteristics.h"
 #include "EmptyResultMonitoring.h"
+#include "EmptyResultDisplay.h"
 #include "QVector3D"
 #include <qcustomplot.h>
 #include <QPushButton>
@@ -282,6 +283,9 @@ bool EmptyDomainCFD::initialize()
     //Add result monitoring widget
     resultMonitoring = new EmptyResultMonitoring(this);
 
+    //Add result display widget
+    resultDisplay = new EmptyResultDisplay(this);
+
     //Populate each tab
     startLayout->addWidget(generalDescriptionGroup);
     startLayout->addWidget(caseDirectoryGroup);
@@ -307,7 +311,7 @@ bool EmptyDomainCFD::initialize()
     monitoringLayout->addWidget(resultMonitoring);
     monitoringLayout->addStretch();
 
-    resultsLayout->addWidget(cfdResultsGroup);
+    resultsLayout->addWidget(resultDisplay);
     resultsLayout->addStretch();
 
     inputTab->addTab(generalWidget, "Start");
@@ -1020,10 +1024,24 @@ double EmptyDomainCFD::getTimeStep()
 //    meshSize = meshSize*buildingHeight()/geometricScale();
 
     double maxCo = numericalSetup->maxCourantNumber->value();
-    double U = windCharacteristics->referenceWindSpeed->text().toDouble();
+    double U = getRefWindSpeed();
 
     return maxCo*meshSize/U;
 }
 
+double EmptyDomainCFD::getDuration()
+{
+    return numericalSetup->duration->text().toDouble();
+}
+
+double EmptyDomainCFD::getRefWindSpeed()
+{
+    return windCharacteristics->referenceWindSpeed->text().toDouble();
+}
+
+EmptyResultDisplay* EmptyDomainCFD::resultCFD()
+{
+    return resultDisplay;
+}
 
 

@@ -80,13 +80,11 @@ public slots:
    void onAddProfileClicked();
    void onRemoveProfileClicked();
    void onShowProfilesClicked();
+   void onAddPlaneClicked();
+   void onRemovePlaneClicked();
+   void onMonitorProfileChecked(int);
+   void onMonitorPlaneChecked(int);
 
-
-//   void onMonitorBaseLoadChecked(int);
-//   void onMonitorPressureChecked(int);
-//   void onCreatePressurePointsToggled(bool);
-//   void onShowCoordinateOfPointsClicked();
-//   void onOpenCSVFileClicked();
 
 private:
 
@@ -99,17 +97,22 @@ private:
 
    QTableWidget         *profileTable;
    QSpinBox             *profileWriteInterval;
-
+   QLineEdit            *profileStartTime;
+   QCheckBox            *monitorProfile;
+   QPushButton          *addProfile;
+   QPushButton          *removeProfile;
+   QPushButton          *showProfiles;
 
    QGroupBox            *vtkSampleGroup;
    QGridLayout          *vtkSampleLayout;
    QTableWidget         *vtkSampleTable;
    QSpinBox             *vtkWriteInterval;
+   QCheckBox            *monitorPlane;
+   QPushButton          *addPlane;
+   QPushButton          *removePlane;
+   QPushButton          *showPlane;
 
-//   QSpinBox             *numTapsAlongWidth;
-//   QSpinBox             *numTapsAlongDepth;
-//   QSpinBox             *numTapsAlongHeight;
-//   QTableWidget         *samplingPointsTable;
+
 
 //   QPushButton          *openCSVFile;
 //   QPushButton          *showCoordinateOfPoints;

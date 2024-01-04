@@ -55,6 +55,7 @@ class EmptyVTKRendering;
 class EmptyNumericalSetup;
 class EmptyWindCharacteristics;
 class EmptyResultMonitoring;
+class EmptyResultDisplay;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -124,6 +125,11 @@ public:
 
     //Returns the smallest mesh size on the building
     double getTimeStep();
+    double getDuration();
+    double getRefWindSpeed();
+
+    EmptyResultDisplay* resultCFD();
+
 
 signals:
 
@@ -133,37 +139,37 @@ public slots:
    void onBrowseCaseDirectoryButtonClicked(void);
 
 private:
-   QHBoxLayout          *mainWindowLayout;
+   QHBoxLayout                  *mainWindowLayout;
 
-   QVBoxLayout          *inputWindowLayout;
-   QGroupBox            *inputWindowGroup;
+   QVBoxLayout                  *inputWindowLayout;
+   QGroupBox                    *inputWindowGroup;
 
 
-   QVBoxLayout          *visWindowLayout;
-   QGroupBox            *visWindowGroup;
+   QVBoxLayout                  *visWindowLayout;
+   QGroupBox                    *visWindowGroup;
 
-   QGroupBox            *cfdResultsGroup;
-   QGridLayout          *cfdResultsLayout;
+   QGroupBox                    *cfdResultsGroup;
+   QGridLayout                  *cfdResultsLayout;
 
-   QWidget              *femSpecific;
-   QLineEdit            *caseDirectoryPathWidget;
+   QWidget                      *femSpecific;
+   QLineEdit                    *caseDirectoryPathWidget;
 
-   QGroupBox            *generalDescriptionGroup;
-   QHBoxLayout          *generalDescriptionLayout;
+   QGroupBox                    *generalDescriptionGroup;
+   QHBoxLayout                  *generalDescriptionLayout;
 
-   QGroupBox            *caseDirectoryGroup;
-   QGridLayout          *caseDirectoryLayout;
+   QGroupBox                    *caseDirectoryGroup;
+   QGridLayout                  *caseDirectoryLayout;
 
-   QGroupBox            *unitSystemGroup;
-   QGridLayout          *unitSystemLayout;
-   QComboBox            *massUnit;
-   QComboBox            *lengthUnit;
-   QComboBox            *timeUnit;
-   QComboBox            *angleUnit;
+   QGroupBox                    *unitSystemGroup;
+   QGridLayout                  *unitSystemLayout;
+   QComboBox                    *massUnit;
+   QComboBox                    *lengthUnit;
+   QComboBox                    *timeUnit;
+   QComboBox                    *angleUnit;
 
-   QGroupBox            *openFoamVersionGroup;
-   QGridLayout          *openFoamVersionLayout;
-   QComboBox            *openFoamVersion;
+   QGroupBox                    *openFoamVersionGroup;
+   QGridLayout                  *openFoamVersionLayout;
+   QComboBox                    *openFoamVersion;
 
    EmptyGeometricInput          *geometry;
    EmptySnappyHexMesh           *snappyHexMesh;
@@ -173,14 +179,15 @@ private:
    EmptyBoundaryConditions      *boundaryConditions;
    EmptyNumericalSetup          *numericalSetup;
    EmptyResultMonitoring        *resultMonitoring;
+   EmptyResultDisplay           *resultDisplay;
 
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
+   RandomVariablesContainer     *theRandomVariablesContainer;
+   QStringList                  varNamesAndValues;
 
-   QPushButton  *plotWindProfiles;
-   QPushButton  *plotWindLoads;
+   QPushButton                  *plotWindProfiles;
+   QPushButton                  *plotWindLoads;
 
-   QString      workingDirPath;
+   QString                      workingDirPath;
 
    bool caseInitialized = false;
 

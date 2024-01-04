@@ -108,21 +108,26 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
 {
     layout = new QVBoxLayout();
 
-    monitorWindProfileGroup = new QGroupBox("Sample Wind Profile");
+    monitorWindProfileGroup = new QGroupBox("Line Probes");
     monitorWindProfileLayout = new QGridLayout();
     monitorWindProfileGroup->setLayout(monitorWindProfileLayout);
 
-    vtkSampleGroup = new QGroupBox("Sample Planes");
+    vtkSampleGroup = new QGroupBox("VTK Planes");
     vtkSampleLayout = new QGridLayout();
     vtkSampleGroup->setLayout(vtkSampleLayout);
     //==================================================================
     //              Record Wind Profiles
     //==================================================================
 
+    monitorProfile = new QCheckBox("Record Wind Profiles");
+    monitorProfile->setChecked(true);
+    monitorProfile->setToolTip("If checked monitors widnd profiles");
+
     int numCols = 9;
     int numRows = 2;
 
     profileTable = new QTableWidget(numRows, numCols);
+    profileTable->setMaximumHeight(150);
 
     QStringList headerTitles = {"Name", "X-start", "Y-start", "Z-start", "X-end", "Y-end", "Z-end", "No. Points", "Field"};
 
@@ -172,31 +177,59 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     profileTable->item(1, 6)->setText(QString::number(mainModel->domainHeight()));
     profileTable->item(1, 7)->setText("50");
 
-    monitorWindProfileLayout->addWidget(profileTable, 0, 0, 1, 3);
 
-    QPushButton* addProfile = new QPushButton("Add Profile");
-    QPushButton* removeProfile = new QPushButton("Remove Profile");
-    QPushButton* showProfiles = new QPushButton("Show Profiles");
+    QLabel* profileWriteIntervalLabel = new QLabel("Field Write Interval: ");
+    profileWriteInterval = new QSpinBox();
+    profileWriteInterval->setSingleStep(1);
+    profileWriteInterval->setMinimum(1);
+    profileWriteInterval->setValue(10);
+    profileWriteInterval->setEnabled(true);
+    profileWriteInterval->setToolTip("Writing interval as a multiple of time step for wind profiles");
+    profileWriteInterval->setMinimumWidth(100);
 
-    monitorWindProfileLayout->addWidget(addProfile, 1, 0);
-    monitorWindProfileLayout->addWidget(removeProfile, 1, 1);
-    monitorWindProfileLayout->addWidget(showProfiles, 1, 2);
+
+    QLabel* profileStartTimeLabel = new QLabel("Write Start Time: ");
+
+    profileStartTime = new QLineEdit();
+    profileStartTime->setText(QString::number(mainModel->getDuration()*0.10));
+    profileStartTime->setEnabled(true);
+    profileStartTime->setToolTip("The start time for writing the probe data.");
+
+
+    addProfile = new QPushButton("Add Profile");
+    removeProfile = new QPushButton("Remove Profile");
+    showProfiles = new QPushButton("Show Profiles");
+
+    monitorWindProfileLayout->addWidget(monitorProfile, 0, 0);
+    monitorWindProfileLayout->addWidget(addProfile, 0, 1);
+    monitorWindProfileLayout->addWidget(removeProfile, 0, 2);
+    monitorWindProfileLayout->addWidget(showProfiles, 0, 3);
+    monitorWindProfileLayout->addWidget(profileTable, 1, 0, 1, 4);
+    monitorWindProfileLayout->addWidget(profileWriteIntervalLabel, 3, 0);
+    monitorWindProfileLayout->addWidget(profileWriteInterval, 3, 1, Qt::AlignLeft);
+    monitorWindProfileLayout->addWidget(profileStartTimeLabel, 3, 2);
+    monitorWindProfileLayout->addWidget(profileStartTime, 3, 3, Qt::AlignLeft);
 
     connect(addProfile,SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
     connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
     connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
+    connect(monitorProfile, SIGNAL(stateChanged(int)), this, SLOT(onMonitorProfileChecked(int)));
 
 
     //==================================================================
     //              Sample On Plane
     //==================================================================
+    monitorPlane = new QCheckBox("Sample Flow Fields On Planes");
+    monitorPlane->setChecked(true);
+    monitorPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
 
     int vtkNumCols = 8;
     int vtkNumRows = 2;
 
     vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
+    vtkSampleTable->setMaximumHeight(150);
 
-    QStringList vtkTitles = {"Name", "X", "Y", "Z", "Normal", "Start Time", "End Time", "Field"};
+    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
 
     vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
 
@@ -210,6 +243,30 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
         }
     }
 
+    for (int i=0; i < vtkNumRows; i++)
+    {
+        vtkSampleTable->item(i, 0)->setText(tr("Plane%1").arg(i + 1));
+    }
+
+    for (int j=0; j < vtkNumRows; j++)
+    {
+        QComboBox* axisName  = new QComboBox();
+        axisName->addItem("X");
+        axisName->addItem("Y");
+        axisName->addItem("Z");
+        axisName->setToolTip("Axis normal to the plane.");
+
+        vtkSampleTable->setCellWidget(j, 1, axisName);
+
+        if(j == 0)
+        {
+            axisName->setCurrentIndex(1);
+        }
+        else
+        {
+            axisName->setCurrentIndex(2);
+        }
+    }
 
     for (int j=0; j < vtkNumRows; j++)
     {
@@ -221,43 +278,48 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
         vtkSampleTable->setCellWidget(j, vtkNumCols-1, fieldName);
     }
 
-    for (int i=0; i < vtkNumRows; i++)
-    {
-        vtkSampleTable->item(i, 0)->setText(tr("Profile%1").arg(i + 1));
-    }
-
     //Line Probe #1
-    vtkSampleTable->item(0, 1)->setText("0.0");
     vtkSampleTable->item(0, 2)->setText("0.0");
     vtkSampleTable->item(0, 3)->setText("0.0");
-    vtkSampleTable->item(0, 4)->setText("0.0");
-    vtkSampleTable->item(0, 5)->setText("0.0");
-    vtkSampleTable->item(0, 6)->setText(QString::number(mainModel->domainHeight()));
-    vtkSampleTable->item(0, 7)->setText("50");
+    vtkSampleTable->item(0, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
+    vtkSampleTable->item(0, 5)->setText(QString::number(mainModel->getDuration()*0.10));
+    vtkSampleTable->item(0, 6)->setText(QString::number(mainModel->getDuration()*0.20));
 
     //Line Probe #2
-    vtkSampleTable->item(1, 1)->setText(QString::number(-mainModel->fetchLength()));
     vtkSampleTable->item(1, 2)->setText("0.0");
     vtkSampleTable->item(1, 3)->setText("0.0");
-    vtkSampleTable->item(1, 4)->setText("0.0");
-    vtkSampleTable->item(1, 5)->setText("0.0");
-    vtkSampleTable->item(1, 6)->setText(QString::number(mainModel->domainHeight()));
-    vtkSampleTable->item(1, 7)->setText("50");
+    vtkSampleTable->item(1, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
+    vtkSampleTable->item(1, 5)->setText(QString::number(mainModel->getDuration()*0.10));
+    vtkSampleTable->item(1, 6)->setText(QString::number(mainModel->getDuration()*0.20));
 
-    vtkSampleLayout->addWidget(vtkSampleTable, 0, 0, 1, 3);
 
-//    QPushButton* addProfile = new QPushButton("Add Profile");
-//    QPushButton* removeProfile = new QPushButton("Remove Profile");
-//    QPushButton* showProfiles = new QPushButton("Show Profiles");
+    QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
+    vtkWriteInterval = new QSpinBox();
+    vtkWriteInterval->setSingleStep(1);
+    vtkWriteInterval->setMinimum(1);
+    vtkWriteInterval->setValue(10);
+    vtkWriteInterval->setEnabled(true);
+    vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
+    vtkWriteInterval->setMinimumWidth(100);
 
-//    monitorWindProfileLayout->addWidget(addProfile, 1, 0);
-//    monitorWindProfileLayout->addWidget(removeProfile, 1, 1);
-//    monitorWindProfileLayout->addWidget(showProfiles, 1, 2);
+    addPlane = new QPushButton("Add Plane");
+    removePlane = new QPushButton("Remove Plane");
+    showPlane = new QPushButton("Show Plane");
 
-//    connect(addProfile,SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
-//    connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
-//    connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
 
+    vtkSampleLayout->addWidget(monitorPlane, 0, 0);
+    vtkSampleLayout->addWidget(addPlane, 0, 1);
+    vtkSampleLayout->addWidget(removePlane, 0, 2);
+    vtkSampleLayout->addWidget(showPlane, 0, 3);
+    vtkSampleLayout->addWidget(vtkSampleTable, 1, 0, 1, 4);
+    vtkSampleLayout->addWidget(vtkWriteIntervalLabel, 2, 0);
+    vtkSampleLayout->addWidget(vtkWriteInterval, 2, 1, Qt::AlignLeft);
+
+
+    connect(addPlane,SIGNAL(clicked()), this, SLOT(onAddPlaneClicked()));
+    connect(removePlane,SIGNAL(clicked()), this, SLOT(onRemovePlaneClicked()));
+    connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
+    connect(monitorPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
 
 
     layout->addWidget(monitorWindProfileGroup);
@@ -277,7 +339,6 @@ void EmptyResultMonitoring::clear(void)
 {
 
 }
-
 
 void EmptyResultMonitoring::onAddProfileClicked()
 {
@@ -322,6 +383,70 @@ void EmptyResultMonitoring::onShowProfilesClicked()
 
 }
 
+
+
+void EmptyResultMonitoring::onAddPlaneClicked()
+{
+
+    int rowIndx = vtkSampleTable->rowCount();
+
+    vtkSampleTable->insertRow(rowIndx);
+
+    QComboBox* axisName  = new QComboBox();
+    axisName->addItem("X");
+    axisName->addItem("Y");
+    axisName->addItem("Z");
+    axisName->setToolTip("Axis normal to the plane.");
+    axisName->setCurrentIndex(2);
+
+    QComboBox* fieldName  = new QComboBox();
+    fieldName->addItem("Velocity");
+    fieldName->addItem("Pressure");
+    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+    //Line Probe #1
+    vtkSampleTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Plane%1").arg(rowIndx + 1)));
+    vtkSampleTable->setCellWidget(rowIndx, 1, axisName);
+    vtkSampleTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
+    vtkSampleTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
+    vtkSampleTable->setItem(rowIndx, 4, new QTableWidgetItem(QString::number(mainModel->domainHeight()*0.10)));
+    vtkSampleTable->setItem(rowIndx, 5, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.10)));
+    vtkSampleTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.20)));
+    vtkSampleTable->setCellWidget(rowIndx, 7, fieldName);
+
+}
+
+void EmptyResultMonitoring::onRemovePlaneClicked()
+{
+    QItemSelectionModel *selected = vtkSampleTable->selectionModel();
+
+    if(selected->hasSelection())
+    {
+        for (int i = 0; i <selected->selectedRows().size(); i++)
+        {
+            vtkSampleTable->removeRow(selected->selectedRows()[i].row());
+        }
+    }
+}
+
+
+void EmptyResultMonitoring::onMonitorProfileChecked(int state)
+{
+    profileTable->setEnabled(monitorProfile->isChecked());
+    profileWriteInterval->setEnabled(monitorProfile->isChecked());
+    addProfile->setEnabled(monitorProfile->isChecked());
+    removeProfile->setEnabled(monitorProfile->isChecked());
+    showProfiles->setEnabled(monitorProfile->isChecked());
+}
+
+void EmptyResultMonitoring::onMonitorPlaneChecked(int state)
+{
+    vtkSampleTable->setEnabled(monitorPlane->isChecked());
+    vtkWriteInterval->setEnabled(monitorPlane->isChecked());
+    addPlane->setEnabled(monitorPlane->isChecked());
+    removePlane->setEnabled(monitorPlane->isChecked());
+    showPlane->setEnabled(monitorPlane->isChecked());
+}
 
 
 bool EmptyResultMonitoring::outputToJSON(QJsonObject &jsonObject)

@@ -42,6 +42,7 @@ SOURCES += \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyNumericalSetup.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.cpp \
+    $$PWD/EVENTS/EmptyDomainCFD/EmptyResultDisplay.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -106,6 +107,7 @@ HEADERS  += \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyNumericalSetup.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.h \
+    $$PWD/EVENTS/EmptyDomainCFD/EmptyResultDisplay.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \

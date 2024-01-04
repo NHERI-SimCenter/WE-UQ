@@ -577,3 +577,55 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
 }
 
 
+void SimCenterVTKRenderingWidget::drawLineProbes()
+{
+
+    axisWidget->SetCurrentRenderer(renderer);
+
+
+    axisActor->SetShaftTypeToCylinder();
+    //    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
+    //    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
+    //    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
+
+    vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
+    tprop->ItalicOff();
+    tprop->ShadowOn();
+    tprop->SetFontFamilyToArial();
+    tprop->SetFontSize(12);
+    axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+
+
+    double rgba[4]{0.0, 0.0, 0.0, 0.0};
+    axisColors->GetColor("Carrot", rgba);
+    axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    axisWidget->SetOrientationMarker(axisActor);
+    axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
+    axisWidget->SetInteractor(axisInteractor);
+    axisWidget->EnabledOn();
+    axisWidget->InteractiveOff();
+
+    //    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
+    //    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    //    axisInteractor->SetInteractorStyle(style);
+
+    //Add "SimCenter" text at the bottom
+    vtkSmartPointer<vtkTextActor> textActor;
+    textActor = vtkSmartPointer<vtkTextActor>::New();
+    textActor->SetInput("SimCenter");
+
+    // Set the font properties of the legend
+    vtkSmartPointer<vtkTextProperty> textProperty;
+    textProperty = vtkSmartPointer<vtkTextProperty>::New();
+    textProperty->SetColor(1.0, 0.0, 0.0);
+    textProperty->SetFontFamilyAsString("Avalon");
+    textProperty->SetBold(true); // Make the font bold
+    textProperty->SetFontSize(30);
+    textActor->SetTextProperty(textProperty);
+    textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
+    textActor->SetPosition(0.025, 0.025);
+
+    renderer->AddActor(textActor);
+}
