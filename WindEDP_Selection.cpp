@@ -102,7 +102,7 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     theStackedWidget->addWidget(theUserDefinedEDPs);
 
     layout->addWidget(theStackedWidget);
-    layout->setMargin(0);
+    //layout->setMargin(0);
     this->setLayout(layout);
     theCurrentEDP=theStandardWindEDPs;
 

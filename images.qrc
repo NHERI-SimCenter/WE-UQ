@@ -49,5 +49,7 @@
         <file>Resources/IsolatedBuildingCFD/boundaryConditions.svg</file>
         <file>Resources/IsolatedBuildingCFD/SnappyHexMeshWidget/prismLayersDemoView.png</file>
         <file>Resources/IsolatedBuildingCFD/SimCenterLogo.jpg</file>
+        <file>Resources/EmptyDomainCFD/domainGeometry.png</file>
+        <file>Resources/EmptyDomainCFD/blockMeshDemoMeshView.png</file>
     </qresource>
 </RCC>

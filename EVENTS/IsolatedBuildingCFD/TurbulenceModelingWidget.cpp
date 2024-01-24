@@ -131,7 +131,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     LESLayout->addWidget(LESCoeffsLabel, 1, 0);
     LESLayout->addWidget(LESOptions, 0, 1);
     LESLayout->addWidget(LESModelCoeffs, 1, 1);
-    connect(LESOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(LESModelTypeChanged(QString)));
+    connect(LESOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(LESModelTypeChanged(QString)));
 
     //============================= ******* ===============================//
 
@@ -154,7 +154,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     RANSLayout->addWidget(RANSCoeffsLabel, 1, 0);
     RANSLayout->addWidget(RANSOptions, 0, 1);
     RANSLayout->addWidget(RANSModelCoeffs, 1, 1);
-    connect(RANSOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(RANSModelTypeChanged(QString)));
+    connect(RANSOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(RANSModelTypeChanged(QString)));
 
 
     //============================= ******* ===============================//
@@ -186,7 +186,7 @@ TurbulenceModelingWidget::TurbulenceModelingWidget(IsolatedBuildingCFD *parent)
     stackedTurbModelWidget->addWidget(DESWidget);
 
     turbModelLayout->addWidget(stackedTurbModelWidget);
-    connect(turbModelOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(turbModelTypeChanged(QString)));
+    connect(turbModelOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(turbModelTypeChanged(QString)));
 
 
     //============================= ******* ===============================//

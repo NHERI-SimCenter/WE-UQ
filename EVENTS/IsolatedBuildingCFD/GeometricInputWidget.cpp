@@ -248,9 +248,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     buildingAndDomainInformationGroup->setLayout(buildingAndDomainInformationLayout);
     coordinateSystemGroup->setLayout(coordinateSystemLayout);
 
-    connect(originOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(originChanged(QString)));
+    connect(originOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(originChanged(QString)));
     connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
-    connect(buildingShape, SIGNAL(currentIndexChanged(QString)), this, SLOT(buildingShapeChanged(QString)));
+    connect(buildingShape, SIGNAL(currentTextChanged(QString)), this, SLOT(buildingShapeChanged(QString)));
     connect(importSTLButton, SIGNAL(clicked()), this, SLOT(onImportSTLButtonClicked()));
 
     //Disable editing in the event section
