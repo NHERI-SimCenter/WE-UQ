@@ -1,0 +1,299 @@
+/* *****************************************************************************
+Copyright (c) 2016-2017, The Regents of the University of California (Regents).
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.
+
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
+UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+
+*************************************************************************** */
+
+// Written by: Abiy
+
+#include "EmptyDomainCFD.h"
+#include "EmptyResultDisplay.h"
+#include <GeneralInformationWidget.h>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDebug>
+#include <QFileDialog>
+#include <QPushButton>
+#include <SectionTitle.h>
+#include <QFileInfo>
+#include <QMovie>
+#include <QPixmap>
+#include <QIcon>
+#include <RandomVariablesContainer.h>
+#include <QRadioButton>
+#include <QButtonGroup>
+#include <QMessageBox>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QVector>
+#include <LineEditRV.h>
+#include <QProcess>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include "vtkGenericOpenGLRenderWindow.h"
+#include "vtkSmartPointer.h"
+#include <vtkDataObjectToTable.h>
+#include <vtkElevationFilter.h>
+#include <vtkNew.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkQtTableView.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkVectorText.h>
+#include <vtkStructuredGrid.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkGenericDataObjectReader.h>
+#include <vtkRectilinearGrid.h>
+#include <vtkCellData.h>
+#include <vtkDataSetMapper.h>
+#include <vtkMultiBlockDataSet.h>
+#include <vtkSTLReader.h>
+#include <vtkPointData.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkUnstructuredGrid.h>
+#include <QVTKRenderWidget.h>
+#include <vtkRegressionTestImage.h>
+#include <vtkTestUtilities.h>
+#include <vtkSimplePointsReader.h>
+#include <QVector3D>
+#include <SimCenterPreferences.h>
+#include <GeneralInformationWidget.h>
+#include <QFile>
+#include <QTextStream>
+#include <QtMath>
+#include <QWebEngineView>
+
+EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
+    : SimCenterAppWidget(parent), mainModel(parent)
+{
+    layout = new QVBoxLayout();
+
+    plotWindProfileGroup = new QGroupBox("Wind Profiles");
+    plotWindProfileLayout = new QGridLayout();
+    plotWindProfileGroup->setLayout(plotWindProfileLayout);
+
+    plotSpectraGroup = new QGroupBox("Velocity Spectra");
+    plotSpectraLayout = new QGridLayout();
+    plotSpectraGroup->setLayout(plotSpectraLayout);
+
+    plotPressureGroup = new QGroupBox("Pressure Fluctuations");
+    plotPressureLayout = new QGridLayout();
+    plotPressureGroup->setLayout(plotPressureLayout);
+
+    //==================================================================
+    //              Plot Wind Profiles
+    //==================================================================
+    QLabel* profileNameULabel = new QLabel("Name of the Profile: ");
+    profileNameU = new QComboBox();
+
+    profileNameU->addItem("Profile-1");
+    profileNameU->addItem("Profile-1");
+    profileNameU->setToolTip("Name of the profile to show.");
+
+    plotProfile = new QPushButton("Plot Profile");
+    plotProfile->setToolTip("Plots the wind profiles for a given line probe.");
+
+    plotWindProfileLayout->addWidget(profileNameULabel, 0, 0);
+    plotWindProfileLayout->addWidget(profileNameU, 0, 1);
+    plotWindProfileLayout->addWidget(plotProfile, 0, 2);
+
+    //==================================================================
+    //              Plot Velocity Spectra
+    //==================================================================
+
+
+    QLabel* profileNameSLabel = new QLabel("Name of the Profile: ");
+    profileNameS = new QComboBox();
+    profileNameS->addItem("Profile-1");
+    profileNameS->addItem("Profile-1");
+    profileNameS->setToolTip("Location of the profile to show.");
+
+    QLabel* locationSLabel = new QLabel("Location:");
+    locationS = new QComboBox();
+    locationS->addItem("1/4Href");
+    locationS->addItem("1/2Href");
+    locationS->addItem("1Href");
+    locationS->addItem("2Href");
+    locationS->setToolTip("Location of the profile to show.");
+
+    plotSpectra = new QPushButton("Plot Spectra");
+    plotSpectra->setToolTip("Plots the wind profiles for a given line probe.");
+
+    plotSpectraLayout->addWidget(profileNameSLabel, 0, 0);
+    plotSpectraLayout->addWidget(profileNameS, 0, 1);
+    plotSpectraLayout->addWidget(locationSLabel, 0, 2, Qt::AlignRight);
+    plotSpectraLayout->addWidget(locationS, 0, 3);
+    plotSpectraLayout->addWidget(plotSpectra, 0, 4, 1,2);
+
+    //==================================================================
+    //              Plot Pressure Profiles
+    //==================================================================
+    QLabel* profileNamePLabel = new QLabel("Name of the Profile: ");
+    profileNameP = new QComboBox();
+
+    profileNameP->addItem("Profile-1");
+    profileNameP->addItem("Profile-1");
+    profileNameP->setToolTip("Location of the profile to show.");
+
+    plotPressure = new QPushButton("Plot Pressure");
+    plotPressure->setToolTip("Plots the pressure fluctuation on a given line probe.");
+
+    plotPressureLayout->addWidget(profileNamePLabel, 0, 0);
+    plotPressureLayout->addWidget(profileNameP, 0, 1);
+    plotPressureLayout->addWidget(plotPressure, 0, 2);
+
+
+    connect(plotProfile, SIGNAL(clicked()), this, SLOT(onPlotProfileClicked()));
+    connect(plotSpectra, SIGNAL(clicked()), this, SLOT(onPlotSpectraClicked()));
+    connect(plotPressure, SIGNAL(clicked()), this, SLOT(onPlotPressureClicked()));
+
+
+    layout->addWidget(plotWindProfileGroup);
+    layout->addWidget(plotSpectraGroup);
+    layout->addWidget(plotPressureGroup);
+    this->setLayout(layout);
+}
+
+
+EmptyResultDisplay::~EmptyResultDisplay()
+{
+
+}
+
+void EmptyResultDisplay::clear(void)
+{
+
+}
+
+void EmptyResultDisplay::onPlotProfileClicked(void)
+{
+    int dialogHeight = 875;
+    int dialogWidth = 1250;
+
+    QVBoxLayout *plotLayout = new QVBoxLayout();
+
+    QWebEngineView *plotView = new QWebEngineView();
+    plotView->page()->setBackgroundColor(Qt::transparent);
+    plotLayout->addWidget(plotView);
+
+    plotView->setMinimumWidth(dialogWidth);
+    plotView->setMinimumHeight(dialogHeight);
+
+    QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator() + "probe7H.html";
+
+//    QMessageBox msgBox;
+//    msgBox.setText(plotPath);
+//    msgBox.exec();
+
+    if(QFileInfo::exists(plotPath))
+    {
+        plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->show();
+    }
+}
+
+
+bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)
+{
+    // Writes wind load monitoring options JSON file.
+
+    QJsonObject resDisplayJson = QJsonObject();
+
+    QJsonArray spectralPlotLocations = {0.25, 0.5, 1.0, 2.0};
+
+    resDisplayJson["spectralPlotLocations"] = spectralPlotLocations;
+
+    jsonObject["resultDisplay"] = resDisplayJson;
+
+    return true;
+}
+
+
+bool EmptyResultDisplay::inputFromJSON(QJsonObject &jsonObject)
+{
+    // Writes wind load monitoring options JSON file.
+
+    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
+
+    //Set wind profiles
+    QJsonArray profiles = resMonitoringJson["windProfiles"].toArray();
+
+    profileNameU->clear();
+    profileNameS->clear();
+    profileNameP->clear();
+
+    for (int pi = 0; pi < profiles.size(); pi++)
+    {
+        QJsonArray profile  = profiles[pi].toArray();
+
+        if(profile[8].toString() == "Velocity")
+        {
+            profileNameU->addItem(profile[0].toString());
+            profileNameS->addItem(profile[0].toString());
+        }
+
+        if(profile[8].toString() == "Pressure")
+        {
+            profileNameP->addItem(profile[0].toString());
+        }
+    }
+
+    return true;
+}
+
+void EmptyResultDisplay::updateWidgets()
+{
+}
+
+bool EmptyResultDisplay::simulationCompleted()
+{
+    return true;
+}
+
+//void EmptyResultDisplay::add()
+//{
+//}
+
+
