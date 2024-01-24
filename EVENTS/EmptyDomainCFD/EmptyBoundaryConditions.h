@@ -1,5 +1,5 @@
-#ifndef SIMCENTER_VTK_RENDERING_WIDGET_H
-#define SIMCENTER_VTK_RENDERING_WIDGET_H
+#ifndef EMPTY_BOUNDARY_CONDITIONS_H
+#define EMPTY_BOUNDARY_CONDITIONS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -40,96 +40,74 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include <SimCenterAppWidget.h>
-#include <vtkSmartPointer.h> // Required for smart pointer internal ivars.
-#include <QVTKRenderWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
 class QVBoxLayout;
-class QHBoxLayout;
 class QSpinBox;
 class QLineEdit;
 class LineEditRV;
-class QTabWidget;
+class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class QSlider;
-class vtkDataSetMapper;
-class vtkActor;
-class vtkAxesActor;
-class vtkOpenFOAMReader;
-class vtkUnstructuredGrid;
-class vtkMultiBlockDataSet;
-class vtkPolyDataMapper;
-class vtkNamedColors;
-class vtkOrientationMarkerWidget;
-class IsolatedBuildingCFD;
-class SimCenterVTKRenderingWidget: public SimCenterAppWidget
+class QRadioButton;
+class EmptyDomainCFD;
+
+class EmptyBoundaryConditions: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
     Q_OBJECT
-
 public:
-    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
-    ~SimCenterVTKRenderingWidget();
+    explicit EmptyBoundaryConditions(EmptyDomainCFD *parent = 0);
+    ~EmptyBoundaryConditions();
 
-    void initialize();
-    void readMesh();
-    void showAllMesh();
-    void showBreakout();
-    void showBuildingOnly();
-
-    bool isInitialized();
-    void drawAxisAndLegend();
-    void drawLineProbes();
-
-    template <class Type>
-    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
+    bool readCSV(QString & fileName);
 
 signals:
 
 public slots:
    void clear(void);
-   void surfaceRepresentationChanged(const QString &arg1);
-   void viewObjectChanged(const QString &arg1);
-   void onReloadCaseClicked();
-   void onTransparencyChanged(const int value);
+   void inletBCTypeChanged(const QString &arg1);
+   void inflowTimeStepChanged(const QString &arg1);
+   void windProfileOptionChanged(const QString &arg1);
+   void onImportWindProfilesClicked();
+   void onShowWindProfilesClicked();
 
 private:
-   IsolatedBuildingCFD  *mainModel;
+   EmptyDomainCFD  *mainModel;
 
    QVBoxLayout  *layout;
-   QGridLayout  *menueLayout;
-   QGroupBox    *menueGroup;
 
-   QGridLayout  *visLayout;
-   QGroupBox    *visGroup;
+   QComboBox    *inletBCType;
+   QComboBox    *outletBCType;
+   QComboBox    *sidesBCType;
+   QComboBox    *topBCType;
+   QComboBox    *groundBCType;
 
-   QComboBox    *surfaceRepresentation;
-   QComboBox    *viewObject;
-   QPushButton  *reloadCase;
-   QSlider      *transparency;
-   float        colorValue = 0.85;
+   QRadioButton *inflowDFSR;
+   QRadioButton *inflowDFM;
+   QRadioButton *inflowSEM;
+   QRadioButton *inflowDFSEM;
+   QRadioButton *inflowTSM;
 
-   QVTKRenderWidget *qvtkWidget;
-   vtkUnstructuredGrid* block0;
-   vtkSmartPointer<vtkOpenFOAMReader> reader;
-   vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-   vtkNew<vtkActor> actor;// Actor in scene
-   vtkNew<vtkRenderer> renderer; // VTK Renderer
-   vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
+   QLineEdit    *inflowTimeStep;
+   QLineEdit    *inflowMaxFreq;
+   QLineEdit    *IScale;
+   QLineEdit    *LScale;
 
-   vtkNew<vtkAxesActor> axisActor;
-   vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> axisInteractor;
-   vtkNew<vtkOrientationMarkerWidget> axisWidget;
+   QGroupBox    *inflowGroup;
+   QGridLayout  *inflowLayout;
+
+   QComboBox    *windProfileOption;
+   QPushButton  *importWindProfiles;
+   QPushButton  *showWindProfiles;
+   QList<QList<double>> windProfiles;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
-
-   bool initialized = false;
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // EMPTY_BOUNDARY_CONDITIONS_H

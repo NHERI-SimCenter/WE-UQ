@@ -1,5 +1,5 @@
-#ifndef SIMCENTER_VTK_RENDERING_WIDGET_H
-#define SIMCENTER_VTK_RENDERING_WIDGET_H
+#ifndef EMPTY_SNAPPY_HEX_MESH_H
+#define EMPTY_SNAPPY_HEX_MESH_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -40,8 +40,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written by: Abiy
 
 #include <SimCenterAppWidget.h>
-#include <vtkSmartPointer.h> // Required for smart pointer internal ivars.
-#include <QVTKRenderWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -50,86 +48,98 @@ class QGridLayout;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
+class QCheckBox;
 class QLineEdit;
 class LineEditRV;
 class QTabWidget;
+class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class QSlider;
-class vtkDataSetMapper;
-class vtkActor;
-class vtkAxesActor;
-class vtkOpenFOAMReader;
-class vtkUnstructuredGrid;
-class vtkMultiBlockDataSet;
-class vtkPolyDataMapper;
-class vtkNamedColors;
-class vtkOrientationMarkerWidget;
-class IsolatedBuildingCFD;
-class SimCenterVTKRenderingWidget: public SimCenterAppWidget
+class EmptyDomainCFD;
+class QDoubleSpinBox;
+
+class EmptySnappyHexMesh: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
+
     Q_OBJECT
-
 public:
-    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
-    ~SimCenterVTKRenderingWidget();
+    explicit EmptySnappyHexMesh(EmptyDomainCFD *parent = 0);
+    ~EmptySnappyHexMesh();
 
-    void initialize();
-    void readMesh();
-    void showAllMesh();
-    void showBreakout();
-    void showBuildingOnly();
+    bool outputToJSON(QJsonObject &jsonObject);
+    bool inputFromJSON(QJsonObject &jsonObject);
 
-    bool isInitialized();
-    void drawAxisAndLegend();
-    void drawLineProbes();
+    bool createBlockMeshDict();
+    bool createSnappyHexMeshDict();
 
-    template <class Type>
-    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+    bool runBlockMeshCommand();
+    bool runSnappyHexMeshCommand();
+    bool runCheckMeshCommand();
 
 signals:
 
 public slots:
    void clear(void);
-   void surfaceRepresentationChanged(const QString &arg1);
-   void viewObjectChanged(const QString &arg1);
-   void onReloadCaseClicked();
-   void onTransparencyChanged(const int value);
+
+   void onRunBlockMeshClicked();
+   void onRunSnappyHexMeshClicked();
+   void onRunCheckMeshClicked();
+   void onSaveMeshClicked();
+
+   void onAddRegionClicked();
+   void onRemoveRegionClicked();
+//   void onCheckRegionClicked();
+   void onRunInParallelChecked(int);
+   void onNumberOfCellsChanged();
+
+   void onMeshSizeChanged();
+
 
 private:
-   IsolatedBuildingCFD  *mainModel;
 
-   QVBoxLayout  *layout;
-   QGridLayout  *menueLayout;
-   QGroupBox    *menueGroup;
+   EmptyDomainCFD   *mainModel;
 
-   QGridLayout  *visLayout;
-   QGroupBox    *visGroup;
+   QVBoxLayout      *layout;
 
-   QComboBox    *surfaceRepresentation;
-   QComboBox    *viewObject;
-   QPushButton  *reloadCase;
-   QSlider      *transparency;
-   float        colorValue = 0.85;
+   QGroupBox        *generalOptionsGroup;
+   QGridLayout      *generalOptionsLayout;
 
-   QVTKRenderWidget *qvtkWidget;
-   vtkUnstructuredGrid* block0;
-   vtkSmartPointer<vtkOpenFOAMReader> reader;
-   vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-   vtkNew<vtkActor> actor;// Actor in scene
-   vtkNew<vtkRenderer> renderer; // VTK Renderer
-   vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
+   QGroupBox        *runMeshGroup;
+   QHBoxLayout      *runMeshLayout;
 
-   vtkNew<vtkAxesActor> axisActor;
-   vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> axisInteractor;
-   vtkNew<vtkOrientationMarkerWidget> axisWidget;
+   QGroupBox        *saveMeshGroup;
+   QHBoxLayout      *saveMeshLayout;
 
+   //Blockground mesh
+   QLineEdit        *xAxisNumCells;
+   QLineEdit        *yAxisNumCells;
+   QLineEdit        *zAxisNumCells;
+   QLineEdit        *xAxisMeshSize;
+   QLineEdit        *yAxisMeshSize;
+   QLineEdit        *zAxisMeshSize;
+   QDoubleSpinBox   *xMeshGrading;
+   QDoubleSpinBox   *yMeshGrading;
+   QDoubleSpinBox   *zMeshGrading;
+
+   //General options
+   QSpinBox         *numCellsBetweenLevels;
+   QSpinBox         *resolveFeatureAngle;
+   QSpinBox         *numProcessors;
+   QCheckBox        *runInParallel;
+
+   //Regional refinements
+   QTableWidget     *refinementBoxesTable;
+
+   QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
 
-   bool initialized = false;
+   //Mesh status variables
+   bool snappyHexMeshCompleted = false;
+
+public:
+
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // EMPTY_SNAPPY_HEX_MESH_H
