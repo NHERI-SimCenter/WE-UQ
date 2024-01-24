@@ -37,6 +37,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: fmckenna
 
 #include "WorkflowAppWE.h"
+#include <MainWindowWorkflowApp.h>
+
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -85,8 +87,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <DakotaResultsSampling.h>
 #include <Utils/ProgramOutputDialog.h>
 #include <Utils/RelativePathResolver.h>
+#include <SC_ToolDialog.h>
+#include <QMenuBar>
 
 #include <GoogleAnalytics.h>
+#include <EmptyDomainCFD/EmptyDomainCFD.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -185,7 +190,6 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     manager->get(QNetworkRequest(QUrl("http://opensees.berkeley.edu/OpenSees/developer/eeuq/use.php")));
 
-
     //
     // set the defults in the General Info
     //
@@ -193,7 +197,52 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theGI->setDefaultProperties(1,144,360,360,37.8715,-122.2730);
 
     ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
-    theDialog->appendInfoMessage("Welcome to WE-UQ");
+    theDialog->appendInfoMessage("Welcome to WE-UQ");    
+}
+
+void
+WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
+  
+  this->WorkflowAppWidget::setMainWindow(window);
+
+  auto menuBar = theMainWindow->menuBar();
+  
+  //
+  // Add a Tool option to menu bar & add options to it
+  //
+  
+  
+  QMenu *toolsMenu = new QMenu(tr("&Tools"),menuBar);
+  SC_ToolDialog *theToolDialog = new SC_ToolDialog(this);
+  EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
+  
+  theToolDialog->addTool(theEmptyDomain, "Empty Domain Simulation");
+  
+  // Set the path to the input file
+  QAction *showEmptyDomain = toolsMenu->addAction("&Empty Domain Simulation");
+  connect(showEmptyDomain, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theEmptyDomain] {
+    theDialog->showTool("Empty Domain Simulation");
+    if (!theEmp->isInitialize()) {
+	theEmp->initialize();
+    }
+  });
+  
+  QAction* menuAfter = nullptr;
+  foreach (QAction *action, menuBar->actions()) {
+    // First check for an examples menu and if that does not exist put it before the help menu
+    auto actionText = action->text();
+    if(actionText.compare("&Examples") == 0)
+      {
+	menuAfter = action;
+	break;
+      }
+    else if(actionText.compare("&Help") == 0)
+      {
+	menuAfter = action;
+	break;
+      }
+  }
+  menuBar->insertMenu(menuAfter, toolsMenu);    
 }
 
 WorkflowAppWE::~WorkflowAppWE()
