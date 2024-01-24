@@ -90,7 +90,6 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
     QLabel *sidesLabel = new QLabel("Sides:");
     QLabel *topLabel = new QLabel("Top:");
     QLabel *groundLabel = new QLabel("Ground:");
-    QLabel *buildingLabel = new QLabel("Building:");
 
     inletBCType  = new QComboBox();
     inletBCType->addItem("Uniform");
@@ -116,10 +115,6 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
     groundBCType->addItem("smoothWallFunction");
     groundBCType->addItem("roughWallFunction");
 
-    buildingBCType  = new QComboBox();
-    buildingBCType->addItem("noSlip");
-    buildingBCType->addItem("smoothWallFunction");
-    buildingBCType->addItem("roughWallFunction");
 
     QPushButton* domainButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/boundaryConditions.png");
@@ -147,14 +142,12 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
     boundaryConditionsLayout->addWidget(sidesLabel, 3, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(topLabel, 4, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(groundLabel, 5, 1, Qt::AlignRight);
-    boundaryConditionsLayout->addWidget(buildingLabel, 6, 1, Qt::AlignRight);
 
     boundaryConditionsLayout->addWidget(inletBCType, 1, 2);
     boundaryConditionsLayout->addWidget(outletBCType, 2, 2);
     boundaryConditionsLayout->addWidget(sidesBCType, 3, 2);
     boundaryConditionsLayout->addWidget(topBCType, 4, 2);
     boundaryConditionsLayout->addWidget(groundBCType, 5, 2);
-    boundaryConditionsLayout->addWidget(buildingBCType, 6, 2);
 
     boundaryConditionsLayout->setHorizontalSpacing(25);
 
@@ -173,28 +166,33 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
     QLabel *windProfileOptionLabel = new QLabel("Wind Profile: ");
 
     inflowDFSR = new QRadioButton("DFSR");
-    inflowDFSR->setChecked(true);
+    inflowDFSR->setChecked(false);
+    inflowDFSR->setEnabled(false);
     inflowDFSR->setToolTip("Uses the Divergence-free Spectral Representation (DFSR) method");
 
     inflowDFM = new QRadioButton("DFM");
-    inflowDFM->setChecked(false);
+    inflowDFM->setChecked(true);
     inflowDFM->setToolTip("Uses the Digital Filtering Method (DFM)");
 
     inflowSEM = new QRadioButton("SEM");
     inflowSEM->setChecked(false);
+    inflowSEM->setEnabled(false);
     inflowSEM->setToolTip("Uses the Synthetic Eddy Method (SEM)");
 
     inflowDFSEM = new QRadioButton("DFSEM");
     inflowDFSEM->setChecked(false);
+    inflowDFSEM->setEnabled(false);
     inflowDFSEM->setToolTip("Uses the Divergence-free Synthetic Eddy Method (DFSEM)");
 
     inflowTSM = new QRadioButton("TSM");
     inflowTSM->setChecked(false);
+    inflowTSM->setEnabled(false);
     inflowTSM->setToolTip("Uses the Turbulent Spot Method (TSM)");
 
 
     inflowTimeStep = new QLineEdit();
     inflowTimeStep->setText("0.005");
+    inflowTimeStep->setEnabled(false);
     inflowTimeStep->setToolTip("Time step for the inflow generation, can be higher than the solver time step");
 
     inflowMaxFreq = new QLineEdit();
@@ -396,7 +394,6 @@ bool EmptyBoundaryConditions::outputToJSON(QJsonObject &jsonObject)
     boundaryCondJson["topBoundaryCondition"] = topBCType->currentText();
     boundaryCondJson["sidesBoundaryCondition"] = sidesBCType->currentText();
     boundaryCondJson["groundBoundaryCondition"] = groundBCType->currentText();
-    boundaryCondJson["buildingBoundaryCondition"] = buildingBCType->currentText();
 
 
     if (inletBCType->currentText() == "TInf")
@@ -467,8 +464,6 @@ bool EmptyBoundaryConditions::inputFromJSON(QJsonObject &jsonObject)
     topBCType->setCurrentText(boundaryCondJson["topBoundaryCondition"].toString());
     sidesBCType->setCurrentText(boundaryCondJson["sidesBoundaryCondition"].toString());
     groundBCType->setCurrentText(boundaryCondJson["groundBoundaryCondition"].toString());
-    buildingBCType->setCurrentText(boundaryCondJson["buildingBoundaryCondition"].toString());
-
 
     if (boundaryCondJson["inletBoundaryCondition"].toString() == "TInf")
     {

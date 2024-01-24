@@ -328,17 +328,6 @@ bool EmptyDomainCFD::initialize()
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
-    plotWindProfiles = new QPushButton("Plot Wind Profiles");
-    plotWindLoads = new QPushButton("Plot Wind Loads");
-
-    //not functional for now
-    plotWindProfiles->setEnabled(false);
-    plotWindLoads->setEnabled(false);
-
-    cfdResultsLayout->addWidget(plotWindProfiles);
-    cfdResultsLayout->addWidget(plotWindLoads);
-
-    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
 
     //=====================================================
@@ -438,9 +427,9 @@ void EmptyDomainCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+    QMessageBox msgBox;
+    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+    msgBox.exec();
 
     process->close();
 }
@@ -472,147 +461,11 @@ void EmptyDomainCFD::readCaseData()
     removeOldFiles();
 }
 
-void EmptyDomainCFD::onShowResultsClicked()
-{
-
-//    //Run prepare case directory
-//    QString scriptPath = pyScriptsPath() + "/postProcessing/process_output_data.py";
-//    QString outputPath = caseDir();
-
-//    QString program = SimCenterPreferences::getInstance()->getPython();
-//    QStringList arguments;
-
-//    arguments << scriptPath << outputPath;
-
-//    QProcess *process = new QProcess(this);
-
-//    process->start(program, arguments);
-
-//    process->waitForFinished(-1);
-
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
-
-//    process->close();
-
-
-
-    QDialog *dialog  = new QDialog(this);
-
-    int dialogHeight = 800;
-    int dialogWidth = 1000;
-
-    dialog->setMinimumHeight(dialogHeight);
-    dialog->setMinimumWidth(dialogWidth);
-    dialog->setWindowTitle("CFD Results");
-
-
-    QWidget* samplePointsWidget = new QWidget();
-
-
-    QGridLayout* dialogLayout = new QGridLayout();
-
-
-    // generate some data:
-
-    QString profName  = caseDir() + "/constant/simCenter/output/windProfiles.txt";
-    QVector<QVector<double>> windProfile  =  readTxtData(profName) ;
-
-//    double H = buildingHeight()/geometricScale();
-
-    QPen pen;
-    pen.setColor(QColor(0,0,0));
-    pen.setWidth(2);
-//    pen.setStyle(Qt::NoPen);
-    pen.setJoinStyle(Qt::RoundJoin);
-
-
-    QCustomPlot* UavPlot  = new QCustomPlot();
-    UavPlot->addGraph();
-    UavPlot->graph()->setPen(pen);
-    UavPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-    UavPlot->graph(0)->setData(windProfile[1], windProfile[0]);
-    UavPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
-
-    // give the axes some labels:
-    UavPlot->xAxis->setLabel("Uav[m/s]");
-    UavPlot->yAxis->setLabel("z[m]");
-    // set axes ranges, so we see all data:
-    UavPlot->xAxis->setRange(0, 15);
-    UavPlot->yAxis->setRange(0, 1.0);
-    UavPlot->replot();
-
-    QCustomPlot* IuPlot  = new QCustomPlot();
-    IuPlot->addGraph();
-    IuPlot->graph()->setPen(pen);
-    IuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
-    IuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-    IuPlot->graph(0)->setData(windProfile[2], windProfile[0]);
-    // give the axes some labels:
-    IuPlot->xAxis->setLabel("Iu");
-    IuPlot->yAxis->setLabel("z[m]");
-    // set axes ranges, so we see all data:
-    IuPlot->xAxis->setRange(0, 0.5);
-    IuPlot->yAxis->setRange(0, 1.0);
-    IuPlot->replot();
-
-
-    QCustomPlot* LuPlot  = new QCustomPlot();
-    LuPlot->addGraph();
-    LuPlot->graph()->setPen(pen);
-    LuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
-    LuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-    LuPlot->graph(0)->setData(windProfile[3], windProfile[0]);
-    // give the axes some labels:
-    LuPlot->xAxis->setLabel("Lu[m]");
-    LuPlot->yAxis->setLabel("z[m]");
-    // set axes ranges, so we see all data:
-    LuPlot->xAxis->setRange(0, 2.0);
-    LuPlot->yAxis->setRange(0, 1.0);
-    LuPlot->replot();
-
-
-    QString SuName  = caseDir() + "/constant/simCenter/output/Suh.txt";
-    QVector<QVector<double>> Suh  =  readTxtData(SuName) ;
-
-    QCustomPlot* SuPlot  = new QCustomPlot();
-
-
-    SuPlot->addGraph();
-//    SuPlot->plotLayout()->addElement(0,0, new QCPPlotTitle(plot,"TITEL"));
-    SuPlot->graph()->setPen(pen);
-    SuPlot->graph()->setLineStyle((QCPGraph::LineStyle)10);
-    SuPlot->graph()->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 5));
-    SuPlot->graph(0)->setData(Suh[0], Suh[1]);
-    SuPlot->yAxis->setLabel("Su[m^2/s]");
-    SuPlot->xAxis->setLabel("f[Hz]");
-    SuPlot->xAxis->setRange(0.1, 1000.0);
-    SuPlot->yAxis->setRange(0.0001, 10.0);
-    SuPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
-    SuPlot->xAxis->setScaleType(QCPAxis::stLogarithmic);
-    QSharedPointer<QCPAxisTickerLog> logTicker(new QCPAxisTickerLog);
-    SuPlot->yAxis->setTicker(logTicker);
-    SuPlot->xAxis->setTicker(logTicker);
-    SuPlot->replot();
-
-    dialogLayout->addWidget(UavPlot, 0, 0);
-    dialogLayout->addWidget(IuPlot, 0, 1);
-    dialogLayout->addWidget(LuPlot, 0, 2);
-    dialogLayout->addWidget(SuPlot, 1, 0, 1, 2);
-
-    dialogLayout->addWidget(samplePointsWidget, 0, 0);
-
-    dialog->setLayout(dialogLayout);
-    dialog->exec();
-}
-
 void EmptyDomainCFD::onBrowseCaseDirectoryButtonClicked(void)
 {
     QString fileName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), caseDir(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
-
     QDir newCaseDir(fileName);
 
     if (!newCaseDir.exists())
@@ -807,8 +660,7 @@ bool EmptyDomainCFD::setupCase()
     targetDir.mkpath("constant/simCenter/output");
     targetDir.mkpath("constant/simCenter/input");
     targetDir.mkpath("constant/boundaryData");
-    targetDir.mkpath("constant/boundaryData/windProfile");
-    targetDir.mkpath("constant/boundaryData/sampledData");
+    targetDir.mkpath("constant/boundaryData/inlet");
     targetDir.mkpath("system");
 
     QFile visFoam(caseDir() + "/vis.foam");

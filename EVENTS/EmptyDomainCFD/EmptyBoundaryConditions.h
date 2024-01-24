@@ -86,7 +86,6 @@ private:
    QComboBox    *sidesBCType;
    QComboBox    *topBCType;
    QComboBox    *groundBCType;
-   QComboBox    *buildingBCType;
 
    QRadioButton *inflowDFSR;
    QRadioButton *inflowDFM;

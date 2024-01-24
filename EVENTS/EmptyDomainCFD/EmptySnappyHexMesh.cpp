@@ -617,7 +617,6 @@ bool EmptySnappyHexMesh::outputToJSON(QJsonObject &jsonObject)
     blockMeshParamsJson["frontBoundaryType"] = "symmetry";
     blockMeshParamsJson["backBoundaryType"] = "symmetry";
 
-
     jsonObject["blockMeshParameters"] = blockMeshParamsJson;
 
 

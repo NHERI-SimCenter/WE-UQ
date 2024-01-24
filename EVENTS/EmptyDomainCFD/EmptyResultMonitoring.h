@@ -107,7 +107,7 @@ private:
    QGridLayout          *vtkSampleLayout;
    QTableWidget         *vtkSampleTable;
    QSpinBox             *vtkWriteInterval;
-   QCheckBox            *monitorPlane;
+   QCheckBox            *monitorVTKPlane;
    QPushButton          *addPlane;
    QPushButton          *removePlane;
    QPushButton          *showPlane;

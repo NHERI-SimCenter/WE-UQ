@@ -77,13 +77,8 @@ signals:
 
 public slots:
    void clear(void);
-   void onAddProfileClicked();
-   void onRemoveProfileClicked();
-   void onShowProfilesClicked();
-   void onAddPlaneClicked();
-   void onRemovePlaneClicked();
-   void onMonitorProfileChecked(int);
-   void onMonitorPlaneChecked(int);
+   void onPlotProfileClicked(void);
+   bool simulationCompleted();
 
 
 private:
@@ -94,30 +89,19 @@ private:
 
    QGroupBox            *plotWindProfileGroup;
    QGridLayout          *plotWindProfileLayout;
-
-//   QTableWidget         *profileTable;
-//   QSpinBox             *profileWriteInterval;
-//   QCheckBox            *monitorProfile;
-//   QPushButton          *addProfile;
-//   QPushButton          *removeProfile;
-//   QPushButton          *showProfiles;
+   QPushButton          *plotProfile;
+   QComboBox            *profileNameU;
 
    QGroupBox            *plotSpectraGroup;
    QGridLayout          *plotSpectraLayout;
-//   QTableWidget         *vtkSampleTable;
-//   QSpinBox             *vtkWriteInterval;
-//   QCheckBox            *monitorPlane;
-//   QPushButton          *addPlane;
-//   QPushButton          *removePlane;
-//   QPushButton          *showPlane;
+   QPushButton          *plotSpectra;
+   QComboBox            *profileNameS;
+   QComboBox            *locationS;
 
-
-
-//   QPushButton          *openCSVFile;
-//   QPushButton          *showCoordinateOfPoints;
-
-//   void visCoordinateOfPoints(QGridLayout*);
-//   QList<QVector3D> calculatePointCoordinates();
+   QGroupBox            *plotPressureGroup;
+   QGridLayout          *plotPressureLayout;
+   QPushButton          *plotPressure;
+   QComboBox            *profileNameP;
 
 public:
 

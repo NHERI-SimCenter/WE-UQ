@@ -107,16 +107,8 @@ public:
     double fetchLength();
     QVector<double> getBuildingCenter();
 
-//    double buildingWidth();
-//    double buildingDepth();
-//    double buildingHeight();
-//    double windDirection();
-
     int numberOfFloors();
-
     double geometricScale();
-//    QString buildingShape();
-//    QString normalizationType();
     QString caseDir();
     QString foamDictsPath();
     QString templateDictDir();
@@ -135,7 +127,6 @@ signals:
 
 public slots:
    void clear(void);
-   void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
 
 private:
@@ -183,9 +174,6 @@ private:
 
    RandomVariablesContainer     *theRandomVariablesContainer;
    QStringList                  varNamesAndValues;
-
-   QPushButton                  *plotWindProfiles;
-   QPushButton                  *plotWindLoads;
 
    QString                      workingDirPath;
 

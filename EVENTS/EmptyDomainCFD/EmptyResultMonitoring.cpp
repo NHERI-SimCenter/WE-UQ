@@ -115,10 +115,10 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     vtkSampleGroup = new QGroupBox("VTK Planes");
     vtkSampleLayout = new QGridLayout();
     vtkSampleGroup->setLayout(vtkSampleLayout);
+
     //==================================================================
     //              Record Wind Profiles
     //==================================================================
-
     monitorProfile = new QCheckBox("Record Wind Profiles");
     monitorProfile->setChecked(true);
     monitorProfile->setToolTip("If checked monitors widnd profiles");
@@ -129,7 +129,7 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     profileTable = new QTableWidget(numRows, numCols);
     profileTable->setMaximumHeight(150);
 
-    QStringList headerTitles = {"Name", "X-start", "Y-start", "Z-start", "X-end", "Y-end", "Z-end", "No. Points", "Field"};
+    QStringList headerTitles = {"Name", "start-X", "start-Y", "start-Z", "end-X", "end-Y", "end-Z", "No. Points", "Field"};
 
     profileTable->setHorizontalHeaderLabels(headerTitles);
 
@@ -210,18 +210,19 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     monitorWindProfileLayout->addWidget(profileStartTimeLabel, 3, 2);
     monitorWindProfileLayout->addWidget(profileStartTime, 3, 3, Qt::AlignLeft);
 
-    connect(addProfile,SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
-    connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
-    connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
+    connect(addProfile, SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
+    connect(removeProfile, SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
+    connect(showProfiles, SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
     connect(monitorProfile, SIGNAL(stateChanged(int)), this, SLOT(onMonitorProfileChecked(int)));
 
 
     //==================================================================
     //              Sample On Plane
     //==================================================================
-    monitorPlane = new QCheckBox("Sample Flow Fields On Planes");
-    monitorPlane->setChecked(true);
-    monitorPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
+
+    monitorVTKPlane = new QCheckBox("Sample Flow Field");
+    monitorVTKPlane->setChecked(true);
+    monitorVTKPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
 
     int vtkNumCols = 8;
     int vtkNumRows = 2;
@@ -307,7 +308,7 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     showPlane = new QPushButton("Show Plane");
 
 
-    vtkSampleLayout->addWidget(monitorPlane, 0, 0);
+    vtkSampleLayout->addWidget(monitorVTKPlane, 0, 0);
     vtkSampleLayout->addWidget(addPlane, 0, 1);
     vtkSampleLayout->addWidget(removePlane, 0, 2);
     vtkSampleLayout->addWidget(showPlane, 0, 3);
@@ -319,14 +320,11 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     connect(addPlane,SIGNAL(clicked()), this, SLOT(onAddPlaneClicked()));
     connect(removePlane,SIGNAL(clicked()), this, SLOT(onRemovePlaneClicked()));
     connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
-    connect(monitorPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
-
+    connect(monitorVTKPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
 
     layout->addWidget(monitorWindProfileGroup);
     layout->addWidget(vtkSampleGroup);
     this->setLayout(layout);
-
-
 }
 
 
@@ -383,8 +381,6 @@ void EmptyResultMonitoring::onShowProfilesClicked()
 
 }
 
-
-
 void EmptyResultMonitoring::onAddPlaneClicked()
 {
 
@@ -429,11 +425,11 @@ void EmptyResultMonitoring::onRemovePlaneClicked()
     }
 }
 
-
 void EmptyResultMonitoring::onMonitorProfileChecked(int state)
 {
     profileTable->setEnabled(monitorProfile->isChecked());
     profileWriteInterval->setEnabled(monitorProfile->isChecked());
+    profileStartTime->setEnabled(monitorProfile->isChecked());
     addProfile->setEnabled(monitorProfile->isChecked());
     removeProfile->setEnabled(monitorProfile->isChecked());
     showProfiles->setEnabled(monitorProfile->isChecked());
@@ -441,11 +437,11 @@ void EmptyResultMonitoring::onMonitorProfileChecked(int state)
 
 void EmptyResultMonitoring::onMonitorPlaneChecked(int state)
 {
-    vtkSampleTable->setEnabled(monitorPlane->isChecked());
-    vtkWriteInterval->setEnabled(monitorPlane->isChecked());
-    addPlane->setEnabled(monitorPlane->isChecked());
-    removePlane->setEnabled(monitorPlane->isChecked());
-    showPlane->setEnabled(monitorPlane->isChecked());
+    vtkSampleTable->setEnabled(monitorVTKPlane->isChecked());
+    vtkWriteInterval->setEnabled(monitorVTKPlane->isChecked());
+    addPlane->setEnabled(monitorVTKPlane->isChecked());
+    removePlane->setEnabled(monitorVTKPlane->isChecked());
+    showPlane->setEnabled(monitorVTKPlane->isChecked());
 }
 
 
@@ -453,39 +449,64 @@ bool EmptyResultMonitoring::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
-//    QJsonObject resMonitoringJson = QJsonObject();
+    QJsonObject resMonitoringJson = QJsonObject();
 
-//    resMonitoringJson["numStories"] = numStories->value();
-//    resMonitoringJson["floorHeight"] = floorHeight->text().toDouble();
+    resMonitoringJson["monitorWindProfile"] = monitorProfile->isChecked();
+    resMonitoringJson["profileWriteInterval"] = profileWriteInterval->value();
+    resMonitoringJson["profileStartTime"] = profileStartTime->text().toDouble();
 
-//    QJsonArray centerOfRotation = {mainModel->getBuildingCenter()[0], mainModel->getBuildingCenter()[1], mainModel->getBuildingCenter()[2]};
-//    resMonitoringJson["centerOfRotation"] = centerOfRotation;
+    QJsonArray windProfiles;
+    for(int row=0; row < profileTable->rowCount(); row++)
+    {
+       QJsonObject profile = QJsonObject();
 
-//    resMonitoringJson["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
-//    resMonitoringJson["baseLoadWriteInterval"] = baseLoadWriteInterval->value();
-//    resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
+        profile["name"] = profileTable->item(row, 0)->text();
+        profile["startX"] = profileTable->item(row, 1)->text().toDouble();
+        profile["startY"] = profileTable->item(row, 2)->text().toDouble();
+        profile["startZ"] = profileTable->item(row, 3)->text().toDouble();
+        profile["endX"] = profileTable->item(row, 4)->text().toDouble();
+        profile["endY"] = profileTable->item(row, 5)->text().toDouble();
+        profile["endZ"] = profileTable->item(row, 6)->text().toDouble();
+        profile["nPoints"] = profileTable->item(row, 7)->text().toInt();
 
-//    resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
+        QComboBox* fieldName  = dynamic_cast<QComboBox*>(profileTable->cellWidget(row, 8));
+        profile["field"] = fieldName->currentText();
 
-//    resMonitoringJson["numTapsAlongWidth"] = numTapsAlongWidth->value();
-//    resMonitoringJson["numTapsAlongDepth"] = numTapsAlongDepth->value();
-//    resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
+        windProfiles.append(profile);
+    }
 
-//    resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
+    resMonitoringJson["windProfiles"] = windProfiles;
 
 
-//    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
-//    QJsonArray pressureSamplingPoints;
+    resMonitoringJson["monitorVTKPlane"] = monitorVTKPlane->isChecked();
 
-//    for(int i=0; i < pointsXYZ.size(); i++)
-//    {
-//        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
-//        pressureSamplingPoints.append(point);
-//    }
+    QJsonArray vtkPlanes;
+    for(int row=0; row < vtkSampleTable->rowCount(); row++)
+    {
+        QJsonObject vtkPlane = QJsonObject();
 
-//    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
+        vtkPlane["name"] = vtkSampleTable->item(row, 0)->text();
 
-//    jsonObject["resultMonitoring"] = resMonitoringJson;
+        QComboBox* axisName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 1));
+        vtkPlane["normalAxis"] = axisName->currentText();
+
+        vtkPlane["pointX"] = vtkSampleTable->item(row, 2)->text().toDouble();
+        vtkPlane["pointY"] = vtkSampleTable->item(row, 3)->text().toDouble();
+        vtkPlane["pointZ"] = vtkSampleTable->item(row, 4)->text().toDouble();
+        vtkPlane["startTime"] = vtkSampleTable->item(row, 5)->text().toDouble();
+        vtkPlane["endTime"] = vtkSampleTable->item(row, 6)->text().toDouble();
+
+        QComboBox* fieldName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 7));
+        vtkPlane["field"] = fieldName->currentText();
+
+        vtkPlanes.append(vtkPlane);
+    }
+    resMonitoringJson["vtkPlanes"] = vtkPlanes;
+
+    resMonitoringJson["vtkWriteInterval"] = vtkWriteInterval->value();
+
+
+    jsonObject["resultMonitoring"] = resMonitoringJson;
 
     return true;
 }
@@ -495,31 +516,74 @@ bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
-//    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
+    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
+
+    monitorProfile->setChecked(resMonitoringJson["monitorWindProfile"].toBool());
+    profileWriteInterval->setValue(resMonitoringJson["profileWriteInterval"].toInt());
+    profileStartTime->setText(QString::number(resMonitoringJson["profileStartTime"].toDouble()));
+
+    //Set wind profiles
+    QJsonArray profiles = resMonitoringJson["windProfiles"].toArray();
+
+    for (int pi = 0; pi < profiles.size(); pi++)
+    {
+        QJsonObject profile  = profiles[pi].toObject();
+
+        profileTable->item(pi, 0)->setText(profile["name"].toString());
+        profileTable->item(pi, 1)->setText(QString::number(profile["startX"].toDouble()));
+        profileTable->item(pi, 2)->setText(QString::number(profile["startY"].toDouble()));
+        profileTable->item(pi, 3)->setText(QString::number(profile["startZ"].toDouble()));
+        profileTable->item(pi, 4)->setText(QString::number(profile["endX"].toDouble()));
+        profileTable->item(pi, 5)->setText(QString::number(profile["endY"].toDouble()));
+        profileTable->item(pi, 6)->setText(QString::number(profile["endZ"].toDouble()));
+        profileTable->item(pi, 7)->setText(QString::number(profile["nPoints"].toInt()));
+
+        QComboBox* fieldName  = new QComboBox();
+        fieldName->addItem("Velocity");
+        fieldName->addItem("Pressure");
+        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+        fieldName->setCurrentText(profile["field"].toString());
+
+        profileTable->setCellWidget(pi, 8, fieldName);
+    }
+
+    //Set vtk planes
+    QJsonArray vtkPlanes = resMonitoringJson["vtkPlanes"].toArray();
+    monitorVTKPlane->setChecked(resMonitoringJson["monitorVTKPlane"].toBool());
+    vtkWriteInterval->setValue(resMonitoringJson["vtkWriteInterval"].toInt());
+
+    for (int pi = 0; pi < vtkPlanes.size(); pi++)
+    {
+        QJsonObject vtkPlane  = vtkPlanes[pi].toObject();
+
+        vtkSampleTable->item(pi, 0)->setText(vtkPlane["name"].toString());
+
+        QComboBox* axisName  = new QComboBox();
+        axisName->addItem("X");
+        axisName->addItem("Y");
+        axisName->addItem("Z");
+        axisName->setToolTip("Axis normal to the plane.");
+        axisName->setCurrentText(vtkPlane["normalAxis"].toString());
+
+        vtkSampleTable->setCellWidget(pi, 1, axisName);
 
 
-//    numStories->setValue(resMonitoringJson["numStories"].toInt());
-//    floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
+        vtkSampleTable->item(pi, 2)->setText(QString::number(vtkPlane["pointX"].toDouble()));
+        vtkSampleTable->item(pi, 3)->setText(QString::number(vtkPlane["pointY"].toDouble()));
+        vtkSampleTable->item(pi, 4)->setText(QString::number(vtkPlane["pointZ"].toDouble()));
+        vtkSampleTable->item(pi, 5)->setText(QString::number(vtkPlane["startTime"].toDouble()));
+        vtkSampleTable->item(pi, 6)->setText(QString::number(vtkPlane["endTime"].toDouble()));
 
-//    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
+        QComboBox* fieldName  = new QComboBox();
+        fieldName->addItem("Velocity");
+        fieldName->addItem("Pressure");
+        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
 
-//    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
-//    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
-//    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
+        fieldName->setCurrentText(vtkPlane["feild"].toString());
 
-//    storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
-//    baseLoadWriteInterval->setValue(resMonitoringJson["baseLoadWriteInterval"].toInt());
-//    monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
-
-//    monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
-
-//    numTapsAlongWidth->setValue(resMonitoringJson["numTapsAlongWidth"].toInt());
-//    numTapsAlongDepth->setValue(resMonitoringJson["numTapsAlongDepth"].toInt());
-//    numTapsAlongHeight->setValue(resMonitoringJson["numTapsAlongHeight"].toInt());
-
-//    pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
-
-//    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+        vtkSampleTable->setCellWidget(pi, 7, fieldName);
+    }
 
     return true;
 }

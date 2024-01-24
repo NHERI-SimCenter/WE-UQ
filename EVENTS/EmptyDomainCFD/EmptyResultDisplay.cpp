@@ -102,6 +102,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QFile>
 #include <QTextStream>
 #include <QtMath>
+#include <QWebEngineView>
 
 EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -116,218 +117,81 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     plotSpectraLayout = new QGridLayout();
     plotSpectraGroup->setLayout(plotSpectraLayout);
 
+    plotPressureGroup = new QGroupBox("Pressure Fluctuations");
+    plotPressureLayout = new QGridLayout();
+    plotPressureGroup->setLayout(plotPressureLayout);
 
     //==================================================================
     //              Plot Wind Profiles
     //==================================================================
+    QLabel* profileNameULabel = new QLabel("Name of the Profile: ");
+    profileNameU = new QComboBox();
 
-    QComboBox* profileName = new QComboBox();
+    profileNameU->addItem("Profile-1");
+    profileNameU->addItem("Profile-1");
+    profileNameU->setToolTip("Name of the profile to show.");
 
+    plotProfile = new QPushButton("Plot Profile");
+    plotProfile->setToolTip("Plots the wind profiles for a given line probe.");
 
-    profileName->addItem("Profile-1");
-    profileName->addItem("Profile-1");
-    profileName->setToolTip("Name of the profile to show.");
+    plotWindProfileLayout->addWidget(profileNameULabel, 0, 0);
+    plotWindProfileLayout->addWidget(profileNameU, 0, 1);
+    plotWindProfileLayout->addWidget(plotProfile, 0, 2);
 
-
-    QLabel* profileNameLabel = new QLabel("Profile Name: ");
-
-    plotWindProfileLayout->addWidget(profileNameLabel, 0, 0);
-    plotWindProfileLayout->addWidget(profileName, 0, 1);
-
-
-//    monitorProfile = new QCheckBox("Record Wind Profiles");
-//    monitorProfile->setChecked(true);
-//    monitorProfile->setToolTip("If checked monitors widnd profiles");
-
-//    int numCols = 9;
-//    int numRows = 2;
-
-//    profileTable = new QTableWidget(numRows, numCols);
-//    profileTable->setMaximumHeight(150);
-
-//    QStringList headerTitles = {"Name", "X-start", "Y-start", "Z-start", "X-end", "Y-end", "Z-end", "No. Points", "Field"};
-
-//    profileTable->setHorizontalHeaderLabels(headerTitles);
-
-//    for (int i=0; i < numCols; i++)
-//    {
-//        profileTable->setColumnWidth(i, profileTable->size().width()/(numCols + 0.25));
-
-//        for (int j=0; j < numRows; j++)
-//        {
-//            profileTable->setItem(j, i, new QTableWidgetItem(""));
-//        }
-//    }
+    //==================================================================
+    //              Plot Velocity Spectra
+    //==================================================================
 
 
-//    for (int j=0; j < numRows; j++)
-//    {
-//        QComboBox* fieldName  = new QComboBox();
-//        fieldName->addItem("Velocity");
-//        fieldName->addItem("Pressure");
-//        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+    QLabel* profileNameSLabel = new QLabel("Name of the Profile: ");
+    profileNameS = new QComboBox();
+    profileNameS->addItem("Profile-1");
+    profileNameS->addItem("Profile-1");
+    profileNameS->setToolTip("Location of the profile to show.");
 
-//        profileTable->setCellWidget(j, numCols-1, fieldName);
-//    }
+    QLabel* locationSLabel = new QLabel("Location:");
+    locationS = new QComboBox();
+    locationS->addItem("1/4Href");
+    locationS->addItem("1/2Href");
+    locationS->addItem("1Href");
+    locationS->addItem("2Href");
+    locationS->setToolTip("Location of the profile to show.");
 
-//    for (int i=0; i < numRows; i++)
-//    {
-//        profileTable->item(i, 0)->setText(tr("Profile%1").arg(i + 1));
-//    }
+    plotSpectra = new QPushButton("Plot Spectra");
+    plotSpectra->setToolTip("Plots the wind profiles for a given line probe.");
 
-//    //Line Probe #1
-//    profileTable->item(0, 1)->setText("0.0");
-//    profileTable->item(0, 2)->setText("0.0");
-//    profileTable->item(0, 3)->setText("0.0");
-//    profileTable->item(0, 4)->setText("0.0");
-//    profileTable->item(0, 5)->setText("0.0");
-//    profileTable->item(0, 6)->setText(QString::number(mainModel->domainHeight()));
-//    profileTable->item(0, 7)->setText("50");
+    plotSpectraLayout->addWidget(profileNameSLabel, 0, 0);
+    plotSpectraLayout->addWidget(profileNameS, 0, 1);
+    plotSpectraLayout->addWidget(locationSLabel, 0, 2, Qt::AlignRight);
+    plotSpectraLayout->addWidget(locationS, 0, 3);
+    plotSpectraLayout->addWidget(plotSpectra, 0, 4, 1,2);
 
-//    //Line Probe #2
-//    profileTable->item(1, 1)->setText(QString::number(-mainModel->fetchLength()));
-//    profileTable->item(1, 2)->setText("0.0");
-//    profileTable->item(1, 3)->setText("0.0");
-//    profileTable->item(1, 4)->setText("0.0");
-//    profileTable->item(1, 5)->setText("0.0");
-//    profileTable->item(1, 6)->setText(QString::number(mainModel->domainHeight()));
-//    profileTable->item(1, 7)->setText("50");
+    //==================================================================
+    //              Plot Pressure Profiles
+    //==================================================================
+    QLabel* profileNamePLabel = new QLabel("Name of the Profile: ");
+    profileNameP = new QComboBox();
 
+    profileNameP->addItem("Profile-1");
+    profileNameP->addItem("Profile-1");
+    profileNameP->setToolTip("Location of the profile to show.");
 
-//    QLabel* profileWriteIntervalLabel = new QLabel("Field Write Interval: ");
-//    profileWriteInterval = new QSpinBox();
-//    profileWriteInterval->setSingleStep(1);
-//    profileWriteInterval->setMinimum(1);
-//    profileWriteInterval->setValue(10);
-//    profileWriteInterval->setEnabled(true);
-//    profileWriteInterval->setToolTip("Writing interval as a multiple of time step for wind profiles");
-//    profileWriteInterval->setMinimumWidth(100);
+    plotPressure = new QPushButton("Plot Pressure");
+    plotPressure->setToolTip("Plots the pressure fluctuation on a given line probe.");
 
-//    addProfile = new QPushButton("Add Profile");
-//    removeProfile = new QPushButton("Remove Profile");
-//    showProfiles = new QPushButton("Show Profiles");
-
-//    monitorWindProfileLayout->addWidget(monitorProfile, 0, 0);
-//    monitorWindProfileLayout->addWidget(profileTable, 1, 0, 1, 3);
-//    monitorWindProfileLayout->addWidget(profileWriteIntervalLabel, 2, 0);
-//    monitorWindProfileLayout->addWidget(profileWriteInterval, 2, 1, Qt::AlignLeft);
-//    monitorWindProfileLayout->addWidget(addProfile, 3, 0);
-//    monitorWindProfileLayout->addWidget(removeProfile, 3, 1);
-//    monitorWindProfileLayout->addWidget(showProfiles, 3, 2);
-
-//    connect(addProfile,SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
-//    connect(removeProfile,SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
-//    connect(showProfiles,SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
-//    connect(monitorProfile, SIGNAL(stateChanged(int)), this, SLOT(onMonitorProfileChecked(int)));
+    plotPressureLayout->addWidget(profileNamePLabel, 0, 0);
+    plotPressureLayout->addWidget(profileNameP, 0, 1);
+    plotPressureLayout->addWidget(plotPressure, 0, 2);
 
 
-//    //==================================================================
-//    //              Sample On Plane
-//    //==================================================================
-//    monitorPlane = new QCheckBox("Sample Flow Fields On Planes");
-//    monitorPlane->setChecked(true);
-//    monitorPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
-
-//    int vtkNumCols = 8;
-//    int vtkNumRows = 2;
-
-//    vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
-//    vtkSampleTable->setMaximumHeight(150);
-
-//    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
-
-//    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
-
-//    for (int i=0; i < vtkNumCols; i++)
-//    {
-//        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
-
-//        for (int j=0; j < vtkNumRows; j++)
-//        {
-//            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
-//        }
-//    }
-
-//    for (int i=0; i < vtkNumRows; i++)
-//    {
-//        vtkSampleTable->item(i, 0)->setText(tr("Plane%1").arg(i + 1));
-//    }
-
-//    for (int j=0; j < vtkNumRows; j++)
-//    {
-//        QComboBox* axisName  = new QComboBox();
-//        axisName->addItem("X");
-//        axisName->addItem("Y");
-//        axisName->addItem("Z");
-//        axisName->setToolTip("Axis normal to the plane.");
-
-//        vtkSampleTable->setCellWidget(j, 1, axisName);
-
-//        if(j == 0)
-//        {
-//            axisName->setCurrentIndex(1);
-//        }
-//        else
-//        {
-//            axisName->setCurrentIndex(2);
-//        }
-//    }
-
-//    for (int j=0; j < vtkNumRows; j++)
-//    {
-//        QComboBox* fieldName  = new QComboBox();
-//        fieldName->addItem("Velocity");
-//        fieldName->addItem("Pressure");
-//        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-//        vtkSampleTable->setCellWidget(j, vtkNumCols-1, fieldName);
-//    }
-
-//    //Line Probe #1
-//    vtkSampleTable->item(0, 2)->setText("0.0");
-//    vtkSampleTable->item(0, 3)->setText("0.0");
-//    vtkSampleTable->item(0, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
-//    vtkSampleTable->item(0, 5)->setText(QString::number(mainModel->getDuration()*0.10));
-//    vtkSampleTable->item(0, 6)->setText(QString::number(mainModel->getDuration()*0.20));
-
-//    //Line Probe #2
-//    vtkSampleTable->item(1, 2)->setText("0.0");
-//    vtkSampleTable->item(1, 3)->setText("0.0");
-//    vtkSampleTable->item(1, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
-//    vtkSampleTable->item(1, 5)->setText(QString::number(mainModel->getDuration()*0.10));
-//    vtkSampleTable->item(1, 6)->setText(QString::number(mainModel->getDuration()*0.20));
-
-
-//    QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
-//    vtkWriteInterval = new QSpinBox();
-//    vtkWriteInterval->setSingleStep(1);
-//    vtkWriteInterval->setMinimum(1);
-//    vtkWriteInterval->setValue(10);
-//    vtkWriteInterval->setEnabled(true);
-//    vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
-//    vtkWriteInterval->setMaximumWidth(100);
-
-//    addPlane = new QPushButton("Add Plane");
-//    removePlane = new QPushButton("Remove Plane");
-//    showPlane = new QPushButton("Show Plane");
-
-
-//    vtkSampleLayout->addWidget(monitorPlane, 0, 0);
-//    vtkSampleLayout->addWidget(vtkSampleTable, 1, 0, 1, 3);
-//    vtkSampleLayout->addWidget(vtkWriteIntervalLabel, 2, 0);
-//    vtkSampleLayout->addWidget(vtkWriteInterval, 2, 1);
-//    vtkSampleLayout->addWidget(addPlane, 3, 0);
-//    vtkSampleLayout->addWidget(removePlane, 3, 1);
-//    vtkSampleLayout->addWidget(showPlane, 3, 2);
-
-//    connect(addPlane,SIGNAL(clicked()), this, SLOT(onAddPlaneClicked()));
-//    connect(removePlane,SIGNAL(clicked()), this, SLOT(onRemovePlaneClicked()));
-//    connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
-//    connect(monitorPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
+    connect(plotProfile, SIGNAL(clicked()), this, SLOT(onPlotProfileClicked()));
+    connect(plotSpectra, SIGNAL(clicked()), this, SLOT(onPlotSpectraClicked()));
+    connect(plotPressure, SIGNAL(clicked()), this, SLOT(onPlotPressureClicked()));
 
 
     layout->addWidget(plotWindProfileGroup);
     layout->addWidget(plotSpectraGroup);
+    layout->addWidget(plotPressureGroup);
     this->setLayout(layout);
 }
 
@@ -342,112 +206,32 @@ void EmptyResultDisplay::clear(void)
 
 }
 
-void EmptyResultDisplay::onAddProfileClicked()
+void EmptyResultDisplay::onPlotProfileClicked(void)
 {
+    int dialogHeight = 875;
+    int dialogWidth = 1250;
 
-//    int rowIndx = profileTable->rowCount();
+    QVBoxLayout *plotLayout = new QVBoxLayout();
 
-//    profileTable->insertRow(rowIndx);
+    QWebEngineView *plotView = new QWebEngineView();
+    plotView->page()->setBackgroundColor(Qt::transparent);
+    plotLayout->addWidget(plotView);
 
-//    profileTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Profile%1").arg(rowIndx + 1)));
-//    profileTable->setItem(rowIndx, 1, new QTableWidgetItem("0.0"));
-//    profileTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
-//    profileTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
-//    profileTable->setItem(rowIndx, 4, new QTableWidgetItem("0.0"));
-//    profileTable->setItem(rowIndx, 5, new QTableWidgetItem("0.0"));
-//    profileTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->domainHeight())));
-//    profileTable->setItem(rowIndx, 7, new QTableWidgetItem("50"));
+    plotView->setMinimumWidth(dialogWidth);
+    plotView->setMinimumHeight(dialogHeight);
 
-//    QComboBox* fieldName  = new QComboBox();
-//    fieldName->addItem("Velocity");
-//    fieldName->addItem("Pressure");
-//    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+    QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator() + "probe7H.html";
 
-//    profileTable->setCellWidget(rowIndx, profileTable->columnCount()-1, fieldName);
+//    QMessageBox msgBox;
+//    msgBox.setText(plotPath);
+//    msgBox.exec();
 
-}
-
-void EmptyResultDisplay::onRemoveProfileClicked()
-{
-//    QItemSelectionModel *selected = profileTable->selectionModel();
-
-//    if(selected->hasSelection())
-//    {
-//        for (int i = 0; i <selected->selectedRows().size(); i++)
-//        {
-//            profileTable->removeRow(selected->selectedRows()[i].row());
-//        }
-//    }
-}
-
-void EmptyResultDisplay::onShowProfilesClicked()
-{
-
-}
-
-
-
-void EmptyResultDisplay::onAddPlaneClicked()
-{
-
-//    int rowIndx = vtkSampleTable->rowCount();
-
-//    vtkSampleTable->insertRow(rowIndx);
-
-//    QComboBox* axisName  = new QComboBox();
-//    axisName->addItem("X");
-//    axisName->addItem("Y");
-//    axisName->addItem("Z");
-//    axisName->setToolTip("Axis normal to the plane.");
-//    axisName->setCurrentIndex(2);
-
-//    QComboBox* fieldName  = new QComboBox();
-//    fieldName->addItem("Velocity");
-//    fieldName->addItem("Pressure");
-//    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-//    //Line Probe #1
-//    vtkSampleTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Plane%1").arg(rowIndx + 1)));
-//    vtkSampleTable->setCellWidget(rowIndx, 1, axisName);
-//    vtkSampleTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
-//    vtkSampleTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
-//    vtkSampleTable->setItem(rowIndx, 4, new QTableWidgetItem(QString::number(mainModel->domainHeight()*0.10)));
-//    vtkSampleTable->setItem(rowIndx, 5, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.10)));
-//    vtkSampleTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.20)));
-//    vtkSampleTable->setCellWidget(rowIndx, 7, fieldName);
-
-}
-
-void EmptyResultDisplay::onRemovePlaneClicked()
-{
-//    QItemSelectionModel *selected = vtkSampleTable->selectionModel();
-
-//    if(selected->hasSelection())
-//    {
-//        for (int i = 0; i <selected->selectedRows().size(); i++)
-//        {
-//            vtkSampleTable->removeRow(selected->selectedRows()[i].row());
-//        }
-//    }
-}
-
-
-void EmptyResultDisplay::onMonitorProfileChecked(int state)
-{
-//    profileTable->setEnabled(monitorProfile->isChecked());
-//    profileWriteInterval->setEnabled(monitorProfile->isChecked());
-//    addProfile->setEnabled(monitorProfile->isChecked());
-//    removeProfile->setEnabled(monitorProfile->isChecked());
-//    showProfiles->setEnabled(monitorProfile->isChecked());
-}
-
-void EmptyResultDisplay::onMonitorPlaneChecked(int state)
-{
-//    vtkSampleTable->setEnabled(monitorPlane->isChecked());
-//    vtkWriteInterval->setEnabled(monitorPlane->isChecked());
-//    addPlane->setEnabled(monitorPlane->isChecked());
-//    removePlane->setEnabled(monitorPlane->isChecked());
-//    showPlane->setEnabled(monitorPlane->isChecked());
+    if(QFileInfo::exists(plotPath))
+    {
+        plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->show();
+    }
 }
 
 
@@ -455,39 +239,13 @@ bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
-//    QJsonObject resMonitoringJson = QJsonObject();
+    QJsonObject resDisplayJson = QJsonObject();
 
-//    resMonitoringJson["numStories"] = numStories->value();
-//    resMonitoringJson["floorHeight"] = floorHeight->text().toDouble();
+    QJsonArray spectralPlotLocations = {0.25, 0.5, 1.0, 2.0};
 
-//    QJsonArray centerOfRotation = {mainModel->getBuildingCenter()[0], mainModel->getBuildingCenter()[1], mainModel->getBuildingCenter()[2]};
-//    resMonitoringJson["centerOfRotation"] = centerOfRotation;
+    resDisplayJson["spectralPlotLocations"] = spectralPlotLocations;
 
-//    resMonitoringJson["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
-//    resMonitoringJson["baseLoadWriteInterval"] = baseLoadWriteInterval->value();
-//    resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
-
-//    resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
-
-//    resMonitoringJson["numTapsAlongWidth"] = numTapsAlongWidth->value();
-//    resMonitoringJson["numTapsAlongDepth"] = numTapsAlongDepth->value();
-//    resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
-
-//    resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
-
-
-//    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
-//    QJsonArray pressureSamplingPoints;
-
-//    for(int i=0; i < pointsXYZ.size(); i++)
-//    {
-//        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
-//        pressureSamplingPoints.append(point);
-//    }
-
-//    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
-
-//    jsonObject["resultMonitoring"] = resMonitoringJson;
+    jsonObject["resultDisplay"] = resDisplayJson;
 
     return true;
 }
@@ -497,31 +255,30 @@ bool EmptyResultDisplay::inputFromJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
 
-//    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
+    QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
 
+    //Set wind profiles
+    QJsonArray profiles = resMonitoringJson["windProfiles"].toArray();
 
-//    numStories->setValue(resMonitoringJson["numStories"].toInt());
-//    floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
+    profileNameU->clear();
+    profileNameS->clear();
+    profileNameP->clear();
 
-//    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
+    for (int pi = 0; pi < profiles.size(); pi++)
+    {
+        QJsonArray profile  = profiles[pi].toArray();
 
-//    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
-//    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
-//    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
+        if(profile[8].toString() == "Velocity")
+        {
+            profileNameU->addItem(profile[0].toString());
+            profileNameS->addItem(profile[0].toString());
+        }
 
-//    storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
-//    baseLoadWriteInterval->setValue(resMonitoringJson["baseLoadWriteInterval"].toInt());
-//    monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
-
-//    monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
-
-//    numTapsAlongWidth->setValue(resMonitoringJson["numTapsAlongWidth"].toInt());
-//    numTapsAlongDepth->setValue(resMonitoringJson["numTapsAlongDepth"].toInt());
-//    numTapsAlongHeight->setValue(resMonitoringJson["numTapsAlongHeight"].toInt());
-
-//    pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
-
-//    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+        if(profile[8].toString() == "Pressure")
+        {
+            profileNameP->addItem(profile[0].toString());
+        }
+    }
 
     return true;
 }
@@ -529,4 +286,14 @@ bool EmptyResultDisplay::inputFromJSON(QJsonObject &jsonObject)
 void EmptyResultDisplay::updateWidgets()
 {
 }
+
+bool EmptyResultDisplay::simulationCompleted()
+{
+    return true;
+}
+
+//void EmptyResultDisplay::add()
+//{
+//}
+
 
