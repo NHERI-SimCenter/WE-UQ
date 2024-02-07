@@ -187,7 +187,8 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersion->addItem("7");
     openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
-    openFoamVersion->setCurrentIndex(1);
+    openFoamVersion->setCurrentIndex(2);
+    openFoamVersion->setMinimumWidth(50);
 
 
     QTextEdit *modelingProcedureText = new QTextEdit ();

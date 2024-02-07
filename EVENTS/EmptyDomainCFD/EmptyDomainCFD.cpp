@@ -188,6 +188,7 @@ bool EmptyDomainCFD::initialize()
     openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
     openFoamVersion->setCurrentIndex(1);
+    openFoamVersion->setMinimumWidth(50);
 
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
@@ -427,9 +428,9 @@ void EmptyDomainCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
 
     process->close();
 }

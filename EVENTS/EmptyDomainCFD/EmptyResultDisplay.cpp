@@ -127,8 +127,8 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     QLabel* profileNameULabel = new QLabel("Name of the Profile: ");
     profileNameU = new QComboBox();
 
-    profileNameU->addItem("Profile-1");
-    profileNameU->addItem("Profile-1");
+    profileNameU->addItem("Profile1");
+    profileNameU->addItem("Profile1");
     profileNameU->setToolTip("Name of the profile to show.");
 
     plotProfile = new QPushButton("Plot Profile");
@@ -145,8 +145,8 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
 
     QLabel* profileNameSLabel = new QLabel("Name of the Profile: ");
     profileNameS = new QComboBox();
-    profileNameS->addItem("Profile-1");
-    profileNameS->addItem("Profile-1");
+    profileNameS->addItem("Profile1");
+    profileNameS->addItem("Profile1");
     profileNameS->setToolTip("Location of the profile to show.");
 
     QLabel* locationSLabel = new QLabel("Location:");
@@ -172,8 +172,8 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     QLabel* profileNamePLabel = new QLabel("Name of the Profile: ");
     profileNameP = new QComboBox();
 
-    profileNameP->addItem("Profile-1");
-    profileNameP->addItem("Profile-1");
+    profileNameP->addItem("Profile1");
+    profileNameP->addItem("Profile1");
     profileNameP->setToolTip("Location of the profile to show.");
 
     plotPressure = new QPushButton("Plot Pressure");

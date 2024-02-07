@@ -265,12 +265,12 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
 
     for (int i=0; i < numCols; i++)
     {
-       refinementBoxesTable->setColumnWidth(i, refinementBoxesTable->size().width()/numCols);
+        refinementBoxesTable->setColumnWidth(i, refinementBoxesTable->size().width()/numCols);
 
-       for (int j=0; j < numRows; j++)
-       {
-        refinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
-       }
+        for (int j=0; j < numRows; j++)
+        {
+            refinementBoxesTable->setItem(j, i, new QTableWidgetItem(""));
+        }
     }
     for (int i=0; i < numRows; i++)
     {
@@ -695,7 +695,6 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
     //Read snappyHex configuration parameters
     QJsonObject snappyMeshParamsJson = jsonObject["snappyHexMeshParameters"].toObject();
 
-    //surfaceName->setCurrentText(snappyMeshParamsJson["buildingSTLName"].toString());
     numCellsBetweenLevels->setValue(snappyMeshParamsJson["numCellsBetweenLevels"].toInt());
     resolveFeatureAngle->setValue(snappyMeshParamsJson["resolveFeatureAngle"].toInt());
     numProcessors->setValue(snappyMeshParamsJson["numProcessors"].toInt());
@@ -704,9 +703,26 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
     //Set regional refinment
     QJsonArray regions = snappyMeshParamsJson["refinementBoxes"].toArray();
 
-    const int nRegions = regions.size();
+    const int nRows = regions.size();
+    const int nCols = regions.first().toArray().size() + 1;
 
-    for (int ri = 0; ri < nRegions; ri++)
+    //Remove prior rows
+    for (int i = refinementBoxesTable->rowCount()-1; i >=0; i--)
+    {
+        refinementBoxesTable->removeRow(i);
+    }
+
+    //Add new rows
+    for (int i = 0; i < nRows; i++)
+    {
+        refinementBoxesTable->insertRow(i);
+        for (int j=0; j < nCols; j++)
+        {
+            refinementBoxesTable->setItem(i, j, new QTableWidgetItem(""));
+        }
+    }
+
+    for (int ri = 0; ri < nRows; ri++)
     {
         QJsonArray region  = regions[ri].toArray();
 
@@ -718,7 +734,6 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
         refinementBoxesTable->item(ri, 5)->setText(QString::number(region[5].toDouble()));
         refinementBoxesTable->item(ri, 6)->setText(QString::number(region[6].toDouble()));
         refinementBoxesTable->item(ri, 7)->setText(QString::number(region[7].toDouble()));
-
     }
 
     snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();
@@ -768,3 +783,4 @@ void EmptySnappyHexMesh::onMeshSizeChanged()
         refinementBoxesTable->item(i, 8)->setText(QString::number(meshSize/qPow(2, refinementBoxesTable->item(i, 1)->text().toInt())));
     }
 }
+
