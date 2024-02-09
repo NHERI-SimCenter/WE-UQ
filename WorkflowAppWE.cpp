@@ -88,6 +88,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <Utils/ProgramOutputDialog.h>
 #include <Utils/RelativePathResolver.h>
 #include <SC_ToolDialog.h>
+#include <SC_RemoteAppTool.h>
+#include <QList>
+#include <RemoteAppTest.h>
+
 #include <QMenuBar>
 
 #include <GoogleAnalytics.h>
@@ -123,6 +127,8 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     localApp = new LocalApplication("sWHALE.py");
     remoteApp = new RemoteApplication("sWHALE.py", theService);
 
+
+    //QStringList filesToDownload; filesToDownload << "inputRWHALE.json" << "input_data.zip" << "Results.zip";
     theJobManager = new RemoteJobManager(theService);
 
     SimCenterWidget *theWidgets[1];// =0;
@@ -209,14 +215,20 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   
   //
   // Add a Tool option to menu bar & add options to it
-  //
-  
-  
+  //  
+
   QMenu *toolsMenu = new QMenu(tr("&Tools"),menuBar);
   SC_ToolDialog *theToolDialog = new SC_ToolDialog(this);
+
+  //
+  // Add empty domain to Tools
+  //
+
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
-  
-  theToolDialog->addTool(theEmptyDomain, "Empty Domain Simulation");
+  QString appName = "blah";
+  QList<QString> queues; queues << "normal" << "fast";
+  SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
+  theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
   
   // Set the path to the input file
   QAction *showEmptyDomain = toolsMenu->addAction("&Empty Domain Simulation");
@@ -226,6 +238,26 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 	theEmp->initialize();
     }
   });
+
+  //
+  // Add SimpleTest Example
+  //
+
+  RemoteAppTest *theTest = new RemoteAppTest();
+  QString appNameTest = "remoteAppTest-1.0.0";
+  QList<QString> queuesTest; queuesTest << "normal" << "fast";
+  SC_RemoteAppTool *theTestTool = new SC_RemoteAppTool(appNameTest, queuesTest, theRemoteService, theTest, theToolDialog);
+  theToolDialog->addTool(theTestTool, "Build and Run MPI Program");
+  
+  // Set the path to the input file
+  QAction *showTest = toolsMenu->addAction("&Build and Run MPI Program");
+  connect(showTest, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theTestTool] {
+    theDialog->showTool("Build and Run MPI Program");
+  });  
+
+  //
+  // Add Tools to menu bar
+  //
   
   QAction* menuAfter = nullptr;
   foreach (QAction *action, menuBar->actions()) {
