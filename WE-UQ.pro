@@ -21,6 +21,7 @@ TEMPLATE = app
 
 DEFINES += _GRAPHICS_Qt3D
 
+QMAKE_APPLE_DEVICE_ARCHS="x86_64"
 
 INCLUDEPATH += StochasticWindModel/include
 INCLUDEPATH += Inflow
