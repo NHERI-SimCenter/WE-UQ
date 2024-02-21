@@ -87,7 +87,7 @@ signals:
 
 public slots:
    void clear(void);
-    void onImportSetupButtonClicked();
+    int onImportSetupButtonClicked();
     void originChanged(const QString &arg);
     void useCOSTOptionChecked(int);
 

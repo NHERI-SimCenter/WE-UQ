@@ -897,4 +897,16 @@ EmptyResultDisplay* EmptyDomainCFD::resultCFD()
     return resultDisplay;
 }
 
+void EmptyDomainCFD::importMainDomainJsonFile(QJsonObject &jsonObject)
+{
+    openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
+    geometry->inputFromJSON(jsonObject);
+    snappyHexMesh->inputFromJSON(jsonObject);
+    windCharacteristics->inputFromJSON(jsonObject);
+    boundaryConditions->inputFromJSON(jsonObject);
+    turbulenceModeling->inputFromJSON(jsonObject);
+    numericalSetup->inputFromJSON(jsonObject);
+}
+
+
 

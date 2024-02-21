@@ -215,7 +215,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   
   //
   // Add a Tool option to menu bar & add options to it
-  //  
+  //
 
   QMenu *toolsMenu = new QMenu(tr("&Tools"),menuBar);
   SC_ToolDialog *theToolDialog = new SC_ToolDialog(this);
@@ -225,17 +225,18 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
-  QString appName = "blah";
+  QString appName = "simCenterOpenFoam10-0.0.1";
   QList<QString> queues; queues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
   
   // Set the path to the input file
-  QAction *showEmptyDomain = toolsMenu->addAction("&Empty Domain Simulation");
-  connect(showEmptyDomain, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theEmptyDomain] {
+  QAction *showEmptyDomain = toolsMenu->addAction("&CFD - Empty Domain Simulation");
+  connect(showEmptyDomain, &QAction::triggered, this, [this, theDialog=theToolDialog, theEmp=theEmptyDomain] {
     theDialog->showTool("Empty Domain Simulation");
-    if (!theEmp->isInitialize()) {
-	theEmp->initialize();
+    if(!theEmp->isInitialize())
+    {
+        theEmp->initialize();
     }
   });
 
@@ -243,38 +244,41 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add SimpleTest Example
   //
 
-  RemoteAppTest *theTest = new RemoteAppTest();
-  QString appNameTest = "remoteAppTest-1.0.0";
-  QList<QString> queuesTest; queuesTest << "normal" << "fast";
-  SC_RemoteAppTool *theTestTool = new SC_RemoteAppTool(appNameTest, queuesTest, theRemoteService, theTest, theToolDialog);
-  theToolDialog->addTool(theTestTool, "Build and Run MPI Program");
+//  RemoteAppTest *theTest = new RemoteAppTest();
+//  QString appNameTest = "remoteAppTest-1.0.0";
+//  QList<QString> queuesTest; queuesTest << "normal" << "fast";
+//  SC_RemoteAppTool *theTestTool = new SC_RemoteAppTool(appNameTest, queuesTest, theRemoteService, theTest, theToolDialog);
+//  theToolDialog->addTool(theTestTool, "Build and Run MPI Program");
   
-  // Set the path to the input file
-  QAction *showTest = toolsMenu->addAction("&Build and Run MPI Program");
-  connect(showTest, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theTestTool] {
-    theDialog->showTool("Build and Run MPI Program");
-  });  
+//  // Set the path to the input file
+//  QAction *showTest = toolsMenu->addAction("&Build and Run MPI Program");
+//  connect(showTest, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theTestTool] {
+//    theDialog->showTool("Build and Run MPI Program");
+//  });
 
   //
   // Add Tools to menu bar
   //
   
   QAction* menuAfter = nullptr;
-  foreach (QAction *action, menuBar->actions()) {
+  foreach (QAction *action, menuBar->actions())
+  {
     // First check for an examples menu and if that does not exist put it before the help menu
-    auto actionText = action->text();
+    QString actionText = action->text();
+
     if(actionText.compare("&Examples") == 0)
-      {
-	menuAfter = action;
-	break;
-      }
+    {
+        menuAfter = action;
+        break;
+    }
     else if(actionText.compare("&Help") == 0)
-      {
-	menuAfter = action;
-	break;
-      }
+    {
+        menuAfter = action;
+        break;
+    }
   }
-  menuBar->insertMenu(menuAfter, toolsMenu);    
+
+  menuBar->insertMenu(menuAfter, toolsMenu);
 }
 
 WorkflowAppWE::~WorkflowAppWE()

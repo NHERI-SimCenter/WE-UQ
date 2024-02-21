@@ -438,9 +438,9 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
 
     process->close();
 }
@@ -663,8 +663,36 @@ void IsolatedBuildingCFD::updateWidgets()
 bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
+    QString foamPath = jsonObject["caseDirectoryPath"].toString();
 
-    caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+
+    QDir foamDir(foamPath);
+
+    if (!foamDir.exists(foamPath))
+    {
+        QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+        QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+                                                     + "LocalWorkDir" + QDir::separator()
+                                                     + "IsolatedBuildingCFD");
+        workingDir.mkpath(workingDirPath);
+        caseDirectoryPathWidget->setText(workingDirPath);
+
+        if(!isCaseConfigured())
+        {
+            setupCase();
+        }
+
+        if (!isMeshed())
+        {
+            snappyHexMesh->onRunBlockMeshClicked();
+        }
+    }
+    else
+    {
+        caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+    }
+
     openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
 
     geometry->inputFromJSON(jsonObject);
