@@ -184,11 +184,12 @@ bool EmptyDomainCFD::initialize()
     QLabel *openFoamVersionLabel = new QLabel("Version of OpenFOAM Distribution: ");
 
     openFoamVersion = new QComboBox ();
-    openFoamVersion->addItem("7");
-    openFoamVersion->addItem("9");
+//    openFoamVersion->addItem("7");
+//    openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
     openFoamVersion->setCurrentIndex(1);
     openFoamVersion->setMinimumWidth(50);
+    openFoamVersion->setDisabled(true);
 
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
@@ -569,10 +570,10 @@ bool EmptyDomainCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
     // and all data to be used in ApplicationDate
     //
 
-    jsonObject["EventClassification"]="Wind";
-    jsonObject["Application"] = "EmptyDomainCFD";
-    QJsonObject dataObj;
-    jsonObject["ApplicationData"] = dataObj;
+//    jsonObject["EventClassification"]="Wind";
+//    jsonObject["Application"] = "EmptyDomainCFD";
+//    QJsonObject dataObj;
+//    jsonObject["ApplicationData"] = dataObj;
 
     return true;
 }

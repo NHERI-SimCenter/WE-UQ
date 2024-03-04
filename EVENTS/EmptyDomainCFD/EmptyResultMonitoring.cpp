@@ -168,6 +168,7 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     profileWriteInterval = new QSpinBox();
     profileWriteInterval->setSingleStep(1);
     profileWriteInterval->setMinimum(1);
+    profileWriteInterval->setMaximum(10000);
     profileWriteInterval->setValue(10);
     profileWriteInterval->setEnabled(true);
     profileWriteInterval->setToolTip("Writing interval as a multiple of time step for wind profiles");
@@ -269,9 +270,10 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
 
     QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
     vtkWriteInterval = new QSpinBox();
-    vtkWriteInterval->setSingleStep(1);
+    vtkWriteInterval->setSingleStep(10);
     vtkWriteInterval->setMinimum(1);
     vtkWriteInterval->setValue(10);
+    vtkWriteInterval->setMaximum(10000);
     vtkWriteInterval->setEnabled(true);
     vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
     vtkWriteInterval->setMinimumWidth(100);
