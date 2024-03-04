@@ -211,6 +211,7 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
 
+    windProfilePath = mainModel->caseDir();
 
     inflowLayout->addWidget(inflowMethodLabel, 0, 0);
     inflowLayout->addWidget(inflowDFSR, 0, 1);
@@ -292,14 +293,10 @@ void EmptyBoundaryConditions::inflowTimeStepChanged(const QString &arg1)
 
 void EmptyBoundaryConditions::onImportWindProfilesClicked()
 {
-    QString windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
+    windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
 
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
-
-//    QMessageBox msgBox;
-//    msgBox.setText("Wind profile path: " + windProfilePath);
-//    msgBox.exec();
 
     readCSV(windProfilePath);
 }
@@ -344,7 +341,7 @@ void EmptyBoundaryConditions::onShowWindProfilesClicked()
     QDialog *dialog  = new QDialog(this);
 
     int dialogHeight = 600;
-    int dialogWidth = 800;
+    int dialogWidth = 1200;
 
     dialog->setMinimumHeight(dialogHeight);
     dialog->setMinimumWidth(dialogWidth);
@@ -355,6 +352,10 @@ void EmptyBoundaryConditions::onShowWindProfilesClicked()
 
     QGridLayout* dialogLayout = new QGridLayout();
 
+    if(!readCSV(windProfilePath))
+    {
+        return;
+    }
 
     int numRows = windProfiles.size(); // x, y and z
     int numCols = windProfiles.first().size(); //acount points on each face of the building (sides and top)
@@ -364,13 +365,19 @@ void EmptyBoundaryConditions::onShowWindProfilesClicked()
     windProfileTable->setMinimumWidth(dialogWidth*0.95);
 
 
-    QStringList headerTitles = {"Z(m)", "Uav(m/s)", "Iu", "Iv", "Iw", "Lu(m)", "Lv(m)", "Lw(m)"};
+    QStringList headerTitles = {"z[m]", "Uav[m/s]",
+                                "R11[m2/s2]", "R12[m2/s2]", "R13[m2/s2]",
+                                "R22[m2/s2]", "R23[m2/s2]",
+                                "R33[m2/s2]",
+                                "xLu[m]", "yLu[m]", "zLu[m]",
+                                "xLv[m]", "yLv[m]", "zLv[m]",
+                                "xLw[m]", "yLw[m]", "zLw[m]"};
 
     windProfileTable->setHorizontalHeaderLabels(headerTitles);
 
     for (int i=0; i < numCols; i++)
     {
-       windProfileTable->setColumnWidth(i, windProfileTable->size().width()/numCols - 15);
+       windProfileTable->setColumnWidth(i, windProfileTable->size().width()/numCols);
 
        for (int j=0; j < numRows; j++)
        {
@@ -428,6 +435,7 @@ bool EmptyBoundaryConditions::outputToJSON(QJsonObject &jsonObject)
         inflowJson["inflowTimeStep"] = inflowTimeStep->text().toDouble();
         inflowJson["inflowMaxFreq"] = inflowMaxFreq->text().toDouble();
         inflowJson["windProfileOption"] = windProfileOption->currentText();
+        inflowJson["windProfilePath"] = windProfilePath;
 
         //Write the table to JSON file otherwise the wind profiles
         //are created from ESDU during OpenFOAM case setup processes
@@ -435,11 +443,15 @@ bool EmptyBoundaryConditions::outputToJSON(QJsonObject &jsonObject)
         {
             QJsonArray windProfilesJson;
 
-            for(int i=0; i < windProfiles.size(); i++){
+            for(int i=0; i < windProfiles.size(); i++)
+            {
                 QJsonArray row;
-                for(int j=0; j < windProfiles[i].size(); j++){
+
+                for(int j=0; j < windProfiles[i].size(); j++)
+                {
                     row.append(windProfiles[i][j]);
                 }
+
                 windProfilesJson.append(row);
             }
 
@@ -470,6 +482,8 @@ bool EmptyBoundaryConditions::inputFromJSON(QJsonObject &jsonObject)
         QJsonObject inflowJson = boundaryCondJson["inflowProperties"].toObject();
 
         QString method = inflowJson["generationMethod"].toString();
+
+        windProfilePath = inflowJson["windProfilePath"].toString();
 
         if(method == "DFSR")
         {

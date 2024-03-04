@@ -958,9 +958,26 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     //Set regional refinment
     QJsonArray regions = snappyMeshParamsJson["refinementBoxes"].toArray();
 
-    const int nRegions = regions.size();
+    const int nRows = regions.size();
+    const int nCols = regions.first().toArray().size() + 1;
 
-    for (int ri = 0; ri < nRegions; ri++)
+    //Remove prior rows
+    for (int i = refinementBoxesTable->rowCount()-1; i >=0; i--)
+    {
+        refinementBoxesTable->removeRow(i);
+    }
+
+    //Add new rows
+    for (int i = 0; i < nRows; i++)
+    {
+        refinementBoxesTable->insertRow(i);
+        for (int j=0; j < nCols; j++)
+        {
+            refinementBoxesTable->setItem(i, j, new QTableWidgetItem(""));
+        }
+    }
+
+    for (int ri = 0; ri < nRows; ri++)
     {
         QJsonArray region  = regions[ri].toArray();
 

@@ -112,13 +112,8 @@ private:
    QPushButton          *removePlane;
    QPushButton          *showPlane;
 
-
-
-//   QPushButton          *openCSVFile;
-//   QPushButton          *showCoordinateOfPoints;
-
-//   void visCoordinateOfPoints(QGridLayout*);
-//   QList<QVector3D> calculatePointCoordinates();
+   void initializeProfileTable(int nProfile);
+   void initializeVTKTable(int nVtk);
 
 public:
 

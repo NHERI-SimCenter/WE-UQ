@@ -131,7 +131,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     QLabel *originZLabel = new QLabel("Z<sub>o</sub>:");
 
     originOptions = new QComboBox();
-    originOptions->addItem("Building Bottom Center");
+    originOptions->addItem("End of Fetch Center");
     originOptions->addItem("Domain Bottom Left Corner");
     originOptions->addItem("Custom");
 
@@ -256,7 +256,15 @@ bool  EmptyGeometricInput::inputFromJSON(QJsonObject &jsonObject)
     originYWidget->setText(QString::number(originPoint[1].toDouble()));
     originZWidget->setText(QString::number(originPoint[2].toDouble()));
 
-    originOptions->setCurrentText(geometricDataJson["originOption"].toString());
+
+    if (geometricDataJson["originOption"].toString() == "Building Bottom Center")
+    {
+        originOptions->setCurrentText("End of Fetch Center");
+    }
+    else
+    {
+        originOptions->setCurrentText(geometricDataJson["originOption"].toString());
+    }
 
     return true;
 }
@@ -380,14 +388,30 @@ double EmptyGeometricInput::convertFromMeter(double dim, QString unit)
         qDebug() << "Unit system not recognized";
 }
 
-void EmptyGeometricInput::onImportSetupButtonClicked()
+int EmptyGeometricInput::onImportSetupButtonClicked()
 {
-    QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), mainModel->caseDir(), tr("JSON File (*.json)"));
+    QString jsonFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), mainModel->caseDir(), tr("JSON File (*.json)"));
 
-    //    if (stlFileName != "")
-    //    {
-    //        importedSTLPath->setText(stlFileName);
-    //    }
+    QFile jsonFile(jsonFileName);
+
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qDebug() << "Cannot find the path: " << jsonFileName;
+
+        emit errorMessage(QString("Could Not Open File: ") + jsonFileName);
+        return -1;
+    }
+
+
+    QString val = jsonFile.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject jsonObject = doc.object()["Events"].toArray().at(0).toObject();
+
+//    QMessageBox msgBox;
+//    msgBox.setText(jsonObject["workingDir"].toString());
+//    msgBox.exec();
+
+    mainModel->importMainDomainJsonFile(jsonObject);
 }
 
 

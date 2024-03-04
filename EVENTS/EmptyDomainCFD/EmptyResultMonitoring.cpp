@@ -123,26 +123,12 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     monitorProfile->setChecked(true);
     monitorProfile->setToolTip("If checked monitors widnd profiles");
 
-    int numCols = 9;
-    int numRows = 2;
+    const int numCols = 9;
+    const int numRows = 2;
 
     profileTable = new QTableWidget(numRows, numCols);
-    profileTable->setMaximumHeight(150);
 
-    QStringList headerTitles = {"Name", "start-X", "start-Y", "start-Z", "end-X", "end-Y", "end-Z", "No. Points", "Field"};
-
-    profileTable->setHorizontalHeaderLabels(headerTitles);
-
-    for (int i=0; i < numCols; i++)
-    {
-        profileTable->setColumnWidth(i, profileTable->size().width()/(numCols + 0.25));
-
-        for (int j=0; j < numRows; j++)
-        {
-            profileTable->setItem(j, i, new QTableWidgetItem(""));
-        }
-    }
-
+    initializeProfileTable(numRows);
 
     for (int j=0; j < numRows; j++)
     {
@@ -182,6 +168,7 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     profileWriteInterval = new QSpinBox();
     profileWriteInterval->setSingleStep(1);
     profileWriteInterval->setMinimum(1);
+    profileWriteInterval->setMaximum(10000);
     profileWriteInterval->setValue(10);
     profileWriteInterval->setEnabled(true);
     profileWriteInterval->setToolTip("Writing interval as a multiple of time step for wind profiles");
@@ -228,23 +215,10 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
     int vtkNumRows = 2;
 
     vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
-    vtkSampleTable->setMaximumHeight(150);
 
-    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
+    initializeVTKTable(vtkNumRows);
 
-    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
-
-    for (int i=0; i < vtkNumCols; i++)
-    {
-        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
-
-        for (int j=0; j < vtkNumRows; j++)
-        {
-            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
-        }
-    }
-
-    for (int i=0; i < vtkNumRows; i++)
+    for (int i=0; i < numRows; i++)
     {
         vtkSampleTable->item(i, 0)->setText(tr("Plane%1").arg(i + 1));
     }
@@ -296,9 +270,10 @@ EmptyResultMonitoring::EmptyResultMonitoring( EmptyDomainCFD *parent)
 
     QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
     vtkWriteInterval = new QSpinBox();
-    vtkWriteInterval->setSingleStep(1);
+    vtkWriteInterval->setSingleStep(10);
     vtkWriteInterval->setMinimum(1);
     vtkWriteInterval->setValue(10);
+    vtkWriteInterval->setMaximum(10000);
     vtkWriteInterval->setEnabled(true);
     vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
     vtkWriteInterval->setMinimumWidth(100);
@@ -525,6 +500,8 @@ bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
     //Set wind profiles
     QJsonArray profiles = resMonitoringJson["windProfiles"].toArray();
 
+    initializeProfileTable(profiles.size());
+
     for (int pi = 0; pi < profiles.size(); pi++)
     {
         QJsonObject profile  = profiles[pi].toObject();
@@ -591,4 +568,55 @@ bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 void EmptyResultMonitoring::updateWidgets()
 {
 }
+
+void EmptyResultMonitoring::initializeProfileTable(int numRows)
+{
+    const int numCols = 9;
+
+    profileTable->setRowCount(numRows);
+
+    profileTable->setMaximumHeight(150);
+
+    QStringList headerTitles = {"Name", "start-X", "start-Y", "start-Z", "end-X", "end-Y", "end-Z", "No. Points", "Field"};
+
+    profileTable->setHorizontalHeaderLabels(headerTitles);
+
+    for (int i=0; i < numCols; i++)
+    {
+        profileTable->setColumnWidth(i, profileTable->size().width()/(numCols + 0.25));
+
+        for (int j=0; j < numRows; j++)
+        {
+            profileTable->setItem(j, i, new QTableWidgetItem(""));
+        }
+    }
+}
+
+
+void EmptyResultMonitoring::initializeVTKTable(int numRows)
+{
+    const int vtkNumCols = 8;
+
+    vtkSampleTable->setRowCount(numRows);
+
+    vtkSampleTable->setMaximumHeight(150);
+
+    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
+
+    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
+
+    for (int i=0; i < vtkNumCols; i++)
+    {
+        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
+
+        for (int j=0; j < numRows; j++)
+        {
+            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
+        }
+    }
+
+
+}
+
+
 

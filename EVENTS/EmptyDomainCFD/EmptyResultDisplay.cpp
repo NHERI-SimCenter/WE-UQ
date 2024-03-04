@@ -127,8 +127,8 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     QLabel* profileNameULabel = new QLabel("Name of the Profile: ");
     profileNameU = new QComboBox();
 
-    profileNameU->addItem("Profile-1");
-    profileNameU->addItem("Profile-1");
+    profileNameU->addItem("Profile1");
+    profileNameU->addItem("Profile2");
     profileNameU->setToolTip("Name of the profile to show.");
 
     plotProfile = new QPushButton("Plot Profile");
@@ -145,8 +145,8 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
 
     QLabel* profileNameSLabel = new QLabel("Name of the Profile: ");
     profileNameS = new QComboBox();
-    profileNameS->addItem("Profile-1");
-    profileNameS->addItem("Profile-1");
+    profileNameS->addItem("Profile1");
+    profileNameS->addItem("Profile2");
     profileNameS->setToolTip("Location of the profile to show.");
 
     QLabel* locationSLabel = new QLabel("Location:");
@@ -155,6 +155,7 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     locationS->addItem("1/2Href");
     locationS->addItem("1Href");
     locationS->addItem("2Href");
+    locationS->setCurrentIndex(2);
     locationS->setToolTip("Location of the profile to show.");
 
     plotSpectra = new QPushButton("Plot Spectra");
@@ -172,8 +173,7 @@ EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
     QLabel* profileNamePLabel = new QLabel("Name of the Profile: ");
     profileNameP = new QComboBox();
 
-    profileNameP->addItem("Profile-1");
-    profileNameP->addItem("Profile-1");
+    profileNameP->addItem("Profile3");
     profileNameP->setToolTip("Location of the profile to show.");
 
     plotPressure = new QPushButton("Plot Pressure");
@@ -221,7 +221,8 @@ void EmptyResultDisplay::onPlotProfileClicked(void)
     plotView->setMinimumHeight(dialogHeight);
 
     QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
-                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator() + "probe7H.html";
+                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator()
+                       + profileNameU->currentText() + ".html";
 
 //    QMessageBox msgBox;
 //    msgBox.setText(plotPath);
@@ -233,6 +234,66 @@ void EmptyResultDisplay::onPlotProfileClicked(void)
         plotView->show();
     }
 }
+
+
+void EmptyResultDisplay::onPlotSpectraClicked(void)
+{
+    int dialogHeight = 500;
+    int dialogWidth = 1550;
+
+    QVBoxLayout *plotLayout = new QVBoxLayout();
+
+    QWebEngineView *plotView = new QWebEngineView();
+    plotView->page()->setBackgroundColor(Qt::transparent);
+    plotLayout->addWidget(plotView);
+
+    plotView->setMinimumWidth(dialogWidth);
+    plotView->setMinimumHeight(dialogHeight);
+
+    QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator()
+                       + "spectra_" + profileNameS->currentText() + "_H" + QString::number(locationS->currentIndex() + 1) + ".html";
+
+//    QMessageBox msgBox;
+//    msgBox.setText(plotPath);
+//    msgBox.exec();
+
+    if(QFileInfo::exists(plotPath))
+    {
+        plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->show();
+    }
+}
+
+void EmptyResultDisplay::onPlotPressureClicked(void)
+{
+    int dialogHeight = 450;
+    int dialogWidth = 850;
+
+    QVBoxLayout *plotLayout = new QVBoxLayout();
+
+    QWebEngineView *plotView = new QWebEngineView();
+    plotView->page()->setBackgroundColor(Qt::transparent);
+    plotLayout->addWidget(plotView);
+
+    plotView->setMinimumWidth(dialogWidth);
+    plotView->setMinimumHeight(dialogHeight);
+
+    QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                       + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator()
+                       + "pressure_" + profileNameP->currentText() + ".html";
+
+    //    QMessageBox msgBox;
+    //    msgBox.setText(plotPath);
+    //    msgBox.exec();
+
+    if(QFileInfo::exists(plotPath))
+    {
+        plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->show();
+    }
+}
+
 
 
 bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)

@@ -78,6 +78,8 @@ signals:
 public slots:
    void clear(void);
    void onPlotProfileClicked(void);
+   void onPlotSpectraClicked(void);
+   void onPlotPressureClicked(void);
    bool simulationCompleted();
 
 

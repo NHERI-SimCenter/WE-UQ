@@ -98,6 +98,8 @@ public:
     void updateWidgets();
     void reloadMesh();
 
+    void importMainDomainJsonFile(QJsonObject &rvObject);
+
     QVector<QVector<double>> readTxtData(QString fileName);
 
     //Properties
