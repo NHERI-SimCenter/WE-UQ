@@ -39,7 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include <SimCenterAppWidget.h>
+#include <SC_ResultsWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -60,7 +60,7 @@ class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 
-class EmptyResultDisplay: public SimCenterAppWidget
+class EmptyResultDisplay: public SC_ResultsWidget
 {
     friend class EmptyDomainCFD;
 
@@ -69,7 +69,8 @@ public:
     explicit EmptyResultDisplay(EmptyDomainCFD *parent = 0);
     ~EmptyResultDisplay();
 
-    bool outputToJSON(QJsonObject &jsonObject);
+    //bool outputToJSON(QJsonObject &jsonObject);
+    int processResults(QString &outputFile, QString &dirName);    
     bool inputFromJSON(QJsonObject &jsonObject);
     void updateWidgets();
 

@@ -122,7 +122,7 @@ public:
     double getDuration();
     double getRefWindSpeed();
 
-    EmptyResultDisplay* resultCFD();
+    SC_ResultsWidget* getResultsWidget(QWidget *parent);
 
 
 signals:

@@ -893,7 +893,7 @@ double EmptyDomainCFD::getRefWindSpeed()
     return windCharacteristics->referenceWindSpeed->text().toDouble();
 }
 
-EmptyResultDisplay* EmptyDomainCFD::resultCFD()
+SC_ResultsWidget* EmptyDomainCFD::getResultsWidget(QWidget *parent)
 {
     return resultDisplay;
 }

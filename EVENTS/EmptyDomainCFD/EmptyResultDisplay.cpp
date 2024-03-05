@@ -36,6 +36,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
+#include <QDir>
+#include <QFile>
+#include <QJsonDocument>
+
 #include "EmptyDomainCFD.h"
 #include "EmptyResultDisplay.h"
 #include <GeneralInformationWidget.h>
@@ -105,7 +109,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QWebEngineView>
 
 EmptyResultDisplay::EmptyResultDisplay( EmptyDomainCFD *parent)
-    : SimCenterAppWidget(parent), mainModel(parent)
+    : SC_ResultsWidget(parent), mainModel(parent)
 {
     layout = new QVBoxLayout();
 
@@ -220,9 +224,12 @@ void EmptyResultDisplay::onPlotProfileClicked(void)
     plotView->setMinimumWidth(dialogWidth);
     plotView->setMinimumHeight(dialogHeight);
 
+
     QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
                        + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator()
                        + profileNameU->currentText() + ".html";
+
+    
 
 //    QMessageBox msgBox;
 //    msgBox.setText(plotPath);
@@ -294,12 +301,11 @@ void EmptyResultDisplay::onPlotPressureClicked(void)
     }
 }
 
-
-
+/*
 bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
-
+  
     QJsonObject resDisplayJson = QJsonObject();
 
     QJsonArray spectralPlotLocations = {0.25, 0.5, 1.0, 2.0};
@@ -309,6 +315,37 @@ bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)
     jsonObject["resultDisplay"] = resDisplayJson;
 
     return true;
+}
+*/
+
+
+int
+EmptyResultDisplay::processResults(QString &inputFile, QString &dirName) {
+
+  qDebug() << "EmptyResultDisplay::processResults - dirName: " << dirName;
+  return 0;
+
+  QDir resultsDir(dirName);
+  QString fileName = resultsDir.absoluteFilePath(inputFile);
+  
+  QFile file(fileName);
+  if (!file.open(QFile::ReadOnly | QFile::Text)) {
+    emit errorMessage(QString("Could Not Open File: ") + fileName);
+    return -1;
+  }
+  
+  //
+  // place contents of file into json object
+  //
+  
+  QString val;
+  val=file.readAll();
+  QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+  QJsonObject jsonObj = doc.object();
+  file.close();
+
+  mainModel->inputFromJSON(jsonObj);
+  
 }
 
 
@@ -346,6 +383,7 @@ bool EmptyResultDisplay::inputFromJSON(QJsonObject &jsonObject)
 
 void EmptyResultDisplay::updateWidgets()
 {
+
 }
 
 bool EmptyResultDisplay::simulationCompleted()
