@@ -529,6 +529,7 @@ bool EmptyDomainCFD::inputFromJSON(QJsonObject &jsonObject)
     turbulenceModeling->inputFromJSON(jsonObject);
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
+    resultDisplay->inputFromJSON(jsonObject);
 
     //Run a background mesh after loading JSON File
 //    snappyHexMesh->onRunBlockMeshClicked();
