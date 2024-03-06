@@ -229,12 +229,6 @@ void EmptyResultDisplay::onPlotProfileClicked(void)
                        + QDir::separator() + "output" + QDir::separator() + "windProfiles" + QDir::separator()
                        + profileNameU->currentText() + ".html";
 
-    
-
-//    QMessageBox msgBox;
-//    msgBox.setText(plotPath);
-//    msgBox.exec();
-
     if(QFileInfo::exists(plotPath))
     {
         plotView->load(QUrl::fromLocalFile(plotPath));
@@ -320,31 +314,36 @@ bool EmptyResultDisplay::outputToJSON(QJsonObject &jsonObject)
 
 
 int
-EmptyResultDisplay::processResults(QString &inputFile, QString &dirName) {
-
-  qDebug() << "EmptyResultDisplay::processResults - dirName: " << dirName;
-  return 0;
-
+EmptyResultDisplay::processResults(QString &inputFile, QString &dirName)
+{
   QDir resultsDir(dirName);
-  QString fileName = resultsDir.absoluteFilePath(inputFile);
-  
-  QFile file(fileName);
-  if (!file.open(QFile::ReadOnly | QFile::Text)) {
-    emit errorMessage(QString("Could Not Open File: ") + fileName);
-    return -1;
-  }
-  
-  //
-  // place contents of file into json object
-  //
-  
-  QString val;
-  val=file.readAll();
-  QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
-  QJsonObject jsonObj = doc.object();
-  file.close();
 
-  mainModel->inputFromJSON(jsonObj);
+  QString resultsPath = resultsDir.absolutePath() + QDir::separator() + "results";
+
+  //Read the input json file
+  QString inputFilePath = resultsPath + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                          + QDir::separator() + "input" + QDir::separator() + "EmptyDomainCFD.json";
+
+  QFile jsonFile(inputFilePath);
+  if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+  {
+        qDebug() << "Cannot find the path: " << inputFilePath;
+        return -1;
+  }
+
+  QString val = jsonFile.readAll();
+  QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+  QJsonObject jsonObject = doc.object();
+
+  // close file
+  jsonFile.close();
+
+
+  jsonObject["caseDirectoryPath"] = resultsPath;
+
+  mainModel->inputFromJSON(jsonObject);
+
+  return 0;
   
 }
 
@@ -362,19 +361,20 @@ bool EmptyResultDisplay::inputFromJSON(QJsonObject &jsonObject)
     profileNameS->clear();
     profileNameP->clear();
 
+
     for (int pi = 0; pi < profiles.size(); pi++)
     {
-        QJsonArray profile  = profiles[pi].toArray();
+        QJsonObject profile  = profiles[pi].toObject();
 
-        if(profile[8].toString() == "Velocity")
+        if(profile["field"].toString() == "Velocity")
         {
-            profileNameU->addItem(profile[0].toString());
-            profileNameS->addItem(profile[0].toString());
+            profileNameU->addItem(profile["name"].toString());
+            profileNameS->addItem(profile["name"].toString());
         }
 
-        if(profile[8].toString() == "Pressure")
+        if(profile["field"].toString() == "Pressure")
         {
-            profileNameP->addItem(profile[0].toString());
+            profileNameP->addItem(profile["name"].toString());
         }
     }
 
@@ -391,8 +391,5 @@ bool EmptyResultDisplay::simulationCompleted()
     return true;
 }
 
-//void EmptyResultDisplay::add()
-//{
-//}
 
 
