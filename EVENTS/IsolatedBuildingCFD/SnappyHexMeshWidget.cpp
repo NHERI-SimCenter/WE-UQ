@@ -535,7 +535,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
 
     this->setLayout(layout);
 
-    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
+//    connect(runBlockMeshButton,SIGNAL(clicked()), this, SLOT(onRunBackgroundMesh()));
     connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
     connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
     connect(zAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onNumberOfCellsChanged()));
@@ -659,7 +659,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");	
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh; exit\"");
 
 
@@ -710,7 +710,7 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"");
 
 	qDebug() << commands;
@@ -759,7 +759,7 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 	} else
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite; exit\"");
 
         //Actual command on the terminal
@@ -809,7 +809,7 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 	} else
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
-        commands = sourceBash + "; docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+        commands = sourceBash + " docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
                    +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; checkMesh; exit\"");
 
         //Actual command on the terminal
@@ -958,9 +958,26 @@ bool SnappyHexMeshWidget::inputFromJSON(QJsonObject &jsonObject)
     //Set regional refinment
     QJsonArray regions = snappyMeshParamsJson["refinementBoxes"].toArray();
 
-    const int nRegions = regions.size();
+    const int nRows = regions.size();
+    const int nCols = regions.first().toArray().size() + 1;
 
-    for (int ri = 0; ri < nRegions; ri++)
+    //Remove prior rows
+    for (int i = refinementBoxesTable->rowCount()-1; i >=0; i--)
+    {
+        refinementBoxesTable->removeRow(i);
+    }
+
+    //Add new rows
+    for (int i = 0; i < nRows; i++)
+    {
+        refinementBoxesTable->insertRow(i);
+        for (int j=0; j < nCols; j++)
+        {
+            refinementBoxesTable->setItem(i, j, new QTableWidgetItem(""));
+        }
+    }
+
+    for (int ri = 0; ri < nRows; ri++)
     {
         QJsonArray region  = regions[ri].toArray();
 
@@ -1038,7 +1055,10 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
 
     if(selected->hasSelection())
     {
-        refinementBoxesTable->removeRow(selected->selectedRows()[0].row());
+        for (int i = 0; i <selected->selectedRows().size(); i++)
+        {
+            refinementBoxesTable->removeRow(selected->selectedRows()[i].row());
+        }
     }
 }
 

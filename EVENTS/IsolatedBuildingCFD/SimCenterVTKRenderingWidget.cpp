@@ -112,6 +112,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkInteractorStyleImage.h>
 #include <vtkImageMapper3D.h>
 #include <vtkTextActor.h>
+#include <vtkTransform.h>
+#include <vtkCaptionActor2D.h>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -133,6 +135,7 @@ void SimCenterVTKRenderingWidget::initialize()
     visGroup->setLayout(visLayout);
 
     renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+
     qvtkWidget = new QVTKRenderWidget(renderWindow);
 
     QLabel *viewLabel = new QLabel("View:");
@@ -176,10 +179,11 @@ void SimCenterVTKRenderingWidget::initialize()
     layout->addWidget(visGroup);
     this->setLayout(layout);
 
-    connect(viewObject, SIGNAL(currentIndexChanged(QString)), this, SLOT(viewObjectChanged(QString)));
-    connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
+    connect(viewObject, SIGNAL(currentTextChanged(QString)), this, SLOT(viewObjectChanged(QString)));
+    connect(surfaceRepresentation, SIGNAL(currentTextChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
+
 
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
     {
@@ -325,6 +329,8 @@ void SimCenterVTKRenderingWidget::readMesh()
 
     surfaceRepresentation->setCurrentIndex(0);
 
+    drawAxisAndLegend();
+
     renderWindow->Render();
     renderer->ResetCamera();
 
@@ -332,7 +338,7 @@ void SimCenterVTKRenderingWidget::readMesh()
 //    transparency->setValue(10);
 //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
 
-    drawAxisAndLegend();
+
 }
 
 void SimCenterVTKRenderingWidget::showAllMesh()
@@ -423,9 +429,9 @@ void SimCenterVTKRenderingWidget::showBreakout()
     renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
 
 
-    // VTK/Qt wedded
+    // VTK/Qt added
+    renderWindow->AddRenderer(renderer);
     qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);
@@ -520,22 +526,38 @@ bool SimCenterVTKRenderingWidget::isInitialized()
 void SimCenterVTKRenderingWidget::drawAxisAndLegend()
 {
 
-    axisIteractor->SetRenderWindow(renderWindow);
+    axisWidget->SetCurrentRenderer(renderer);
+
+
+    axisActor->SetShaftTypeToCylinder();
+//    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
+//    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
+//    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
+
+    vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
+    tprop->ItalicOff();
+    tprop->ShadowOn();
+    tprop->SetFontFamilyToArial();
+    tprop->SetFontSize(12);
+    axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+
 
     double rgba[4]{0.0, 0.0, 0.0, 0.0};
     axisColors->GetColor("Carrot", rgba);
     axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
     axisWidget->SetOrientationMarker(axisActor);
-    axisWidget->SetInteractor(axisIteractor);
     axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
+    axisWidget->SetInteractor(axisInteractor);
     axisWidget->EnabledOn();
     axisWidget->InteractiveOff();
 
-    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
-    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-    axisIteractor->SetInteractorStyle(style);
-    axisIteractor->Initialize();
+//    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
+//    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+//    axisInteractor->SetInteractorStyle(style);
 
+    //Add "SimCenter" text at the bottom
     vtkSmartPointer<vtkTextActor> textActor;
     textActor = vtkSmartPointer<vtkTextActor>::New();
     textActor->SetInput("SimCenter");
@@ -551,10 +573,59 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
     textActor->SetPosition(0.025, 0.025);
 
-
     renderer->AddActor(textActor);
-
-    renderWindow->Render();
 }
 
 
+void SimCenterVTKRenderingWidget::drawLineProbes()
+{
+
+    axisWidget->SetCurrentRenderer(renderer);
+
+
+    axisActor->SetShaftTypeToCylinder();
+    //    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
+    //    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
+    //    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
+
+    vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
+    tprop->ItalicOff();
+    tprop->ShadowOn();
+    tprop->SetFontFamilyToArial();
+    tprop->SetFontSize(12);
+    axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    axisActor->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+
+
+    double rgba[4]{0.0, 0.0, 0.0, 0.0};
+    axisColors->GetColor("Carrot", rgba);
+    axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
+    axisWidget->SetOrientationMarker(axisActor);
+    axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
+    axisWidget->SetInteractor(axisInteractor);
+    axisWidget->EnabledOn();
+    axisWidget->InteractiveOff();
+
+    //    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
+    //    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
+    //    axisInteractor->SetInteractorStyle(style);
+
+    //Add "SimCenter" text at the bottom
+    vtkSmartPointer<vtkTextActor> textActor;
+    textActor = vtkSmartPointer<vtkTextActor>::New();
+    textActor->SetInput("SimCenter");
+
+    // Set the font properties of the legend
+    vtkSmartPointer<vtkTextProperty> textProperty;
+    textProperty = vtkSmartPointer<vtkTextProperty>::New();
+    textProperty->SetColor(1.0, 0.0, 0.0);
+    textProperty->SetFontFamilyAsString("Avalon");
+    textProperty->SetBold(true); // Make the font bold
+    textProperty->SetFontSize(30);
+    textActor->SetTextProperty(textProperty);
+    textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
+    textActor->SetPosition(0.025, 0.025);
+
+    renderer->AddActor(textActor);
+}

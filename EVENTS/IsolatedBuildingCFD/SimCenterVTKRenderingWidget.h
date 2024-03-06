@@ -83,6 +83,7 @@ public:
 
     bool isInitialized();
     void drawAxisAndLegend();
+    void drawLineProbes();
 
     template <class Type>
     Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
@@ -122,7 +123,7 @@ private:
 
    vtkNew<vtkAxesActor> axisActor;
    vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> axisIteractor;
+   vtkNew<vtkRenderWindowInteractor> axisInteractor;
    vtkNew<vtkOrientationMarkerWidget> axisWidget;
 
    RandomVariablesContainer *theRandomVariablesContainer;
