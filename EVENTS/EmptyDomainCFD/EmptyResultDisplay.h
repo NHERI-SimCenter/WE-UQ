@@ -1,5 +1,5 @@
-#ifndef SIMCENTER_VTK_RENDERING_WIDGET_H
-#define SIMCENTER_VTK_RENDERING_WIDGET_H
+#ifndef EMPTY_RESULT_DISPLAY_H
+#define EMPTY_RESULT_DISPLAY_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,9 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include <SimCenterAppWidget.h>
-#include <vtkSmartPointer.h> // Required for smart pointer internal ivars.
-#include <QVTKRenderWidget.h>
+#include <SC_ResultsWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -50,86 +48,66 @@ class QGridLayout;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
+class QCheckBox;
 class QLineEdit;
 class LineEditRV;
 class QTabWidget;
+class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class QSlider;
-class vtkDataSetMapper;
-class vtkActor;
-class vtkAxesActor;
-class vtkOpenFOAMReader;
-class vtkUnstructuredGrid;
-class vtkMultiBlockDataSet;
-class vtkPolyDataMapper;
-class vtkNamedColors;
-class vtkOrientationMarkerWidget;
-class IsolatedBuildingCFD;
-class SimCenterVTKRenderingWidget: public SimCenterAppWidget
+class EmptyDomainCFD;
+class QDoubleSpinBox;
+class QLabel;
+class QRadioButton;
+
+class EmptyResultDisplay: public SC_ResultsWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class EmptyDomainCFD;
+
     Q_OBJECT
-
 public:
-    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
-    ~SimCenterVTKRenderingWidget();
+    explicit EmptyResultDisplay(EmptyDomainCFD *parent = 0);
+    ~EmptyResultDisplay();
 
-    void initialize();
-    void readMesh();
-    void showAllMesh();
-    void showBreakout();
-    void showBuildingOnly();
-
-    bool isInitialized();
-    void drawAxisAndLegend();
-    void drawLineProbes();
-
-    template <class Type>
-    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+    //bool outputToJSON(QJsonObject &jsonObject);
+    int processResults(QString &outputFile, QString &dirName);    
+    bool inputFromJSON(QJsonObject &jsonObject);
+    void updateWidgets();
 
 signals:
 
 public slots:
    void clear(void);
-   void surfaceRepresentationChanged(const QString &arg1);
-   void viewObjectChanged(const QString &arg1);
-   void onReloadCaseClicked();
-   void onTransparencyChanged(const int value);
+   void onPlotProfileClicked(void);
+   void onPlotSpectraClicked(void);
+   void onPlotPressureClicked(void);
+   bool simulationCompleted();
+
 
 private:
-   IsolatedBuildingCFD  *mainModel;
 
-   QVBoxLayout  *layout;
-   QGridLayout  *menueLayout;
-   QGroupBox    *menueGroup;
+   EmptyDomainCFD       *mainModel;
 
-   QGridLayout  *visLayout;
-   QGroupBox    *visGroup;
+   QVBoxLayout          *layout;
 
-   QComboBox    *surfaceRepresentation;
-   QComboBox    *viewObject;
-   QPushButton  *reloadCase;
-   QSlider      *transparency;
-   float        colorValue = 0.85;
+   QGroupBox            *plotWindProfileGroup;
+   QGridLayout          *plotWindProfileLayout;
+   QPushButton          *plotProfile;
+   QComboBox            *profileNameU;
 
-   QVTKRenderWidget *qvtkWidget;
-   vtkUnstructuredGrid* block0;
-   vtkSmartPointer<vtkOpenFOAMReader> reader;
-   vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-   vtkNew<vtkActor> actor;// Actor in scene
-   vtkNew<vtkRenderer> renderer; // VTK Renderer
-   vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
+   QGroupBox            *plotSpectraGroup;
+   QGridLayout          *plotSpectraLayout;
+   QPushButton          *plotSpectra;
+   QComboBox            *profileNameS;
+   QComboBox            *locationS;
 
-   vtkNew<vtkAxesActor> axisActor;
-   vtkNew<vtkNamedColors> axisColors;
-   vtkNew<vtkRenderWindowInteractor> axisInteractor;
-   vtkNew<vtkOrientationMarkerWidget> axisWidget;
+   QGroupBox            *plotPressureGroup;
+   QGridLayout          *plotPressureLayout;
+   QPushButton          *plotPressure;
+   QComboBox            *profileNameP;
 
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
+public:
 
-   bool initialized = false;
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // EMPTY_RESULT_DISPLAY_H

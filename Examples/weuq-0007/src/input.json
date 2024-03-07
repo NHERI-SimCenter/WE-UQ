@@ -17,7 +17,7 @@
             "Application": "OpenSeesInput",
             "ApplicationData": {
                 "fileName": "3Story.tcl",
-                "filePath": "{Current_Dir}/3Story"
+                "filePath": "{Current_Dir}/."
             }
         },
         "Simulation": {
@@ -39,8 +39,8 @@
         ],
         "fileNameAI": "recorder.tcl",
         "fileNamePS": "postprocess.tcl",
-        "filePathAI": "{Current_Dir}/3Story",
-        "filePathPS": "{Current_Dir}/3Story",
+        "filePathAI": "{Current_Dir}/.",
+        "filePathPS": "{Current_Dir}/.",
         "type": "UserDefinedEDP"
     },
     "Events": [

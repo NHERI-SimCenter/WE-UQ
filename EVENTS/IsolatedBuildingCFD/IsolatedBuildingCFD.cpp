@@ -187,7 +187,8 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersion->addItem("7");
     openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
-    openFoamVersion->setCurrentIndex(1);
+    openFoamVersion->setCurrentIndex(2);
+    openFoamVersion->setMinimumWidth(50);
 
 
     QTextEdit *modelingProcedureText = new QTextEdit ();
@@ -221,17 +222,34 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionLayout->addWidget(openFoamVersion, 0, 1);
     openFoamVersionLayout->setAlignment(Qt::AlignLeft);
 
+    unitSystemLayout->addWidget(massUnitLabel, 0, 0, Qt::AlignRight);
+    unitSystemLayout->addWidget(lengthUnitLabel, 0, 2, Qt::AlignRight);
+    unitSystemLayout->addWidget(timeUnitLabel, 0, 4, Qt::AlignRight);
+    unitSystemLayout->addWidget(angleUnitLabel, 0, 6, Qt::AlignRight);
 
-    unitSystemLayout->addWidget(massUnitLabel, 0, 0);
-    unitSystemLayout->addWidget(lengthUnitLabel, 1, 0);
-    unitSystemLayout->addWidget(timeUnitLabel, 2, 0);
-    unitSystemLayout->addWidget(angleUnitLabel, 3, 0);
+    massUnit->setMinimumWidth(50);
+    lengthUnit->setMinimumWidth(50);
+    timeUnit->setMinimumWidth(50);
+    angleUnit->setMinimumWidth(75);
 
     unitSystemLayout->addWidget(massUnit, 0, 1);
-    unitSystemLayout->addWidget(lengthUnit, 1, 1);
-    unitSystemLayout->addWidget(timeUnit, 2, 1);
-    unitSystemLayout->addWidget(angleUnit, 3, 1);
+    unitSystemLayout->addWidget(lengthUnit, 0, 3);
+    unitSystemLayout->addWidget(timeUnit, 0, 5);
+    unitSystemLayout->addWidget(angleUnit, 0, 7);
     unitSystemLayout->setAlignment(Qt::AlignLeft);
+
+
+    QLabel *citeLabel = new QLabel("\n\Parts of the workflow for this event are developed based on the work of Melaku and Bitsuamlak (2024).\n"
+                                   "The user should cite the work as follows:\n"
+                                   "\nMelaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings:\n"
+                                   "A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.");
+
+
+    QFont citeFont( "Arial", 7);
+    citeFont.setPointSize(7);
+    citeFont.setItalic(true);
+
+    citeLabel->setFont(citeFont);
 
     generalDescriptionGroup->setLayout(generalDescriptionLayout);
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
@@ -273,6 +291,7 @@ bool IsolatedBuildingCFD::initialize()
     startLayout->addWidget(caseDirectoryGroup);
     startLayout->addWidget(openFoamVersionGroup);
     startLayout->addWidget(unitSystemGroup);
+    startLayout->addWidget(citeLabel);
     startLayout->addStretch();
 
     geometryLayout->addWidget(geometry);
@@ -644,8 +663,36 @@ void IsolatedBuildingCFD::updateWidgets()
 bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
+    QString foamPath = jsonObject["caseDirectoryPath"].toString();
 
-    caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+
+    QDir foamDir(foamPath);
+
+    if (!foamDir.exists(foamPath))
+    {
+        QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+        QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+                                                     + "LocalWorkDir" + QDir::separator()
+                                                     + "IsolatedBuildingCFD");
+        workingDir.mkpath(workingDirPath);
+        caseDirectoryPathWidget->setText(workingDirPath);
+
+        if(!isCaseConfigured())
+        {
+            setupCase();
+        }
+
+        if (!isMeshed())
+        {
+            snappyHexMesh->onRunBlockMeshClicked();
+        }
+    }
+    else
+    {
+        caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+    }
+
     openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
 
     geometry->inputFromJSON(jsonObject);

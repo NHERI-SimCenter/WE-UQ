@@ -150,7 +150,6 @@ void EmptyVTKRendering::initialize()
     viewObject = new QComboBox();
     viewObject->addItem("AllMesh");
     viewObject->addItem("Breakout");
-    viewObject->addItem("Building");
 
     transparency = new QSlider(Qt::Orientation::Horizontal);
     transparency->setRange(0, 100);
@@ -244,10 +243,6 @@ void EmptyVTKRendering::viewObjectChanged(const QString &arg1)
     else if (arg1 == "Breakout")
     {
         showBreakout();
-    }
-    else if (arg1 == "Building")
-    {
-        showBuildingOnly();
     }
     else
     {
@@ -383,22 +378,22 @@ void EmptyVTKRendering::showAllMesh()
 
 void EmptyVTKRendering::showBreakout()
 {
-    vtkSmartPointer<vtkSTLReader> stlReader = vtkSmartPointer<vtkSTLReader>::New();
-    stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
-    stlReader->Update();
+//    vtkSmartPointer<vtkSTLReader> stlReader = vtkSmartPointer<vtkSTLReader>::New();
+//    stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+//    stlReader->Update();
 
     auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
 
     vtkNew<vtkAppendPolyData> appendFilter;
 
-    if(mainModel->isSnappyHexMeshCompleted())
-    {        
-        appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
-    }
-    else
-    {
-        appendFilter->AddInputData(stlReader->GetOutput());
-    }
+//    if(mainModel->isSnappyHexMeshCompleted())
+//    {
+//        appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
+//    }
+//    else
+//    {
+//        appendFilter->AddInputData(stlReader->GetOutput());
+//    }
 
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "ground"));
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "back"));
@@ -432,60 +427,6 @@ void EmptyVTKRendering::showBreakout()
     // VTK/Qt added
     renderWindow->AddRenderer(renderer);
     qvtkWidget->setRenderWindow(renderWindow);
-    renderWindow->BordersOn();
-
-    surfaceRepresentation->setCurrentIndex(0);
-    renderer->ResetCamera();
-
-    //Set default transparency to 10%
-    //    transparency->setValue(10);
-    //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
-}
-
-
-void EmptyVTKRendering::showBuildingOnly()
-{
-    vtkPolyData* bldgBlock;
-    vtkSmartPointer<vtkSTLReader> stlReader;
-
-    if (mainModel->isSnappyHexMeshCompleted())
-    {
-        auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
-
-        bldgBlock = findBlock<vtkPolyData>(allBlocks, "building");
-    }
-    else
-    {
-        stlReader = vtkSmartPointer<vtkSTLReader>::New();
-        stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
-        stlReader->Update();
-        bldgBlock = stlReader->GetOutput();
-    }
-
-    //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(bldgBlock);
-    mapper->SetScalarVisibility(false);
-    actor->GetProperty()->SetRepresentationToSurface();
-    //    mapper->SetScalarRange(block0->GetScalarRange());
-
-    // Actor in scene
-    actor->GetProperty()->SetEdgeVisibility(true);
-    //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colorValue, colorValue,colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
-
-
-    // VTK Renderer
-    // Add Actor to renderer
-    renderer->AddActor(actor);
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-    renderer->ResetCamera();
-
-    // VTK/Qt wedded
-    qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
 
     surfaceRepresentation->setCurrentIndex(0);

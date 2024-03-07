@@ -77,65 +77,43 @@ signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void onAddProfileClicked();
+   void onRemoveProfileClicked();
+   void onShowProfilesClicked();
+   void onAddPlaneClicked();
+   void onRemovePlaneClicked();
+   void onMonitorProfileChecked(int);
+   void onMonitorPlaneChecked(int);
+
 
 private:
 
-   EmptyDomainCFD  *mainModel;
+   EmptyDomainCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
    QGroupBox            *monitorWindProfileGroup;
    QGridLayout          *monitorWindProfileLayout;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QTableWidget         *profileTable;
+   QSpinBox             *profileWriteInterval;
+   QLineEdit            *profileStartTime;
+   QCheckBox            *monitorProfile;
+   QPushButton          *addProfile;
+   QPushButton          *removeProfile;
+   QPushButton          *showProfiles;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
+   QGroupBox            *vtkSampleGroup;
+   QGridLayout          *vtkSampleLayout;
+   QTableWidget         *vtkSampleTable;
+   QSpinBox             *vtkWriteInterval;
+   QCheckBox            *monitorVTKPlane;
+   QPushButton          *addPlane;
+   QPushButton          *removePlane;
+   QPushButton          *showPlane;
 
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   void visCoordinateOfPoints(QGridLayout*);
-   QList<QVector3D> calculatePointCoordinates();
+   void initializeProfileTable(int nProfile);
+   void initializeVTKTable(int nVtk);
 
 public:
 

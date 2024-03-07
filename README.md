@@ -23,7 +23,8 @@ applications, FAQ, and how to collaborate.
 
 ### Acknowledgement
 
-This material is based upon work supported by the National Science Foundation under Grant No. 1612843.
+This material is based upon work supported by the National Science Foundation under grants #1612843 and #2131111
+
 
 ### Contact
 

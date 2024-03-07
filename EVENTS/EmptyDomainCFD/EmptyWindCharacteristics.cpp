@@ -90,7 +90,7 @@ EmptyWindCharacteristics::EmptyWindCharacteristics(EmptyDomainCFD *parent)
     QLabel *velocityScaleLabel = new QLabel("Velocity Scale: ");
     QLabel *timeScaleLabel = new QLabel("Time Scale: ");
     QLabel *referenceHeightLabel = new QLabel("Reference Height:");
-    QLabel *referenceWindSpeedLabel = new QLabel("Wind Speed at Reference Height:");
+    QLabel *referenceWindSpeedLabel = new QLabel("Reference Wind Speed:");
     QLabel *aerodynamicRoughnessLengthLabel = new QLabel("Roughness Length:");
     QLabel *airDensityLabel = new QLabel("Air Density:");
     QLabel *kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");

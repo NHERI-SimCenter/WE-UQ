@@ -98,18 +98,18 @@ public slots:
 
 private:
 
-   EmptyDomainCFD  *mainModel;
+   EmptyDomainCFD   *mainModel;
 
-   QVBoxLayout  *layout;
+   QVBoxLayout      *layout;
 
-   QGroupBox    *generalOptionsGroup;
-   QGridLayout  *generalOptionsLayout;
+   QGroupBox        *generalOptionsGroup;
+   QGridLayout      *generalOptionsLayout;
 
-   QGroupBox    *runMeshGroup;
-   QHBoxLayout  *runMeshLayout;
+   QGroupBox        *runMeshGroup;
+   QHBoxLayout      *runMeshLayout;
 
-   QGroupBox    *saveMeshGroup;
-   QHBoxLayout  *saveMeshLayout;
+   QGroupBox        *saveMeshGroup;
+   QHBoxLayout      *saveMeshLayout;
 
    //Blockground mesh
    QLineEdit        *xAxisNumCells;
@@ -123,14 +123,13 @@ private:
    QDoubleSpinBox   *zMeshGrading;
 
    //General options
-   QSpinBox     *numCellsBetweenLevels;
-   QSpinBox     *resolveFeatureAngle;
-   QSpinBox     *numProcessors;
-   QCheckBox    *runInParallel;
+   QSpinBox         *numCellsBetweenLevels;
+   QSpinBox         *resolveFeatureAngle;
+   QSpinBox         *numProcessors;
+   QCheckBox        *runInParallel;
 
    //Regional refinements
-   QTableWidget *refinementBoxesTable;
-
+   QTableWidget     *refinementBoxesTable;
 
    QTabWidget       *snappyHexMeshTab;
    RandomVariablesContainer *theRandomVariablesContainer;

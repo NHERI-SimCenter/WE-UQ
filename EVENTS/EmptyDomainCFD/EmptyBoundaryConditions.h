@@ -86,7 +86,6 @@ private:
    QComboBox    *sidesBCType;
    QComboBox    *topBCType;
    QComboBox    *groundBCType;
-   QComboBox    *buildingBCType;
 
    QRadioButton *inflowDFSR;
    QRadioButton *inflowDFM;
@@ -106,6 +105,7 @@ private:
    QPushButton  *importWindProfiles;
    QPushButton  *showWindProfiles;
    QList<QList<double>> windProfiles;
+   QString         windProfilePath = "";
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

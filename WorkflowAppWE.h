@@ -78,6 +78,7 @@ public:
     explicit WorkflowAppWE(RemoteService *theService, QWidget *parent = 0);
     ~WorkflowAppWE();
 
+    void setMainWindow(MainWindowWorkflowApp* window); 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     void clear(void);
