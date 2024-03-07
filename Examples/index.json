@@ -251,7 +251,49 @@
           "weuq-0014/figures/we14_study_building.svg"
       ],
       "entry_point": "weuq-0014/./input.json",
-      "summary": "This example demonstrates application of CFD for generating wind loads on complex shapged buildings and estimating the resulting structural responses",
+      "summary": "This example demonstrates application of CFD for generating wind loads on complex shaped buildings and estimating the resulting structural responses",
+      "logo": "we14_CFD_Results_StreamLines.svg",
+      "published": "2023-09-12T21:30:53.946381-08:00\"",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
+    },
+    "weuq-0015": {
+      "id": "weuq-0015",
+      "base": "weuq-0015",
+      "title": "Digital Wind Tunnel II: Calibrating ABL flow with Empty Domain CFD Simulation",
+      "doc": [
+          "weuq-0015/README.rst",   
+          "weuq-0015/figures/we14_CFD_Results.svg",
+          "weuq-0015/figures/we14_EDP_panel.svg",
+          "weuq-0015/figures/we14_EVT_BoundaryConditions.svg",
+          "weuq-0015/figures/we14_EVT_Geometry_tab.svg",
+          "weuq-0015/figures/we14_EVT_Import_stl.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_EdgeRefinement_tab.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_PrismLayers_tab.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_RegionalRefinement_tab.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_SurfaceRefinement_tab.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_View.svg",
+          "weuq-0015/figures/we14_EVT_Mesh_tab.svg",
+          "weuq-0015/figures/we14_EVT_Monitoring.svg",
+          "weuq-0015/figures/we14_EVT_NumericalSetup.svg",
+          "weuq-0015/figures/we14_EVT_RegionalRefinement_tab.svg",
+          "weuq-0015/figures/we14_EVT_Start_tab.svg",
+          "weuq-0015/figures/we14_FEM_panel.svg",
+          "weuq-0015/figures/we14_GI_panel.svg",
+          "weuq-0015/figures/we14_RES_DataValues.svg",
+          "weuq-0015/figures/we14_RES_Summary.svg",
+          "weuq-0015/figures/we14_RV_panel.svg",
+          "weuq-0015/figures/we14_RunJob.svg",
+          "weuq-0015/figures/we14_SIM_panel.svg",
+          "weuq-0015/figures/we14_UQ_panel.svg",
+          "weuq-0015/figures/we14_study_building.svg"
+      ],
+      "entry_point": "weuq-0015/./input.json",
+      "summary": "This example demonstrates application of CFD for generating wind loads on complex shaped buildings and estimating the resulting structural responses",
       "logo": "we14_CFD_Results_StreamLines.svg",
       "published": "2023-09-12T21:30:53.946381-08:00\"",
       "categories": {

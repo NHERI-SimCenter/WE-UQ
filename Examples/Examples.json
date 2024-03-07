@@ -29,6 +29,11 @@
       "name": "E6: Wind Load Evaluation on a Complex Shape Isolated Building Using CFD",
       "description": "",
       "inputFile": "weuq-0014/src/input.json"
+    },
+    {
+      "name": "E7: Calibrating ABL Flow using Empty Domain CFD Simulation",
+      "description": "",
+      "inputFile": "weuq-0015/src/input.json"
     }
   ]
 }
