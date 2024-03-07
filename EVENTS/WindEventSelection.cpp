@@ -78,7 +78,6 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
 {
     QVBoxLayout *layout = new QVBoxLayout();
-    //layout->setMargin(0);
 
     //
     // the selection part
@@ -91,7 +90,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
 
     eventSelection = new QComboBox();
-
+  
     eventSelection->addItem(tr("Stochastic Wind"));
     eventSelection->addItem(tr("CFD - Wind Loads on Isolated Building"));
 //    eventSelection->addItem(tr("CFD - Empty Domain Simulation"));
@@ -135,7 +134,6 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-
     theIsolatedBuildingCFD = new IsolatedBuildingCFD(theRandomVariablesContainer);
     theStackedWidget->addWidget(theIsolatedBuildingCFD);
 
@@ -170,8 +168,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     connect(eventSelection,SIGNAL(currentTextChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 
     // status and error messaging
-    connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
-    connect(theEmptyDomainCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+    //connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+    //connect(theEmptyDomainCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
 }
 
 WindEventSelection::~WindEventSelection()
