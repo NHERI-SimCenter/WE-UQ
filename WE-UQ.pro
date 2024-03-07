@@ -36,9 +36,9 @@ INCLUDEPATH += /usr/local/include/vtk-9.2
 win32 {
     LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
-    DEPENDPATH += $$PWD/../VTK/Release/bin
-    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
-    LIBS += -L$$PWD/../VTK/Release/lib \
+    DEPENDPATH += $$PWD/../VTK/bin
+    INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
+    LIBS += -L$$PWD/../VTK/lib \
     -lvtkViewsCore-9.2 \
     -lvtkFiltersCore-9.2 \
     -lvtkFiltersSources-9.2 \
