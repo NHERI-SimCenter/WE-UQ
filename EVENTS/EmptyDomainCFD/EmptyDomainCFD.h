@@ -67,6 +67,8 @@ class QPushButton;
 class QCheckBox;
 class QFormLayout;
 class QLabel;
+class QTabWidget;
+
 class EmptyDomainCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -153,6 +155,7 @@ private:
    QGroupBox                    *caseDirectoryGroup;
    QGridLayout                  *caseDirectoryLayout;
 
+   QTabWidget                   *inputTab;
    QGroupBox                    *unitSystemGroup;
    QGridLayout                  *unitSystemLayout;
    QComboBox                    *massUnit;
