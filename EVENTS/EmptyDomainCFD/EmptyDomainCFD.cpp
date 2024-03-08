@@ -104,7 +104,8 @@ bool EmptyDomainCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
-    QTabWidget *inputTab = new QTabWidget(this);
+    inputTab = new QTabWidget(this);
+    //QTabWidget *inputTab = new QTabWidget(this);    
 
     QWidget *generalWidget = new QWidget();
     QWidget *geometryWidget = new QWidget();
@@ -896,7 +897,9 @@ double EmptyDomainCFD::getRefWindSpeed()
 
 SC_ResultsWidget* EmptyDomainCFD::getResultsWidget(QWidget *parent)
 {
-    return resultDisplay;
+  inputTab->setCurrentIndex(6);
+  statusMessage("Empty Domain Results Downloaded now Processing");
+  return resultDisplay;
 }
 
 void EmptyDomainCFD::importMainDomainJsonFile(QJsonObject &jsonObject)
