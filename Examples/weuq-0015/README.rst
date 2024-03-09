@@ -1,19 +1,19 @@
 .. _weuq-0015:
 
-Digital Wind Tunnel: Calibrating ABL Flows using Large-eddy Simulation
+Digital Wind Tunnel: Calibrating ABL Flows for Wind Load Study using Large-eddy Simulation
 =======================================================================
 
 +----------------+-------------------------+
 | Problem files  | :weuq-0015:`/`          |
 +----------------+-------------------------+
 
-In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The shape of the study building resembles a landmark tall building i.e., Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. In full-scale, the building measures 442.1 m high after some geometric simplification. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
+This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from wind tunnel experiment conducted at boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions  of the CFD model are set to match the wind tunnel dimensions at the test section. :numref:`fig-we14-1` shows extent of the computational domain with imported dimensions and boundary conditions. 
 
 .. _fig-we14-1:
 
-.. figure:: figures/we14_study_building.svg
+.. figure:: figures/we15_domain_geometry.svg
    :align: center
-   :width: 35%
+   :width: 40%
 
    Geometry and configuration of the study building
 
@@ -29,31 +29,31 @@ In this example, the simulation is conducted in full-scale. The geometric and fl
    +---------------------+----------------------------------------------+------------------+---------------+
    |Parameter            |Description                                   |Value             | Unit          |
    +=====================+==============================================+==================+===============+
-   |:math:`B`            |Building width                                | 68.58            | m             |
+   |:math:`L_x`          |Domain length                                  | 5.2             | m             |
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`D`            |Building depth                                | 68.58            | m             | 
+   |:math:`L_y`          |Domain width                                  | 2.2              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`H`            |Building height                               | 442.1            | m             | 
+   |:math:`L_z`          |Domain height                                 | 1.8              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_L`    |Geometric scale                               | 1.0              |               | 
+   |:math:`L_f`          |Wind fetch distance                           | 2.1              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_V`    |Velocity scale                                | 1.0              |               | 
+   |:math:`\lambda_L`    |Geometric scale                               | 400              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_T`    |Time scale                                    | 1.0              |               | 
+   |:math:`\lambda_V`    |Velocity scale                                | 4                |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`U_H`          |Roof-height mean wind speed                   | 60.00            | m/s           | 
+   |:math:`\lambda_T`    |Time scale                                    | 100              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`T`            |Duration of the simulation                    | 1200             | s             | 
+   |:math:`U_{ref}`      |Reference wind speed                          | 10.69            | m/s           | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\theta`       |Wind direction                                | 0                |degrees        | 
+   |:math:`T`            |Duration of the simulation                    | 37               | s             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.03             | m             | 
+   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.5              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\rho_{air}`   |Air density                                   | 1.225            | kg/m^3        | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\nu_{air}`    |Kinematic viscosity of air                    | :math:`1.5e^{-5}`| m^2/s         | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`f_{s}`        |Sampling frequency (rate)                     | 10               | Hz            | 
+   |:math:`f_{s}`        |Sampling frequency (rate)                     | 200              | Hz            | 
    +---------------------+----------------------------------------------+------------------+---------------+
 
 
