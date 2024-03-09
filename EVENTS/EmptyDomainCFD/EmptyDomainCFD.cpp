@@ -532,8 +532,27 @@ bool EmptyDomainCFD::inputFromJSON(QJsonObject &jsonObject)
     resultMonitoring->inputFromJSON(jsonObject);
     resultDisplay->inputFromJSON(jsonObject);
 
-    //Run a background mesh after loading JSON File
-//    snappyHexMesh->onRunBlockMeshClicked();
+    if(!isCaseConfigured())
+    {
+        setupCase();
+        snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return true;
+    }
+
+    if(!isMeshed())
+    {
+        snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return true;
+    }
+    else
+    {
+        reloadMesh();
+        return true;
+    }
 
     return true;
 }
