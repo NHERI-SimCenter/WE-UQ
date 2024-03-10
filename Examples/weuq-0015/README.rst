@@ -134,21 +134,32 @@ In the *Monitoring* tab, specify simulation results to be record as seen in :num
  
 To monitor the snapshot of the flow field, check **Sample Flow Field** and add two section planes for monitoring velocity field. Edit the table entries as seen in :numref:`fig-we15-mon`. *Plane1* is vertical plane normal to y-axis and monitors the snapshot of the velocity field from 1 s to 3 s.  *Plane2* is a horizontal plane normal to z-axis and monitors the snapshot of the velocity field from 1 s to 3 s. The files for both planes will be written every 50 time step (i.e :math:`50 \times 0.0005 = 0.025 s`) as specified in **Flow Write Interval**. 
 
+.. _fig-we15-mon:
+
+.. figure:: figures/we15_monitoring_tab.svg
+   :align: center
+   :width: 75%
+
+   Specify results to record in the *Monitoring* tab
+
 
 Run the Simulation
 ^^^^^^^^^^^^^^^^^^^
-First, in the main WE-UQ window login to *DesignSafe* with your credentials. Then, CFD workflow window, submit the simulation by clicking **RUN at DesignSafe**. Then, give the simulation a **Job Name**. Set **Num Nodes** to 1 and **# Processes Per Node** to 56 with a **Max Run Time** of  *12:00:00*. Finally, click the **Submit** button to send the model to *DesignSafe*.  
+First, in the main WE-UQ window login to *DesignSafe* with your credentials. Then, in the CFD workflow window, submit the simulation by clicking **RUN at DesignSafe**. Then, provide the simulation a **Job Name**. Set **Num Nodes** to 1 and **# Processes Per Node** to 56 with a **Max Run Time** of  *12:00:00*. Finally, click the **Submit** button to send the model to *DesignSafe*.  
 
 .. figure:: figures/we15_run_job.svg
    :align: center
-   :width: 30%
+   :width: 25%
 
-   Submit the simulation to the remote server (DesignSafe-CI)
+   Submit the simulation.
 
 
 Show Results
 ^^^^^^^^^^^^^^
-After submitting the simulation, monitor the status of the remote job by clicking **GET from DesignSafe**. When the remote job completes, the results can be reloaded by selecting **Retrieve Data** option after right-clicking on the job name. This will aromatically, download the simulation results and active the *Results* tab. 
+After submitting the simulation, monitor the status of the remote job by clicking **GET from DesignSafe**. When the remote job completes, the results can be reloaded by selecting **Retrieve Data** option after right-clicking on the job name. This will aromatically download the results and active the *Results* tab.
+
+Show Results
+^^^^^^^^^^^^^^
 
 
 The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
