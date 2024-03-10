@@ -115,14 +115,13 @@ If *TInf* is used for the inlet, specify turbulence generation scheme in *Inflow
 
 Numerical Setup
 ^^^^^^^^^^^^^^^^
-Set the turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. For the **Simulation Type** use *LES* and select *dynamicKEqn* for the **Sub-grid Scale Model**. Set the **Solver Type** to *pimpleFoam* with 1 **Number of Non-Orthogonal Correctors** , 2 **Number of Corrector Loops** and 1 **Number of Outer Corrector Loops**.
+Set the turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. For the **Simulation Type** use *LES* and select *dynamicKEqn* for the **Sub-grid Scale Model**. Set the **Solver Type** to *pimpleFoam* with 1 **Number of Non-Orthogonal Correctors** , 2 **Number of Corrector Loops** and 1 **Number of Outer Corrector Loops**. Set the maximum Courant number to 1.0 and select **Adjustable** time step. 
 
-
-For the **Duration** of the simulation, use :math:`37 s` based on what is specified in :numref:`tbl-we15-1`. This time step translates to :math:`3700s` in full scale with a time scale 1:100, which is a litter over the recommended 1 hour duration. The **Time Steep** can be calculated automatically from the smallest mesh size by clicking **Calculate** button. For this example, the calculated time step is :math:`0.000736624 s`, which is approximated to :math:`0.005 s` for convenience. Finally, check the **Run Simulation in Parallel** option and put 56 for the **Number of Processors**.  
+For the **Duration** of the simulation, use :math:`37 s` based on what is specified in :numref:`tbl-we15-1`. This time step translates to :math:`3700s` in full scale with a time scale 1:100, which is a litter over the recommended 1 hour duration. The **Time Steep** can be calculated automatically from the smallest mesh size by clicking **Calculate** button. For this example, the calculated time step is :math:`0.000736624 s`, which is changed to a conservative value of :math:`0.005 s`. Finally, check the **Run Simulation in Parallel** option and put 56 for the **Number of Processors**.  
 
 .. _fig-we15-num-setup:
 
-.. figure:: figures/we14_numerical_setup.svg
+.. figure:: figures/we15_numerical_setup_tab.svg
    :align: center
    :width: 75%
 
@@ -136,29 +135,23 @@ In the *Monitoring* tab, specify simulation results to be record as seen in :num
 To monitor the snapshot of the flow field, check **Sample Flow Field** and add two section planes for monitoring velocity field. Edit the table entries as seen in :numref:`fig-we15-mon`. *Plane1* is vertical plane normal to y-axis and monitors the snapshot of the velocity field from 1 s to 3 s.  *Plane2* is a horizontal plane normal to z-axis and monitors the snapshot of the velocity field from 1 s to 3 s. The files for both planes will be written every 50 time step (i.e :math:`50 \times 0.0005 = 0.025 s`) as specified in **Flow Write Interval**. 
 
 
-Random Variables
-"""""""""""""""""
-The random variables are defined in **RV** tab. Here, the floor stiffness named as :math:`k` in **SIM** panel is automatically assigned as a random variable. Select *Normal* for its probability **Distribution**  with :math:`5 \times 10^{8}` for the **Mean** and :math:`5 \times 10^{7}` for **Standard Dev**. 
+Run the Simulation
+^^^^^^^^^^^^^^^^^^^
+First, in the main WE-UQ window login to *DesignSafe* with your credentials. Then, CFD workflow window, submit the simulation by clicking **RUN at DesignSafe**. Then, give the simulation a **Job Name**. Set **Num Nodes** to 1 and **# Processes Per Node** to 56 with a **Max Run Time** of  *12:00:00*. Finally, click the **Submit** button to send the model to *DesignSafe*.  
 
-.. figure:: figures/we14_RV_panel.svg
+.. figure:: figures/we15_run_job.svg
    :align: center
-   :width: 75%
-
-   Define the Random Variable (RV)
-
-Running the Simulation 
-"""""""""""""""""""""""
- To run the CFD simulation, first login to *DesignSafe* with your credential. Then, run the job remotely by clicking **RUN at DesignSafe**. Give the simulation a **Job Name**.  Set **Num Nodes** to 1 and **# Processes Per Node** to 56. For the **Max Run Time**, specify *20:00:00*. Finally, click the **Submit** button to send the job to *DesignSafe*.  
-
-.. figure:: figures/we14_RunJob.svg
-   :align: center
-   :width: 80%
+   :width: 30%
 
    Submit the simulation to the remote server (DesignSafe-CI)
 
-Results
-"""""""""
-The status of the remote job can be tracked by clicking **GET from DesignSafe**. Once the remote job finishes, the results can be reloaded by selecting **Retrieve Data** option right-click clicking on the job name. Then, the results will be displayed in **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
+
+Show Results
+^^^^^^^^^^^^^^
+After submitting the simulation, monitor the status of the remote job by clicking **GET from DesignSafe**. When the remote job completes, the results can be reloaded by selecting **Retrieve Data** option after right-clicking on the job name. This will aromatically, download the simulation results and active the *Results* tab. 
+
+
+The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
 
       * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
       * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
