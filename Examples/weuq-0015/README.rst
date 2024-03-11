@@ -7,7 +7,7 @@ Digital Wind Tunnel: Characterizing ABL Flows using Large-eddy Simulation
 | Problem files  | :github:`Download <Examples/weuq-0015/>` |
 +----------------+----------------------------------------+
 
-This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from a wind tunnel experiment conducted at the boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions of the CFD model are set to match the wind tunnel dimensions in the test section. :numref:`fig-we15-dmn` shows the extent of the computational domain with dimensions. Fetch distance measures the distance between the inlet anticipated location of the structure. At this location, the characteristics of the approaching wind will be examined. This example is developed based on the work of [Chew2024]_. Detailed instruction to set up the CFD model can be found in the documentation of :ref:`Empty Domain CFD Simulation <lblEmptyDomainCFD>`. 
+This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from a wind tunnel experiment conducted at the boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions of the CFD model are set to match the wind tunnel dimensions in the test section. :numref:`fig-we15-dmn` shows the extent of the computational domain with dimensions. Fetch distance measures the distance between the inlet anticipated location of the structure. At this location, the characteristics of the approaching wind will be examined. This example is developed based on the works of [Chew2024]_ and [Melaku2024]_. Detailed instructions to set up the CFD model can be found in the documentation of :ref:`Empty Domain CFD Simulation <lblEmptyDomainCFD>`. 
 
 .. _fig-we15-dmn:
 
@@ -226,6 +226,8 @@ To visualize *Plane1* defined in *Monitoring* tab, load ``Documents/WE-UQ/Remote
    </div>
    
 .. [Chew2024] Chew, L.W., Melaku A.F. Ciarlatani, M.F., and Gorlé, C. Validation of LES predictions for wind pressures on a high-rise building: why wind tunnel validation datasets should report detailed turbulent wind statistics. In preparation.
+
+.. [Melaku2024] Melaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings: A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.
 
 
 
