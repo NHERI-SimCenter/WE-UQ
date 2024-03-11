@@ -1,353 +1,233 @@
 .. _weuq-0015:
 
-Digital Wind Tunnel: Calibrating ABL Flows using Large-eddy Simulation
+Digital Wind Tunnel: Characterizing ABL Flows using Large-eddy Simulation
 =======================================================================
 
-+----------------+-------------------------+
-| Problem files  | :weuq-0015:`/`          |
-+----------------+-------------------------+
++----------------+----------------------------------------+
+| Problem files  | :github:`Download <Examples/weuq-0015/>` |
++----------------+----------------------------------------+
 
-In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The shape of the study building resembles a landmark tall building i.e., Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. In full-scale, the building measures 442.1 m high after some geometric simplification. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
+This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from a wind tunnel experiment conducted at the boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions of the CFD model are set to match the wind tunnel dimensions in the test section. :numref:`fig-we15-dmn` shows the extent of the computational domain with dimensions. Fetch distance measures the distance between the inlet anticipated location of the structure. At this location, the characteristics of the approaching wind will be examined. This example is developed based on the works of [Chew2024]_ and [Melaku2024]_. Detailed instructions to set up the CFD model can be found in the documentation of :ref:`Empty Domain CFD Simulation <lblEmptyDomainCFD>`. 
 
-.. _fig-we14-1:
+.. _fig-we15-dmn:
 
-.. figure:: figures/we14_study_building.svg
+.. figure:: figures/we15_domain_geometry.svg
    :align: center
-   :width: 35%
+   :width: 60%
 
-   Geometry and configuration of the study building
-
-
-
-In this example, the simulation is conducted in full-scale. The geometric and flow properties are given in :numref:`tbl-we14-1`. The detailed CFD-based workflow is illustrated in :ref:`workflow-section`.  
+   Configuration of the computational domain for empty domain analysis
 
 
-.. _tbl-we14-1:
+The simulation for this example is run at 1:400 geometric scale similar to the wind tunnel study. Details about the geometry the CFD model and the target flow characteristics are given in :numref:`tbl-we15-1`. 
+
+.. _tbl-we15-1:
 .. table:: Parameters needed to define the CFD model 
    :align: center
-    
+   :width: 75%
+
    +---------------------+----------------------------------------------+------------------+---------------+
    |Parameter            |Description                                   |Value             | Unit          |
    +=====================+==============================================+==================+===============+
-   |:math:`B`            |Building width                                | 68.58            | m             |
+   |:math:`L_x`          |Domain length                                 | 5.2              | m             |
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`D`            |Building depth                                | 68.58            | m             | 
+   |:math:`L_y`          |Domain width                                  | 2.2              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`H`            |Building height                               | 442.1            | m             | 
+   |:math:`L_z`          |Domain height                                 | 1.8              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_L`    |Geometric scale                               | 1.0              |               | 
+   |:math:`L_f`          |Wind fetch distance                           | 2.1              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_V`    |Velocity scale                                | 1.0              |               | 
+   |:math:`\lambda_L`    |Geometric scale                               | 1:400            |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_T`    |Time scale                                    | 1.0              |               | 
+   |:math:`\lambda_V`    |Velocity scale                                | 1:4              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`U_H`          |Roof-height mean wind speed                   | 60.00            | m/s           | 
+   |:math:`\lambda_T`    |Time scale                                    | 1:100            |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`T`            |Duration of the simulation                    | 1200             | s             | 
+   |:math:`U_{ref}`      |Reference wind speed                          | 10.69            | m/s           | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\theta`       |Wind direction                                | 0                |degrees        | 
+   |:math:`T`            |Duration of the simulation                    | 37               | s             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.03             | m             | 
+   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.5              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\rho_{air}`   |Air density                                   | 1.225            | kg/m^3        | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\nu_{air}`    |Kinematic viscosity of air                    | :math:`1.5e^{-5}`| m^2/s         | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`f_{s}`        |Sampling frequency (rate)                     | 10               | Hz            | 
+   |:math:`f_{s}`        |Sampling frequency (rate)                     | 200              | Hz            | 
    +---------------------+----------------------------------------------+------------------+---------------+
 
 
-The upwind condition chosen for this example is open exposure type with aerodynamic roughness length of :math:`z_0 = 0.03` for wind direction :math:`\theta = 0^o`. For simplicity, the effect of the surrounding buildings is neglected and a smooth inflow boundary condition is adopted at the inlet.  
-    
-
-
-.. _workflow-section:
-
-Workflow
-^^^^^^^^^^^^
-In this example, the overall workflow is demonstrated by introducing uncertainty in the structural model. No uncertainties were considered in the wind parameters or CFD simulations. The user needs to go through the following procedure to define the Uncertainty Quantification (UQ) technique, building information, structural properties, and CFD model parameters. 
+Start
+^^^^^^^
+First, open the workflow by selecting **Tools -> CFD - Empty Domain Simulation** from the menu bar. Then, load the JSON setup file using **LOAD File** button. The JSON file can be found :github:`here <Examples/weuq-0015/src/input.json>`. Once the JSON file is loaded, in the *Start* tab, change the **Path** to your preferred directory by clicking **Browse** button as shown in :numref:`fig-we15-start`. Leave the remaining settings to their default values. 
 
    .. note::
-      This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E6: Wind Load Evaluation on a Complex Shape Isolated Building Using CFD". 
+      If the **Path** field does not automatically change when the JSON path is loaded, you can manually copy and paste your working directory path into the field. 
+
+.. _fig-we15-start:
+
+.. figure:: figures/we15_start_tab.svg
+   :align: center
+   :width: 75%
+
+   Setup the path to the working directory in the *Start* tab of the workflow.
 
 
-UQ Method
-"""""""""""
-Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for UQ Engine driver. For specific UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
+Domain Dimensions
+^^^^^^^^^^^^^^^^^^^
+Since the CFD simulation is run at reduced scale, change the **Geometric Scale** (:math:`\lambda_L`) to 1:400 as given in :numref:`tbl-we15-1`. In the text, you need to put only 400. Set the lenght (:math:`L_x` ), width(:math:`L_y` ) and height (:math:`L_z` ) of the computational to 5.2 m, 2.2 m, 1.8 m, respectively, as shown in :numref:`fig-we15-geom`. For the **Fetch lenght (X-axis)** specify 2.1 m.
 
-.. figure:: figures/we14_UQ_panel.svg
+.. _fig-we15-geom:
+
+.. figure:: figures/we15_geometry_tab.svg
    :align: center
    :width: 80%
-   :figclass: align-center
 
-   Selection of the Uncertainty Quantification Technique
-
-General Information
-"""""""""""""""""""
-Next, in the **GI** panel, specify the properties of the building and the unit system. For the **# Stories** use 108 assuming a floor height of approximately 4 m. Set the **Height**, **Width** and **Depth** to 442.1, 68.58 and 68.58 with a **Plan Area** of 4703.22. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
+   Set the dimensions of the computational domain in the *Geometry* tab.  
 
 
-.. figure:: figures/we14_GI_panel.svg
-   :align: center
-   :width: 75%
+Mesh Generation
+^^^^^^^^^^^^^^^^
+The mesh is generated by first creating a background grid. Make a uniformly spaced background mesh by specifying **No. of Cells** in x, y and z direction to 52, 44 and 36. Then, generate the background mesh by clicking **Run Background Mesh** button. Next, in the *Regional Refinements* subtab define local refinements. For this example, we create three refinement boxes shown in :numref:`fig-we15-mesh`. The refinement regions are created by providing the min and max coordinates of the bounding boxes. Then, the final mesh is generated by clicking the **Run Final Mesh** button. This will automatically update the mesh visualization window on the right panel. 
 
-   Set the building properties in **GI** panel
+.. _fig-we15-mesh:
 
-Structural Properties
-"""""""""""""""""""""
-In the SIM panel, select "MDOF" generator. Specify the **Floor Weights** based on the distribution given in :numref:`tbl-we14-2`. Replace the **Story Stiffness** with **k** to designate it as a random variable. Later the statistical properties of this random variable will be defined in **RV** panel. Then, input damping, yield strength, hardening ratio and other parameters as shown in :numref:`fig-we14-SIM-panel`. 
-
-
-.. _tbl-we14-2:
-.. table:: Floor mass distribution
-   :align: center
-    
-   +---------+---------+
-   |Floors   |Mass     |
-   +=========+=========+
-   |1-50     |2.0e8    |          
-   +---------+---------+
-   |51-66    |1.5e8    |          
-   +---------+---------+
-   |67-90    |1.0e8    |          
-   +---------+---------+
-   |91-108   |0.5e8    |          
-   +---------+---------+
-
-
-.. _fig-we14-SIM-panel:
-   
-.. figure:: figures/we14_SIM_panel.svg
-   :align: center
-   :width: 75%
-
-   Define the structural properties in **SIM** panel
-
-
-
-CFD Model
-"""""""""""""""""""
-To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isolated Building" for **Load Generator**.  Detailed documentation on how to define the CFD model can be found in :ref:`the user manual<lblIsolatedBuildingCFD>`.   
-
-1. Specify the path to the case directory in *Start* tab, by clicking **Browse** button. Use version 9 for **Version of OpenFOAM Distribution**. 
-
-.. figure:: figures/we14_EVT_Start_tab.svg
-   :align: center
-   :width: 75%
-
-   Setting up the case directory and OpenFOAM version in the *Start* tab
-
-2. In the *Geometry* tab, first set the **Input Dimension Normalization** to *Relative* to put the size of the domain relative to the building height. For **Geometric Scale** of the CFD model use 1 as the simulation is conducted in full scale. Set the **Shape Type** to *Complex* and import the building geometry by clicking **Import STL** as shown in :numref:`fig-we14-import-stl`. Set the **Wind Direction** to 0 to simulate wind incidence normal to the building face. To automatically determine the building dimensions, check the **COST Recommendation** option. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*. See :numref:`fig-we14-geometry-tab` for the details.
-
-.. _fig-we14-import-stl:
-
-.. figure:: figures/we14_EVT_Import_stl.svg
+.. figure:: figures/we15_mesh_tab.svg
    :align: center
    :width: 100%
 
-   Import the building geometry 
+   Define meshing controls and generate the grid in *Mesh* tab.  
 
 
-.. _fig-we14-geometry-tab:
-.. figure:: figures/we14_EVT_Geometry_tab.svg
+Boundary Conditions
+^^^^^^^^^^^^^^^^^^^^
+Set the fields in *Wind characteristics* group based on the values provided in :numref:`tbl-we15-1`. Set the **Velocity Scale** (:math:`\lambda_V`) to 4, **Reference Wind Speed** (:math:`U_{ref}`) to 10.69 m/s, **Reference Height** (:math:`H_{ref}`) to 0.3 m and **Roughness Lenght** (:math:`z_0`) in full-scale to 0.5 m. For the boundary conditions, use *TInf* option at the inlet of the domain. For the ground surface, use *roughWallFunction* and setup the boundary conditions on the remaining surfaces as seen in :numref:`fig-we15-bc`.  
+
+If *TInf* is used for the inlet, specify turbulence generation scheme in *Inflow Generation* group. For this example, use *DFM* which represents Digital Filtering Method. To specify the target wind profiles, click **Import(*.csv)** and locate the ``*.csv`` file you download from :github:`here <Examples/weuq-0015/src/target_wind_profiles.json>`.  
+
+.. _fig-we15-bc:
+
+.. figure:: figures/we15_bc_tab.svg
    :align: center
-   :width: 100%
+   :width: 75%
 
-   Defining the domain dimensions and the building geometry.  
-
-
-2. Follow the steps below to set up the computational grid in the *Mesh* tab.
-   
-   **Background Mesh:**
-
-   In the *Background Mesh* subtab, first create a structured grid with **No. of Cells** in *X-axis*, *Y-axis* and *Z-axis* set to 80, 40 and 24. 
-
-   .. figure:: figures/we14_EVT_Mesh_tab.svg
-      :align: center
-      :width: 100%
-
-      Define the computational grid in *Mesh* tab
+   Setup wind characteristics with the boundary conditions in *Boundary Conditions* tab.  
 
 
-   **Regional Refinements:**
-   
-   Create regional refinements by adding 4 boxes as shown in the table below. The **Mesh Size** relative to building height is given in the last column of the table.
-   
-   .. figure:: figures/we14_EVT_Mesh_RegionalRefinement_tab.svg
-      :align: center
-      :width: 75%
+Numerical Setup
+^^^^^^^^^^^^^^^^
+Set the turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. For the **Simulation Type** use *LES* and select *dynamicKEqn* for the **Sub-grid Scale Model**. Set the **Solver Type** to *pimpleFoam* with 1 **Number of Non-Orthogonal Correctors** , 2 **Number of Corrector Loops** and 1 **Number of Outer Corrector Loops**. Set the maximum Courant number to 1.0 and select **Adjustable** time step. 
 
-      Create regional refinements
+For the **Duration** of the simulation, use :math:`37 s` based on what is specified in :numref:`tbl-we15-1`. This time step translates to :math:`3700s` in full scale with a time scale 1:100, which is a litter over the recommended 1 hour duration. The **Time Steep** can be calculated automatically from the smallest mesh size by clicking **Calculate** button. For this example, the calculated time step is :math:`0.000736624 s`, which is changed to a conservative value of :math:`0.005 s`. Finally, check the **Run Simulation in Parallel** option and put 56 for the **Number of Processors**.  
 
+.. _fig-we15-num-setup:
 
-   **Surface Refinements:**
-   
-   In the *Surface Refinements* sub-tab, check the *Add Surface Refinements* box. Set the **Refinement Level** and **Refinement Distance** as shown in the figure.  
-
-   .. figure:: figures/we14_EVT_Mesh_SurfaceRefinement_tab.svg
-      :align: center
-      :width: 75%
-
-      Create surface refinements
-   
-   **Edge Refinements:**
-   
-   Create additional refinements along the building edges by checking *Add Edge Refinements* option. See the figure below for the details.
-
-   .. figure:: figures/we14_EVT_Mesh_EdgeRefinement_tab.svg
-      :align: center
-      :width: 75%
-
-      Apply further refinements along the building edges
-
-   **Prism Layers:**
-   
-   In the *Prism Layers* sub-tab,  uncheck *Add Prism Layers* option.
-
-   .. figure:: figures/we14_EVT_Mesh_PrismLayers_tab.svg
-      :align: center
-      :width: 75%
-
-      Adding Prism Layers
-
-   **Run Mesh**
-   
-   To generate the computational grid with all the refinements applied, click **Run Final Mesh** button in *Mesh* tab . Once meshing is done, in the side window, the model will be updated automatically displaying the generated grid. 
-
-
-   .. figure:: figures/we14_EVT_Mesh_View.svg
-      :align: center
-      :width: 100%
-
-      Breakout View of the Mesh
-   
-4. To define initial and boundary conditions, select *Boundary Conditions* tab. 
-
-   * Based on the values given in :numref:`tbl-we14-1`, set the **Velocity Scale** to 1, **Wind Speed At Reference Height** to :math:`60 m/s`, and the **Reference Height** as building height, which is :math:`442.1 m`. For the **Aerodynamic Roughness Length** use :math:`0.03 m`. Set  **Air Density** and **Kinematic Viscosity** to :math:`1.225 \, kg/m^3` and :math:`1.5 \times 10^{-5} \, m^2/s`, respectively. The Reynolds number (:math:`Re`) can be determined by clicking **Calculate** button, which gives :math:`1.77 \times 10^{9}`.
-
-   * At the **Inlet** of the domain use *MeanABL* which specifies a mean velocity profile based on the logarithmic profile. For **Outlet** set a *zeroPressureOutlet* boundary condition. On the **Side** and **Top** faces of the domain use *slip* wall boundary conditions. For the **Ground** surface, apply *roughWallFunction*. Finally, the **Building** surface, use *smoothWallFunction* assuming the building has a smooth surface.   
-
-   .. figure:: figures/we14_EVT_BoundaryConditions.svg
-      :align: center
-      :width: 75%
-
-      Setup the *Boundary Conditions*  
-
-5. Specify turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. 
-   
-   * In **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**.
-  
-   * For the **Solver Type**, specify *pisoFoam* and put 1 for **Number of Non-Orthogonal Correctors** to add an additional iteration for the non-orthogonal gird close to the building surface.  
-  
-   * For the **Duration** of the simulation, use :math:`1200 s` based on what is defined in :numref:`tbl-we14-1`. Determined the approximate **Time Steep** by clicking **Calculate** button. For this example, the estimated time step that give a Courant number close to unity is :math:`0.0143913 s`, which is changed to :math:`0.01 s` for convenience.  
-
-   * Check the **Run Simulation in Parallel** option and specify the **Number of Processors** to the 56. 
-
-.. _fig-we13-CFD-num-setup:
-
-.. figure:: figures/we14_EVT_NumericalSetup.svg
+.. figure:: figures/we15_numerical_setup_tab.svg
    :align: center
    :width: 75%
 
    Edit inputs in *Numerical Setup* tab
 
 
-6. Monitor wind loads from the CFD simulation in the *Monitoring* tab.  
+Set Results to Monitor
+^^^^^^^^^^^^^^^^^^^^^^^
+In the *Monitoring* tab, specify simulation results to be record as seen in :numref:`fig-we15-mon`. For this example we will monitor both the velocity and pressure distribution at selected places in the computational domain. Firstly, check **Record Wind Profiles** checkbox. Then, add three line probes (profiles) by clicking **Add Profile** and edit details as shown in bellow figure. For example, *Profile1* is located at the inlet and measures the characteristics flow velocity. *Profile2* is located downstream and measures the incident flow (i.e., the wind the structure will experience) on a vertical line. Whereas, *Profile3* measures the downstream evolution of the pressure fluctuation in the stream-wise direction. Also, specify the **Field Write Interval** to 10 and **Write Start Time** to 1.      
  
-   * Check **Monitor Base Loads** to record integrated loads at the base of the building, and set the **Write Interval** to 10.
-  
-   * Change the **Write Interval** for story loads to 10, which gives records the loads at an interval of :math:`\Delta t \times 10 = 0.1s`. 
-  
-   * Since only integrated loads are needed for the analysis, uncheck the **Sample Pressure Data on the Building Surface** option. 
-  
-   .. figure:: figures/we14_EVT_Monitoring.svg
-      :align: center
-      :width: 75%
+To monitor the snapshot of the flow field, check **Sample Flow Field** and add two section planes for monitoring velocity field. Edit the table entries as seen in :numref:`fig-we15-mon`. *Plane1* is vertical plane normal to y-axis and monitors the snapshot of the velocity field from 1 s to 3 s.  *Plane2* is a horizontal plane normal to z-axis and monitors the snapshot of the velocity field from 1 s to 3 s. The files for both planes will be written every 50 time step (i.e :math:`50 \times 0.0005 = 0.025 s`) as specified in **Flow Write Interval**. 
 
-      Select the outputs from CFD in the *Monitoring* tab
+.. _fig-we15-mon:
 
-Finite Element Analysis
-"""""""""""""""""""""""""
-The finite element analysis options, specified the **FEM** panel. For this example, keep the default values as seen in :numref:`fig-we14-FEM-panel`. 
-
-.. _fig-we14-FEM-panel:
-
-.. figure:: figures/we14_FEM_panel.svg
+.. figure:: figures/we15_monitoring_tab.svg
    :align: center
    :width: 75%
 
-   Setup the Finite Element analysis options
+   Specify results to record in the *Monitoring* tab
 
-Engineering Demand Parameter
-""""""""""""""""""""""""""""""
-Next, specify Engineering Demand Parameters (EDPs) in the **EDP** panel. Select *Standard Wind* EDPs which include floor displacement, acceleration and inter-story drift.  
 
-.. figure:: figures/we14_EDP_panel.svg
+Run the Simulation
+^^^^^^^^^^^^^^^^^^^
+First, in the main WE-UQ window login to *DesignSafe* with your credentials. Then, in the CFD workflow window, submit the simulation by clicking **RUN at DesignSafe**. Then, provide the simulation a **Job Name**. Set **Num Nodes** to 1 and **# Processes Per Node** to 56 with a **Max Run Time** of  *12:00:00*. Finally, click the **Submit** button to send the model to *DesignSafe*.  
+
+.. figure:: figures/we15_run_job.svg
+   :align: center
+   :width: 30%
+
+   Submit the simulation.
+
+
+Show Results
+^^^^^^^^^^^^^^
+After submitting the simulation, you can check the status of the remote job by clicking **GET from DesignSafe**. Once the remote job is finished, the results can be reloaded by selecting **Retrieve Data** after right-clicking on the job name. This will aromatically download the CFD results and actives the *Results* tab. In this tab, we can examine the characteristics of the flow in different ways, e.g., plot wind profiles, velocity spectra, and pressure fluctuation as seen :numref:`fig-we15-res` . 
+
+.. _fig-we15-res:
+
+.. figure:: figures/we15_results_tab.svg
    :align: center
    :width: 75%
 
-   Select the EDPs to measure
+   Show the post-processed outputs in the *Results*.
 
-Random Variables
+
+Wind Profiles
+""""""""""""""
+In the *Monitoring* tab, we specified two line probes for monitoring velocity profile at the inlet and incident location. To plot these profiles under **Wind Profile** select **Name of the Profile** as *Profile1* and click **Plot Profile** button. For example, :numref:`fig-we15-res-prof` shows the velocity profiles at the inlet which include mean velocity, turbulence intensity and lenght scale profiles. In this plot, the dotted black lines show the target profiles, while the red solid lines with o are the results from the CFD.   
+
+.. _fig-we15-res-prof:
+
+.. figure:: figures/we15_results_prof.svg
+   :align: center
+   :width: 90%
+   
+   Comparison of the wind profiles from the CFD with the targets the inlet.
+
+
+Velocity Spectra
 """""""""""""""""
-The random variables are defined in **RV** tab. Here, the floor stiffness named as :math:`k` in **SIM** panel is automatically assigned as a random variable. Select *Normal* for its probability **Distribution**  with :math:`5 \times 10^{8}` for the **Mean** and :math:`5 \times 10^{7}` for **Standard Dev**. 
+Similarly, the velocity spectra at different height can be shown by clicking **Plot Spectra**. For instance, :numref:`fig-we15-res-spec` shows the reduced velocity spectra at :math:`H_{ref}` for the three components of the velocity. Also, the figure compares the spectra from the CFD (red solid line) with the target von Kármán model (black dotted lines).    
 
-.. figure:: figures/we14_RV_panel.svg
-   :align: center
-   :width: 75%
+.. _fig-we15-res-spec:
 
-   Define the Random Variable (RV)
-
-Running the Simulation 
-"""""""""""""""""""""""
- To run the CFD simulation, first login to *DesignSafe* with your credential. Then, run the job remotely by clicking **RUN at DesignSafe**. Give the simulation a **Job Name**.  Set **Num Nodes** to 1 and **# Processes Per Node** to 56. For the **Max Run Time**, specify *20:00:00*. Finally, click the **Submit** button to send the job to *DesignSafe*.  
-
-.. figure:: figures/we14_RunJob.svg
-   :align: center
-   :width: 80%
-
-   Submit the simulation to the remote server (DesignSafe-CI)
-
-Results
-"""""""""
-The status of the remote job can be tracked by clicking **GET from DesignSafe**. Once the remote job finishes, the results can be reloaded by selecting **Retrieve Data** option right-click clicking on the job name. Then, the results will be displayed in **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
-
-      * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
-      * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
-      * 1-PID-3-1: represents  **peak inter-story drift ratio** of the **3rd floor** for **component 1** (x-dir) and
-      * 1-RMSA-108-1: represents **root-mean-squared acceleration** of the **106th floor** for **component 1** (x-dir).   
-
-The *Summary* tab of the panel, shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
-
-.. figure:: figures/we14_RES_Summary.svg
-   :align: center
-   :width: 75%
-
-   Summary of the recorded EDPs in **RES** panel
-
-By switching to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
-
-.. figure:: figures/we14_RES_DataValues.svg
-   :align: center
-   :width: 75%
-   :figclass: align-center
-
-   (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
-
-
-
-Flow visualization 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is clearly visible that important flow features such as vortex shading and turbulence at the wake are captured.  
-
-.. _fig-we14-CFD-result:
-
-.. figure:: figures/we14_CFD_Results.svg
+.. figure:: figures/we15_results_spectra.svg
    :align: center
    :width: 100%
-   :figclass: align-center
+   
+   Comparison of the velocity spectra from CFD with von Kármán at inlet.
 
-   Instantaneous velocity field around the building.
 
-.. [Franke2007] Franke, J., Hellsten, A., Schlünzen, K.H. and Carissimo, B., 2007. COST Action 732: Best practice guideline for the CFD simulation of flows in the urban environment.
+Pressure Fluctuation
+"""""""""""""""""""""
+To examine the downstream evolution of the pressure field, select *Profile1* for profile name and plot pressure distribution. :numref:`fig-we15-res-prs` shown the standard deviation of the pressure on the grounds surface. The x-axis shows the distance from the inlet of the domain. Using turbulent inflow at the inlet often introduces artificial pressure fluctuation at the inlet. However, this fluctuation decays as the flow progresses downstream as shown in :numref:`fig-we15-res-prs`.    
+
+.. _fig-we15-res-prs:
+
+.. figure:: figures/we15_results_pressure.svg
+   :align: center
+   :width: 60%
+   
+   Evolution of pressure fluctuation downstream of the inlet.
+
+
+Wind Field Visualization
+"""""""""""""""""""""""""
+Furthermore, the full simulation data can be found in ``Documents/WE-UQ/RemoteWorkDir/results`` folder. This directory contains the OpenFOAM case files with all ``*.log`` files showing the outputs from each step in the simulation. The user can visualize this data locally using Paraview. After  launching Paraview, open **File -> Open** and locate the path ``Documents/WE-UQ/RemoteWorkDir/results/``. Then, open the file ``vis.foam`` and load the simulation results to Paraview. 
+
+
+To visualize *Plane1* defined in *Monitoring* tab, load ``Documents/WE-UQ/RemoteWorkDir/results/Plane1_renamed/Velocity_T*.vtk`` files to Paraview and create visualization. The the following two videos for *Plane1* and *Plane2* are created from VTK samples saved during the simulations. 
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0015/we15_vis_plane1.mp4" width="560" height="315"> </video>   
+   </div>
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0015/we15_vis_plane2.mp4" width="560" height="315"> </video>   
+   </div>
+   
+.. [Chew2024] Chew, L.W., Melaku A.F. Ciarlatani, M.F., and Gorlé, C. Validation of LES predictions for wind pressures on a high-rise building: why wind tunnel validation datasets should report detailed turbulent wind statistics. In preparation.
+
+.. [Melaku2024] Melaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings: A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.
+
+
 
