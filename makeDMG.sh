@@ -1,13 +1,28 @@
-# remove & rebuild app and macdeploy it
+#
+# parse args
+#
 
-appName="WE-UQ"
-appFile="WE_UQ.app"
-dmgFile="WE-UQ_Mac_Download.dmg"
+DMG_METHOD="NEW"
 
-QTDIR="/Users/simcenter/Qt/5.15.2/clang_64/"
+for arg in "$@"
+do
+    if [ "$arg" == "--old" ] || [ "$arg" == "-o" ] || [ $arg == "-OLD" ]; then
+	DMG_METHOD="OLD"
+    fi
+done
 
-pathToBackendApps="/Users/fmckenna/release/SimCenterBackendApplications"
-pathToOpenSees="/Users/fmckenna/bin/OpenSees3.2.2"
+
+#
+# Paramaters
+#
+
+APP_NAME="WE-UQ"
+APP_FILE="WE_UQ.app"
+DMG_FILENAME="WE-UQ_Mac_Download.dmg"
+
+QTDIR="/Users/fmckenna/Qt/5.15.2/clang_64/"
+pathToBackendApps="/Users/fmckenna/NHERI/SimCenterBackendApplications"
+pathToOpenSees="/Users/fmckenna/bin/OpenSees3.6.0"
 pathToDakota="/Users/fmckenna/dakota-6.12.0"
 
 #pathToPython="/Users/fmckenna/PythonEnvR2D"
@@ -16,6 +31,7 @@ pathToDakota="/Users/fmckenna/dakota-6.12.0"
 # build it
 #
 
+rm -fr ./build/$APP_FILE ./build/$DMG_FILENAME
 ./makeEXE.sh
 cd build
 
@@ -24,7 +40,7 @@ cd build
 #
 
 if ! [ -x "$(command -v open $pathApp)" ]; then
-	echo "$appFile did not build. Exiting."
+	echo "$APP_FILE did not build. Exiting."
 	exit 
 fi
 
@@ -38,25 +54,27 @@ macdeployqt ./WE_UQ.app
 # add missing files from macdeployqt (a known bug)
 #
 
-mkdir -p ./$appFile/Contents/plugins/renderers/
-cp -R $QTDIR/plugins/renderers/libopenglrenderer.dylib ./$appFile/Contents/plugins/renderers/
+#mkdir -p ./$APP_FILE/Contents/plugins/renderers/
+#cp -R $QTDIR/plugins/renderers/libopenglrenderer.dylib ./$APP_FILE/Contents/plugins/renderers/
 
-mkdir -p ./$appFile/Contents/plugins/renderplugins/
-cp -R $QTDIR/plugins/renderplugins/libscene2d.dylib ./$appFile/Contents/plugins/renderplugins/
+#mkdir -p ./$APP_FILE/Contents/plugins/renderplugins/
+#cp -R $QTDIR/plugins/renderplugins/libscene2d.dylib ./$APP_FILE/Contents/plugins/renderplugins/
 
-echo "cp -R $QTDIR/plugins/renderplugins/libscene2d.dylib ./$appFile/Contents/plugins/renderplugins/"
-
+#echo "cp -R $QTDIR/plugins/renderplugins/libscene2d.dylib ./$APP_FILE/Contents/plugins/renderplugins/"
 
 #
 # copy test case
 #
-cp -fr ../tests/IsolateBuildingCFD  ./$appFile/Contents/MacOS
+
+# cp -fr ../tests/IsolateBuildingCFD  ./$APP_FILE/Contents/MacOS
 
 
 #
 # copy files from VTK dir
 #
 
+cp ../../VTK/lib/libvtkgl2ps-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
+cp ../../VTK/lib/libvtkRenderingGL2PSOpenGL2-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkChartsCore-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkCommonColor-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkCommonComputationalGeometry-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
@@ -108,6 +126,7 @@ cp ../../VTK/lib/libvtkRenderingLabel-9.2.1.dylib ./WE_UQ.app/Contents/Framework
 cp ../../VTK/lib/libvtkRenderingOpenGL2-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkRenderingUI-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkRenderingVolume-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
+cp ../../VTK/lib/libvtkRenderingVolume-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkViewsCore-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkViewsInfovis-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkViewsQt-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
@@ -129,13 +148,13 @@ cp ../../VTK/lib/libvtktiff-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 cp ../../VTK/lib/libvtkzlib-9.2.1.dylib ./WE_UQ.app/Contents/Frameworks
 
 # copy applications folderm opensees and dakota
-echo "cp -fR $pathToBackendApps/applications ./$appFile/Contents/MacOS"
-cp -fR $pathToBackendApps/applications ./$appFile/Contents/MacOS
-mkdir  ./$appFile/Contents/MacOS/applications/opensees
-mkdir  ./$appFile/Contents/MacOS/applications/dakota
+echo "cp -fR $pathToBackendApps/applications ./$APP_FILE/Contents/MacOS"
+cp -fR $pathToBackendApps/applications ./$APP_FILE/Contents/MacOS
+mkdir  ./$APP_FILE/Contents/MacOS/applications/opensees
+mkdir  ./$APP_FILE/Contents/MacOS/applications/dakota
 echo "cp -fr $pathToOpenSees/* $pathApp/Contents/MacOS/applications/opensees"
-cp -fr $pathToOpenSees/* ./$appFile/Contents/MacOS/applications/opensees
-cp -fr $pathToDakota/*  ./$appFile/Contents/MacOS/applications/dakota
+cp -fr $pathToOpenSees/* ./$APP_FILE/Contents/MacOS/applications/opensees
+cp -fr $pathToDakota/*  ./$APP_FILE/Contents/MacOS/applications/dakota
 
 # clean up
 declare -a notWantedApp=("createBIM" 
@@ -163,13 +182,15 @@ declare -a notWantedApp=("createBIM"
 			 "performSIMULATION/openSees_R"
 			)
 
+
 for app in "${notWantedApp[@]}"
 do
    echo "removing $app"
-   rm -fr ./$appFile/Contents/MacOS/applications/$app
+   rm -fr ./$APP_FILE/Contents/MacOS/applications/$app
 done
 
-find ./$appFile -name __pycache__ -exec rm -rf {} +;
+find ./$APP_FILE -name __pycache__ -exec rm -rf {} +;
+
 
 #
 # load my credential file
@@ -179,9 +200,9 @@ userID="../userID.sh"
 
 if [ ! -f "$userID" ]; then
 
-    echo "creating dmg $dmgFile"
-    rm $dmgFile
-    hdiutil create $dmgFile -fs HFS+ -srcfolder ./$appFile -format UDZO -volname $appName
+    echo "creating dmg $DMG_FILENAME"
+    rm $DMG_FILENAME
+    hdiutil create $DMG_FILENAME -fs HFS+ -srcfolder ./$APP_FILE -format UDZO -volname $APP_NAME
 
     echo "No password & credential file to continue with codesign and App store verification"
     exit
@@ -189,38 +210,74 @@ fi
 
 source $userID
 echo $appleID    
+
+
+if [ "${DMG_METHOD}" == "NEW" ]; then
+
+    #
+    # mv app into empty folder for create-dmg to work
+    # brew install create-dmg
+    #
+
+    echo "codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $APP_FILE"
+    codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $APP_FILE    
     
+    mkdir app
+    mv $APP_FILE app
+    
+    #horizontal
+    ../macInstall/create-dmg \
+	--volname "${APP_NAME}" \
+	--background "../macInstall/background3.png" \
+	--window-pos 200 120 \
+	--window-size 600 350 \
+	--no-internet-enable \
+	--icon-size 125 \
+	--icon "${APP_NAME}.app" 125 130 \
+	--hide-extension "${APP_NAME}.app" \
+	--app-drop-link 450 130 \
+	--codesign $appleCredential \
+	"${DMG_FILENAME}" \
+	"app"
 
-#codesign
-echo "codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $appFile"
-codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $appFile
+    #  --notarize $appleID $appleAppPassword \
+	
+    mv ./app/$APP_FILE ./
+    rm -fr app
 
-# create dmg
-echo "hdiutil create $dmgFile -fs HFS+ -srcfolder ./$appFile -format UDZO -volname $appName"
-hdiutil create $dmgFile -fs HFS+ -srcfolder ./$appFile -format UDZO -volname $appName
+else
 
-status=$?
-if [[ $status != 0 ]]
-then
-    echo "DMG Creation FAILED cd build and try the following:"
-    echo "hdiutil create $dmgFile -fs HFS+ -srcfolder ./$appFile -format UDZO -volname $appName"    
-    echo "codesign --force --sign "$appleCredential" $dmgFile"
-    echo "xcrun altool --notarize-app -u $appleID -p $appleAppPassword -f ./$dmgFile --primary-bundle-id altool"
-    echo "xcrun altool --notarization-info ID  -u $appleID  -p $appleAppPassword"
-    echo "xcrun stapler staple \"$appName\" $dmgFile"
-    exit $status;
+    #codesign
+    echo "codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $APP_FILE"
+    codesign --deep --force --verbose --options=runtime  --sign "$appleCredential" $APP_FILE
+
+    # create dmg
+    echo "hdiutil create $DMG_FILENAME -fs HFS+ -srcfolder ./$APP_FILE -format UDZO -volname $APP_NAME"
+    hdiutil create $DMG_FILENAME -fs HFS+ -srcfolder ./$APP_FILE -format UDZO -volname $APP_NAME
+    
+    status=$?
+    if [[ $status != 0 ]]
+    then
+	echo "DMG Creation FAILED cd build and try the following:"
+	echo "hdiutil create $DMG_FILENAME -fs HFS+ -srcfolder ./$APP_FILE -format UDZO -volname $APP_NAME"    
+	echo "codesign --force --sign "$appleCredential" $DMG_FILENAME"
+	echo "xcrun altool --notarize-app -u $appleID -p $appleAppPassword -f ./$DMG_FILENAME --primary-bundle-id altool"
+	echo "xcrun altool --notarization-info ID  -u $appleID  -p $appleAppPassword"
+	echo "xcrun stapler staple \"$APP_NAME\" $DMG_FILENAME"
+	exit $status;
+    fi
+
+    #codesign dmg
+    echo "codesign --force --sign "$appleCredential" $DMG_FILENAME"
+    codesign --force --sign "$appleCredential" $DMG_FILENAME
 fi
 
-#codesign dmg
-echo "codesign --force --sign "$appleCredential" $dmgFile"
-codesign --force --sign "$appleCredential" $dmgFile
-
 echo "Issue the following: " 
-echo "xcrun altool --notarize-app -u $appleID -p $appleAppPassword -f ./$dmgFile --primary-bundle-id altool"
+echo "xcrun altool --notarize-app -u $appleID -p $appleAppPassword -f ./$DMG_FILENAME --primary-bundle-id altool"
 echo ""
 echo "returns id: ID .. wait for email indicating success"
 echo "To check status"
 echo "xcrun altool --notarization-info ID  -u $appleID  -p $appleAppPassword"
 echo ""
 echo "Finally staple the dmg"
-echo "xcrun stapler staple \"$appName\" $dmgFile"
+echo "xcrun stapler staple \"$APP_NAME\" $DMG_FILENAME"
