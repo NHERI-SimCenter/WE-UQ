@@ -7,7 +7,7 @@ Digital Wind Tunnel: Characterizing ABL Flows using Large-eddy Simulation
 | Problem files  | :github:`Download <Examples/weuq-0015/>` |
 +----------------+----------------------------------------+
 
-This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from wind tunnel experiment conducted at boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions  of the CFD model are set to match the wind tunnel dimensions at the test section. :numref:`fig-we15-dmn` shows extent of the computational domain with dimensions. Fetch distance measures the distance between the inlet anticipated location of the structure. At this location, the characteristics of the approaching wind will be examined. Detailed instruction to setup the CFD model can be found in the documentation of :ref:`Empty Domain CFD Simulation <lblEmptyDomainCFD>` 
+This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0. It demonstrates the procedure for calibrating Atmospheric Boundary Layer (ABL) flows using large eddy simulation in empty domain configuration. For creating the CFD model, the inputs are taken from a wind tunnel experiment conducted at the boundary layer wind tunnel of Tokyo Polytechnic University (TPU). The cross-section dimensions of the CFD model are set to match the wind tunnel dimensions in the test section. :numref:`fig-we15-dmn` shows the extent of the computational domain with dimensions. Fetch distance measures the distance between the inlet anticipated location of the structure. At this location, the characteristics of the approaching wind will be examined. This example is developed based on the work of [Chew2024]_. Detailed instruction to set up the CFD model can be found in the documentation of :ref:`Empty Domain CFD Simulation <lblEmptyDomainCFD>`. 
 
 .. _fig-we15-dmn:
 
@@ -18,17 +18,17 @@ This example uses the Digital Twin capability implemented in WE-UQ Version 3.2.0
    Configuration of the computational domain for empty domain analysis
 
 
-
 The simulation for this example is run at 1:400 geometric scale similar to the wind tunnel study. Details about the geometry the CFD model and the target flow characteristics are given in :numref:`tbl-we15-1`. 
 
 .. _tbl-we15-1:
 .. table:: Parameters needed to define the CFD model 
    :align: center
-    
+   :width: 75%
+
    +---------------------+----------------------------------------------+------------------+---------------+
    |Parameter            |Description                                   |Value             | Unit          |
    +=====================+==============================================+==================+===============+
-   |:math:`L_x`          |Domain length                                 | 5.2             | m             |
+   |:math:`L_x`          |Domain length                                 | 5.2              | m             |
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`L_y`          |Domain width                                  | 2.2              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
@@ -58,10 +58,10 @@ The simulation for this example is run at 1:400 geometric scale similar to the w
 
 Start
 ^^^^^^^
-First, open the workflow by selecting **Tools -> CFD - Empty Domain Simulation** from the menu bar. Then, load the JSON setup file using **LOAD File** button. The JSON file can be found :github:`here <Examples/weuq-0015/src/input.json>`. Once the JSON file is loaded, in the *Start* tab, change the **Path** to your preferred directory by clicking **Browse** button as shown in :numref:`fig-we15-start`. Leave the remaining settings with their default values. 
+First, open the workflow by selecting **Tools -> CFD - Empty Domain Simulation** from the menu bar. Then, load the JSON setup file using **LOAD File** button. The JSON file can be found :github:`here <Examples/weuq-0015/src/input.json>`. Once the JSON file is loaded, in the *Start* tab, change the **Path** to your preferred directory by clicking **Browse** button as shown in :numref:`fig-we15-start`. Leave the remaining settings to their default values. 
 
    .. note::
-      If the **Path** field does not automatically change when the JSON path is loaded, you can manually copy paste your working directory path in the field. 
+      If the **Path** field does not automatically change when the JSON path is loaded, you can manually copy and paste your working directory path into the field. 
 
 .. _fig-we15-start:
 
@@ -149,57 +149,83 @@ First, in the main WE-UQ window login to *DesignSafe* with your credentials. The
 
 .. figure:: figures/we15_run_job.svg
    :align: center
-   :width: 25%
+   :width: 30%
 
    Submit the simulation.
 
 
 Show Results
 ^^^^^^^^^^^^^^
-After submitting the simulation, monitor the status of the remote job by clicking **GET from DesignSafe**. When the remote job completes, the results can be reloaded by selecting **Retrieve Data** option after right-clicking on the job name. This will aromatically download the results and active the *Results* tab.
+After submitting the simulation, you can check the status of the remote job by clicking **GET from DesignSafe**. Once the remote job is finished, the results can be reloaded by selecting **Retrieve Data** after right-clicking on the job name. This will aromatically download the CFD results and actives the *Results* tab. In this tab, we can examine the characteristics of the flow in different ways, e.g., plot wind profiles, velocity spectra, and pressure fluctuation as seen :numref:`fig-we15-res` . 
 
-Show Results
-^^^^^^^^^^^^^^
+.. _fig-we15-res:
 
-
-The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
-
-      * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
-      * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
-      * 1-PID-3-1: represents  **peak inter-story drift ratio** of the **3rd floor** for **component 1** (x-dir) and
-      * 1-RMSA-108-1: represents **root-mean-squared acceleration** of the **106th floor** for **component 1** (x-dir).   
-
-The *Summary* tab of the panel, shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
-
-.. figure:: figures/we14_RES_Summary.svg
+.. figure:: figures/we15_results_tab.svg
    :align: center
    :width: 75%
 
-   Summary of the recorded EDPs in **RES** panel
+   Show the post-processed outputs in the *Results*.
 
-By switching to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
 
-.. figure:: figures/we14_RES_DataValues.svg
+Wind Profiles
+""""""""""""""
+In the *Monitoring* tab, we specified two line probes for monitoring velocity profile at the inlet and incident location. To plot these profiles under **Wind Profile** select **Name of the Profile** as *Profile1* and click **Plot Profile** button. For example, :numref:`fig-we15-res-prof` shows the velocity profiles at the inlet which include mean velocity, turbulence intensity and lenght scale profiles. In this plot, the dotted black lines show the target profiles, while the red solid lines with o are the results from the CFD.   
+
+.. _fig-we15-res-prof:
+
+.. figure:: figures/we15_results_prof.svg
    :align: center
-   :width: 75%
-   :figclass: align-center
-
-   (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
-
+   :width: 90%
+   
+   Comparison of the wind profiles from the CFD with the targets the inlet.
 
 
-Flow visualization 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is clearly visible that important flow features such as vortex shading and turbulence at the wake are captured.  
+Velocity Spectra
+"""""""""""""""""
+Similarly, the velocity spectra at different height can be shown by clicking **Plot Spectra**. For instance, :numref:`fig-we15-res-spec` shows the reduced velocity spectra at :math:`H_{ref}` for the three components of the velocity. Also, the figure compares the spectra from the CFD (red solid line) with the target von Kármán model (black dotted lines).    
 
-.. _fig-we14-CFD-result:
+.. _fig-we15-res-spec:
 
-.. figure:: figures/we14_CFD_Results.svg
+.. figure:: figures/we15_results_spectra.svg
    :align: center
    :width: 100%
-   :figclass: align-center
+   
+   Comparison of the velocity spectra from CFD with von Kármán at inlet.
 
-   Instantaneous velocity field around the building.
 
-.. [Franke2007] Franke, J., Hellsten, A., Schlünzen, K.H. and Carissimo, B., 2007. COST Action 732: Best practice guideline for the CFD simulation of flows in the urban environment.
+Pressure Fluctuation
+"""""""""""""""""""""
+To examine the downstream evolution of the pressure field, select *Profile1* for profile name and plot pressure distribution. :numref:`fig-we15-res-prs` shown the standard deviation of the pressure on the grounds surface. The x-axis shows the distance from the inlet of the domain. Using turbulent inflow at the inlet often introduces artificial pressure fluctuation at the inlet. However, this fluctuation decays as the flow progresses downstream as shown in :numref:`fig-we15-res-prs`.    
+
+.. _fig-we15-res-prs:
+
+.. figure:: figures/we15_results_pressure.svg
+   :align: center
+   :width: 60%
+   
+   Evolution of pressure fluctuation downstream of the inlet.
+
+
+Wind Field Visualization
+"""""""""""""""""""""""""
+Furthermore, the full simulation data can be found in ``Documents/WE-UQ/RemoteWorkDir/results`` folder. This directory contains the OpenFOAM case files with all ``*.log`` files showing the outputs from each step in the simulation. The user can visualize this data locally using Paraview. After  launching Paraview, open **File -> Open** and locate the path ``Documents/WE-UQ/RemoteWorkDir/results/``. Then, open the file ``vis.foam`` and load the simulation results to Paraview. 
+
+
+To visualize *Plane1* defined in *Monitoring* tab, load ``Documents/WE-UQ/RemoteWorkDir/results/Plane1_renamed/Velocity_T*.vtk`` files to Paraview and create visualization. The the following two videos for *Plane1* and *Plane2* are created from VTK samples saved during the simulations. 
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0015/we15_vis_plane1.mp4" width="560" height="315"> </video>   
+   </div>
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0015/we15_vis_plane2.mp4" width="560" height="315"> </video>   
+   </div>
+   
+.. [Chew2024] Chew, L.W., Melaku A.F. Ciarlatani, M.F., and Gorlé, C. Validation of LES predictions for wind pressures on a high-rise building: why wind tunnel validation datasets should report detailed turbulent wind statistics. In preparation.
+
+
 
