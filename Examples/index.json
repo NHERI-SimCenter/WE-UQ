@@ -277,6 +277,7 @@
           "weuq-0015/figures/we15_results_prof.svg",
           "weuq-0015/figures/we15_results_pressure.svg",
           "weuq-0015/figures/we15_results_spectra.svg",
+          "weuq-0015/figures/we15_results_flow_vis.svg",
           "weuq-0015/figures/we15_run_job.svg"
       ],
       "entry_point": "weuq-0015/./input.json",
