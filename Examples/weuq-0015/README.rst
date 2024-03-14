@@ -232,7 +232,7 @@ To visualize *Plane1* defined in *Monitoring* tab, load ``Documents/WE-UQ/Remote
    
 
 
-.. [Chew2024] Chew, L.W., Melaku A.F. Ciarlatani, M.F., and Gorlé, C. Validation of LES predictions for wind pressures on a high-rise building: why wind tunnel validation datasets should report detailed turbulent wind statistics. In preparation.
+.. [Chew2024] Chew, L.W., Melaku A.F., Ciarlatani, M.F., and Gorlé, C. Validation of LES predictions for wind pressures on a high-rise building: why wind tunnel validation datasets should report detailed turbulent wind statistics. In preparation.
 
 .. [Melaku2024] Melaku, A.F. and Bitsuamlak, G.T., 2024. Prospect of LES for predicting wind loads and responses of tall buildings: A validation study. Journal of Wind Engineering and Industrial Aerodynamics, 244, p.105613.
 
