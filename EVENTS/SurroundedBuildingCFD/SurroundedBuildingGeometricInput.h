@@ -55,11 +55,12 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 class QDialog;
-class SurroundedBuildingCFD;
+class QSlider;
 
 class  SurroundedBuildingGeometricInput: public SimCenterAppWidget
 {
@@ -72,6 +73,7 @@ public:
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
+
 
     void updateWidgets();
 
@@ -87,24 +89,33 @@ signals:
 
 public slots:
    void clear(void);
-    int onImportSetupButtonClicked();
     void originChanged(const QString &arg);
     void useCOSTOptionChecked(int);
+
+
+
 
 private:
 
    QVBoxLayout          *layout;
-   SurroundedBuildingCFD       *mainModel;
+   SurroundedBuildingCFD *mainModel;
 
-   QGroupBox            *domainSetupGroup;
-   QGridLayout          *domainSetupLayout;
-
-   QPushButton          *importSetupButton;
-   QLabel               *importSetupLabel;
-
+   QLineEdit            *buildingWidthWidget;
+   QLineEdit            *buildingDepthWidget;
+   QLineEdit            *buildingHeightWidget;
 
    QLineEdit            *geometricScaleWidget;
-   QPushButton          *theDomainImageButton;
+   QSpinBox             *windDirectionWidget;
+   QPushButton          *theBuildingButton;
+
+   QLineEdit            *surroundingBuildingsWidthWidget;
+   QLineEdit            *surroundingBuildingsDepthWidget;
+   QLineEdit            *surroundingBuildingsHeightWidget;
+
+   QLineEdit            *streetWidthWidget;
+   QLineEdit            *boundingRadiusWidget;
+   QSlider              *randomnessWidget;
+
 
    QLineEdit            *domainLengthWidget;
    QLineEdit            *domainWidthWidget;
@@ -120,13 +131,20 @@ private:
    QLineEdit            *originYWidget;
    QLineEdit            *originZWidget;
 
+   QGroupBox            *surroundingBuildingsGroup;
+   QGridLayout          *surroundingBuildingsLayout;
+
+   QGroupBox            *buildingInformationGroup;
+   QGridLayout          *buildingInformationLayout;
+
    QGroupBox            *domainInformationGroup;
    QGridLayout          *domainInformationLayout;
 
+   QWidget              *buildingAndDomainInformationGroup;
+   QGridLayout          *buildingAndDomainInformationLayout;
+
    QGroupBox            *coordinateSystemGroup;
    QGridLayout          *coordinateSystemLayout;
-
-   bool                 stlSurfaceDefined = false;
 
 public:
 

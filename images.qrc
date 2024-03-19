@@ -51,5 +51,7 @@
         <file>Resources/IsolatedBuildingCFD/SimCenterLogo.jpg</file>
         <file>Resources/EmptyDomainCFD/domainGeometry.png</file>
         <file>Resources/EmptyDomainCFD/blockMeshDemoMeshView.png</file>
+        <file>Resources/SurroundedBuildingCFD/buildingGeometry.svg</file>
+        <file>Resources/SurroundedBuildingCFD/buildingGeometry.png</file>
     </qresource>
 </RCC>

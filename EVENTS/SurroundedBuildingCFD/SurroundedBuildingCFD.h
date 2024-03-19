@@ -111,13 +111,25 @@ public:
     double fetchLength();
     QVector<double> getBuildingCenter();
 
+
+    double buildingWidth();
+    double buildingDepth();
+    double buildingHeight();
+
+    double windDirection();
+
     int numberOfFloors();
+
+    QString normalizationType();
+
     double geometricScale();
     QString caseDir();
     QString foamDictsPath();
     QString templateDictDir();
     QString pyScriptsPath();
     QString simulationType();
+
+
 
     //Returns the smallest mesh size on the building
     double getTimeStep();

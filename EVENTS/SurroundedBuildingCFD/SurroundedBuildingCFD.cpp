@@ -94,7 +94,7 @@ SurroundedBuildingCFD::SurroundedBuildingCFD(RandomVariablesContainer *theRandom
 bool SurroundedBuildingCFD::initialize()
 {
     femSpecific = 0;
-    const int windowWidth = 850;
+    const int windowWidth = 900;
 
     mainWindowLayout = new QHBoxLayout();
 
@@ -799,24 +799,25 @@ double SurroundedBuildingCFD::fetchLength()
     return geometry->fetchLengthWidget->text().toDouble();
 }
 
-//double SurroundedBuildingCFD::buildingWidth()
-//{
-////    return geometry->buildingWidthWidget->text().toDouble();
-//}
+double SurroundedBuildingCFD::buildingWidth()
+{
+    return geometry->buildingWidthWidget->text().toDouble();
+}
 
-//double SurroundedBuildingCFD::buildingDepth()
-//{
-////    return geometry->buildingDepthWidget->text().toDouble();
-//}
+double SurroundedBuildingCFD::buildingDepth()
+{
+    return geometry->buildingDepthWidget->text().toDouble();
+}
 
-//double SurroundedBuildingCFD::buildingHeight()
-//{
-////    return geometry->buildingHeightWidget->text().toDouble();
-//}
-//int SurroundedBuildingCFD::numberOfFloors()
-//{
-//    return resultMonitoring->numStories->value();
-//}
+double SurroundedBuildingCFD::buildingHeight()
+{
+    return geometry->buildingHeightWidget->text().toDouble();
+}
+
+int SurroundedBuildingCFD::numberOfFloors()
+{
+    return 10; //return resultMonitoring->numStories->value();
+}
 
 
 double SurroundedBuildingCFD::geometricScale()
@@ -824,21 +825,10 @@ double SurroundedBuildingCFD::geometricScale()
     return geometry->geometricScaleWidget->text().toDouble();
 }
 
-//double SurroundedBuildingCFD::windDirection()
-//{
-////    return geometry->windDirectionWidget->text().toDouble();
-//}
-
-//QString SurroundedBuildingCFD::buildingShape()
-//{
-////    return geometry->buildingShape->currentText();
-//}
-
-
-//QString SurroundedBuildingCFD::normalizationType()
-//{
-//    return geometry->normalizationTypeWidget->currentText();
-//}
+double SurroundedBuildingCFD::windDirection()
+{
+    return geometry->windDirectionWidget->text().toDouble();
+}
 
 QVector<double> SurroundedBuildingCFD::getBuildingCenter()
 {

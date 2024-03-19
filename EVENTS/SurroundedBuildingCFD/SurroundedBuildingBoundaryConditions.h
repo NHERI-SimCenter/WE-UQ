@@ -37,7 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written by: Abiy
+// Written by: Abiy Melaku
 
 #include <SimCenterAppWidget.h>
 
