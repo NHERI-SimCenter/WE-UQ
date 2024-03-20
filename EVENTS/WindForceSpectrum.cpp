@@ -220,7 +220,7 @@ WindForceSpectrum::inputFromJSON(QJsonObject &jsonObject)
 
     QString myfilepath=filepath->text();
     if (!(myfilepath=="")) {
-            if (myfilepath.endsWith(".json")) {
+            if ((myfilepath.endsWith(".json")) ) {
                 this->parseForceFile(myfilepath);
                 modelScaleLabel -> setStyleSheet("QLabel { color : black; }");
             } else {
