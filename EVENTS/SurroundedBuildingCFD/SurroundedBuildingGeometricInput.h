@@ -60,7 +60,6 @@ class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 class QDialog;
-class QSlider;
 
 class  SurroundedBuildingGeometricInput: public SimCenterAppWidget
 {
@@ -111,10 +110,11 @@ private:
    QLineEdit            *surroundingBuildingsWidthWidget;
    QLineEdit            *surroundingBuildingsDepthWidget;
    QLineEdit            *surroundingBuildingsHeightWidget;
+   QPushButton          *theSurroundingsButton;
 
    QLineEdit            *streetWidthWidget;
    QLineEdit            *boundingRadiusWidget;
-   QSlider              *randomnessWidget;
+   QSpinBox              *randomnessWidget;
 
 
    QLineEdit            *domainLengthWidget;

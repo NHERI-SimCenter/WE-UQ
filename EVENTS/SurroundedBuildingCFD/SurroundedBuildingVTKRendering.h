@@ -79,7 +79,9 @@ public:
     void readMesh();
     void showAllMesh();
     void showBreakout();
-    void showBuildingOnly();
+    void showMainBuildingOnly();
+    void showSurroundingsOnly();
+    void showAllBuildingsOnly();
 
     bool isInitialized();
     void drawAxisAndLegend();

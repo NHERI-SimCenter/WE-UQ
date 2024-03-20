@@ -53,5 +53,6 @@
         <file>Resources/EmptyDomainCFD/blockMeshDemoMeshView.png</file>
         <file>Resources/SurroundedBuildingCFD/buildingGeometry.svg</file>
         <file>Resources/SurroundedBuildingCFD/buildingGeometry.png</file>
+        <file>Resources/SurroundedBuildingCFD/surroundingBuildingsGeometry.png</file>
     </qresource>
 </RCC>

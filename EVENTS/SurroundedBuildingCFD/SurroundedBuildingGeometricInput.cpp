@@ -144,53 +144,61 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     useCOSTDimWidget = new QCheckBox();
     useCOSTDimWidget->setChecked(true);
 
-    QLabel *domainSizeNoteLabel = new QLabel("**Normalization is done relative to the building height**");
-
 
     //-------------------------------------------
     // Surrounding Building Information
     //------------------------------------
 
-    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Width:");
+    theSurroundingsButton = new QPushButton();
+    QPixmap surrPixmap(":/Resources/SurroundedBuildingCFD/surroundingBuildingsGeometry.png");
+
+    theSurroundingsButton->setIcon(surrPixmap);
+    theSurroundingsButton->setIconSize(surrPixmap.rect().size()*0.25);
+    theSurroundingsButton->setFixedSize(surrPixmap.rect().size()*0.25);
+    surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 6, 1, Qt::AlignVCenter);
+
+
+    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Average Width:");
     surroundingBuildingsWidthWidget = new QLineEdit();
     surroundingBuildingsWidthWidget->setText("30");
 
-    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Depth:");
+    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Average Depth:");
     surroundingBuildingsDepthWidget = new QLineEdit();
     surroundingBuildingsDepthWidget->setText("30");
 
-    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Height:");
+    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Average Height:");
     surroundingBuildingsHeightWidget = new QLineEdit();
     surroundingBuildingsHeightWidget->setText("75");
 
 
-    QLabel *streetWidthLabel = new QLabel("Street Width:");
+    QLabel *streetWidthLabel = new QLabel("Average Street Width:");
     streetWidthWidget = new QLineEdit();
     streetWidthWidget->setText("30");
 
-    QLabel *boundingRadiusLabel = new QLabel("Aprox. Bounding Radius:");
+    QLabel *boundingRadiusLabel = new QLabel("Approximate Bounding Radius:");
     boundingRadiusWidget = new QLineEdit();
     boundingRadiusWidget->setText("500");
 
-    QLabel *randomnessLabel = new QLabel("Building Height Randomness:");
-    randomnessWidget = new QSlider(Qt::Orientation::Horizontal);
+    QLabel *randomnessLabel = new QLabel("Building Height Randomness(%):");
+    randomnessWidget = new QSpinBox;
     randomnessWidget->setRange(0, 100);
+    randomnessWidget->setSingleStep(10);
     randomnessWidget->setValue(0);
 
 
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthLabel, 0, 0);
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthWidget, 0, 1);
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthLabel, 1, 0);
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthWidget, 1, 1);
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightLabel, 2, 0);
-    surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightWidget, 2, 1);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthLabel, 0, 1);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthWidget, 0, 2);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthLabel, 1, 1);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthWidget, 1, 2);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightLabel, 2, 1);
+    surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightWidget, 2, 2);
 
-    surroundingBuildingsLayout->addWidget(streetWidthLabel, 0, 2);
-    surroundingBuildingsLayout->addWidget(streetWidthWidget, 0, 3);
-    surroundingBuildingsLayout->addWidget(boundingRadiusLabel, 1, 2);
-    surroundingBuildingsLayout->addWidget(boundingRadiusWidget, 1, 3);
-    surroundingBuildingsLayout->addWidget(randomnessLabel, 2, 2);
-    surroundingBuildingsLayout->addWidget(randomnessWidget, 2, 3);
+    surroundingBuildingsLayout->addWidget(streetWidthLabel, 3, 1);
+    surroundingBuildingsLayout->addWidget(streetWidthWidget, 3, 2);
+    surroundingBuildingsLayout->addWidget(boundingRadiusLabel, 4, 1);
+    surroundingBuildingsLayout->addWidget(boundingRadiusWidget, 4, 2);
+    surroundingBuildingsLayout->addWidget(randomnessLabel, 5, 1);
+    surroundingBuildingsLayout->addWidget(randomnessWidget, 5, 2);
 
 
     QLabel *originOptionsLabel = new QLabel("Absolute Origin: ");
@@ -251,7 +259,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     buildingAndDomainInformationLayout->addWidget(buildingInformationGroup, 0, 0);
     buildingAndDomainInformationLayout->addWidget(domainInformationGroup, 0, 1);
-    buildingAndDomainInformationLayout->addWidget(domainSizeNoteLabel, 1, 0,1,2, Qt::AlignRight);
 
 
     coordinateSystemLayout->addWidget(originOptionsLabel,0,0);
@@ -335,8 +342,16 @@ bool  SurroundedBuildingGeometricInput::outputToJSON(QJsonObject &jsonObject)
     geometricDataJson["buildingWidth"] = buildingWidthWidget->text().toDouble();
     geometricDataJson["buildingDepth"] = buildingDepthWidget->text().toDouble();
     geometricDataJson["buildingHeight"] = buildingHeightWidget->text().toDouble();
-
     geometricDataJson["windDirection"] = windDirectionWidget->value();
+
+    QJsonObject surroundingsData = QJsonObject();
+    surroundingsData["surroundingBuildingsWidth"] = surroundingBuildingsWidthWidget->text().toDouble();
+    surroundingsData["surroundingBuildingsDepth"] = surroundingBuildingsDepthWidget->text().toDouble();
+    surroundingsData["surroundingBuildingsHeight"] = surroundingBuildingsHeightWidget->text().toDouble();
+    surroundingsData["streetWidth"] = streetWidthWidget->text().toDouble();
+    surroundingsData["boundingRadius"] = boundingRadiusWidget->text().toDouble();
+    surroundingsData["randomness"] = randomnessWidget->value();
+    geometricDataJson["surroundingBuildingsInformation"] = surroundingsData;
 
     geometricDataJson["domainLength"] = domainLengthWidget->text().toDouble();
     geometricDataJson["domainWidth"] = domainWidthWidget->text().toDouble();
