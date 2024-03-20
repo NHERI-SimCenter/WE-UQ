@@ -31,7 +31,7 @@ INCLUDEPATH += ExpertCFD/Analysis
 INCLUDEPATH += ExpertCFD/CFDanalysis
 INCLUDEPATH += ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
-INCLUDEPATH += /usr/local/include/vtk-9.2               
+INCLUDEPATH += /usr/local/include/vtk-9.2
 
 
 win32 {
@@ -74,7 +74,7 @@ win32 {
 #    INCLUDEPATH += $$PWD/../VTK/Release/include/vtk-9.2
     INCLUDEPATH += $$PWD/../VTK/include/vtk-9.2
     INCLUDEPATH += /usr/local/include/vtk-9.2
-    LIBS += -L$$PWD/../VTK/lib 
+    LIBS += -L$$PWD/../VTK/lib
     LIBS += -L/usr/local/lib \
     -lvtkViewsCore-9.2 \
     -lvtkFiltersCore-9.2 \
@@ -178,4 +178,3 @@ DISTFILES += \
 OTHER_FILES += conanfile.py azure-pipelines.yml
 
 RESOURCES += images.qrc
-

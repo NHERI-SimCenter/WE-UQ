@@ -1,0 +1,2 @@
+summary: "This example demonstrated application of Large-eddy simulation (LES) for characterizing Atmospheric Boundary Layer (ABL) flows. The simulation is conducted in empty computational domain applying ABL flow conditions. For generating the inflow turbulence, the example uses the Turbulence Inflow Tool (TInF) tool. The results from the simulation are post-processed inside workflow and compared with the target ABL flow conditions." 
+difficulty: 2

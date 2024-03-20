@@ -104,7 +104,8 @@ bool EmptyDomainCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
-    QTabWidget *inputTab = new QTabWidget(this);
+    inputTab = new QTabWidget(this);
+    //QTabWidget *inputTab = new QTabWidget(this);    
 
     QWidget *generalWidget = new QWidget();
     QWidget *geometryWidget = new QWidget();
@@ -531,8 +532,27 @@ bool EmptyDomainCFD::inputFromJSON(QJsonObject &jsonObject)
     resultMonitoring->inputFromJSON(jsonObject);
     resultDisplay->inputFromJSON(jsonObject);
 
-    //Run a background mesh after loading JSON File
-//    snappyHexMesh->onRunBlockMeshClicked();
+    if(!isCaseConfigured())
+    {
+        setupCase();
+        snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return true;
+    }
+
+    if(!isMeshed())
+    {
+        snappyHexMesh->onRunBlockMeshClicked();
+        snappyHexMesh->snappyHexMeshCompleted = false;
+        reloadMesh();
+        return true;
+    }
+    else
+    {
+        reloadMesh();
+        return true;
+    }
 
     return true;
 }
@@ -896,7 +916,9 @@ double EmptyDomainCFD::getRefWindSpeed()
 
 SC_ResultsWidget* EmptyDomainCFD::getResultsWidget(QWidget *parent)
 {
-    return resultDisplay;
+  inputTab->setCurrentIndex(6);
+  statusMessage("Empty Domain Results Downloaded now Processing");
+  return resultDisplay;
 }
 
 void EmptyDomainCFD::importMainDomainJsonFile(QJsonObject &jsonObject)

@@ -232,7 +232,10 @@ void EmptyResultDisplay::onPlotProfileClicked(void)
     if(QFileInfo::exists(plotPath))
     {
         plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->setWindowFlag(Qt::WindowStaysOnTopHint);
         plotView->show();
+        plotView->activateWindow();
+        plotView->raise();
     }
 }
 
@@ -262,7 +265,10 @@ void EmptyResultDisplay::onPlotSpectraClicked(void)
     if(QFileInfo::exists(plotPath))
     {
         plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->setWindowFlag(Qt::WindowStaysOnTopHint);
         plotView->show();
+        plotView->activateWindow();
+        plotView->raise();
     }
 }
 
@@ -291,7 +297,10 @@ void EmptyResultDisplay::onPlotPressureClicked(void)
     if(QFileInfo::exists(plotPath))
     {
         plotView->load(QUrl::fromLocalFile(plotPath));
+        plotView->setWindowFlag(Qt::WindowStaysOnTopHint);
         plotView->show();
+        plotView->activateWindow();
+        plotView->raise();
     }
 }
 

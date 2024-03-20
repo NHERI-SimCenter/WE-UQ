@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.1.1");
+    QCoreApplication::setApplicationVersion("3.2.0");
 
     Q_INIT_RESOURCE(images1);
 
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, & Michael Gardner. (2023). NHERI-SimCenter/WE-UQ: Version 3.1.0 (v3.1.0). Zenodo. https://doi.org/10.5281/zenodo.8396121 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, & Sang-ri Yi. (2024). NHERI-SimCenter/WE-UQ: Version 3.2.0 (v3.2.0). Zenodo. https://doi.org/10.5281/zenodo.10806694 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matt J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
     
     w.setCite(citeText);
 
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
 
     //Setting Google Analytics Tracking Information
     
-    /* ***********************************************************************
+    /* *********************************************************************** 
     GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
     GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
     GoogleAnalytics::CreateSessionId();
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
     view.resize(1024, 750);
     view.show();
     view.hide();
-    * *********************************************************************** */
+    *********************************************************************** */
     
     //
     // RUN the GUI

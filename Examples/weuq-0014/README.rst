@@ -243,7 +243,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    * Check the **Run Simulation in Parallel** option and specify the **Number of Processors** to the 56. 
 
-.. _fig-we13-CFD-num-setup:
+.. _fig-we14-CFD-num-setup:
 
 .. figure:: figures/we14_EVT_NumericalSetup.svg
    :align: center

@@ -251,7 +251,37 @@
           "weuq-0014/figures/we14_study_building.svg"
       ],
       "entry_point": "weuq-0014/./input.json",
-      "summary": "This example demonstrates application of CFD for generating wind loads on complex shapged buildings and estimating the resulting structural responses",
+      "summary": "This example demonstrates application of CFD for generating wind loads on complex shaped buildings and estimating the resulting structural responses",
+      "logo": "we14_CFD_Results_StreamLines.svg",
+      "published": "2023-09-12T21:30:53.946381-08:00\"",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
+    },
+    "weuq-0015": {
+      "id": "weuq-0015",
+      "base": "weuq-0015",
+      "title": "Digital Wind Tunnel II: Calibrating ABL flows with Empty Domain CFD Simulation",
+      "doc": [
+          "weuq-0015/README.rst",   
+          "weuq-0015/figures/we15_domain_geometry.svg",
+          "weuq-0015/figures/we15_start_tab.svg",
+          "weuq-0015/figures/we15_geometry_tab.svg",
+          "weuq-0015/figures/we15_mesh_tab.svg",
+          "weuq-0015/figures/we15_numerical_setup_tab.svg",
+          "weuq-0015/figures/we15_monitoring_tab.svg",
+          "weuq-0015/figures/we15_results_tab.svg",
+          "weuq-0015/figures/we15_results_prof.svg",
+          "weuq-0015/figures/we15_results_pressure.svg",
+          "weuq-0015/figures/we15_results_spectra.svg",
+          "weuq-0015/figures/we15_results_flow_vis.svg",
+          "weuq-0015/figures/we15_run_job.svg"
+      ],
+      "entry_point": "weuq-0015/./input.json",
+      "summary": "This example demonstrates application of CFD for characterize Atmospheric Boundary Layer (ABL) flows using large-eddy simulation (LES).",
       "logo": "we14_CFD_Results_StreamLines.svg",
       "published": "2023-09-12T21:30:53.946381-08:00\"",
       "categories": {
