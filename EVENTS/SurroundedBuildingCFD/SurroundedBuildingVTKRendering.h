@@ -66,6 +66,9 @@ class vtkPolyDataMapper;
 class vtkNamedColors;
 class vtkOrientationMarkerWidget;
 class SurroundedBuildingCFD;
+class vtkPolyData;
+class vtkSTLReader;
+class vtkCleanPolyData;
 class SurroundedBuildingVTKRendering: public SimCenterAppWidget
 {
     friend class SurroundedBuildingCFD;
@@ -76,7 +79,10 @@ public:
     ~SurroundedBuildingVTKRendering();
 
     void initialize();
-    void readMesh();
+    void readAllMesh();
+    void readBuildingSurfaceMesh();
+    void readSurroundingsSurfaceMesh();
+    void readBreakOutSurfaceMesh();
     void showAllMesh();
     void showBreakout();
     void showMainBuildingOnly();
@@ -85,9 +91,6 @@ public:
 
     bool isInitialized();
     void drawAxisAndLegend();
-
-    template <class Type>
-    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
 signals:
 
@@ -115,10 +118,25 @@ private:
    float        colorValue = 0.85;
 
    QVTKRenderWidget *qvtkWidget;
-   vtkUnstructuredGrid* block0;
-   vtkSmartPointer<vtkOpenFOAMReader> reader;
-   vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-   vtkNew<vtkActor> actor;// Actor in scene
+
+
+   vtkUnstructuredGrid* meshBlock;
+   vtkNew<vtkCleanPolyData> breakOutBlock;
+   vtkPolyData* bldgBlock;
+   vtkPolyData* surrBlock;
+
+   vtkSmartPointer<vtkOpenFOAMReader> foamReader;
+   vtkSmartPointer<vtkSTLReader> bldgSTLReader;
+   vtkSmartPointer<vtkSTLReader> surrSTLReader;
+
+   vtkSmartPointer<vtkDataSetMapper> meshMapper;
+   vtkSmartPointer<vtkDataSetMapper> buildingMapper;
+   vtkSmartPointer<vtkDataSetMapper> surroundingsMapper;
+
+   vtkNew<vtkActor> meshActor;
+   vtkNew<vtkActor> buildingActor;
+   vtkNew<vtkActor> surroundingsActor;
+
    vtkNew<vtkRenderer> renderer; // VTK Renderer
    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
 
@@ -131,6 +149,20 @@ private:
    QStringList varNamesAndValues;
 
    bool initialized = false;
+
+
+   //Private methods
+   vtkPolyData* readSTLSurface(QString path);
+
+   template <class Type>
+   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+
+   void updateMeshView();
+   void updateBuildingView();
+   void updateSurroundingsView();
+   void updateBreakOutView();
+   void initializeVtkObjects();
+   void updateRendering();
 };
 
 #endif // SURROUNDED_BUILDING_VTK_RENDERING_H
