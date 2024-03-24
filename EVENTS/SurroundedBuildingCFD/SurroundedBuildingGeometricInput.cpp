@@ -152,8 +152,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     QPixmap surrPixmap(":/Resources/SurroundedBuildingCFD/surroundingBuildingsGeometry.png");
 
     theSurroundingsButton->setIcon(surrPixmap);
-    theSurroundingsButton->setIconSize(surrPixmap.rect().size()*0.25);
-    theSurroundingsButton->setFixedSize(surrPixmap.rect().size()*0.25);
+    theSurroundingsButton->setIconSize(surrPixmap.rect().size()*0.20);
+    theSurroundingsButton->setFixedSize(surrPixmap.rect().size()*0.20);
     surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 7, 1, Qt::AlignVCenter);
 
 
