@@ -120,7 +120,7 @@ private:
    QVTKRenderWidget *qvtkWidget;
 
 
-   vtkUnstructuredGrid* meshBlock;
+   vtkUnstructuredGrid* allMeshBlock;
    vtkNew<vtkCleanPolyData> breakOutBlock;
    vtkPolyData* bldgBlock;
    vtkPolyData* surrBlock;
@@ -129,11 +129,13 @@ private:
    vtkSmartPointer<vtkSTLReader> bldgSTLReader;
    vtkSmartPointer<vtkSTLReader> surrSTLReader;
 
-   vtkSmartPointer<vtkDataSetMapper> meshMapper;
+   vtkSmartPointer<vtkDataSetMapper> allMeshMapper;
+   vtkSmartPointer<vtkDataSetMapper> breakOutMapper;
    vtkSmartPointer<vtkDataSetMapper> buildingMapper;
    vtkSmartPointer<vtkDataSetMapper> surroundingsMapper;
 
-   vtkNew<vtkActor> meshActor;
+   vtkNew<vtkActor> allMeshActor;
+   vtkNew<vtkActor> breakOutActor;
    vtkNew<vtkActor> buildingActor;
    vtkNew<vtkActor> surroundingsActor;
 
@@ -154,15 +156,13 @@ private:
    //Private methods
    vtkPolyData* readSTLSurface(QString path);
 
+   //Read a block from mesh
    template <class Type>
    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
-   void updateMeshView();
-   void updateBuildingView();
-   void updateSurroundingsView();
-   void updateBreakOutView();
+   //Initialize all VTK Objects
    void initializeVtkObjects();
-   void updateRendering();
+
 };
 
 #endif // SURROUNDED_BUILDING_VTK_RENDERING_H

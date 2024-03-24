@@ -90,7 +90,7 @@ public slots:
    void clear(void);
     void originChanged(const QString &arg);
     void useCOSTOptionChecked(int);
-
+    void onGenerateSurroundings();
 
 
 
@@ -111,10 +111,11 @@ private:
    QLineEdit            *surroundingBuildingsDepthWidget;
    QLineEdit            *surroundingBuildingsHeightWidget;
    QPushButton          *theSurroundingsButton;
+   QPushButton          *generateSurroundings;
 
    QLineEdit            *streetWidthWidget;
    QLineEdit            *boundingRadiusWidget;
-   QSpinBox              *randomnessWidget;
+   QSpinBox             *randomnessWidget;
 
 
    QLineEdit            *domainLengthWidget;

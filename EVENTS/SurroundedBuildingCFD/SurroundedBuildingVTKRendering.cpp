@@ -183,20 +183,20 @@ void SurroundedBuildingVTKRendering::initialize()
 
     initializeVtkObjects();
 
-    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/points"))
-    {
-        readAllMesh();
+    onReloadCaseClicked();
 
-        readBreakOutSurfaceMesh();
+    showAllMesh();
 
-        readBuildingSurfaceMesh();
+    surfaceRepresentation->setCurrentIndex(0);
+    allMeshActor->GetProperty()->SetRepresentationToSurface();
+    breakOutActor->GetProperty()->SetRepresentationToSurface();
+    buildingActor->GetProperty()->SetRepresentationToSurface();
+    surroundingsActor->GetProperty()->SetRepresentationToSurface();
 
-        readSurroundingsSurfaceMesh();
-
-        drawAxisAndLegend();
-    }
-
-    initialized = true;
+    allMeshActor->GetProperty()->SetEdgeVisibility(true);
+    breakOutActor->GetProperty()->SetEdgeVisibility(true);
+    buildingActor->GetProperty()->SetEdgeVisibility(true);
+    surroundingsActor->GetProperty()->SetEdgeVisibility(true);
 }
 
 
@@ -214,14 +214,18 @@ void SurroundedBuildingVTKRendering::surfaceRepresentationChanged(const QString 
 {
     if (arg1 == "Wireframe")
     {
-        meshActor->GetProperty()->SetRepresentationToWireframe();
+        allMeshActor->GetProperty()->SetRepresentationToWireframe();
+        breakOutActor->GetProperty()->SetRepresentationToWireframe();
         buildingActor->GetProperty()->SetRepresentationToWireframe();
         surroundingsActor->GetProperty()->SetRepresentationToWireframe();
     }
     else if (arg1 == "SurfaceWithGrid")
     {
-        meshActor->GetProperty()->SetRepresentationToSurface();
-        meshActor->GetProperty()->SetEdgeVisibility(true);
+        allMeshActor->GetProperty()->SetRepresentationToSurface();
+        allMeshActor->GetProperty()->SetEdgeVisibility(true);
+
+        breakOutActor->GetProperty()->SetRepresentationToSurface();
+        breakOutActor->GetProperty()->SetEdgeVisibility(true);
 
         buildingActor->GetProperty()->SetRepresentationToSurface();
         buildingActor->GetProperty()->SetEdgeVisibility(true);
@@ -231,8 +235,11 @@ void SurroundedBuildingVTKRendering::surfaceRepresentationChanged(const QString 
     }
     else if(arg1 == "Surface")
     {
-        meshActor->GetProperty()->SetRepresentationToSurface();
-        meshActor->GetProperty()->SetEdgeVisibility(false);
+        allMeshActor->GetProperty()->SetRepresentationToSurface();
+        allMeshActor->GetProperty()->SetEdgeVisibility(false);
+
+        breakOutActor->GetProperty()->SetRepresentationToSurface();
+        breakOutActor->GetProperty()->SetEdgeVisibility(false);
 
         buildingActor->GetProperty()->SetRepresentationToSurface();
         buildingActor->GetProperty()->SetEdgeVisibility(false);
@@ -276,18 +283,28 @@ void SurroundedBuildingVTKRendering::viewObjectChanged(const QString &arg1)
     }
 
     // this is needed for some reason if Basic was last selected item!
+
+    renderer->ResetCamera();
     renderWindow->Render();
 }
 
 
 void SurroundedBuildingVTKRendering::onTransparencyChanged(const int value)
 {
-    meshActor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
+    allMeshActor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
     renderWindow->Render();
 }
 
 void SurroundedBuildingVTKRendering::onReloadCaseClicked()
 {
+
+    if(initialized)
+    {
+        foamReader = vtkSmartPointer<vtkOpenFOAMReader>::New();
+        bldgSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+        surrSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+    }
+
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/points"))
     {
         readAllMesh();
@@ -298,9 +315,9 @@ void SurroundedBuildingVTKRendering::onReloadCaseClicked()
 
         readSurroundingsSurfaceMesh();
 
-        meshActor->GetProperty()->SetRepresentationToSurface();
-        surfaceRepresentation->setCurrentIndex(0);
-        viewObject->setCurrentIndex(0);
+        drawAxisAndLegend();
+
+        renderer->ResetCamera();
         renderWindow->Render();
     }
 }
@@ -316,18 +333,25 @@ void SurroundedBuildingVTKRendering::readAllMesh()
 
     foamReader->SetFileName(foamFileName.toStdString().c_str());
     foamReader->Update();
-
     foamReader->SetTimeValue(0);
     foamReader->CreateCellToPointOn();
     foamReader->EnableAllPatchArrays();
     foamReader->Update();
 
-    meshBlock = vtkUnstructuredGrid::SafeDownCast(foamReader->GetOutput()->GetBlock(0));
+    allMeshBlock = vtkUnstructuredGrid::SafeDownCast(foamReader->GetOutput()->GetBlock(0));
 
-    updateMeshView();
+    //Remove the renderer if any
+    renderer->RemoveActor(allMeshActor);
 
-    surfaceRepresentation->setCurrentIndex(0);
-    meshActor->GetProperty()->SetEdgeVisibility(true);
+    allMeshMapper->SetInputData(allMeshBlock);
+    allMeshMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    allMeshActor->SetMapper(allMeshMapper);
+    allMeshActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
+
+    // Add Actor to renderer
+    renderer->AddActor(allMeshActor);
 }
 
 
@@ -346,6 +370,16 @@ void SurroundedBuildingVTKRendering::readBuildingSurfaceMesh()
         bldgSTLReader->Update();
         bldgBlock = bldgSTLReader->GetOutput();
     }
+
+    buildingMapper->SetInputData(bldgBlock);
+    buildingMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    buildingActor->SetMapper(buildingMapper);
+    buildingActor->GetProperty()->SetColor(colorValue, 0.0, 0.0);
+
+    // Add Actor to renderer
+    renderer->AddActor(buildingActor);
 }
 
 void SurroundedBuildingVTKRendering::readSurroundingsSurfaceMesh()
@@ -356,6 +390,7 @@ void SurroundedBuildingVTKRendering::readSurroundingsSurfaceMesh()
         auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(foamReader->GetOutput());
 
         surrBlock = findBlock<vtkPolyData>(allBlocks, "surroundings");
+
     }
     else
     {
@@ -363,6 +398,16 @@ void SurroundedBuildingVTKRendering::readSurroundingsSurfaceMesh()
         surrSTLReader->Update();
         surrBlock = surrSTLReader->GetOutput();
     }
+
+    surroundingsMapper->SetInputData(surrBlock);
+    surroundingsMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    surroundingsActor->SetMapper(surroundingsMapper);
+    surroundingsActor->GetProperty()->SetColor(0.0, 0.0, 1.0);
+
+    // Add Actor to renderer
+    renderer->AddActor(surroundingsActor);
 }
 
 
@@ -380,58 +425,59 @@ void SurroundedBuildingVTKRendering::readBreakOutSurfaceMesh()
     // Remove any duplicate points.
     breakOutBlock->SetInputConnection(appendFilter->GetOutputPort());
     breakOutBlock->Update();
+
+    breakOutMapper->SetInputData(breakOutBlock->GetOutput());
+    breakOutMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    breakOutActor->SetMapper(breakOutMapper);
+    breakOutActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
+
+    // Add Actor to renderer
+    renderer->AddActor(breakOutActor);
 }
 
 void SurroundedBuildingVTKRendering::showAllMesh()
 {
 
-    meshActor->VisibilityOn();
+    allMeshActor->VisibilityOn();
+    breakOutActor->VisibilityOff();
     buildingActor->VisibilityOff();
     surroundingsActor->VisibilityOff();
-
-    updateMeshView();
 }
 
 void SurroundedBuildingVTKRendering::showMainBuildingOnly()
 {
 
-    meshActor->VisibilityOff();
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
     buildingActor->VisibilityOn();
     surroundingsActor->VisibilityOff();
-
-    updateBuildingView();
-
 }
 
 void SurroundedBuildingVTKRendering::showSurroundingsOnly()
 {
-    meshActor->VisibilityOff();
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
     buildingActor->VisibilityOff();
     surroundingsActor->VisibilityOn();
-
-    updateSurroundingsView();
 }
 
 
 void SurroundedBuildingVTKRendering::showAllBuildingsOnly()
 {
-    meshActor->VisibilityOff();
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
     buildingActor->VisibilityOn();
     surroundingsActor->VisibilityOn();
-
-    updateBuildingView();
-    updateSurroundingsView();
 }
 
 void SurroundedBuildingVTKRendering::showBreakout()
 {
-    meshActor->VisibilityOn();
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOn();
     buildingActor->VisibilityOn();
     surroundingsActor->VisibilityOn();
-
-    updateBuildingView();
-    updateSurroundingsView();
-    updateBreakOutView();
 }
 
 
@@ -506,84 +552,6 @@ void SurroundedBuildingVTKRendering::drawAxisAndLegend()
     renderer->AddActor(textActor);
 }
 
-void SurroundedBuildingVTKRendering::updateMeshView()
-{
-    //Remove the renderer
-    renderer->RemoveActor(meshActor);
-
-    meshMapper->SetInputData(meshBlock);
-    meshMapper->SetScalarVisibility(false);
-
-    // Actor in scene
-    meshActor->SetMapper(meshMapper);
-    meshActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-
-    // Add Actor to renderer
-    renderer->AddActor(meshActor);
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
-    meshMapper->Update();
-}
-
-void SurroundedBuildingVTKRendering::updateBuildingView()
-{
-    buildingMapper->SetInputData(bldgBlock);
-    buildingMapper->SetScalarVisibility(false);
-
-    // Actor in scene
-    buildingActor->SetMapper(buildingMapper);
-    buildingActor->GetProperty()->SetColor(colorValue, 0.0, 0.0);
-
-    // Add Actor to renderer
-    renderer->AddActor(buildingActor);
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
-    buildingMapper->Update();
-}
-
-void SurroundedBuildingVTKRendering::updateSurroundingsView()
-{
-    surroundingsMapper->SetInputData(surrBlock);
-    surroundingsMapper->SetScalarVisibility(false);
-
-    // Actor in scene
-    surroundingsActor->SetMapper(surroundingsMapper);
-    surroundingsActor->GetProperty()->SetColor(0.0, 0.0, 1.0);
-
-    // Add Actor to renderer
-    renderer->AddActor(surroundingsActor);
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
-    surroundingsMapper->Update();
-}
-
-void SurroundedBuildingVTKRendering::updateBreakOutView()
-{
-//    //Remove the renderer
-//    renderer->RemoveActor(meshActor);
-
-    meshMapper->SetInputData(breakOutBlock->GetOutput());
-    meshMapper->SetScalarVisibility(false);
-
-    // Actor in scene
-    meshActor->SetMapper(meshMapper);
-    meshActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-
-    // Add Actor to renderer
-    renderer->AddActor(meshActor);
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
-    meshMapper->Update();
-}
-
 void SurroundedBuildingVTKRendering::initializeVtkObjects()
 {
     //Setup OpenFOAM mesh reader
@@ -594,7 +562,8 @@ void SurroundedBuildingVTKRendering::initializeVtkObjects()
     surrSTLReader = vtkSmartPointer<vtkSTLReader>::New();
 
     //Create mappers
-    meshMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    allMeshMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    breakOutMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     surroundingsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
@@ -605,6 +574,8 @@ void SurroundedBuildingVTKRendering::initializeVtkObjects()
     qvtkWidget->setRenderWindow(renderWindow);
     qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
+
+    initialized = true;
 }
 
 

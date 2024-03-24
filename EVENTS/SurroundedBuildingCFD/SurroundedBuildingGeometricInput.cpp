@@ -118,7 +118,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     buildingHeightWidget->setText("182.88");
 
     QLabel *windDirectionLabel = new QLabel("Wind Direction:");
-//    QLabel *angleUnit = new QLabel("degrees");
     windDirectionWidget = new QSpinBox;
     windDirectionWidget->setRange(0, 90);
     windDirectionWidget->setSingleStep(10);
@@ -145,7 +144,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     useCOSTDimWidget->setChecked(true);
 
 
-    //-------------------------------------------
+    //------------------------------------
     // Surrounding Building Information
     //------------------------------------
 
@@ -155,7 +154,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     theSurroundingsButton->setIcon(surrPixmap);
     theSurroundingsButton->setIconSize(surrPixmap.rect().size()*0.25);
     theSurroundingsButton->setFixedSize(surrPixmap.rect().size()*0.25);
-    surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 6, 1, Qt::AlignVCenter);
+    surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 7, 1, Qt::AlignVCenter);
 
 
     QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Average Width:");
@@ -186,6 +185,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     randomnessWidget->setValue(0);
 
 
+    generateSurroundings = new QPushButton("Generate Surroundings");
+
+
     surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthLabel, 0, 1);
     surroundingBuildingsLayout->addWidget(surroundingBuildingsWidthWidget, 0, 2);
     surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthLabel, 1, 1);
@@ -199,6 +201,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     surroundingBuildingsLayout->addWidget(boundingRadiusWidget, 4, 2);
     surroundingBuildingsLayout->addWidget(randomnessLabel, 5, 1);
     surroundingBuildingsLayout->addWidget(randomnessWidget, 5, 2);
+
+    surroundingBuildingsLayout->addWidget(generateSurroundings,6,1,1,2);
 
 
     QLabel *originOptionsLabel = new QLabel("Absolute Origin: ");
@@ -279,6 +283,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     connect(originOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(originChanged(QString)));
     connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
+    connect(generateSurroundings, SIGNAL(clicked()), this, SLOT(onGenerateSurroundings()));
+
+
 
     //Disable editing in the event section
     buildingWidthWidget->setEnabled(false);
@@ -381,18 +388,19 @@ bool  SurroundedBuildingGeometricInput::inputFromJSON(QJsonObject &jsonObject)
 
     geometricScaleWidget->setText(QString::number(geometricDataJson["geometricScale"].toDouble()));
 
-//    buildingShape->setCurrentText(geometricDataJson["buildingShape"].toString());
-//    importedSTLPath->setText(geometricDataJson["importedSTLPath"].toString());
-//    stlScaleFactor->setText(QString::number(geometricDataJson["stlScaleFactor"].toDouble()));
-//    recenterToOrigin->setChecked(geometricDataJson["recenterToOrigin"].toBool());
-//    accountWindDirection->setChecked(geometricDataJson["accountWindDirection"].toBool());
-//    useSTLDimensions->setChecked(geometricDataJson["useSTLDimensions"].toBool());
-
     buildingWidthWidget->setText(QString::number(geometricDataJson["buildingWidth"].toDouble()));
     buildingDepthWidget->setText(QString::number(geometricDataJson["buildingDepth"].toDouble()));
     buildingHeightWidget->setText(QString::number(geometricDataJson["buildingHeight"].toDouble()));
 
     windDirectionWidget->setValue(geometricDataJson["windDirection"].toInt());
+
+    QJsonObject surroundingsData = geometricDataJson["surroundingBuildingsInformation"].toObject();
+    surroundingBuildingsWidthWidget->setText(QString::number(surroundingsData["surroundingBuildingsWidth"].toDouble()));
+    surroundingBuildingsDepthWidget->setText(QString::number(surroundingsData["surroundingBuildingsDepth"].toDouble()));
+    surroundingBuildingsHeightWidget->setText(QString::number(surroundingsData["surroundingBuildingsHeight"].toDouble()));
+    streetWidthWidget->setText(QString::number(surroundingsData["streetWidth"].toDouble()));
+    boundingRadiusWidget->setText(QString::number(surroundingsData["boundingRadius"].toDouble()));
+    randomnessWidget->setValue(surroundingsData["randomness"].toInt());
 
     domainLengthWidget->setText(QString::number(geometricDataJson["domainLength"].toDouble()));
     domainWidthWidget->setText(QString::number(geometricDataJson["domainWidth"].toDouble()));
@@ -414,6 +422,13 @@ bool  SurroundedBuildingGeometricInput::inputFromJSON(QJsonObject &jsonObject)
 void  SurroundedBuildingGeometricInput::updateWidgets()
 {
 //    onVelocityScaleChanged();
+}
+
+void  SurroundedBuildingGeometricInput::onGenerateSurroundings()
+{
+
+    mainModel->writeOpenFoamFiles();
+    mainModel->reloadMesh();
 }
 
 QVector<double> SurroundedBuildingGeometricInput::coordSysOrigin()
