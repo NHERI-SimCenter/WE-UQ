@@ -426,7 +426,6 @@ void  SurroundedBuildingGeometricInput::updateWidgets()
 
 void  SurroundedBuildingGeometricInput::onGenerateSurroundings()
 {
-
     mainModel->writeOpenFoamFiles();
     mainModel->reloadMesh();
 }
