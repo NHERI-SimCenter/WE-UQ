@@ -93,7 +93,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 bool IsolatedBuildingCFD::initialize()
 {
     femSpecific = 0;
-    const int windowWidth = 850;
+    const int windowWidth = 900;
 
     mainWindowLayout = new QHBoxLayout();
 

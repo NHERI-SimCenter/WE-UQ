@@ -66,6 +66,9 @@ class vtkPolyDataMapper;
 class vtkNamedColors;
 class vtkOrientationMarkerWidget;
 class IsolatedBuildingCFD;
+class vtkPolyData;
+class vtkSTLReader;
+class vtkCleanPolyData;
 class SimCenterVTKRenderingWidget: public SimCenterAppWidget
 {
     friend class IsolatedBuildingCFD;
@@ -76,17 +79,15 @@ public:
     ~SimCenterVTKRenderingWidget();
 
     void initialize();
-    void readMesh();
+    void readAllMesh();
+    void readBuildingSurfaceMesh();
+    void readBreakOutSurfaceMesh();
     void showAllMesh();
     void showBreakout();
     void showBuildingOnly();
 
     bool isInitialized();
     void drawAxisAndLegend();
-    void drawLineProbes();
-
-    template <class Type>
-    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
 signals:
 
@@ -98,7 +99,7 @@ public slots:
    void onTransparencyChanged(const int value);
 
 private:
-   IsolatedBuildingCFD  *mainModel;
+   IsolatedBuildingCFD *mainModel;
 
    QVBoxLayout  *layout;
    QGridLayout  *menueLayout;
@@ -114,10 +115,24 @@ private:
    float        colorValue = 0.85;
 
    QVTKRenderWidget *qvtkWidget;
-   vtkUnstructuredGrid* block0;
-   vtkSmartPointer<vtkOpenFOAMReader> reader;
-   vtkSmartPointer<vtkDataSetMapper> mapper; //mapper
-   vtkNew<vtkActor> actor;// Actor in scene
+
+
+   vtkUnstructuredGrid* allMeshBlock;
+   vtkNew<vtkCleanPolyData> breakOutBlock;
+   vtkPolyData* bldgBlock;
+   vtkPolyData* surrBlock;
+
+   vtkSmartPointer<vtkOpenFOAMReader> foamReader;
+   vtkSmartPointer<vtkSTLReader> bldgSTLReader;
+
+   vtkSmartPointer<vtkDataSetMapper> allMeshMapper;
+   vtkSmartPointer<vtkDataSetMapper> breakOutMapper;
+   vtkSmartPointer<vtkDataSetMapper> buildingMapper;
+
+   vtkNew<vtkActor> allMeshActor;
+   vtkNew<vtkActor> breakOutActor;
+   vtkNew<vtkActor> buildingActor;
+
    vtkNew<vtkRenderer> renderer; // VTK Renderer
    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
 
@@ -130,6 +145,18 @@ private:
    QStringList varNamesAndValues;
 
    bool initialized = false;
+
+
+   //Private methods
+   vtkPolyData* readSTLSurface(QString path);
+
+   //Read a block from mesh
+   template <class Type>
+   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+
+   //Initialize all VTK Objects
+   void initializeVtkObjects();
+
 };
 
-#endif // BOUNDARY_CONDITIONS_WIDGET_H
+#endif // SIMCENTER_VTK_RENDERING_WIDGET_H
