@@ -88,6 +88,7 @@ ExperimentalWindPressures::ExperimentalWindPressures(RandomVariablesContainer *t
     overlapPerc = new SC_DoubleLineEdit("overlapPerc",50);
     cpsdGroupSize = new SC_IntLineEdit("cpsdGroupSize",50);
     selectedTaps = new SC_StringLineEdit("selectedTaps","");
+    selectedTaps ->setMinimumWidth(400);
     connect(selectedTaps,&QLineEdit::editingFinished,this,&ExperimentalWindPressures::selectTaps);
 
     layout->addWidget(theExpWidget,0,0,1,-1);
@@ -102,10 +103,12 @@ ExperimentalWindPressures::ExperimentalWindPressures(RandomVariablesContainer *t
     layout->addWidget(new QLabel("CPSD Group Size"),3,0);
     layout->addWidget(cpsdGroupSize,3,1);
 
-    layout->addWidget(new QLabel("Selected Tabs"),4,0);
-    layout->addWidget(selectedTaps,4,1);
+    layout->addWidget(new QLabel("Selected Taps"),4,0);
+    layout->addWidget(selectedTaps,4,1,1,-1);
 
     citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nDuarte, T.G., Arunachalam, S., Subgranon, A. and Spence, S.M., (2023). Uncertainty Quantification and Simulation of Wind-Tunnel-Informed Stochastic Wind Loads. Wind, 3(3), pp.375-393.");
+    citationQuoteLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
     layout->addWidget(citationQuoteLabel,5,0,1,-1);
 
     layout->setRowStretch(8,1);
@@ -190,6 +193,7 @@ ExperimentalWindPressures::inputFromJSON(QJsonObject &jsonObject)
         combinedString.append(", "); // Add a space between each integer
     }
     selectedTaps->setText(combinedString);
+    selectedTaps->textEdited("");
 //    seed->inputFromJSON(jsonObject);
 //    filename->inputFromJSON(jsonObject);
     return true;

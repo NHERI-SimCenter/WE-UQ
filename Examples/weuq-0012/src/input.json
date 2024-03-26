@@ -58,7 +58,7 @@
             "filename": "Forces_ANG000_phase1.json",
             "filepath": "{Current_Dir}/Forces_ANG000_phase1.json",
             "fullScaleDuration": 1600,
-            "fullScaleSpeed": 30,
+            "windSpeed": 30,
             "modePercent": 25,
             "modelScale": 200,
             "overlapPerc": 50,
