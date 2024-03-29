@@ -88,7 +88,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
     // Create widgets
      modePercent = new SC_DoubleLineEdit("modePercent",25);
      modelScale = new SC_DoubleLineEdit("modelScale");
-     fullScaleSpeed = new SC_DoubleLineEdit("fullScaleSpeed");
+     fullScaleSpeed = new SC_DoubleLineEdit("windSpeed");
      fullScaleSpeedUnit = new QLabel(QString(myLengthUnit + "/sec"));
      fullScaleDuration = new SC_DoubleLineEdit("fullScaleDuration");
      seed = new SC_IntLineEdit("seed",42);
@@ -125,6 +125,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
 
     citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
     layout->addWidget(citationQuoteLabel,9,0,1,-1);
+    citationQuoteLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
 
     layout->setRowStretch(10,1);
@@ -220,7 +221,7 @@ WindForceSpectrum::inputFromJSON(QJsonObject &jsonObject)
 
     QString myfilepath=filepath->text();
     if (!(myfilepath=="")) {
-            if (myfilepath.endsWith(".json")) {
+            if ((myfilepath.endsWith(".json")) ) {
                 this->parseForceFile(myfilepath);
                 modelScaleLabel -> setStyleSheet("QLabel { color : black; }");
             } else {
