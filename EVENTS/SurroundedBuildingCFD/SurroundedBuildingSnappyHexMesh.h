@@ -1,5 +1,5 @@
-#ifndef SURROUNDED_BUILDING_SNAPPY_HEX_MESH_H
-#define SURROUNDED_BUILDING_SNAPPY_HEX_MESH_H
+#ifndef SURROUNDED_SNAPPY_HEX_MESH_H
+#define SURROUNDED_SNAPPY_HEX_MESH_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -57,89 +57,124 @@ class QGroupBox;
 class QPushButton;
 class SurroundedBuildingCFD;
 class QDoubleSpinBox;
+class QListWidget;
 
-class SurroundedBuildingSnappyHexMesh: public SimCenterAppWidget
+class  SurroundedBuildingSnappyHexMesh: public SimCenterAppWidget
 {
     friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit SurroundedBuildingSnappyHexMesh(SurroundedBuildingCFD *parent = 0);
-    ~SurroundedBuildingSnappyHexMesh();
+    explicit  SurroundedBuildingSnappyHexMesh(SurroundedBuildingCFD *parent = 0);
+    ~ SurroundedBuildingSnappyHexMesh();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
 
+    bool generateBuildingSTLGeometry();
     bool createBlockMeshDict();
     bool createSnappyHexMeshDict();
 
     bool runBlockMeshCommand();
+    bool runExtractSurfaceFeaturesCommand();
     bool runSnappyHexMeshCommand();
     bool runCheckMeshCommand();
 
 signals:
 
 public slots:
-   void clear(void);
+    void clear(void);
 
-   void onRunBlockMeshClicked();
-   void onRunSnappyHexMeshClicked();
-   void onRunCheckMeshClicked();
-   void onSaveMeshClicked();
+    void onRunBlockMeshClicked();
+    void onRunSnappyHexMeshClicked();
+    void onRunCheckMeshClicked();
+    void onSaveMeshClicked();
+    void onAddSurfaceRefinementButtonClicked();
+    void onRemoveSurfaceRefinementButtonClicked();
 
-   void onAddRegionClicked();
-   void onRemoveRegionClicked();
-//   void onCheckRegionClicked();
-   void onRunInParallelChecked(int);
-   void onNumberOfCellsChanged();
-
-   void onMeshSizeChanged();
+    void onAddRegionClicked();
+    void onRemoveRegionClicked();
+    //   void onCheckRegionClicked();
+    void onRunInParallelChecked(int);
+    void onAddPrismLayersChecked(int);
+    void onAddSurfaceRefinementChecked(int);
+    void onAddEdgeRefinementChecked(int);
+    void onNumberOfCellsChanged();
+    void onMeshSizeChanged();
 
 
 private:
 
-   SurroundedBuildingCFD   *mainModel;
+    SurroundedBuildingCFD  *mainModel;
 
-   QVBoxLayout      *layout;
+    QVBoxLayout  *layout;
 
-   QGroupBox        *generalOptionsGroup;
-   QGridLayout      *generalOptionsLayout;
+    //   QGroupBox    *snappyHexMeshGroup;
+    //   QVBoxLayout  *snappyHexMeshLayout;
 
-   QGroupBox        *runMeshGroup;
-   QHBoxLayout      *runMeshLayout;
+    QGroupBox    *generalOptionsGroup;
+    QGridLayout  *generalOptionsLayout;
 
-   QGroupBox        *saveMeshGroup;
-   QHBoxLayout      *saveMeshLayout;
+    QGroupBox    *runMeshGroup;
+    QHBoxLayout  *runMeshLayout;
 
-   //Blockground mesh
-   QLineEdit        *xAxisNumCells;
-   QLineEdit        *yAxisNumCells;
-   QLineEdit        *zAxisNumCells;
-   QLineEdit        *xAxisMeshSize;
-   QLineEdit        *yAxisMeshSize;
-   QLineEdit        *zAxisMeshSize;
-   QDoubleSpinBox   *xMeshGrading;
-   QDoubleSpinBox   *yMeshGrading;
-   QDoubleSpinBox   *zMeshGrading;
+    QGroupBox    *saveMeshGroup;
+    QHBoxLayout  *saveMeshLayout;
 
-   //General options
-   QSpinBox         *numCellsBetweenLevels;
-   QSpinBox         *resolveFeatureAngle;
-   QSpinBox         *numProcessors;
-   QCheckBox        *runInParallel;
+    //Blockground mesh
+    QLineEdit        *xAxisNumCells;
+    QLineEdit        *yAxisNumCells;
+    QLineEdit        *zAxisNumCells;
+    QLineEdit        *xAxisMeshSize;
+    QLineEdit        *yAxisMeshSize;
+    QLineEdit        *zAxisMeshSize;
+    QDoubleSpinBox   *xMeshGrading;
+    QDoubleSpinBox   *yMeshGrading;
+    QDoubleSpinBox   *zMeshGrading;
 
-   //Regional refinements
-   QTableWidget     *refinementBoxesTable;
+    //General options
+    QSpinBox     *numCellsBetweenLevels;
+    QSpinBox     *resolveFeatureAngle;
+    QSpinBox     *numProcessors;
+    QCheckBox    *runInParallel;
 
-   QTabWidget       *snappyHexMeshTab;
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
+    //Regional refinements
+    QTableWidget *refinementBoxesTable;
 
-   //Mesh status variables
-   bool snappyHexMeshCompleted = false;
+    //Surface refinments
+    QComboBox    *surfaceName;
+    QSpinBox     *surfaceRefinementLevel;
+    QLineEdit    *surfaceRefinementDistance;
+    QLineEdit    *surfaceRefinementMeshSize;
+    QListWidget  *surfaceRefinementList;
+    QPushButton  *addSurfaceRefinementButton;
+    QPushButton  *removeSurfaceRefinementButton;
+
+    //Add edge refinment
+    QCheckBox    *addEdgeRefinement;
+    QSpinBox     *edgeRefinementLevel;
+    QComboBox    *refinementEdgeName;
+    QLineEdit    *edgeRefinementMeshSize;
+    QTableWidget *edgeRefinementTable;
+
+    //Add prism layers
+    QCheckBox        *addPrismLayers;
+    QSpinBox         *numberOfPrismLayers;
+    QDoubleSpinBox   *prismLayerExpansionRatio;
+    QDoubleSpinBox   *finalPrismLayerThickness;
+    QComboBox        *prismLayerSurfaceName;
+    QLineEdit        *prismLayerMeshSize;
+    QTableWidget     *prismLayersTable;
+
+    QTabWidget       *snappyHexMeshTab;
+    RandomVariablesContainer *theRandomVariablesContainer;
+    QStringList varNamesAndValues;
+
+    //Mesh status variables
+    bool snappyHexMeshCompleted = false;
 
 public:
 
 };
 
-#endif // SURROUNDED_BUILDING_SNAPPY_HEX_MESH_H
+#endif // SURROUNDED_SNAPPY_HEX_MESH_H
