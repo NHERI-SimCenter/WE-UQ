@@ -508,6 +508,10 @@ void SimCenterVTKRenderingWidget::initializeVtkObjects()
     initialized = true;
 }
 
+vtkPolyData* SimCenterVTKRenderingWidget::getBldgBlock()
+{
+    return bldgBlock;
+}
 
 
 

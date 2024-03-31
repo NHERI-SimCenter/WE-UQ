@@ -88,6 +88,7 @@ public:
 
     bool isInitialized();
     void drawAxisAndLegend();
+    vtkPolyData* getBldgBlock();
 
 signals:
 
@@ -97,6 +98,8 @@ public slots:
    void viewObjectChanged(const QString &arg1);
    void onReloadCaseClicked();
    void onTransparencyChanged(const int value);
+
+
 
 private:
    IsolatedBuildingCFD *mainModel;
