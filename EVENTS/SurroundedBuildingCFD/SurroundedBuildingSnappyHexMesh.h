@@ -143,7 +143,8 @@ private:
 
     //Surface refinments
     QComboBox    *surfaceName;
-    QSpinBox     *surfaceRefinementLevel;
+    QSpinBox     *minSurfaceRefinementLevel;
+    QSpinBox     *maxSurfaceRefinementLevel;
     QLineEdit    *surfaceRefinementDistance;
     QLineEdit    *surfaceRefinementMeshSize;
     QListWidget  *surfaceRefinementList;
