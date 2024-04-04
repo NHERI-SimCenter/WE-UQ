@@ -91,7 +91,8 @@ public slots:
     void onSaveMeshClicked();
     void onAddSurfaceRefinementButtonClicked();
     void onRemoveSurfaceRefinementButtonClicked();
-
+    void onAddEdgeRefinementButtonClicked();
+    void onRemoveEdgeRefinementButtonClicked();
     void onAddRegionClicked();
     void onRemoveRegionClicked();
     //   void onCheckRegionClicked();
@@ -148,6 +149,7 @@ private:
     QLineEdit    *surfaceRefinementDistance;
     QLineEdit    *surfaceRefinementMeshSize;
     QListWidget  *surfaceRefinementList;
+    QCheckBox    *addSurfaceRefinement;
     QPushButton  *addSurfaceRefinementButton;
     QPushButton  *removeSurfaceRefinementButton;
 
@@ -156,7 +158,9 @@ private:
     QSpinBox     *edgeRefinementLevel;
     QComboBox    *refinementEdgeName;
     QLineEdit    *edgeRefinementMeshSize;
-    QTableWidget *edgeRefinementTable;
+    QListWidget  *edgeRefinementList;
+    QPushButton  *addEdgeRefinementButton;
+    QPushButton  *removeEdgeRefinementButton;
 
     //Add prism layers
     QCheckBox        *addPrismLayers;

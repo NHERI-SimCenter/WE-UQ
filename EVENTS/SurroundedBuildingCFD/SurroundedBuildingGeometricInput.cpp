@@ -125,19 +125,19 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
     domainLengthWidget = new QLineEdit();
-    domainLengthWidget->setText("20");
+    domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *domainWidthLabel = new QLabel("Domain Width (Y-axis):");
     domainWidthWidget = new QLineEdit();
-    domainWidthWidget->setText("10");
+    domainWidthWidget->setText(QString::number(getNormDim(10.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *domainHeightLabel = new QLabel("Domain Height (Z-axis):");
     domainHeightWidget = new QLineEdit();
-    domainHeightWidget->setText("6");
+    domainHeightWidget->setText(QString::number(getNormDim(5.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *fetchLengthLabel = new QLabel("Fetch Length (X-axis):");
     fetchLengthWidget = new QLineEdit();
-    fetchLengthWidget->setText("5");
+    fetchLengthWidget->setText(QString::number(getNormDim(5.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *useCOSTDimLabel = new QLabel("COST Recommendation:");
     useCOSTDimWidget = new QCheckBox();
@@ -439,7 +439,7 @@ QVector<double> SurroundedBuildingGeometricInput::coordSysOrigin()
 
 void SurroundedBuildingGeometricInput::useCOSTOptionChecked(int state)
 {
-    //Works fine when Height > Width
+    //Works fine when Height > Width i.e., high rise buildings
     if (useCOSTDimWidget->isChecked())
     {
         domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeightWidget->text().toDouble())));
