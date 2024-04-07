@@ -39,7 +39,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "IsolatedBuildingCFD.h"
 #include "ResultMonitoringWidget.h"
 #include <GeneralInformationWidget.h>
-
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -466,8 +465,6 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     pointsMapper->SetInputData(pointsReader->GetOutput());
 //    pointsMapper->SetInputConnection(cellCentersFilter->GetOutputPort());
 //    pointsMapper->SetInputData(pointData->GetOutput());
-
-
 
 
     //Points actor
