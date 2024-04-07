@@ -135,11 +135,15 @@ private:
    QPushButton          *openCSVFile;
    QPushButton          *showCoordinateOfPoints;
 
-   QList<QVector3D> calculatePointCoordinates();
+   QString importedPointsPath;
 
+   QList<QVector3D> createSamplingPoints();
+   QList<QVector3D> importSamplingPointsCSV();
+
+   QList<QVector3D> importedPoints;
+   QList<QVector3D> generatedPoints;
 
    void writeSamplingPoints(QList<QVector3D> points);
-
    //Read a block from mesh
    template <class Type>
    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);

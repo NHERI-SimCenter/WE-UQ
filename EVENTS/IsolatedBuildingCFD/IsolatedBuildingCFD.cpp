@@ -322,7 +322,12 @@ bool IsolatedBuildingCFD::initialize()
     inputTab->addTab(monitoringWidget, "Monitoring");
     inputTab->addTab(resultsWidget, "Results");
 
+
+    QPushButton *saveMeshButton = new QPushButton("Save Input and OpenFOAM Files");
+
+
     inputWindowLayout->addWidget(inputTab);
+    inputWindowLayout->addWidget(saveMeshButton);
     inputWindowGroup->setLayout(inputWindowLayout);
     inputWindowGroup->setMaximumWidth(windowWidth - 125);
 
@@ -340,6 +345,7 @@ bool IsolatedBuildingCFD::initialize()
 
     connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     //=====================================================
     // Setup the case directory
@@ -470,6 +476,7 @@ void IsolatedBuildingCFD::readCaseData()
     jsonFile.close();
 
     removeOldFiles();
+
 }
 
 void IsolatedBuildingCFD::onShowResultsClicked()
@@ -1084,3 +1091,11 @@ vtkPolyData* IsolatedBuildingCFD::getBldgBlock()
     return visWidget->getBldgBlock();
 }
 
+void IsolatedBuildingCFD::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
+
+    writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
+}

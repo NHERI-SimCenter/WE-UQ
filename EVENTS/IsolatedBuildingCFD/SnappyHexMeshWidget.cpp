@@ -84,10 +84,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     runMeshLayout = new QHBoxLayout();
     runMeshGroup->setLayout(runMeshLayout);
 
-    saveMeshGroup = new QGroupBox("Save Mesh", this);
-    saveMeshLayout = new QHBoxLayout();
-    saveMeshGroup->setLayout( saveMeshLayout);
-
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
@@ -362,7 +358,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceName->setEnabled(false);
 
     surfaceRefinementLevel = new QSpinBox();
-    surfaceRefinementLevel->setRange(numRows + 2, 100);
+    surfaceRefinementLevel->setRange(numRows + 1, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
     surfaceRefinementDistance = new QLineEdit();
@@ -518,17 +514,14 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QPushButton *runBlockMeshButton = new QPushButton("Run Background Mesh");
     QPushButton *runSnappyMeshButton = new QPushButton("Run Final Mesh");
     QPushButton *runCheckMeshButton = new QPushButton("Check Mesh");
-    QPushButton *saveMeshButton = new QPushButton("Save OpenFOAM Files");
 
     runMeshLayout->addWidget(runBlockMeshButton);
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
-    saveMeshLayout->addWidget(saveMeshButton);
 
     layout->addWidget(snappyHexMeshTab);
     layout->addWidget(generalOptionsGroup);
     layout->addWidget(runMeshGroup);
-    layout->addWidget(saveMeshGroup);
 
     //=============================================================================
 
@@ -547,7 +540,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
-    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     connect(surfaceRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(edgeRefinementMeshSize, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
@@ -621,16 +613,6 @@ void SnappyHexMeshWidget::onRunCheckMeshClicked()
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
 }
-
-void SnappyHexMeshWidget::onSaveMeshClicked()
-{
-    statusMessage("Writing OpenFOAM dictionary files ... ");
-
-    mainModel->writeOpenFoamFiles();
-
-    statusMessage("Writing done!");
-}
-
 
 bool SnappyHexMeshWidget::runBlockMeshCommand()
 {
@@ -1047,8 +1029,8 @@ void SnappyHexMeshWidget::onAddRegionClicked()
 {
     refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
 }
 
 void SnappyHexMeshWidget::onRemoveRegionClicked()
@@ -1063,8 +1045,8 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
         }
     }
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
 }
 
 void SnappyHexMeshWidget::onNumberOfCellsChanged()
@@ -1087,6 +1069,6 @@ void SnappyHexMeshWidget::onMeshSizeChanged()
     surfaceRefinementMeshSize->setText(QString::number(meshSize/qPow(2, surfaceRefinementLevel->value())));
     prismLayerMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
 }
