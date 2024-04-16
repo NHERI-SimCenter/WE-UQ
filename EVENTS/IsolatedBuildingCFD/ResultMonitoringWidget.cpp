@@ -392,6 +392,10 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
         points = createSamplingPoints();
     }
 
+    if (points.size() == 0)
+    {
+        return;
+    }
 
     //==================================================
     // Setup the VTK window
@@ -626,10 +630,10 @@ void ResultMonitoringWidget::onOpenCSVFileClicked()
    QFileDialog dialog(this);
    dialog.setFileMode(QFileDialog::AnyFile);
 
-   importedPointsPath = fileName;
 
-   if (fileName!="")
+   if (QFileInfo::exists(fileName))
    {
+     importedPointsPath = fileName;
      importedPoints = importSamplingPointsCSV();
    }
 }

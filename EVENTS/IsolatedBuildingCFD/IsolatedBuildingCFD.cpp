@@ -323,7 +323,7 @@ bool IsolatedBuildingCFD::initialize()
     inputTab->addTab(resultsWidget, "Results");
 
 
-    QPushButton *saveMeshButton = new QPushButton("Save Input and OpenFOAM Files");
+    QPushButton *saveMeshButton = new QPushButton("Save Case Files");
 
 
     inputWindowLayout->addWidget(inputTab);
@@ -444,9 +444,9 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+    QMessageBox msgBox;
+    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+    msgBox.exec();
 
     process->close();
 }
@@ -846,8 +846,7 @@ bool IsolatedBuildingCFD::setupCase()
     targetDir.mkpath("constant/simCenter/output");
     targetDir.mkpath("constant/simCenter/input");
     targetDir.mkpath("constant/boundaryData");
-    targetDir.mkpath("constant/boundaryData/windProfile");
-    targetDir.mkpath("constant/boundaryData/sampledData");
+    targetDir.mkpath("constant/boundaryData/inlet");
     targetDir.mkpath("system");
 
     QFile visFoam(caseDir() + "/vis.foam");
