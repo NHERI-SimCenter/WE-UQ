@@ -72,6 +72,7 @@ SOURCES += \
     $$PWD/EVENTS/WindTunnelExperiment.cpp \
     $$PWD/EVENTS/ExperimentalWindForces.cpp \
     $$PWD/EVENTS/ExperimentalWindPressures.cpp \
+    $$PWD/EVENTS/TapsInputDelegate.cpp \
     $$PWD/EVENTS/WindForceSpectrum.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/WittigSinha.cpp \
     $$PWD/EVENTS/StochasticWindModel/src/StochasticWindInput.cpp \
@@ -133,6 +134,7 @@ HEADERS  += \
     $$PWD/EVENTS/WindTunnelExperiment.h \
     $$PWD/EVENTS/ExperimentalWindForces.h \
     $$PWD/EVENTS/ExperimentalWindPressures.h \
+    $$PWD/EVENTS/TapsInputDelegate.h \
     $$PWD/EVENTS/WindForceSpectrum.h \
     $$PWD/EVENTS/DEDM_HRP.h \
     $$PWD/EVENTS/BasicCFD/BasicCFD.h \

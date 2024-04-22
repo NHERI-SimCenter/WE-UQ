@@ -43,7 +43,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <WindForceSpectrum.h>
 #include <stdio.h>
 #include <set>
-
+#include <TapsInputDelegate.h>
 
 class SC_DoubleLineEdit;
 class SC_IntLineEdit;
@@ -80,9 +80,9 @@ public slots:
 //   void chooseFileName(void);
 
 private:
-   std::set<int> getSelectedComponentIDs() const;
-   QString getComponentAnalysisList();
-
+   //std::set<int> getSelectedComponentIDs() const;
+   //QString getComponentAnalysisList();
+    TapsInputDelegate *selectedTaps;
 //   SC_DoubleLineEdit *modePercent;
 //   SC_DoubleLineEdit *modelScale;
 //   SC_DoubleLineEdit *fullScaleSpeed;
@@ -90,7 +90,6 @@ private:
    SC_DoubleLineEdit *windowSize;
    SC_DoubleLineEdit *overlapPerc;
    SC_IntLineEdit *cpsdGroupSize;
-   SC_StringLineEdit *selectedTaps;
 //   SC_DoubleLineEdit *filename;
    SC_IntLineEdit *seed;
    WindForceSpectrum *theExpWidget;

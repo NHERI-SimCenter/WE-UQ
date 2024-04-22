@@ -37,6 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: fmckenna
 
 #include "ExperimentalWindPressures.h"
+#include "TapsInputDelegate.h"
 #include "WindForceSpectrum.h"
 #include "SC_DoubleLineEdit.h"
 #include "SC_IntLineEdit.h"
@@ -87,9 +88,9 @@ ExperimentalWindPressures::ExperimentalWindPressures(RandomVariablesContainer *t
     windowSize = new SC_DoubleLineEdit("windowSize",4);
     overlapPerc = new SC_DoubleLineEdit("overlapPerc",50);
     cpsdGroupSize = new SC_IntLineEdit("cpsdGroupSize",50);
-    selectedTaps = new SC_StringLineEdit("selectedTaps","");
-    selectedTaps ->setMinimumWidth(400);
-    connect(selectedTaps,&QLineEdit::editingFinished,this,&ExperimentalWindPressures::selectTaps);
+    selectedTaps= new TapsInputDelegate();
+    //selectedTaps ->setMinimumWidth(400);
+    //connect(selectedTaps,&QLineEdit::editingFinished,this,&ExperimentalWindPressures::selectTaps);
 
     layout->addWidget(theExpWidget,0,0,1,-1);
     layout->addWidget(new QLabel("Window Size"),1,0);
@@ -151,7 +152,7 @@ ExperimentalWindPressures::outputToJSON(QJsonObject &jsonObject)
     overlapPerc->outputToJSON(jsonObject);
     cpsdGroupSize->outputToJSON(jsonObject);
 
-    std::set<int> myIdxSet = getSelectedComponentIDs();
+    std::set<int> myIdxSet = selectedTaps->getSelectedComponentIDs();
     std::list<int> myIdxList(myIdxSet.begin(), myIdxSet.end());
     //QJsonArray myIdxJsonArray = myIdxList.array();
     QJsonArray myIdxArray;
@@ -194,9 +195,24 @@ ExperimentalWindPressures::inputFromJSON(QJsonObject &jsonObject)
     }
     selectedTaps->setText(combinedString);
     selectedTaps->textEdited("");
+    connect(selectedTaps,&QLineEdit::editingFinished,this,&ExperimentalWindPressures::selectTaps);
+    selectedTaps->editingFinished();
+
 //    seed->inputFromJSON(jsonObject);
 //    filename->inputFromJSON(jsonObject);
     return true;
+}
+
+void ExperimentalWindPressures::selectTaps(void)
+{
+    try
+    {
+        selectedTaps->selectComponents();
+    }
+    catch (const QString msg)
+    {
+        this->errorMessage(msg);
+    }
 }
 
 bool
@@ -228,7 +244,7 @@ ExperimentalWindPressures::copyFiles(QString &destDir) {
     return true;
 }
 
-
+/*
 void ExperimentalWindPressures::selectTaps()
 {
     auto inputText = selectedTaps->text();
@@ -302,7 +318,6 @@ void ExperimentalWindPressures::selectTaps()
 
     prevText=sortedIds;
 }
-
 std::set<int> ExperimentalWindPressures::getSelectedComponentIDs() const
 {
     return selectedComponentIDs;
@@ -339,3 +354,5 @@ QString ExperimentalWindPressures::getComponentAnalysisList()
 
     return stringList;
 }
+
+*/
