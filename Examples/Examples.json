@@ -16,7 +16,7 @@
       "inputFile": "weuq-0007/src/input.json"
     },
     {
-      "name": "E4: Stochastic Wind Force Regenerator using Experimental Data",
+      "name": "E4: Wind-tunnel Informed Stochastic Wind Force generator",
       "description": "",
       "inputFile": "weuq-0012/src/input.json"
     },
@@ -34,6 +34,11 @@
       "name": "E7: Calibrating ABL Flow using Empty Domain CFD Simulation",
       "description": "",
       "inputFile": "weuq-0015/src/input.json"
+    }
+    {
+      "name": "E8: Wind-tunnel Informed Stochastic Wind Load generator",
+      "description": "",
+      "inputFile": "weuq-0016/src/input.json"
     }
   ]
 }
