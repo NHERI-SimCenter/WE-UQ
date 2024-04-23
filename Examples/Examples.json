@@ -34,9 +34,9 @@
       "name": "E7: Calibrating ABL Flow using Empty Domain CFD Simulation",
       "description": "",
       "inputFile": "weuq-0015/src/input.json"
-    }
+    },
     {
-      "name": "E8: Wind-tunnel Informed Stochastic Wind Load generator",
+      "name": "E8: Wind-tunnel Informed Stochastic Wind Pressure Generator",
       "description": "",
       "inputFile": "weuq-0016/src/input.json"
     }

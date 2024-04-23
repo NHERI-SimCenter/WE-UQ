@@ -71,7 +71,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
-
+    bool outputCitation(QJsonObject &jsonObject);
 signals:
 
 public slots:
