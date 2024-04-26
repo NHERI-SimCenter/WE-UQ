@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.2.0");
+    QCoreApplication::setApplicationVersion("3.3.0");
 
     Q_INIT_RESOURCE(images1);
 
