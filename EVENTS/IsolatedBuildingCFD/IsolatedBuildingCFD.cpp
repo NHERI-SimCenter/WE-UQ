@@ -444,9 +444,9 @@ void IsolatedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-    QMessageBox msgBox;
-    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-    msgBox.exec();
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+//    msgBox.exec();
 
     process->close();
 }
@@ -803,7 +803,7 @@ bool IsolatedBuildingCFD::cleanCase()
     constDir.removeRecursively();
     systemDir.removeRecursively();
 
-    QFile logFile(caseDir() + QDir::separator() + "log.txt");
+    QFile logFile(caseDir() + QDir::separator() + "log.*");
 
     logFile.remove();
 
@@ -890,7 +890,7 @@ QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
         data.append(row);
     }
 
-    int count  = 0;
+    int count = 0;
 
     QFile inputFile(fileName);
     if (inputFile.open(QIODevice::ReadOnly))
@@ -976,6 +976,7 @@ double IsolatedBuildingCFD::buildingHeight()
 {
     return geometry->buildingHeightWidget->text().toDouble();
 }
+
 int IsolatedBuildingCFD::numberOfFloors()
 {
     return resultMonitoring->numStories->value();

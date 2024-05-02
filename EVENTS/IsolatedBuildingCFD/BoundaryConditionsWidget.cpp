@@ -173,28 +173,34 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     QLabel *windProfileOptionLabel = new QLabel("Wind Profile: ");
 
     inflowDFSR = new QRadioButton("DFSR");
-    inflowDFSR->setChecked(true);
+    inflowDFSR->setChecked(false);
+    inflowDFSR->setEnabled(false);
     inflowDFSR->setToolTip("Uses the Divergence-free Spectral Representation (DFSR) method");
 
     inflowDFM = new QRadioButton("DFM");
-    inflowDFM->setChecked(false);
+    inflowDFM->setChecked(true);
+    inflowDFM->setEnabled(true);
     inflowDFM->setToolTip("Uses the Digital Filtering Method (DFM)");
 
     inflowSEM = new QRadioButton("SEM");
     inflowSEM->setChecked(false);
+    inflowSEM->setEnabled(false);
     inflowSEM->setToolTip("Uses the Synthetic Eddy Method (SEM)");
 
     inflowDFSEM = new QRadioButton("DFSEM");
     inflowDFSEM->setChecked(false);
+    inflowDFSEM->setEnabled(false);
     inflowDFSEM->setToolTip("Uses the Divergence-free Synthetic Eddy Method (DFSEM)");
 
     inflowTSM = new QRadioButton("TSM");
     inflowTSM->setChecked(false);
+    inflowTSM->setEnabled(false);
     inflowTSM->setToolTip("Uses the Turbulent Spot Method (TSM)");
 
 
     inflowTimeStep = new QLineEdit();
     inflowTimeStep->setText("0.005");
+    inflowTimeStep->setEnabled(false);
     inflowTimeStep->setToolTip("Time step for the inflow generation, can be higher than the solver time step");
 
     inflowMaxFreq = new QLineEdit();
@@ -212,7 +218,6 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     importWindProfiles->setVisible(true);
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
-
 
     inflowLayout->addWidget(inflowMethodLabel, 0, 0);
     inflowLayout->addWidget(inflowDFSR, 0, 1);
@@ -232,7 +237,6 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
     inflowLayout->addWidget(importWindProfiles, 3, 3);
     inflowLayout->addWidget(showWindProfiles, 3, 4, 1, 2);
-
 
     //-------------------------------------------------------
     layout->addWidget(boundaryConditionsGroup);
@@ -294,12 +298,16 @@ void BoundaryConditionsWidget::inflowTimeStepChanged(const QString &arg1)
 
 void BoundaryConditionsWidget::onImportWindProfilesClicked()
 {
-    windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
 
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
 
-    readCSV(windProfilePath);
+    if (QFileInfo::exists(fileName))
+    {
+        windProfilePath = fileName;
+        readCSV(windProfilePath);
+    }
 }
 
 bool BoundaryConditionsWidget::readCSV(QString &fileName)
@@ -367,9 +375,9 @@ void BoundaryConditionsWidget::onShowWindProfilesClicked()
 
 
     QStringList headerTitles = {"z[m]", "Uav[m/s]",
-                                "R11[m2/s2]", "R12[m2/s2]", "R13[m2/s2]",
-                                "R22[m2/s2]", "R23[m2/s2]",
-                                "R33[m2/s2]",
+                                "R11[m2/s2]",
+                                "R21[m2/s2]", "R22[m2/s2]",
+                                "R31[m2/s2]", "R32[m2/s2]", "R33[m2/s2]",
                                 "xLu[m]", "yLu[m]", "zLu[m]",
                                 "xLv[m]", "yLv[m]", "zLv[m]",
                                 "xLw[m]", "yLw[m]", "zLw[m]"};
