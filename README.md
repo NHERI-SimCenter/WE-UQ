@@ -2,7 +2,7 @@
 
 <div style="display: flex; justify-content: center;">
   <a href="https://github.com/NHERI-SimCenter/WE-UQ/#gh-light-mode-only"><img width=256px src="./icons/NHERI-WEUQ-Icon_LightMode_BorderRight.svg#gh-light-mode-only" align="left" /></a>
-  <a href="https://github.com/NHERI-SimCenter/WE-UQ/#gh-dark-mode-only"><img width=256px src="./icons/NHERI-WEUQ-Icon_LightMode_BorderRight.svg#gh-dark-mode-only" align="left" /></a>
+  <a href="https://github.com/NHERI-SimCenter/WE-UQ/#gh-dark-mode-only"><img width=256px src="./icons/NHERI-WEUQ-Icon_DarkMode_BorderRight.svg#gh-dark-mode-only" align="left" /></a>
   <span style="display:inline-block; width: 25px;"></span>
   <div>
     <p>
