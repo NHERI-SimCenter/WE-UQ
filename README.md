@@ -107,7 +107,7 @@ The challenges of natural hazards engineering are addressed by the NHERI SimCent
 
 
 
-<a href="https://github.com/NHERI-SimCenter/"><img width="75%" src="./images/SimCenter_PuzzlePieces_Horizontal.png" align="center" /></a>
+<a href="https://github.com/NHERI-SimCenter/"><img width="75%" src="./icons/SimCenter_PuzzlePieces_Horizontal.png" align="center" /></a>
 
 
 
@@ -115,7 +115,7 @@ In reality, this is a software workflow representation of the PEER Performance-B
 
 
 
-<a href="https://github.com/NHERI-SimCenter/"><img width="85%" src="./images/SimCenter_PEER_PBE.png" align="center" /></a>
+<a href="https://github.com/NHERI-SimCenter/"><img width="85%" src="./icons/SimCenter_PEER_PBE.png" align="center" /></a>
 
 
 
@@ -123,7 +123,7 @@ In reality, this is a software workflow representation of the PEER Performance-B
 
 
 
-<img width=60% align="left" src="https://raw.githubusercontent.com/JustinBonus/WE-UQ/master/images/SimCenter_Hierarchy.png" />
+<img width=60% align="left" src="https://raw.githubusercontent.com/JustinBonus/WE-UQ/master/icons/SimCenter_Hierarchy.png" />
 
 While ``R2D`` is the top-level application that provides a regional resilience assessment, ``EE-UQ``, ``WE-UQ``, and ``HydroUQ`` provide uncertainty quantified simulations for earthquake, wind, and water-borne natural hazards, respectively. ``quoFEM`` is the backend UQ functionality they use.
 
