@@ -22,8 +22,8 @@
 ---
 
 <div style="display: flex; justify-content: center;">
-    <img src="./images/NHERI_SimCenter_DamBreakAnimation_VelocityPressureVisualized_2.5MParticles_res0.05m_23012023.gif" alt="Dam Break Animation" width="45%" />
-    <img src="./images/HydroUQ_MPM_3DViewPort_OSULWF_2024.04.25.gif" alt="HydroUQ MPM 3D ViewPort OSULWF" width="53%" />
+    <img src="./icons/NHERI-WEUQ-GUI_Tools_IsolatedBuilding.svg" alt="WE-UQ Tools CFD on Isolated Building GUI" width="45%" />
+    <img src="./icons/NHERI-WEUQ_Abiy_Paper_LES_City_Slice.jpg" alt="WE-UQ 3D CFD Visualized as a City-Slice on the Willis Tower" width="53%" />
 </div>
 
 ---
