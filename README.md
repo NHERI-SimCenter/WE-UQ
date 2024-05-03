@@ -8,7 +8,7 @@
     <p>
       <h3 class="subtitle"><b>WE-UQ - Desktop App</b></h3>
       <h3>Wind Engineering with Uncertainty Quantification</h3>
-      <h5><i>Frank McKenna , Abiy F. Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Sang-ri Yi, Michael Gardner, Wael Elhaddad, Michael Gardner</i></h5>
+      <h5><i>Frank McKenna , Abiy F. Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Sang-ri Yi, Michael Gardner, Wael Elhaddad</i></h5>
       <h5>NHERI SimCenter, 2017-2024</h5>
       <br>
     </p>
