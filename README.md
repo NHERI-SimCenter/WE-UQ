@@ -8,7 +8,7 @@
     <p>
       <h3 class="subtitle"><b>WE-UQ - Desktop App</b></h3>
       <h3>Wind Engineering with Uncertainty Quantification</h3>
-      <h5><i>Frank McKenna , Abiy F. Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Dae Kun Kwon</i></h5>
+      <h5><i>Frank McKenna , Abiy F. Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Sang-ri Yi, Michael Gardner, Wael Elhaddad, Michael Gardner</i></h5>
       <h5>NHERI SimCenter, 2017-2024</h5>
       <br>
     </p>
@@ -33,8 +33,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3274227.svg)](https://doi.org/10.5281/zenodo.3274227)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/58ka2pwtvddek7bt?svg=true)](https://ci.appveyor.com/project/fmckenna/we-uq)
-
-### Wind Engineering with Uncertainty Quantification ###
 
 This open-source research application provides an application that can be used to predict the response of a building subjected to wind events. The application is focused on quantifying the uncertainties in the predicted response, given the that the properties of the buildings and the wind events are not known exactly, and that both the simulation software and the user make simplifying assumptions in the numerical modeling of that structure. In this application, the user is required to characterize the uncertainties in the input. The application will, after utilizing the users selected sampling method, provide information that characterizes the uncertainties in the computed response measures. As the computations to make these determinations can be prohibitively expensive to perform on a user's local computer, the user has the option to perform the computations remotely on HPC resources located at the Texas Advanced Computing Center (TACC) and made available to the user through NHERI DesignSafe, the cyberinfrastructure provider for the distributed NSF funded Natural Hazards in Engineering Research Infrastructure (NHERI) facility.
 
