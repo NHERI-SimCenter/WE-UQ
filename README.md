@@ -22,8 +22,8 @@
 ---
 
 <div style="display: flex; justify-content: center;">
-    <img src="./icons/NHERI-WEUQ-GUI_Tools_IsolatedBuilding.svg" alt="WE-UQ Tools CFD on Isolated Building GUI" width="45%" />
-    <img src="./icons/NHERI-WEUQ_Abiy_Paper_LES_City_Slice.jpg" alt="WE-UQ 3D CFD Visualized as a City-Slice on the Willis Tower" width="53%" />
+    <img src="./icons/NHERI-WEUQ-GUI_EVT_IsolatedBuilding.svg" alt="WE-UQ GUI - EVT - CFD on Isolated Building - Willis Tower" width="45%" />
+    <img src="./icons/NHERI-WEUQ_Abiy_Paper_LES_City_Slice.jpg" alt="WE-UQ 3D CFD Visualized as a City-Slice on the Willis Tower" width="45" />
 </div>
 
 ---
