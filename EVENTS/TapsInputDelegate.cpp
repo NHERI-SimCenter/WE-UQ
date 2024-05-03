@@ -47,7 +47,7 @@ TapsInputDelegate::TapsInputDelegate()
     // this->setMaximumWidth(1000);
     // this->setMinimumWidth(400);
     // this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-    this->setPlaceholderText("e.g., 1, 3, 5-10, 12");
+    this->setPlaceholderText("(optional) e.g., 1, 3, 5-10, 12");
 
     // Create a regExp validator to make sure only '-' & ',' & ' ' & numbers are input
     QRegExp LERegExp ("((([0-9]*)|([0-9]+-[1-9][0-9]*))[ ]*,[ ]*)*([[0-9]+-[1-9][0-9]*|[0-9]*)");
