@@ -1,7 +1,36 @@
+#
 
+<div style="display: flex; justify-content: center;">
+  <a href="https://github.com/NHERI-SimCenter/WE-UQ/#gh-light-mode-only"><img width=256px src="./icons/NHERI-WEUQ-Icon_LightMode_BorderRight.svg#gh-light-mode-only" align="left" /></a>
+  <a href="https://github.com/NHERI-SimCenter/WE-UQ/#gh-dark-mode-only"><img width=256px src="./icons/NHERI-WEUQ-Icon_LightMode_BorderRight.svg#gh-dark-mode-only" align="left" /></a>
+  <span style="display:inline-block; width: 25px;"></span>
+  <div>
+    <p>
+      <h3 class="subtitle"><b>WE-UQ - Desktop App</b></h3>
+      <h3>Wind Engineering with Uncertainty Quantification</h3>
+      <h5><i>Frank McKenna , Abiy F. Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, Dae Kun Kwon</i></h5>
+      <h5>NHERI SimCenter, 2017-2024</h5>
+      <br>
+    </p>
+  </div>
+</div>
 
-# WE-UQ 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3464692.svg)](https://doi.org/10.5281/zenodo.3464692)
+---
+
+[![Latest Release](https://img.shields.io/github/v/release/NHERI-SimCenter/WE-UQ?color=blue&label=Latest%20Release)](https://github.com/NHERI-SimCenter/WE-UQ/releases/latest)   <span style="display:inline-block; width: 20px;"></span> [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3274227.svg)](https://doi.org/10.5281/zenodo.3274227)   <span style="display:inline-block; width: 20px;"></span> [![Build status](https://ci.appveyor.com/api/projects/status/k1cfrfmjsq14akso?svg=true)](https://ci.appveyor.com/project/fmckenna/we-uq)  <span style="display:inline-block; width: 20px;"></span> [![License](https://img.shields.io/badge/License-BSD%202--Clause-blue)](https://raw.githubusercontent.com/NHERI-SimCenter/WE-UQ/master/LICENSE)  <span style="display:inline-block; width: 20px;"></span> [![GitHub](https://img.shields.io/badge/NHERI--SimCenter-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/NHERI-SimCenter)  <span style="display:inline-block; width: 20px;"></span>  [![LinkedIn Follow](https://img.shields.io/badge/nheri--simcenter-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/company/nheri-simcenter) <span style="display:inline-block; width: 20px;"></span>  [![YouTube Subscribe](https://img.shields.io/badge/DesignSafe-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white)](https://www.youtube.com/@DesignSafe) <span style="display:inline-block; width: 20px;"></span>  
+
+---
+
+<div style="display: flex; justify-content: center;">
+    <img src="./images/NHERI_SimCenter_DamBreakAnimation_VelocityPressureVisualized_2.5MParticles_res0.05m_23012023.gif" alt="Dam Break Animation" width="45%" />
+    <img src="./images/HydroUQ_MPM_3DViewPort_OSULWF_2024.04.25.gif" alt="HydroUQ MPM 3D ViewPort OSULWF" width="53%" />
+</div>
+
+---
+
+# Why Use WE-UQ?
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3274227.svg)](https://doi.org/10.5281/zenodo.3274227)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/58ka2pwtvddek7bt?svg=true)](https://ci.appveyor.com/project/fmckenna/we-uq)
 
