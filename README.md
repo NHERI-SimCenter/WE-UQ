@@ -22,7 +22,7 @@
 ---
 
 <div style="display: flex; justify-content: center;">
-    <img style="border:10px solid black;" src="./icons/NHERI-WEUQ-GUI_EVT_IsolatedBuilding.svg" alt="WE-UQ GUI - EVT - CFD on Isolated Building - Willis Tower" width="45.5%"/>
+    <img src="./icons/NHERI-WEUQ-GUI_EVT_IsolatedBuilding.svg" alt="WE-UQ GUI - EVT - CFD on Isolated Building - Willis Tower" width="45.5%"/>
     <img src="./icons/NHERI-WEUQ_WindVelocityOverGableRoofedResidence.gif" alt="WE-UQ 3D CFD - Velocity of Wind Flowing Over a Gable-Roofed Residence" width="50%" />
 </div>
 
