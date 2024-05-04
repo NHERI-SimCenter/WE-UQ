@@ -308,20 +308,39 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         // file not read
     }
 
-    dataD = jsonData["D"].toDouble();
-    dataH = jsonData["H"].toDouble();
-    dataW = jsonData["B"].toDouble();
 
+
+    double fs;
+    double Vref;
     QStringList keys;
     if (jsonData.contains("norm_all")) {
         QStringList keys_time = {"B","comp_CFmean","D","f_target","fs","H","norm_all","s_target_real","s_target_imag","Vref"};
         keys = keys_time;
         nstory = jsonData["Fx"].toArray().size();
+        dataD = jsonData["D"].toDouble();
+        dataH = jsonData["H"].toDouble();
+        dataW = jsonData["B"].toDouble();
+        fs = jsonData["fs"].toDouble();
+        Vref = jsonData["Vref"].toDouble();
     } else if  (jsonData.contains("Fx")) {
         QStringList keys_spec = {"B","D","fs","Fx","Fy","H","H","t","Tz","Vref"};
         keys = keys_spec;
         nstory = jsonData["norm_all"].toArray().size()/3;
-    } else {
+        dataD = jsonData["D"].toDouble();
+        dataH = jsonData["H"].toDouble();
+        dataW = jsonData["B"].toDouble();
+        fs = jsonData["fs"].toDouble();
+        Vref = jsonData["Vref"].toDouble();
+    } else if  (jsonData.contains("pressureCoefficients")) {
+        QStringList keys_spec = {"breadth","depth","frequency","height","period","tapLocations","units","windSpeed"};
+        keys = keys_spec;
+        nstory = 0;
+        dataD = jsonData["depth"].toDouble();
+        dataH = jsonData["height"].toDouble();
+        dataW = jsonData["breadth"].toDouble();
+        fs = jsonData["frequency"].toDouble();
+        Vref = jsonData["windSpeed"].toDouble();
+    }else {
         msg->setText("File format not recognized");
         msg->setStyleSheet("QLabel { color : red; }");
         return;
@@ -340,10 +359,8 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         }
     }
 
-    double fs = jsonData["fs"].toDouble();
-    double Vref = jsonData["Vref"].toDouble();
 
-    msg_info->setText("The sampling frequency (fs) is "+ QString::number(fs) + " Hz, and the model scale reference wind speed (Vref) is "+ QString::number(Vref) + " " + myLengthUnit + "/sec.");
+    msg_info->setText("The sampling frequency is "+ QString::number(fs) + " Hz, and the model scale reference wind speed is "+ QString::number(Vref) + " " + myLengthUnit + "/sec.");
     msg_info->setStyleSheet("QLabel { color : black; }");
 
     this->updateScale();
