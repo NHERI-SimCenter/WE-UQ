@@ -8,14 +8,14 @@ Wind Tunnel-Informed Stochastic Wind Load Generation
 +----------------+-------------------------+
 
 
-This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind loads. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular shaped building model for response simulation.
+This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind loads. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular-shaped building model for response simulation.
 
 .. _fig-we12-1:
 
 .. figure:: figures/we12_1.png
    :align: center
    :figclass: align-center
-   :width: 800
+   :width: 50%
 
    Generating full-scale wind force time series from a model-scale wind force time series obtained from wind tunnel experiments.
 
