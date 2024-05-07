@@ -290,6 +290,24 @@
       },
       "tags": [
       ]
+    },
+    "weuq-0016": {
+      "id": "weuq-0016",
+      "base": "weuq-0016",
+      "title": "Wind-tunnel-informed Stochastic Wind Pressure Generator",
+      "doc": [
+          "weuq-0016/README.rst"
+      ],
+      "entry_point": "weuq-0016/./input.json",
+      "summary": "This example generates multiple pressure time histories using single experimental time history and performs structural analysis",
+      "logo": "",
+      "published": "2024-04-20T21:30:53.946381-08:00\"",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
     }
   },
   "categories": {
