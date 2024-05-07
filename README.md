@@ -30,11 +30,6 @@
 
 # Why Use WE-UQ?
 
-This open-source research application provides an application that can be used to predict the response of a building subjected to wind events. The application is focused on quantifying the uncertainties in the predicted response, given the that the properties of the buildings and the wind events are not known exactly, and that both the simulation software and the user make simplifying assumptions in the numerical modeling of that structure. In this application, the user is required to characterize the uncertainties in the input. The application will, after utilizing the users selected sampling method, provide information that characterizes the uncertainties in the computed response measures. As the computations to make these determinations can be prohibitively expensive to perform on a user's local computer, the user has the option to perform the computations remotely on HPC resources located at the Texas Advanced Computing Center (TACC) and made available to the user through NHERI DesignSafe, the cyberinfrastructure provider for the distributed NSF funded Natural Hazards in Engineering Research Infrastructure (NHERI) facility.
-
-
-# Why Use WE-UQ?
-
 The ``WE-UQ`` desktop application is a user-facing portal for cutting-edge engineering workflows targeting extreme wind demands on structures. It is a free, open-source, graphical software for simulating a structures's response with uncertainty quantification (UQ) during extreme wind natural hazard loading. The application's interchangeable workflow allows you to swap between popular uncertainty quantification methods (e.g. Sensitivity, Reliability, Surrogates) to upgrade your previously deterministic models. Modular design lets you drop-in your own building models (SIM), event types (EVT), nonlinear structural analysis (FEM), engineering demand parameters (EDP), and more.
 
 
@@ -132,7 +127,7 @@ In reality, this is a software workflow representation of the PEER Performance-B
 
 <img width=60% align="left" src="https://raw.githubusercontent.com/NHERI-SimCenter/WE-UQ/master/icons/SimCenter_Hierarchy.png" />
 
-``R2D`` is the top-level app that provides a regional resilience assessment. ``EE-UQ``, ``WE-UQ``, and ``HydroUQ``simulate structures in seismic, wind, and water-borne events with uncertainty quantified, respectively. ``quoFEM`` implements the SimCenter's foundational UQ functionality, particularly for finite element analysis.
+While ``R2D`` is the top-level application that provides a regional resilience assessment, ``EE-UQ``, ``WE-UQ``, and ``HydroUQ`` provide uncertainty quantified simulations for earthquake, wind, and water-borne natural hazards, respectively. ``quoFEM`` is the backend UQ functionality they use.
 
 Additional tools, such as ``BRAILS`` and ``TInF``, have special use-cases including AI-augmentation of building stock and creation of turbulent wind inflow for OpenFOAM CFD simulations.
 
@@ -156,13 +151,13 @@ All applications are free, open-source, and available for download on the [Desig
 
 ## Getting Started
 
-The ``WE-UQ`` application can be [downloaded](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community/SimCenter/Software/WE-UQ), [installed](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/user_manual/installation/desktop/installation.html), [built](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/developer_manual/how_to_build/desktop/how_to_build.html), and [launched](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/user_manual/running/desktop/running.html) on Windows, Mac, and Linux operating systems. With a [free DesignSafe account](https://www.designsafe-ci.org/account/register/), users can run WE-UQ simulations remotely on powerful supercomputers including the ``Frontera``, and ``Stampede3`` systems.
+The ``WE-UQ`` application can be [downloaded](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community/SimCenter/Software/WE-UQ), [installed](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/user_manual/installation/desktop/installation.html), [built](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/developer_manual/how_to_build/desktop/how_to_build.html), and [launched](https://nheri-simcenter.github.io/WE-UQ-Documentation/common/user_manual/running/desktop/running.html) on Windows, Mac, and Linux operating systems. With a [free DesignSafe account](https://www.designsafe-ci.org/account/register/), you can run WE-UQ simulations remotely on powerful supercomputers including the ``Frontera``, and ``Stampede3`` systems.
 
 
 
 ### Download WE-UQ
 
-The ``WE-UQ`` desktop application is available for download on Windows and Mac operating systems from the DesignSafe-CI website at the [WE-UQ Download Link](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community/SimCenter/Software/WE-UQ)
+The ``WE-UQ`` desktop application is available for download on Windows and Mac operating systems from the DesignSafe-CI website at the [WE-UQ Download Link](https://www.designsafe-ci.org/data/browser/public/designsafe.storage.community/SimCenter/Software/WE-UQ).
 
 
 ### Install WE-UQ
