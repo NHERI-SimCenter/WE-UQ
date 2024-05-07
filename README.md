@@ -217,7 +217,7 @@ Message us on the [SimCenter Message Board](http://simcenter-messageboard.design
 | Developer | Email | Role |
 |:----|:-----|:----|
 | Abiy Melaku | afmelaku@berkeley.edu | [![Email](https://img.shields.io/badge/Main%20Dev-blue)](mailto:afmelaku@berkeley.edu) | 
-| Fei Dinkg | fding@nd.edu | [![Email](https://img.shields.io/badge/Former%20Dev-blue)](mailto:fding@nd.edu) | 
+| Fei Ding | fding@nd.edu | [![Email](https://img.shields.io/badge/Former%20Dev-blue)](mailto:fding@nd.edu) | 
 | Frank McKenna | fmckenna@berkeley.edu | [![Email](https://img.shields.io/badge/Senior%20Dev-blue)](mailto:fmckenna@berkeley.edu) |
 | NHERI SimCenter | nheri-simcenter@berkeley.edu | [![Email](https://img.shields.io/badge/SimCenter-blue)](mailto:nheri-simcenter@berkeley.edu) |
 
@@ -238,7 +238,7 @@ Stay up-to-date with the latest news, updates, and releases with the [NHERI News
 
 
 
-## Acknowledgement
+## Acknowledgements
 
 
 This material is based upon work supported by the National Science Foundation under Grant [No. 1612843](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1612843) and [No. 2131111](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2131111). Any opinions, findings, conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the U.S. National Science Foundation.
