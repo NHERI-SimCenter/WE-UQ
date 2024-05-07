@@ -8,7 +8,7 @@ Wind Tunnel-Informed Stochastic Wind Load Generation
 +----------------+-------------------------+
 
 
-This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind loads. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular shaped building model for response simulation.
+This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind loads. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF) and applies the simulated wind loads to a 25-story rectangular-shaped building model for response simulation.
 
 .. _fig-we12-1:
 
@@ -26,7 +26,7 @@ This example uses the data presented in [Duarte2023]_.
 
 Preparation of "Wind Force Time History File"
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The experimental records should first be reformatted by the user such that **wind force time histories recorded at each floor in x-, y-, and z- directions (Fx, Fy, and Tz, respectively)** can be directly imported in WE-UQ in the EVT tab. The dataset can be imported as either a MATLAB binary file or a json file. Additionally, the model-scale dimensions and additional information on the experiment should be provided. Please refer to :ref:`the User Manual<lblExperimentalWindForce>` for the list of variables the file should contain. In this example, the variables in the table below are imported as a json file. Note that the x- and y- directional forces and z-directional moments at each of the 25 stories are recorded for 32 sec with dt=0.0016 sec (20,000 time points). The reference wind speed (Vref) was measured at top of the building model.
+The experimental records should first be reformatted by the user such that **wind force time histories recorded at each floor in x-, y-, and z- directions (Fx, Fy, and Tz, respectively)** can be directly imported in WE-UQ in the EVT tab. The dataset can be imported as either a MATLAB binary file or a json file. Additionally, the model-scale dimensions and additional information on the experiment should be provided. Please refer to :ref:`the User Manual<lblExperimentalWindForce>` for the list of variables the file should contain. In this example, the variables in the table below are imported as a JSON file. Note that the x- and y- y-directional forces and z-directional moments at each of the 25 stories are recorded for 32 sec with dt=0.0016 sec (20,000 time steps). The reference wind speed (Vref) was measured at the top of the building model.
 
 
 .. table:: Variables imported to WE-UQ
@@ -81,7 +81,7 @@ Workflow
 .. note::
    This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E4: Wind Tunnel-Informed Stochastic Wind Load Generation". The user may want to increase the number of samples in the UQ tab for more stable results.
 
-1. In the UQ tab, click "forward propagation" to perform Monte Carlo simulation. Set the number of samples 50.
+1. In the UQ tab, click "forward propagation" to perform the Monte Carlo simulation. Set the number of samples to 50.
 
 .. figure:: figures/we12_UQ.png
    :align: center
@@ -90,7 +90,7 @@ Workflow
 
    UQ tab
 
-2. In the GI tab, set **# Stories** 25 as our dataset is for a 25-story building. Multiply the building scaling factor 200 by the model dimensions (0.5m x 0.3m x 0.6m; this information should be imported in "Wind Force Time History File" at the EVT tab as shown in the previous section) and specify the full-scale building dimension at **Height, Width, and Depth**, which respectively are 100, 60, and 120. Define the **Force and Length Units** of Newtons and Meters.
+2. In the GI tab, set **# Stories** 25 as our dataset is for a 25-story building. Multiply the building scaling factor 200 by the model dimensions (0.5m x 0.3m x 0.6m; this information should be imported into "Wind Force Time History File" at the EVT tab as shown in the previous section) and specify the full-scale building dimension at **Height, Width, and Depth**, which respectively are 100, 60, and 120. Define the **Force and Length Units** of Newtons and Meters.
 
 
 .. figure:: figures/we12_GI.png
@@ -133,7 +133,7 @@ Workflow
     |25       |0.7e8    |
     +---------+---------+
 
-4. In the EVT tab, select the "Experimental Wind Forces" option for the Load Generator. Let us consider 25% of modes for the principal orthogonal decomposition (POD). The Full Scale Reference Wind Speed at the top of the building is set 30 m/s. The duration of the generated wind loads is set to 1600 sec. The "Wind Force Time History File" shown in the previous section is imported next. The model scale is auto-populated only if the datasets are provided in a json file (instead of a matlab binary file). For estimating the cross-power spectrum density function (CPSD), a window size of 4 sec, and an overlap percentage of 50 % are used. Please refer to :ref:`the user manual<lblExperimentalWindForce>` for more details of those parameters. 
+4. In the EVT tab, select the "Experimental Wind Forces" option for the Load Generator. Let us consider 25% of modes for the principal orthogonal decomposition (POD). The Full Scale Reference Wind Speed at the top of the building is set to 30 m/s. The duration of the generated wind loads is set to 1600 sec. The "Wind Force Time History File" shown in the previous section is imported next. The model scale is auto-populated only if the datasets are provided in a JSON file (instead of a Matlab binary file). For estimating the cross-power spectrum density function (CPSD), a window size of 4 sec, and an overlap percentage of 50 % are used. Please refer to :ref:`the user manual<lblExperimentalWindForce>` for more details of those parameters. 
 
 .. figure:: figures/we12_EVT.png
    :align: center
@@ -156,7 +156,7 @@ Workflow
    RV tab
 
 .. note::
-   The user can additionally specify random variables for structural parameters by putting a string for some of the structural properties in GI tab (e.g. "W" for the floor weight instead of 1.e7), and specifying the corresponding probability distribution at the RV tab (e.g. name: W, distribution: Normal, Mean: 1.e7, Standard Dev: 1.e6).
+   The user can additionally specify random variables for structural parameters by putting a string for some of the structural properties in the GI tab (e.g. "W" for the floor weight instead of 1.e7) and specifying the corresponding probability distribution at the RV tab (e.g. name: W, distribution: Normal, Mean: 1.e7, Standard Dev: 1.e6).
 
 
 7. Once all the information is provided, click the Run or Run at DesignSafe button to run the analysis.

@@ -73,7 +73,7 @@ In this example, the overall workflow is demonstrated by introducing uncertainty
 
 UQ Method
 """""""""""
-Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for UQ Engine driver. For specific UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
+Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for the UQ Engine driver. For specific UQ algorithms, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
 
 .. figure:: figures/we14_UQ_panel.svg
    :align: center
@@ -95,7 +95,7 @@ Next, in the **GI** panel, specify the properties of the building and the unit s
 
 Structural Properties
 """""""""""""""""""""
-In the SIM panel, select "MDOF" generator. Specify the **Floor Weights** based on the distribution given in :numref:`tbl-we14-2`. Replace the **Story Stiffness** with **k** to designate it as a random variable. Later the statistical properties of this random variable will be defined in **RV** panel. Then, input damping, yield strength, hardening ratio and other parameters as shown in :numref:`fig-we14-SIM-panel`. 
+In the SIM panel, select the "MDOF" generator. Specify the **Floor Weights** based on the distribution given in :numref:`tbl-we14-2`. Replace the **Story Stiffness** with **k** to designate it as a random variable. Later the statistical properties of this random variable will be defined in the **RV** panel. Then, input damping, yield strength, hardening ratio and other parameters as shown in :numref:`fig-we14-SIM-panel`. 
 
 
 .. _tbl-we14-2:
@@ -121,7 +121,7 @@ In the SIM panel, select "MDOF" generator. Specify the **Floor Weights** based o
    :align: center
    :width: 75%
 
-   Define the structural properties in **SIM** panel
+   Define the structural properties in the **SIM** panel
 
 
 
@@ -166,7 +166,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
       :align: center
       :width: 100%
 
-      Define the computational grid in *Mesh* tab
+      Define the computational grid in the *Mesh* tab
 
 
    **Regional Refinements:**
@@ -192,7 +192,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    
    **Edge Refinements:**
    
-   Create additional refinements along the building edges by checking *Add Edge Refinements* option. See the figure below for the details.
+   Create additional refinements along the building edges by checking the *Add Edge Refinements* option. See the figure below for the details.
 
    .. figure:: figures/we14_EVT_Mesh_EdgeRefinement_tab.svg
       :align: center
@@ -202,7 +202,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    **Prism Layers:**
    
-   In the *Prism Layers* sub-tab,  uncheck *Add Prism Layers* option.
+   In the *Prism Layers* sub-tab, uncheck *Add Prism Layers* option.
 
    .. figure:: figures/we14_EVT_Mesh_PrismLayers_tab.svg
       :align: center
@@ -212,7 +212,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    **Run Mesh**
    
-   To generate the computational grid with all the refinements applied, click **Run Final Mesh** button in *Mesh* tab . Once meshing is done, in the side window, the model will be updated automatically displaying the generated grid. 
+   To generate the computational grid with all the refinements applied, click the **Run Final Mesh** button in the *Mesh* tab. Once meshing is done, in the side window, the model will be updated automatically displaying the generated grid. 
 
 
    .. figure:: figures/we14_EVT_Mesh_View.svg
@@ -225,7 +225,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    * Based on the values given in :numref:`tbl-we14-1`, set the **Velocity Scale** to 1, **Wind Speed At Reference Height** to :math:`60 m/s`, and the **Reference Height** as building height, which is :math:`442.1 m`. For the **Aerodynamic Roughness Length** use :math:`0.03 m`. Set  **Air Density** and **Kinematic Viscosity** to :math:`1.225 \, kg/m^3` and :math:`1.5 \times 10^{-5} \, m^2/s`, respectively. The Reynolds number (:math:`Re`) can be determined by clicking **Calculate** button, which gives :math:`1.77 \times 10^{9}`.
 
-   * At the **Inlet** of the domain use *MeanABL* which specifies a mean velocity profile based on the logarithmic profile. For **Outlet** set a *zeroPressureOutlet* boundary condition. On the **Side** and **Top** faces of the domain use *slip* wall boundary conditions. For the **Ground** surface, apply *roughWallFunction*. Finally, the **Building** surface, use *smoothWallFunction* assuming the building has a smooth surface.   
+   * At the **Inlet** of the domain use *MeanABL* which specifies a mean velocity profile based on the logarithmic profile. For **Outlet** set a *zeroPressureOutlet* boundary condition. On the **Side** and **Top** faces of the domain use *slip* wall boundary conditions. For the **Ground** surface, apply *roughWallFunction*. Finally, the **Building** surface uses *smoothWallFunction* assuming the building has a smooth surface.   
 
    .. figure:: figures/we14_EVT_BoundaryConditions.svg
       :align: center
@@ -233,13 +233,13 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
       Setup the *Boundary Conditions*  
 
-5. Specify turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. 
+5. Specify turbulence modeling, solver type, duration and time step options in the *Numerical Setup* tab. 
    
    * In **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**.
   
-   * For the **Solver Type**, specify *pisoFoam* and put 1 for **Number of Non-Orthogonal Correctors** to add an additional iteration for the non-orthogonal gird close to the building surface.  
+   * For the **Solver Type**, specify *pisoFoam* and put 1 for **Number of Non-Orthogonal Correctors** to add an additional iteration for the non-orthogonal grid close to the building surface.  
   
-   * For the **Duration** of the simulation, use :math:`1200 s` based on what is defined in :numref:`tbl-we14-1`. Determined the approximate **Time Steep** by clicking **Calculate** button. For this example, the estimated time step that give a Courant number close to unity is :math:`0.0143913 s`, which is changed to :math:`0.01 s` for convenience.  
+   * For the **Duration** of the simulation, use :math:`1200 s` based on what is defined in :numref:`tbl-we14-1`. Determined the approximate **Time Steep** by clicking the **Calculate** button. For this example, the estimated time step that gives a Courant number close to unity is :math:`0.0143913 s`, which is changed to :math:`0.01 s` for convenience.  
 
    * Check the **Run Simulation in Parallel** option and specify the **Number of Processors** to the 56. 
 
@@ -249,7 +249,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    :align: center
    :width: 75%
 
-   Edit inputs in *Numerical Setup* tab
+   Edit inputs in the *Numerical Setup* tab
 
 
 6. Monitor wind loads from the CFD simulation in the *Monitoring* tab.  
@@ -268,7 +268,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
 Finite Element Analysis
 """""""""""""""""""""""""
-The finite element analysis options, specified the **FEM** panel. For this example, keep the default values as seen in :numref:`fig-we14-FEM-panel`. 
+The finite element analysis options are specified in the **FEM** panel. For this example, keep the default values as seen in :numref:`fig-we14-FEM-panel`. 
 
 .. _fig-we14-FEM-panel:
 
@@ -310,14 +310,14 @@ Running the Simulation
 
 Results
 """""""""
-The status of the remote job can be tracked by clicking **GET from DesignSafe**. Once the remote job finishes, the results can be reloaded by selecting **Retrieve Data** option right-click clicking on the job name. Then, the results will be displayed in **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
+The status of the remote job can be tracked by clicking **GET from DesignSafe**. Once the remote job finishes, the results can be reloaded by selecting the **Retrieve Data** option by right-clicking on the job name. Then, the results will be displayed in the **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
 
       * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
       * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
       * 1-PID-3-1: represents  **peak inter-story drift ratio** of the **3rd floor** for **component 1** (x-dir) and
       * 1-RMSA-108-1: represents **root-mean-squared acceleration** of the **106th floor** for **component 1** (x-dir).   
 
-The *Summary* tab of the panel, shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
+The *Summary* tab of the panel shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
 
 .. figure:: figures/we14_RES_Summary.svg
    :align: center
@@ -325,7 +325,7 @@ The *Summary* tab of the panel, shows the four statistical moments of the EDPs w
 
    Summary of the recorded EDPs in **RES** panel
 
-By switching to *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
+By switching to the *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
 
 .. figure:: figures/we14_RES_DataValues.svg
    :align: center
@@ -338,7 +338,7 @@ By switching to *Data Values* tab, the user can also visualize all the realizati
 
 Flow visualization 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is clearly visible that important flow features such as vortex shading and turbulence at the wake are captured.  
+The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is visible that important flow features such as vortex shading and turbulence at the wake are captured.  
 
 .. _fig-we14-CFD-result:
 
