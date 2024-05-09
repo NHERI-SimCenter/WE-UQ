@@ -7,7 +7,7 @@ Digital Wind Tunnel II: Wind Loads on Isolated Building with Simple Geometry
 | Problem files  | :weuq-0013:`/`          |
 +----------------+-------------------------+
 
-This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building with simple box type geometry subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation are completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
+This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building with simple box-type geometry subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation is completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
 
 .. _fig-we13-1:
 
@@ -20,7 +20,7 @@ This example demonstrates a Computational Fluid Dynamics (CFD) based procedure f
 
 Target Experimental Measurement 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Relevant geometric and flow properties taken from TPU database are provided :numref:`tbl-we13-1` . These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
+Relevant geometric and flow properties taken from the TPU database are provided :numref:`tbl-we13-1` . These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
 
 .. _fig-we13-tpu-model:
 
@@ -64,15 +64,6 @@ Relevant geometric and flow properties taken from TPU database are provided :num
    |:math:`f_{s}`        |Sampling frequency (rate)                     | 1000             | Hz            | 
    +---------------------+----------------------------------------------+------------------+---------------+
 
-..
-   |:math:`H_{dom}`      |Domain height                                 | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`B_{dom}`      |Domain width                                  | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`L_{dom}`      |Domain length                                 | 0.4              | m             | 
-   +---------------------+----------------------------------------------+------------------+---------------+
-
-   Setup of the experimental model taken from TPU database [TPU2005]_.
 
 The upwind condition chosen for this example is open exposure type with a power-law coefficient :math:`\alpha = 1/6`, which approximately translates to a log-law aerodynamic roughness length of :math:`z_0 = 0.03` m. :numref:`fig-we13-2` shows the log-law fit of the mean velocity profile extracted from the experiment. The logarithmic mean velocity profile shown in the figure is expressed by: 
 
@@ -89,7 +80,7 @@ where :math:`u_*`, :math:`\kappa = 0.4` and :math:`d` are the shear friction vel
    u_* = \frac{\kappa U_H}{\log(H/z_0)}. 
 
 
-As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of the boundary layer height. However, in the upper part of the domain i.e., :math:`z > H(200 m)` it shows some deviation. For cases with larger deviations from log-law, a more accurate wind profiles developed by Deaves and Harris (D&H model) need to be used ([Cook1997]_). These profiles present a better description of the ABL turbulence and are also adopted in [ESDU2001]_ standards.  
+As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of the boundary layer height. However, in the upper part of the domain i.e., :math:`z > H(200 m)` it shows some deviation. For cases with larger deviations from the log-law, more accurate wind profiles developed by Deaves and Harris (D&H model) need to be used ([Cook1997]_). These profiles present a better description of the ABL turbulence and are also adopted in [ESDU2001]_ standards.  
 
 .. _fig-we13-2:
 
@@ -101,7 +92,7 @@ As shown in :numref:`fig-we13-2`, the log-law fit is reasonable for most part of
 
 
 .. note::
-   For ease of demonstration, in this example, the wind is assumed to a smooth flow with no significant upcoming turbulence. However, realistic wind load simulation needs to account the turbulence in the upcoming flow using appropriate inflow boundary conditions. 
+   For ease of demonstration, in this example, the wind is assumed to have a smooth flow with no significant upcoming turbulence. However, realistic wind load simulation needs to account for the turbulence in the upcoming flow using appropriate inflow boundary conditions. 
 
 The experiment was run for a duration :math:`T = 32.768s`. But for the CFD model, considering the computational cost of running long duration simulation, we used :math:`T = 10s`. Also, since we used smooth inflow boundary conditions at the inlet, the wind loads will converge faster as compared to the case with a turbulent inlet. For monitoring the forces from the CFD model, we will specify the same sampling rate used in experimental measurement (:math:`f_{s} = 1000 Hz`).    
 
@@ -118,7 +109,7 @@ In this example, the overall workflow is demonstrated by introducing uncertainty
 
 UQ Method
 """""""""""
-Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for UQ Method and specify "Dakota" for UQ Engine driver. For the UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
+Specify the details of uncertainty analysis in the **UQ** panel. This example uses forward uncertainty propagation. Select "Forward Propagation" for the UQ Method and specify "Dakota" for UQ Engine driver. For the UQ algorithm, use Latin Hypercube ("LHC"). Change the number of samples to 500 and set the seed to 101.
 
 .. figure:: figures/we13_UQ_panel.svg
    :align: center
@@ -131,7 +122,7 @@ General Information
 Next, in the **GI** panel, specify the properties of the building and the unit system. For the **# Stories** use 50 assuming a floor height of 4 m. Set the **Height**, **Width** and **Depth** to 200, 40 and 40 with a **Plan Area** of 1600. Define the units for **Force** and **Length** as "Newtons" and "Meters", respectively. 
 
    .. warning::
-      Note that the CFD model is created at a reduced or model scale (i.e., 1 to 400) just like the target wind tunnel model. However, the building dimensions specified here need to be in full-scale (actual building dimensions). 
+      Note that the CFD model is created at a reduced model scale (i.e., 1 to 400) just like the target wind tunnel model. However, the building dimensions specified here need to be in full-scale (actual building dimensions). 
 
 .. figure:: figures/we13_GI_panel.svg
    :align: center
@@ -159,15 +150,15 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 1. In the *Start* tab, specify the path where your CFD model will be saved by clicking **Browse** button. It is recommended to put it in the default path i.e., ``Documents\WE-UQ\LocalWorkDir\IsolatedBuildingCFD``. Select the **Version of OpenFOAM Distribution** to 9. Use the steps outlined in **Modeling Process** box to guide you through procedure. 
 
    .. note::
-      The CFD model are defined in metric system. Here after please use kilograms for **Mass**, meters for **Length**, second for **Time** and degrees for **Angle**. 
+      The CFD model is defined in the metric system. Here please use kilograms for **Mass**, meters for **Length**, seconds for **Time** and degrees for **Angle**. 
 
 .. figure:: figures/we13_EVT_Start_tab.svg
    :align: center
    :width: 800
 
-   Setup the path and version of OpenFOAM in *Start* tab
+   Setup the path and version of OpenFOAM in the *Start* tab
 
-2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domain dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*.
+2. Specify geometric details related to the building and computational domain in the *Geometry* tab. Set **Input Dimension Normalization** to *Relative* to the size of the domain relative to the building height. Change the **Geometric Scale** of the CFD simulation to 1 to 400 based on the experimental setup (see :numref:`tbl-we13-1`). Set the **Building Shape** to *Simple* as the study building is a simple square building. In the **Building Dimension and Orientation** box specify the **Wind Direction** as 0 to simulate wind incidence normal to the building face. Check the **COST Recommendation** to automatically calculate the domain dimensions based on the COST [Franke2007]_ recommendations. For the coordinate system, specify the **Absolute Origin** as *Building Bottom Center*.
 
    .. note::
       If the objective is to replicate a target wind tunnel setup fully, one might need to set the **Domain Length**, **Domain Width**, **Domain Height** and **Fetch Length** manually matching the dimensions of the actual testing facility.
@@ -176,7 +167,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    :align: center
    :width: 1100
 
-   Define the building and domain geometry in *Geometry* tab
+   Define the building and domain geometry in the *Geometry* tab
 
 
 3. Generate the computational grid in the *Mesh* tab. Follow these steps to set the mesh parameters:
@@ -189,11 +180,11 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
       :align: center
       :width: 1100
 
-      Define the computational grid in *Mesh* tab
+      Define the computational grid in the *Mesh* tab
 
    **Regional Refinements:**
    
-   Create 4 boxes to set different refinement regions using the table shown below. Each refinement box needs to have name, refinement level, min and max coordinates. Set the **Level** with successive increments of 1 (i.e., 1 for *Box1*, 2 for *Box2*, etc.). The **Mesh Size** for each region is automatically calculated and provided in the last column of the table.
+   Create 4 boxes to set different refinement regions using the table shown below. Each refinement box needs to have a name, refinement level, min and max coordinates. Set the **Level** with successive increments of 1 (i.e., 1 for *Box1*, 2 for *Box2*, etc.). The **Mesh Size** for each region is automatically calculated and provided in the last column of the table.
 
    .. figure:: figures/we13_EVT_Mesh_RegionalRefinement_tab.svg
       :align: center
@@ -214,7 +205,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
    
    **Edge Refinements:**
    
-   Select *Edge Refinements* sub-tab and check *Add Edge Refinements* box. For the **Refinement Level** use 7 effectively making the building edges have one level finer refinement than the rest of the building surface. Similarly, the estimated smallest cell size is given in **Approx. Smallest Mesh Size**.
+   Select the *Edge Refinements* sub-tab and check the *Add Edge Refinements* box. For the **Refinement Level** use 7 effectively making the building edges have one level finer refinement than the rest of the building surface. Similarly, the estimated smallest cell size is given in **Approx. Smallest Mesh Size**.
 
    .. figure:: figures/we13_EVT_Mesh_EdgeRefinement_tab.svg
       :align: center
@@ -224,7 +215,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    **Prism Layers:**
    
-   For this example no prism layers are added. Thus, in the *Prism Layers* sub-tab, uncheck *Add Prism Layers* box. However, for more accurate CFD simulation it is recommended to have prism layers.
+   For this example, no prism layers are added. Thus, in the *Prism Layers* sub-tab, uncheck the *Add Prism Layers* box. However, for more accurate CFD simulation it is recommended to have prism layers.
 
    .. figure:: figures/we13_EVT_Mesh_PrismLayers_tab.svg
       :align: center
@@ -234,7 +225,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    **Advanced Options:**
    
-   Use the default values for parameters in *Advanced Options* group. If you want to use more transition (buffer) cells between each refinement level, change **Number of Cells Between Levels** to a higher value. 
+   Use the default values for parameters in the *Advanced Options* group. If you want to use more transition (buffer) cells between each refinement level, change **Number of Cells Between Levels** to a higher value. 
 
    .. figure:: figures/we13_EVT_Mesh_AdvancedOptions.svg
       :align: center
@@ -244,7 +235,7 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
    **Run Mesh**
    
-   Once all mesh parameters are defined, click **Run snappyHexMesh** button to generate the final mesh. The progress of the mesh generation can be monitored on **Program Output**. When the mesh generation finishes successfully, the *Model View* window on the right side will get updated and the user can visualize the mesh. You can actively zoom, rotate and pan the generated mesh in 3D for a detailed view. The following figure shows an inside view of the computational domain after selecting a *Breakout* **View** option in the *Model View* panel. 
+   Once all mesh parameters are defined, click the **Run snappyHexMesh** button to generate the final mesh. The progress of the mesh generation can be monitored on **Program Output**. When the mesh generation finishes successfully, the *Model View* window on the right side will get updated and the user can visualize the mesh. You can actively zoom, rotate and pan the generated mesh in 3D for a detailed view. The following figure shows an inside view of the computational domain after selecting a *Breakout* **View** option in the *Model View* panel. 
 
    .. figure:: figures/we13_EVT_Mesh_Run.svg
       :align: center
@@ -270,13 +261,13 @@ In the **EVT** panel, for the **Load Generator** select "CFD - Wind Loads on Iso
 
       Setup the *Boundary Conditions*  
 
-5. Specify turbulence modeling, solver type, duration and time step options in *Numerical Setup* tab. 
+5. Specify turbulence modeling, solver type, duration and time step options in the *Numerical Setup* tab. 
    
    * For this example, since time-series of the wind forces are needed for the structural solver, we use transient CFD simulation. Thus, in **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**. The coefficients of the standard *Smagorinsky* model are printed in the following text box. 
   
    * For the **Solver Type** select *pisoFoam* in **Solver Selection** group . Set the **Number of Non-Orthogonal Correctors** to 1 to add additional solver iteration. This option will give better stability to the solver as the generated mesh is non-orthogonal (irregular) near the building surface.   
   
-   * Specify :math:`10 s` for the **Duration** of the simulation based on what is determined in :numref:`tbl-we13-1`. Compute the approximate **Time Steep** needed for a stable simulation by clicking **Calculate** button. Then, you can change the calculated time step to a slightly lower or higher value avoiding the use of long significant digits. For this example, the calculated value was :math:`8.67919 \times 10^{-05}` but it was changed to :math:`1.0 \times 10^{-04}` to make it a workable time step. Chose the **Constant** time step option. 
+   * Specify :math:`10 s` for the **Duration** of the simulation based on what is determined in :numref:`tbl-we13-1`. Compute the approximate **Time Steep** needed for a stable simulation by clicking **Calculate** button. Then, you can change the calculated time step to a slightly lower or higher value avoiding the use of long significant digits. For this example, the calculated value was :math:`8.67919 \times 10^{-05}` but it was changed to :math:`1.0 \times 10^{-04}` to make it a workable time step. Choose the **Constant** time step option. 
 
    * Check the **Run Simulation in Parallel** option and specify the **Number of Processors** to the 32. Depending on the number of grids used, the number of processors can be increased to a higher value. 
 
@@ -307,7 +298,6 @@ Finite Element Analysis
 """""""""""""""""""""""""
 To set the finite element analysis options, select the **FEM** panel. Here we will keep the default values as seen in :numref:`fig-we13-FEM-panel`. 
 
-.. Here we will change the entries to use Rayleigh damping, with rayleigh factor chosen using 1 and 6 modes. For the MDOF model generator, because it generates a model with two translational and 1 rotational degree-of-freedom in each direction and because we have provided the same k values in each translational direction, i.e. we will have duplicate eigenvalues, we specify as shown in the figure modes 1 and 6.
 
 .. _fig-we13-FEM-panel:
 
@@ -329,7 +319,7 @@ Next, select the quantity of interest from the analysis in the **EDP** panel. Th
 
 Random Variables
 """""""""""""""""
-The random variables are defined in **RV** tab. Here, the floor stiffness named as :math:`k` in **SIM** tab is automatically assigned as a random variable. Select *Normal* for the probability **Distribution** of the variable. Then, specify :math:`4 \times 10^{8}` for the **Mean** and :math:`4 \times 10^{7}` for **Standard Dev**. The user can also click **Show PDF** to inspect the probability density function of the variable as shown in :numref:`fig-we13-RV-panel` 
+The random variables are defined in the **RV** tab. Here, the floor stiffness named as :math:`k` in **SIM** tab is automatically assigned as a random variable. Select *Normal* for the probability **Distribution** of the variable. Then, specify :math:`4 \times 10^{8}` for the **Mean** and :math:`4 \times 10^{7}` for **Standard Dev**. The user can also click **Show PDF** to inspect the probability density function of the variable as shown in :numref:`fig-we13-RV-panel` 
 
 .. _fig-we13-RV-panel:
 
@@ -344,10 +334,10 @@ Running the Simulation
 Considering the high cost of running the CFD simulation, the whole workflow can only be run remotely. Thus, once setting up the workflow is completed, the user needs to first login to *DesignSafe* with their credential by clicking **Login** button at the top right corner of the window as seen :numref:`fig-we13-submit-job`. Then, by pressing **RUN at DesignSafe** information needed for submitting the job to the remote server is specified. Put a meaningful identifier for the **Job Name** e.g., "TPU_LES_Example1". Set **Num Nodes** to 1 and **# Processes Per Node** to 32. For **Max Run Time**, specify *17:00:00* which requests a total of 17 hours 0 minutes and 0 seconds. Finally, click the **Submit** button to send the job to *DesignSafe*   
 
    .. note::
-      We know 17 hours is a really long time!! This is quite common in most LES-based wind loads evaluation studies. If you only want to test the example, please set **Duration** of the simulation in **Numerical Setup** tab of the **EVT** panel to a smaller value, say :math:`0.1s`, and submit the simulation.
+      We know 17 hours is a really long time!! This is quite common in most LES-based wind load evaluation studies. If you only want to test the example, please set the **Duration** of the simulation in the **Numerical Setup** tab of the **EVT** panel to a smaller value, say :math:`0.1s`, and submit the simulation.
 
    .. warning::
-      Note that the total number of processors used in the simulation equals **Num Nodes** :math:`\times` **# Processes Per Node**. This value must be the same as what is specified for **Number of Processors** in **Numerical Setup** tab of the CFD model (see :numref:`fig-we13-CFD-num-setup`). 
+      Note that the total number of processors used in the simulation equals **Num Nodes** :math:`\times` **# Processes Per Node**. This value must be the same as what is specified for the **Number of Processors** in the **Numerical Setup** tab of the CFD model (see :numref:`fig-we13-CFD-num-setup`). 
 
    .. warning::
       If the simulation cannot finish within the allocated time, it will be terminated and none of your remote simulation data can be retried. Thus, it is recommended to make **Max Run Time** slightly longer than what is needed to be safe.
@@ -362,7 +352,7 @@ Considering the high cost of running the CFD simulation, the whole workflow can 
 
 **Monitor the Simulation**
 
-The progress (status) of the submitted job can be tracked by clicking **GET from DesignSafe**. A new window pops up showing all the jobs run on *DesignSafe*. Here right-click the name of your job, and select **Refresh Job** option to update the status of the job. If the job started the table will show *RUNNING* for the status. When the simulation is completed it will show *FINISHED*.   
+The progress (status) of the submitted job can be tracked by clicking **GET from DesignSafe**. A new window pops up showing all the jobs run on *DesignSafe*. Here right-click the name of your job, and select the **Refresh Job** option to update the status of the job. If the job started the table will show *RUNNING* for the status. When the simulation is completed it will show *FINISHED*.   
 
 .. _fig-we13-monitor-job:
 
@@ -374,7 +364,7 @@ The progress (status) of the submitted job can be tracked by clicking **GET from
 
 Results
 """""""""
-Once the remote job finishes, the results can be reloaded by clicking **Retrieve Data** option in :numref:`fig-we13-monitor-job`. Then, the results will be displayed in **RES** tab. For the *Standard* EDP chosen the responses monitored are displayed for each floor and direction. For example, the naming of the EDPs with:  
+Once the remote job finishes, the results can be reloaded by clicking the **Retrieve Data** option in :numref:`fig-we13-monitor-job`. Then, the results will be displayed in the **RES** tab. For the *Standard* EDP chosen the responses monitored are displayed for each floor and direction. For example, the naming of the EDPs with:  
 
       * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
       * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
@@ -389,7 +379,7 @@ The four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewne
 
    Summary of the recorded EDPs in **RES** panel
 
-In addition, by switching to *Data Values* tab, you can see all the realizations of the simulation and inspect the relationships between different entries. For instance, if you want to visualize the variation of the top-floor acceleration with floor stiffness, right-click "1-RMSA-50-2" column in the table. This will show the root-mean-squared acceleration in the cross-wind direction for all runs as shown on the left side of :numref:`fig-we13-RES-scatter`. As you might expect, the floor acceleration generally decreases as the building becomes more stiff.   
+In addition, by switching to the *Data Values* tab, you can see all the realizations of the simulation and inspect the relationships between different entries. For instance, if you want to visualize the variation of the top-floor acceleration with floor stiffness, right-click the "1-RMSA-50-2" column in the table. This will show the root-mean-squared acceleration in the cross-wind direction for all runs as shown on the left side of :numref:`fig-we13-RES-scatter`. As you might expect, the floor acceleration generally decreases as the building becomes more stiff.   
 
 .. _fig-we13-RES-scatter:
 
@@ -410,7 +400,7 @@ Visualizing the CFD Output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The simulated case directory can be directly accessed on the *DesignSafe* data depot and visualized remotely using Paraview. The following plots show sample visualization of the instantaneous flow field.  
 
-In :numref:`fig-we13-CFD-result1`, the streamlines of the approaching flow, as it passes around the building, are shown. On the building surface, the result pressure coefficient are displayed. It also shows the inside view of the mesh underlying.    
+In :numref:`fig-we13-CFD-result1`, the streamlines of the approaching flow, as it passes around the building, are shown. On the building surface, the calculated pressure coefficients are displayed. It also shows the inside view of the mesh underlying.    
 
 .. _fig-we13-CFD-result1:
 
@@ -431,7 +421,7 @@ Similarly, in :numref:`fig-we13-CFD-result2`, the instantaneous velocity contour
    Instantaneous velocity field around the building.
 
 
-.. [Cook1997] Cook, N.J., 1997. The Deaves and Harris ABL model applied to heterogeneous terrain. Journal of wind engineering and industrial aerodynamics, 66(3), pp.197-214.
+.. [Cook1997] Cook, N.J., 1997. The Deaves and Harris ABL model applied to heterogeneous terrain. Journal of Wind Engineering and Industrial Aerodynamics, 66(3), pp.197-214.
 
 .. [ESDU2001] ESDU, I., 2001. Characteristics of Atmospheric Turbulence Near the Ground—Part II: Single Point Data for Strong Winds (Neutral Atmosphere). Engineering Sciences Data Unit, IHS Inc., London, UK, Report No. ESDU, 85020.
 

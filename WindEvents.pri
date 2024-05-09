@@ -42,6 +42,16 @@ SOURCES += \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultDisplay.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingCFD.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingVTKRendering.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingGeometricInput.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingSnappyHexMesh.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingBoundaryConditions.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingTurbulenceModeling.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingNumericalSetup.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingWindCharacteristics.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingResultMonitoring.cpp \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingResultDisplay.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.cpp \
     $$PWD/EVENTS/ExpertCFD/CFDExpertWidget.cpp \
@@ -109,6 +119,16 @@ HEADERS  += \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyWindCharacteristics.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultMonitoring.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyResultDisplay.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingCFD.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingVTKRendering.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingGeometricInput.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingSnappyHexMesh.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingBoundaryConditions.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingTurbulenceModeling.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingNumericalSetup.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingWindCharacteristics.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingResultMonitoring.h \
+    $$PWD/EVENTS/SurroundedBuildingCFD/SurroundedBuildingResultDisplay.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDanalysisType.h \
     $$PWD/EVENTS/ExpertCFD/CFDanalysis/CFDcaseInstance.h \
     $$PWD/EVENTS/ExpertCFD/SimCenter_widgets/sctrstates.h \

@@ -59,6 +59,7 @@ class IsolatedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
+class vtkMultiBlockDataSet;
 
 class ResultMonitoringWidget: public SimCenterAppWidget
 {
@@ -134,8 +135,14 @@ private:
    QPushButton          *openCSVFile;
    QPushButton          *showCoordinateOfPoints;
 
-   void visCoordinateOfPoints(QGridLayout*);
    QList<QVector3D> calculatePointCoordinates();
+
+
+   void writeSamplingPoints(QList<QVector3D> points);
+
+   //Read a block from mesh
+   template <class Type>
+   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
 
 public:
 

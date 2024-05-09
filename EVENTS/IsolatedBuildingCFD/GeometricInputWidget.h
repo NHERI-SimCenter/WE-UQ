@@ -97,6 +97,7 @@ public slots:
     void onSTLOkButtonClicked();
     void onSTLImportButtonClicked();
     void onSTLCancelButtonClicked();
+    void onGenerateBuildingSTL();
 
 private:
 
@@ -131,6 +132,7 @@ private:
    QLineEdit            *buildingWidthWidget;
    QLineEdit            *buildingDepthWidget;
    QLineEdit            *buildingHeightWidget;
+   QPushButton          *generateBuildingSTL;
 
    QLineEdit            *geometricScaleWidget;
    QSpinBox             *windDirectionWidget;

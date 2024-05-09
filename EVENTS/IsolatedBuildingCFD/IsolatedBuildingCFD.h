@@ -66,6 +66,7 @@ class QPushButton;
 class QCheckBox;
 class QFormLayout;
 class QLabel;
+class vtkPolyData;
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -124,6 +125,8 @@ public:
 
     //Returns the smallest mesh size on the building
     double getTimeStep();
+
+    vtkPolyData* getBldgBlock();
 
 signals:
 

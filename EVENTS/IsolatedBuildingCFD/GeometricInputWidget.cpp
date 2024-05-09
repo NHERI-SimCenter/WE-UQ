@@ -120,7 +120,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     theBuildingButton->setIcon(pixmapFlat);
     theBuildingButton->setIconSize(pixmapFlat.rect().size()*.30);
     theBuildingButton->setFixedSize(pixmapFlat.rect().size()*.30);
-    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 4, 1, Qt::AlignVCenter);
+    buildingInformationLayout->addWidget(theBuildingButton, 0, 0, 5, 1, Qt::AlignVCenter);
 
     QLabel *buildingWidthLabel = new QLabel("Building Width:");
     buildingWidthWidget = new QLineEdit();
@@ -135,11 +135,13 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     buildingHeightWidget->setText("182.88");
 
     QLabel *windDirectionLabel = new QLabel("Wind Direction:");
-//    QLabel *angleUnit = new QLabel("degrees");
     windDirectionWidget = new QSpinBox;
     windDirectionWidget->setRange(0, 90);
     windDirectionWidget->setSingleStep(10);
     windDirectionWidget->setValue(0);
+
+    generateBuildingSTL = new QPushButton("Generate STL Geometry");
+
 
     QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
     domainLengthWidget = new QLineEdit();
@@ -208,7 +210,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     buildingInformationLayout->addWidget(windDirectionLabel, 3, 1);
     buildingInformationLayout->addWidget(windDirectionWidget, 3, 3);
-//    buildingInformationLayout->addWidget(angleUnit, 4, 2);
+    buildingInformationLayout->addWidget(generateBuildingSTL, 4, 1, 1, 3);
 
     domainInformationLayout->addWidget(domainLengthLabel,0,0);
     domainInformationLayout->addWidget(domainLengthWidget,0,1);
@@ -252,6 +254,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
     connect(buildingShape, SIGNAL(currentTextChanged(QString)), this, SLOT(buildingShapeChanged(QString)));
     connect(importSTLButton, SIGNAL(clicked()), this, SLOT(onImportSTLButtonClicked()));
+    connect(generateBuildingSTL, SIGNAL(clicked()), this, SLOT(onGenerateBuildingSTL()));
 
     //Disable editing in the event section
     buildingWidthWidget->setEnabled(false);
@@ -441,11 +444,13 @@ void GeometricInputWidget::buildingShapeChanged(const QString &arg)
     {
         importSTLButton->setEnabled(false);
         importSTLLabel->setEnabled(false);
+        generateBuildingSTL->setEnabled(true);
     }
     else if(arg == "Complex")
     {
         importSTLButton->setEnabled(true);
         importSTLLabel->setEnabled(true);
+        generateBuildingSTL->setEnabled(false);
     }
 }
 
@@ -751,4 +756,13 @@ void GeometricInputWidget::onSTLOkButtonClicked()
 void GeometricInputWidget::onSTLCancelButtonClicked()
 {
     importSTLDialog->close();
+}
+
+void  GeometricInputWidget::onGenerateBuildingSTL()
+{
+    if(buildingShape->currentText() == "Simple")
+    {
+        mainModel->writeOpenFoamFiles();
+        mainModel->reloadMesh();
+    }
 }

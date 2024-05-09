@@ -93,7 +93,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
 bool IsolatedBuildingCFD::initialize()
 {
     femSpecific = 0;
-    const int windowWidth = 850;
+    const int windowWidth = 900;
 
     mainWindowLayout = new QHBoxLayout();
 
@@ -702,9 +702,13 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     turbulenceModeling->inputFromJSON(jsonObject);
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
+    reloadMesh();
 
-    //Run a background mesh after loading JSON File
-//    snappyHexMesh->onRunBlockMeshClicked();
+    //Update the GI Tabe once the data is read
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    theGI->setLengthUnit("m");
+    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
 
     return true;
 }
@@ -1075,4 +1079,8 @@ double IsolatedBuildingCFD::getTimeStep()
 }
 
 
+vtkPolyData* IsolatedBuildingCFD::getBldgBlock()
+{
+    return visWidget->getBldgBlock();
+}
 
