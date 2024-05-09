@@ -197,7 +197,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     manager->get(QNetworkRequest(QUrl("http://opensees.berkeley.edu/OpenSees/developer/eeuq/use.php")));
 
     //
-    // set the defults in the General Info
+    // set the defaults in the General Info
     //
 
     theGI->setDefaultProperties(1,144,360,360,37.8715,-122.2730);
@@ -225,8 +225,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
-  //  QString appName = "simcenter-weuq-empty-domain-1.0.0";
-  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
+//    QString appName = "simcenter-weuq-empty-domain-1.0.0";
+//  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
+  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1";
+
   QList<QString> queues; queues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");

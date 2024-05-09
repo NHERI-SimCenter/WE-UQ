@@ -1,5 +1,5 @@
-#ifndef SIMCENTER_VTK_RENDERING_WIDGET_H
-#define SIMCENTER_VTK_RENDERING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_VTK_RENDERING_H
+#define SURROUNDED_BUILDING_VTK_RENDERING_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -65,30 +65,32 @@ class vtkMultiBlockDataSet;
 class vtkPolyDataMapper;
 class vtkNamedColors;
 class vtkOrientationMarkerWidget;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class vtkPolyData;
 class vtkSTLReader;
 class vtkCleanPolyData;
-class SimCenterVTKRenderingWidget: public SimCenterAppWidget
+class SurroundedBuildingVTKRendering: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
     Q_OBJECT
 
 public:
-    explicit SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent = 0);
-    ~SimCenterVTKRenderingWidget();
+    explicit SurroundedBuildingVTKRendering(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingVTKRendering();
 
     void initialize();
     void readAllMesh();
     void readBuildingSurfaceMesh();
+    void readSurroundingsSurfaceMesh();
     void readBreakOutSurfaceMesh();
     void showAllMesh();
     void showBreakout();
-    void showBuildingOnly();
+    void showMainBuildingOnly();
+    void showSurroundingsOnly();
+    void showAllBuildingsOnly();
 
     bool isInitialized();
     void drawAxisAndLegend();
-    vtkPolyData* getBldgBlock();
 
 signals:
 
@@ -99,10 +101,8 @@ public slots:
    void onReloadCaseClicked();
    void onTransparencyChanged(const int value);
 
-
-
 private:
-   IsolatedBuildingCFD *mainModel;
+   SurroundedBuildingCFD *mainModel;
 
    QVBoxLayout  *layout;
    QGridLayout  *menueLayout;
@@ -127,14 +127,17 @@ private:
 
    vtkSmartPointer<vtkOpenFOAMReader> foamReader;
    vtkSmartPointer<vtkSTLReader> bldgSTLReader;
+   vtkSmartPointer<vtkSTLReader> surrSTLReader;
 
    vtkSmartPointer<vtkDataSetMapper> allMeshMapper;
    vtkSmartPointer<vtkDataSetMapper> breakOutMapper;
    vtkSmartPointer<vtkDataSetMapper> buildingMapper;
+   vtkSmartPointer<vtkDataSetMapper> surroundingsMapper;
 
    vtkNew<vtkActor> allMeshActor;
    vtkNew<vtkActor> breakOutActor;
    vtkNew<vtkActor> buildingActor;
+   vtkNew<vtkActor> surroundingsActor;
 
    vtkNew<vtkRenderer> renderer; // VTK Renderer
    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow;
@@ -162,4 +165,4 @@ private:
 
 };
 
-#endif // SIMCENTER_VTK_RENDERING_WIDGET_H
+#endif // SURROUNDED_BUILDING_VTK_RENDERING_H

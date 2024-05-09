@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_RESULT_DISPLAY_H
+#define SURROUNDED_BUILDING_RESULT_DISPLAY_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,7 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include <SimCenterAppWidget.h>
+#include <SC_ResultsWidget.h>
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -55,22 +55,22 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingResultDisplay: public SC_ResultsWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingResultDisplay(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingResultDisplay();
 
-    bool outputToJSON(QJsonObject &jsonObject);
+    //bool outputToJSON(QJsonObject &jsonObject);
+    int processResults(QString &outputFile, QString &dirName);    
     bool inputFromJSON(QJsonObject &jsonObject);
     void updateWidgets();
 
@@ -78,74 +78,36 @@ signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void onPlotProfileClicked(void);
+   void onPlotSpectraClicked(void);
+   void onPlotPressureClicked(void);
+   bool simulationCompleted();
+
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   SurroundedBuildingCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *plotWindProfileGroup;
+   QGridLayout          *plotWindProfileLayout;
+   QPushButton          *plotProfile;
+   QComboBox            *profileNameU;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QGroupBox            *plotSpectraGroup;
+   QGridLayout          *plotSpectraLayout;
+   QPushButton          *plotSpectra;
+   QComboBox            *profileNameS;
+   QComboBox            *locationS;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
-
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
-
-
-   void writeSamplingPoints(QList<QVector3D> points);
-
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   QGroupBox            *plotPressureGroup;
+   QGridLayout          *plotPressureLayout;
+   QPushButton          *plotPressure;
+   QComboBox            *profileNameP;
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_RESULT_DISPLAY_H

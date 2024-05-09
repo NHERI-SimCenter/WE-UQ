@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_WIND_CHARACTERISTICS_H
+#define SURROUNDED_BUILDING_WIND_CHARACTERISTICS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,97 +55,57 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingWindCharacteristics: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingWindCharacteristics(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingWindCharacteristics();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
+
     void updateWidgets();
+
+    double getTimeScale();
+
 
 signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void onCalculateReynoldsNumber();
+   void onVelocityScaleChanged();
+
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   SurroundedBuildingCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *windCharacteristicsGroup;
+   QGridLayout          *windCharacteristicsLayout;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
-
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
-
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
-
-
-   void writeSamplingPoints(QList<QVector3D> points);
-
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   QLineEdit            *velocityScale;
+   QLineEdit            *timeScale;
+   QLineEdit            *referenceWindSpeed;
+   QLineEdit            *referenceHeight;
+   QLineEdit            *airDensity;
+   QLineEdit            *kinematicViscosity;
+   QLineEdit            *reynoldsNumber;
+   QLineEdit            *aerodynamicRoughnessLength;
+   QPushButton          *calculateReynoldsNumber;
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_WIND_CHARACTERISTICS_H

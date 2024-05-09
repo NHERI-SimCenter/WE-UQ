@@ -18,7 +18,7 @@ This project collaborates with the University of Florida (UF) NHERI Experimental
 
    UF's BLWT facility [#Catarelli2020]_.
 
-The Digital Wind Tunnel would allow users to edit the geometric information and inflow conditions through a user interface of WE-UQ, and run the CFD simulations to obtain the aerodynamic loads on structures aided by the open-source CFD software named OpenFOAM and structural responses aided by OpenSees. Compared to traditional physical wind tunnel, the digital wind tunnel would allow for great flexibility in testing different designs and wind scenarios, and has free access to the TACC Frontera computing nodes. In particular, in the Digital Wind Tunnel, the empty domain analysis enables users to simulate the atmospheric boundary layer flows with the user-defined inflow wind characteristics including mean wind velocity profiles, Reynolds stress tensor and length scales. The mean flow structure can also be captured downstream using the sampling functions in OpenFOAM, which can be further validated through the wind tunnel data.
+The Digital Wind Tunnel would allow users to edit the geometric information and inflow conditions through a user interface of WE-UQ, and run the CFD simulations to obtain the aerodynamic loads on structures aided by the open-source CFD software named OpenFOAM and structural responses aided by OpenSees. Compared to traditional physical wind tunnels, the digital wind tunnel would allow for great flexibility in testing different designs and wind scenarios and has free access to the TACC Frontera computing nodes. In particular, in the Digital Wind Tunnel, the empty domain analysis enables users to simulate the atmospheric boundary layer flows with the user-defined inflow wind characteristics including mean wind velocity profiles, Reynolds stress tensor and length scales. The mean flow structure can also be captured downstream using the sampling functions in OpenFOAM, which can be further validated through the wind tunnel data.
 
 .. figure:: figures/DWTsketch.png
    :align: center
@@ -39,7 +39,7 @@ The first step to run a CFD simulation in the Digital Wind Tunnel is to set up a
 
    Directory structure for an OpenFOAM case.
 
-To run a simulation in the Digital Wind Tunnel, select the **EVT** panel in the user interface. From the Load Generator, pull down menu and select the **CFD - Digital Wind Tunnel**. The CFD model can be uploaded by pressing the **Browse** button in the section of **OpenFOAM Parameters**.
+To run a simulation in the Digital Wind Tunnel, select the **EVT** panel in the user interface. From the Load Generator, pull-down menu and select the **CFD - Digital Wind Tunnel**. The CFD model can be uploaded by pressing the **Browse** button in the section of **OpenFOAM Parameters**.
 
 .. figure:: figures/User-interface.png
    :align: center
@@ -79,9 +79,9 @@ Alternatively, users can run a CFD simulation using the benchmark CFD model embe
 Inflow configurations in the Digital Wind Tunnel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After the mesh generation and basic configurations for CFD modeling have been established, it is crucial to generate inflow turbulence that conforms to the desired atmospheric boundary layer flows. This step is essential in setting up a CFD model that can accurately simulate atmospheric flows across a broad spectrum of length and time scales. One common approach to generating inflow turbulence is to use synthetic inflow generation, which involves synthesizing turbulent fluctuations at the inflow boundary based on statistical properties of the turbulence. 
+After the mesh generation and basic configurations for CFD modeling have been established, it is crucial to generate inflow turbulence that conforms to the desired atmospheric boundary layer flows. This step is essential in setting up a CFD model that can accurately simulate atmospheric flows across a broad spectrum of length and time scales. One common approach to generating inflow turbulence is to use synthetic inflow generation, which involves synthesizing turbulent fluctuations at the inflow boundary based on the statistical properties of the turbulence. 
 
-In the Digital Wind Tunnel, the synthetic inflow turbulence generation is enabled by the Turbulence Inflow Tool (TInF) developed by the NHERI SimCenter. Multiple synthetic inflow generation approaches are implemented in TInF, including the Digital Filtering Method and Synthetic Eddy Method. The TInF tool can utilize the statistical properties defined by users to produce a time series of turbulent fluctuations at the inflow boundary, which can then be integrated into WE-UQ for running a CFD simulations. The TInF tool can be directly downloaded from `github website <https://github.com/NHERI-SimCenter/SimCenterDocumentation/>`_.
+In the Digital Wind Tunnel, the synthetic inflow turbulence generation is enabled by the Turbulence Inflow Tool (TInF) developed by the NHERI SimCenter. Multiple synthetic inflow generation approaches are implemented in TInF, including the Digital Filtering Method and Synthetic Eddy Method. The TInF tool can utilize the statistical properties defined by users to produce a time series of turbulent fluctuations at the inflow boundary, which can then be integrated into WE-UQ for running CFD simulations. The TInF tool can be directly downloaded from `github website <https://github.com/NHERI-SimCenter/SimCenterDocumentation/>`_.
 
 There are two ways to specify the user-defined inflow boundary conditions that characterize the desired atmospheric boundary layer flows: *direct specification* and *specification via prescribed functions*.
 
@@ -139,7 +139,7 @@ If the wind tunnel data is not available, the user can also specify the inflow c
 
    Inflow configuration using embedded functions.
 
-The Digital Wind Tunnel offers several methods to generate synthetic turbulence at the inflow boundary, including digital filtering method. When a user selects a particular method, the Digital Wind Tunnel will modify the corresponding OpenFOAM case files based on the user's inputs. For instance, if the digital filtering approach is selected, WE-UQ will automatically modify the inflow file *U* in the OpenFOAM case directory to set up the basic parameters for the approach.
+The Digital Wind Tunnel offers several methods to generate synthetic turbulence at the inflow boundary, including the digital filtering method. When a user selects a particular method, the Digital Wind Tunnel will modify the corresponding OpenFOAM case files based on the user's inputs. For instance, if the digital filtering approach is selected, WE-UQ will automatically modify the inflow file *U* in the OpenFOAM case directory to set up the basic parameters for the approach.
 
 The related entries are in the form of
 

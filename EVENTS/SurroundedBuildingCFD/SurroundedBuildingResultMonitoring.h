@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_RESULT_MONITORING_H
+#define SURROUNDED_BUILDING_RESULT_MONITORING_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,20 +55,19 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingResultMonitoring: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingResultMonitoring(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingResultMonitoring();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -78,74 +77,46 @@ signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void onAddProfileClicked();
+   void onRemoveProfileClicked();
+   void onShowProfilesClicked();
+   void onAddPlaneClicked();
+   void onRemovePlaneClicked();
+   void onMonitorProfileChecked(int);
+   void onMonitorPlaneChecked(int);
+
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   SurroundedBuildingCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *monitorWindProfileGroup;
+   QGridLayout          *monitorWindProfileLayout;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QTableWidget         *profileTable;
+   QSpinBox             *profileWriteInterval;
+   QLineEdit            *profileStartTime;
+   QCheckBox            *monitorProfile;
+   QPushButton          *addProfile;
+   QPushButton          *removeProfile;
+   QPushButton          *showProfiles;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
+   QGroupBox            *vtkSampleGroup;
+   QGridLayout          *vtkSampleLayout;
+   QTableWidget         *vtkSampleTable;
+   QSpinBox             *vtkWriteInterval;
+   QCheckBox            *monitorVTKPlane;
+   QPushButton          *addPlane;
+   QPushButton          *removePlane;
+   QPushButton          *showPlane;
 
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
-
-
-   void writeSamplingPoints(QList<QVector3D> points);
-
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   void initializeProfileTable(int nProfile);
+   void initializeVTKTable(int nVtk);
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_RESULT_MONITORING_H

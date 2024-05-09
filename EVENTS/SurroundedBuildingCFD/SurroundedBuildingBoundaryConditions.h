@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDEDBUILDING_BOUNDARY_CONDITIONS_H
+#define SURROUNDEDBUILDING_BOUNDARY_CONDITIONS_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -37,7 +37,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written by: Abiy
+// Written by: Abiy Melaku
 
 #include <SimCenterAppWidget.h>
 
@@ -46,106 +46,69 @@ class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
 class QVBoxLayout;
-class QHBoxLayout;
 class QSpinBox;
-class QCheckBox;
 class QLineEdit;
 class LineEditRV;
-class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
-class QDoubleSpinBox;
-class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
+class SurroundedBuildingCFD;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingBoundaryConditions: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
-
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingBoundaryConditions(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingBoundaryConditions();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
-    void updateWidgets();
+    bool readCSV(QString & fileName);
 
 signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void inletBCTypeChanged(const QString &arg1);
+   void inflowTimeStepChanged(const QString &arg1);
+   void windProfileOptionChanged(const QString &arg1);
+   void onImportWindProfilesClicked();
+   void onShowWindProfilesClicked();
 
 private:
+   SurroundedBuildingCFD  *mainModel;
 
-   IsolatedBuildingCFD  *mainModel;
+   QVBoxLayout  *layout;
 
-   QVBoxLayout          *layout;
+   QComboBox    *inletBCType;
+   QComboBox    *outletBCType;
+   QComboBox    *sidesBCType;
+   QComboBox    *topBCType;
+   QComboBox    *groundBCType;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QRadioButton *inflowDFSR;
+   QRadioButton *inflowDFM;
+   QRadioButton *inflowSEM;
+   QRadioButton *inflowDFSEM;
+   QRadioButton *inflowTSM;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QLineEdit    *inflowTimeStep;
+   QLineEdit    *inflowMaxFreq;
+   QLineEdit    *IScale;
+   QLineEdit    *LScale;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
+   QGroupBox    *inflowGroup;
+   QGridLayout  *inflowLayout;
 
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
+   QComboBox    *windProfileOption;
+   QPushButton  *importWindProfiles;
+   QPushButton  *showWindProfiles;
+   QList<QList<double>> windProfiles;
+   QString         windProfilePath = "";
 
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
-
-
-   void writeSamplingPoints(QList<QVector3D> points);
-
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
-
-public:
-
+   RandomVariablesContainer *theRandomVariablesContainer;
+   QStringList varNamesAndValues;
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_BOUNDARY_CONDITIONS_H

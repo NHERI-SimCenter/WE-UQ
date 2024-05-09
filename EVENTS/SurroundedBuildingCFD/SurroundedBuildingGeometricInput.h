@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_GEOMETRIC_INPUT_H
+#define SURROUNDED_BUILDING_GEOMETRIC_INPUT_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,97 +55,100 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
+class QDialog;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class  SurroundedBuildingGeometricInput: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit  SurroundedBuildingGeometricInput(SurroundedBuildingCFD *parent = 0);
+    ~ SurroundedBuildingGeometricInput();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
+
+
     void updateWidgets();
+
+    QVector<double> coordSysOrigin();
+
+    double convertToMeter(double dim, QString units);
+    double convertFromMeter(double dim, QString units);
+
+    //Returns a dimention normalized by the building height
+    double getNormDim(double dim);
 
 signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+    void originChanged(const QString &arg);
+    void useCOSTOptionChecked(int);
+    void onGenerateSurroundings();
+
+
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
-
    QVBoxLayout          *layout;
+   SurroundedBuildingCFD *mainModel;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QLineEdit            *buildingWidthWidget;
+   QLineEdit            *buildingDepthWidget;
+   QLineEdit            *buildingHeightWidget;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QLineEdit            *geometricScaleWidget;
+   QSpinBox             *windDirectionWidget;
+   QPushButton          *theBuildingButton;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
+   QLineEdit            *surroundingBuildingsWidthWidget;
+   QLineEdit            *surroundingBuildingsDepthWidget;
+   QLineEdit            *surroundingBuildingsHeightWidget;
+   QPushButton          *theSurroundingsButton;
+   QPushButton          *generateSurroundings;
 
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
+   QLineEdit            *streetWidthWidget;
+   QLineEdit            *boundingRadiusWidget;
+   QSpinBox             *randomnessWidget;
 
 
-   void writeSamplingPoints(QList<QVector3D> points);
+   QLineEdit            *domainLengthWidget;
+   QLineEdit            *domainWidthWidget;
+   QLineEdit            *domainHeightWidget;
 
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   QLineEdit            *fetchLengthWidget;
+
+   QCheckBox            *useCOSTDimWidget;
+
+   QComboBox            *originOptions;
+
+   QLineEdit            *originXWidget;
+   QLineEdit            *originYWidget;
+   QLineEdit            *originZWidget;
+
+   QGroupBox            *surroundingBuildingsGroup;
+   QGridLayout          *surroundingBuildingsLayout;
+
+   QGroupBox            *buildingInformationGroup;
+   QGridLayout          *buildingInformationLayout;
+
+   QGroupBox            *domainInformationGroup;
+   QGridLayout          *domainInformationLayout;
+
+   QWidget              *buildingAndDomainInformationGroup;
+   QGridLayout          *buildingAndDomainInformationLayout;
+
+   QGroupBox            *coordinateSystemGroup;
+   QGridLayout          *coordinateSystemLayout;
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_GEOMETRIC_INPUT_H

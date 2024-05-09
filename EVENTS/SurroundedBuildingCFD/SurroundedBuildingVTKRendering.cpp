@@ -36,8 +36,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include "SimCenterVTKRenderingWidget.h"
-#include "IsolatedBuildingCFD.h"
+#include "SurroundedBuildingVTKRendering.h"
+#include "SurroundedBuildingCFD.h"
 #include <QPushButton>
 #include <QScrollArea>
 #include <QLabel>
@@ -115,13 +115,13 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTransform.h>
 #include <vtkCaptionActor2D.h>
 
-SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent)
+SurroundedBuildingVTKRendering::SurroundedBuildingVTKRendering(SurroundedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     initialize();
 }
 
-void SimCenterVTKRenderingWidget::initialize()
+void SurroundedBuildingVTKRendering::initialize()
 {
     layout = new QVBoxLayout();
 
@@ -150,7 +150,9 @@ void SimCenterVTKRenderingWidget::initialize()
     viewObject = new QComboBox();
     viewObject->addItem("AllMesh");
     viewObject->addItem("Breakout");
-    viewObject->addItem("Building");
+    viewObject->addItem("MainBuilding");
+    viewObject->addItem("Surroundings");
+    viewObject->addItem("AllBuildings");
 
     transparency = new QSlider(Qt::Orientation::Horizontal);
     transparency->setRange(0, 100);
@@ -189,30 +191,33 @@ void SimCenterVTKRenderingWidget::initialize()
     allMeshActor->GetProperty()->SetRepresentationToSurface();
     breakOutActor->GetProperty()->SetRepresentationToSurface();
     buildingActor->GetProperty()->SetRepresentationToSurface();
+    surroundingsActor->GetProperty()->SetRepresentationToSurface();
 
     allMeshActor->GetProperty()->SetEdgeVisibility(true);
     breakOutActor->GetProperty()->SetEdgeVisibility(true);
     buildingActor->GetProperty()->SetEdgeVisibility(true);
+    surroundingsActor->GetProperty()->SetEdgeVisibility(true);
 }
 
 
-SimCenterVTKRenderingWidget::~SimCenterVTKRenderingWidget()
+SurroundedBuildingVTKRendering::~SurroundedBuildingVTKRendering()
 {
 
 }
 
-void SimCenterVTKRenderingWidget::clear(void)
+void SurroundedBuildingVTKRendering::clear(void)
 {
 
 }
 
-void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &arg1)
+void SurroundedBuildingVTKRendering::surfaceRepresentationChanged(const QString &arg1)
 {
     if (arg1 == "Wireframe")
     {
         allMeshActor->GetProperty()->SetRepresentationToWireframe();
         breakOutActor->GetProperty()->SetRepresentationToWireframe();
         buildingActor->GetProperty()->SetRepresentationToWireframe();
+        surroundingsActor->GetProperty()->SetRepresentationToWireframe();
     }
     else if (arg1 == "SurfaceWithGrid")
     {
@@ -224,6 +229,9 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
 
         buildingActor->GetProperty()->SetRepresentationToSurface();
         buildingActor->GetProperty()->SetEdgeVisibility(true);
+
+        surroundingsActor->GetProperty()->SetRepresentationToSurface();
+        surroundingsActor->GetProperty()->SetEdgeVisibility(true);
     }
     else if(arg1 == "Surface")
     {
@@ -235,6 +243,9 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
 
         buildingActor->GetProperty()->SetRepresentationToSurface();
         buildingActor->GetProperty()->SetEdgeVisibility(false);
+
+        surroundingsActor->GetProperty()->SetRepresentationToSurface();
+        surroundingsActor->GetProperty()->SetEdgeVisibility(false);
     }
     else
     {
@@ -244,7 +255,7 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
     renderWindow->Render();
 }
 
-void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
+void SurroundedBuildingVTKRendering::viewObjectChanged(const QString &arg1)
 {
     if (arg1 == "AllMesh")
     {
@@ -254,11 +265,18 @@ void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
     {
         showBreakout();
     }
-    else if (arg1 == "Building")
+    else if (arg1 == "MainBuilding")
     {
-        showBuildingOnly();
+        showMainBuildingOnly();
     }
-
+    else if (arg1 == "Surroundings")
+    {
+        showSurroundingsOnly();
+    }
+    else if (arg1 == "AllBuildings")
+    {
+        showAllBuildingsOnly();
+    }
     else
     {
         qDebug() << "ERROR .. Surface representation .. type unknown: " << arg1;
@@ -271,19 +289,20 @@ void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
 }
 
 
-void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
+void SurroundedBuildingVTKRendering::onTransparencyChanged(const int value)
 {
     allMeshActor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
     renderWindow->Render();
 }
 
-void SimCenterVTKRenderingWidget::onReloadCaseClicked()
+void SurroundedBuildingVTKRendering::onReloadCaseClicked()
 {
 
     if(initialized)
     {
         foamReader = vtkSmartPointer<vtkOpenFOAMReader>::New();
         bldgSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+        surrSTLReader = vtkSmartPointer<vtkSTLReader>::New();
     }
 
     if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/points"))
@@ -294,6 +313,8 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 
         readBuildingSurfaceMesh();
 
+        readSurroundingsSurfaceMesh();
+
         drawAxisAndLegend();
 
         renderer->ResetCamera();
@@ -301,7 +322,7 @@ void SimCenterVTKRenderingWidget::onReloadCaseClicked()
     }
 }
 
-void SimCenterVTKRenderingWidget::readAllMesh()
+void SurroundedBuildingVTKRendering::readAllMesh()
 {
 
     // Setup reader
@@ -334,7 +355,7 @@ void SimCenterVTKRenderingWidget::readAllMesh()
 }
 
 
-void SimCenterVTKRenderingWidget::readBuildingSurfaceMesh()
+void SurroundedBuildingVTKRendering::readBuildingSurfaceMesh()
 {
 
     if (mainModel->isSnappyHexMeshCompleted())
@@ -361,7 +382,36 @@ void SimCenterVTKRenderingWidget::readBuildingSurfaceMesh()
     renderer->AddActor(buildingActor);
 }
 
-void SimCenterVTKRenderingWidget::readBreakOutSurfaceMesh()
+void SurroundedBuildingVTKRendering::readSurroundingsSurfaceMesh()
+{
+
+    if (mainModel->isSnappyHexMeshCompleted())
+    {
+        auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(foamReader->GetOutput());
+
+        surrBlock = findBlock<vtkPolyData>(allBlocks, "surroundings");
+
+    }
+    else
+    {
+        surrSTLReader->SetFileName((mainModel->caseDir() + "/constant/geometry/surroundings.stl").toStdString().c_str());
+        surrSTLReader->Update();
+        surrBlock = surrSTLReader->GetOutput();
+    }
+
+    surroundingsMapper->SetInputData(surrBlock);
+    surroundingsMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    surroundingsActor->SetMapper(surroundingsMapper);
+    surroundingsActor->GetProperty()->SetColor(0.0, 0.0, 1.0);
+
+    // Add Actor to renderer
+    renderer->AddActor(surroundingsActor);
+}
+
+
+void SurroundedBuildingVTKRendering::readBreakOutSurfaceMesh()
 {
 
     auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(foamReader->GetOutput());
@@ -387,35 +437,53 @@ void SimCenterVTKRenderingWidget::readBreakOutSurfaceMesh()
     renderer->AddActor(breakOutActor);
 }
 
-void SimCenterVTKRenderingWidget::showAllMesh()
+void SurroundedBuildingVTKRendering::showAllMesh()
 {
 
     allMeshActor->VisibilityOn();
     breakOutActor->VisibilityOff();
     buildingActor->VisibilityOff();
+    surroundingsActor->VisibilityOff();
 }
 
-void SimCenterVTKRenderingWidget::showBuildingOnly()
+void SurroundedBuildingVTKRendering::showMainBuildingOnly()
 {
 
     allMeshActor->VisibilityOff();
     breakOutActor->VisibilityOff();
     buildingActor->VisibilityOn();
+    surroundingsActor->VisibilityOff();
+}
+
+void SurroundedBuildingVTKRendering::showSurroundingsOnly()
+{
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
+    buildingActor->VisibilityOff();
+    surroundingsActor->VisibilityOn();
 }
 
 
+void SurroundedBuildingVTKRendering::showAllBuildingsOnly()
+{
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
+    buildingActor->VisibilityOn();
+    surroundingsActor->VisibilityOn();
+}
 
-void SimCenterVTKRenderingWidget::showBreakout()
+void SurroundedBuildingVTKRendering::showBreakout()
 {
     allMeshActor->VisibilityOff();
     breakOutActor->VisibilityOn();
     buildingActor->VisibilityOn();
+    surroundingsActor->VisibilityOn();
 }
 
 
 // Get named block of specified type
 template <class Type>
-Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
+Type* SurroundedBuildingVTKRendering::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
 {
     Type* dataset = nullptr;
     const unsigned int nblocks = (mb ? mb->GetNumberOfBlocks() : 0u);
@@ -434,12 +502,12 @@ Type* SimCenterVTKRenderingWidget::findBlock(vtkMultiBlockDataSet* mb, const cha
     return dataset;
 }
 
-bool SimCenterVTKRenderingWidget::isInitialized()
+bool SurroundedBuildingVTKRendering::isInitialized()
 {
     return initialized;
 }
 
-void SimCenterVTKRenderingWidget::drawAxisAndLegend()
+void SurroundedBuildingVTKRendering::drawAxisAndLegend()
 {
 
     axisWidget->SetCurrentRenderer(renderer);
@@ -484,18 +552,20 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     renderer->AddActor(textActor);
 }
 
-void SimCenterVTKRenderingWidget::initializeVtkObjects()
+void SurroundedBuildingVTKRendering::initializeVtkObjects()
 {
     //Setup OpenFOAM mesh reader
     foamReader = vtkSmartPointer<vtkOpenFOAMReader>::New();
 
     //Setup STL Reader
     bldgSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+    surrSTLReader = vtkSmartPointer<vtkSTLReader>::New();
 
     //Create mappers
     allMeshMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     breakOutMapper = vtkSmartPointer<vtkDataSetMapper>::New();
     buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    surroundingsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
     //Setup rendered
     renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
@@ -508,10 +578,6 @@ void SimCenterVTKRenderingWidget::initializeVtkObjects()
     initialized = true;
 }
 
-vtkPolyData* SimCenterVTKRenderingWidget::getBldgBlock()
-{
-    return bldgBlock;
-}
 
 
 

@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_NUMERICAL_SETUP_H
+#define SURROUNDED_BUILDING_NUMERICAL_SETUP_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -55,20 +55,19 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class SurroundedBuildingCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingNumericalSetup: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
+    friend class SurroundedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingNumericalSetup(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingNumericalSetup();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
@@ -78,74 +77,59 @@ signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void solverTypeChanged(const QString &arg1);
+   void timeStepOptionChanged(const bool arg1);
+   void onRunInParallelChecked(int);
+   void onCalculateTimeStepClicked();
+
+
+
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+   SurroundedBuildingCFD  *mainModel;
 
-   QVBoxLayout          *layout;
+   QVBoxLayout      *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox        *parallelizationGroup;
+   QGridLayout      *parallelizationLayout;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QGroupBox        *solverSelectionGroup;
+   QGridLayout      *solverSelectionLayout;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
+   QGroupBox        *durationAndTimeStepGroup;
+   QGridLayout      *durationAndTimeStepLayout;
 
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
+   QComboBox        *solverType;
+   QSpinBox         *numNonOrthogonalCorrectors;
+   QSpinBox         *numOuterCorrectors;
+   QSpinBox         *numCorrectors;
 
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
+   QLineEdit        *duration;
+   QLineEdit        *timeStep;
+   QDoubleSpinBox   *maxCourantNumber;
 
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
+   QCheckBox        *runInParallel;
+   QSpinBox         *numProcessors;
 
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
+   QRadioButton     *constTimeStep;
+   QRadioButton     *adjustTimeStep;
+   QPushButton      *calculateTimeStep;
 
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
+   QLabel           *solverTypeLabel ;
+   QLabel           *numNonOrthogonalCorrectorsLabel;
+   QLabel           *numOuterCorrectorsLabel;
+   QLabel           *numCorrectorsLabel;
 
-   QComboBox            *floorHeightOptions;
+   QLabel           *durationLabel ;
+   QLabel           *timeStepLabel;
+   QLabel           *maxCourantNumberLabel;
 
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
-
-
-   void writeSamplingPoints(QList<QVector3D> points);
-
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   RandomVariablesContainer *theRandomVariablesContainer;
+   QStringList varNamesAndValues;
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_NUMERICAL_SETUP_H

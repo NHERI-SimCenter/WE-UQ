@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef SURROUNDED_BUILDING_TURBULENCE_MODELINNG_H
+#define SURROUNDED_BUILDING_TURBULENCE_MODELINNG_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -45,107 +45,59 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
+class QStackedWidget;
 class QVBoxLayout;
-class QHBoxLayout;
 class QSpinBox;
-class QCheckBox;
 class QLineEdit;
+class QTextEdit;
 class LineEditRV;
 class QTabWidget;
-class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
-class QDoubleSpinBox;
-class QLabel;
-class QRadioButton;
-class vtkMultiBlockDataSet;
+class SurroundedBuildingCFD;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class SurroundedBuildingTurbulenceModeling: public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
-
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit SurroundedBuildingTurbulenceModeling(SurroundedBuildingCFD *parent = 0);
+    ~SurroundedBuildingTurbulenceModeling();
 
     bool outputToJSON(QJsonObject &jsonObject);
     bool inputFromJSON(QJsonObject &jsonObject);
-    void updateWidgets();
+    const QString simulationType();
 
 signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void turbModelTypeChanged(const QString &arg1);
+   void RANSModelTypeChanged(const QString &arg1);
+   void LESModelTypeChanged(const QString &arg1);
 
 private:
-
-   IsolatedBuildingCFD  *mainModel;
+   SurroundedBuildingCFD       *mainModel;
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QComboBox            *turbModelOptions;
+   QComboBox            *RANSOptions;
+   QComboBox            *LESOptions;
+   QComboBox            *DESOptions;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QWidget              *RANSWidget;
+   QWidget              *DESWidget;
+   QWidget              *LESWidget;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
-
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QList<QVector3D> calculatePointCoordinates();
+   QTextEdit            *RANSModelCoeffs;
+   QTextEdit            *LESModelCoeffs;
+   QTextEdit            *DESModelCoeffs;
+   QStackedWidget       *stackedTurbModelWidget;
 
 
-   void writeSamplingPoints(QList<QVector3D> points);
 
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
-
-public:
-
+   RandomVariablesContainer *theRandomVariablesContainer;
+   QStringList varNamesAndValues;
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // SURROUNDED_BUILDING_TURBULENCE_MODELINNG_H

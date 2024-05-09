@@ -1,5 +1,5 @@
-#ifndef ISOLATED_BUILDING_CFD_H
-#define ISOLATED_BUILDING_CFD_H
+#ifndef SURROUNDED_BUILDING_CFD_H
+#define SURROUNDED_BUILDING_CFD_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -47,14 +47,15 @@ class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
 class QGridLayout;
-class GeometricInputWidget;
-class SnappyHexMeshWidget;
-class BoundaryConditionsWidget;
-class TurbulenceModelingWidget;
-class SimCenterVTKRenderingWidget;
-class NumericalSetupWidget;
-class WindCharacteristicsWidget;
-class ResultMonitoringWidget;
+class SurroundedBuildingGeometricInput;
+class SurroundedBuildingSnappyHexMesh;
+class SurroundedBuildingBoundaryConditions;
+class SurroundedBuildingTurbulenceModeling;
+class SurroundedBuildingVTKRendering;
+class SurroundedBuildingNumericalSetup;
+class SurroundedBuildingWindCharacteristics;
+class SurroundedBuildingResultMonitoring;
+class SurroundedBuildingResultDisplay;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -66,14 +67,15 @@ class QPushButton;
 class QCheckBox;
 class QFormLayout;
 class QLabel;
-class vtkPolyData;
-class IsolatedBuildingCFD : public SimCenterAppWidget
+class QTabWidget;
+
+class SurroundedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
 
 public:
-    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
-    ~IsolatedBuildingCFD();
+    explicit SurroundedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    ~SurroundedBuildingCFD();
 
     //Methods
     bool inputFromJSON(QJsonObject &rvObject);
@@ -98,6 +100,8 @@ public:
     void updateWidgets();
     void reloadMesh();
 
+    void importMainDomainJsonFile(QJsonObject &rvObject);
+
     QVector<QVector<double>> readTxtData(QString fileName);
 
     //Properties
@@ -107,86 +111,91 @@ public:
     double fetchLength();
     QVector<double> getBuildingCenter();
 
+
     double buildingWidth();
     double buildingDepth();
     double buildingHeight();
+
+    double windDirection();
+
     int numberOfFloors();
 
-    double geometricScale();
-    double windDirection();
-    QString buildingShape();
-
     QString normalizationType();
+
+    double geometricScale();
     QString caseDir();
     QString foamDictsPath();
     QString templateDictDir();
     QString pyScriptsPath();
     QString simulationType();
 
+
+
     //Returns the smallest mesh size on the building
     double getTimeStep();
+    double getDuration();
+    double getRefWindSpeed();
 
-    vtkPolyData* getBldgBlock();
+    SC_ResultsWidget* getResultsWidget(QWidget *parent);
+
 
 signals:
 
 public slots:
    void clear(void);
-   void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
 
 private:
-   QHBoxLayout          *mainWindowLayout;
+   QHBoxLayout                  *mainWindowLayout;
 
-   QVBoxLayout          *inputWindowLayout;
-   QGroupBox            *inputWindowGroup;
+   QVBoxLayout                  *inputWindowLayout;
+   QGroupBox                    *inputWindowGroup;
 
 
-   QVBoxLayout          *visWindowLayout;
-   QGroupBox            *visWindowGroup;
+   QVBoxLayout                  *visWindowLayout;
+   QGroupBox                    *visWindowGroup;
 
-   QGroupBox            *cfdResultsGroup;
-   QGridLayout          *cfdResultsLayout;
+   QGroupBox                    *cfdResultsGroup;
+   QGridLayout                  *cfdResultsLayout;
 
-   QWidget              *femSpecific;
-   QLineEdit            *caseDirectoryPathWidget;
+   QWidget                      *femSpecific;
+   QLineEdit                    *caseDirectoryPathWidget;
 
-   QGroupBox            *generalDescriptionGroup;
-   QHBoxLayout          *generalDescriptionLayout;
+   QGroupBox                    *generalDescriptionGroup;
+   QHBoxLayout                  *generalDescriptionLayout;
 
-   QGroupBox            *caseDirectoryGroup;
-   QGridLayout          *caseDirectoryLayout;
+   QGroupBox                    *caseDirectoryGroup;
+   QGridLayout                  *caseDirectoryLayout;
 
-   QGroupBox            *unitSystemGroup;
-   QGridLayout          *unitSystemLayout;
-   QComboBox            *massUnit;
-   QComboBox            *lengthUnit;
-   QComboBox            *timeUnit;
-   QComboBox            *angleUnit;
+   QTabWidget                   *inputTab;
+   QGroupBox                    *unitSystemGroup;
+   QGridLayout                  *unitSystemLayout;
+   QComboBox                    *massUnit;
+   QComboBox                    *lengthUnit;
+   QComboBox                    *timeUnit;
+   QComboBox                    *angleUnit;
 
-   QGroupBox            *openFoamVersionGroup;
-   QGridLayout          *openFoamVersionLayout;
-   QComboBox            *openFoamVersion;
+   QGroupBox                    *openFoamVersionGroup;
+   QGridLayout                  *openFoamVersionLayout;
+   QComboBox                    *openFoamVersion;
 
-   GeometricInputWidget         *geometry;
-   SnappyHexMeshWidget          *snappyHexMesh;
-   SimCenterVTKRenderingWidget  *visWidget;
-   WindCharacteristicsWidget    *windCharacteristics;
-   TurbulenceModelingWidget     *turbulenceModeling;
-   BoundaryConditionsWidget     *boundaryConditions;
-   NumericalSetupWidget         *numericalSetup;
-   ResultMonitoringWidget       *resultMonitoring;
+   SurroundedBuildingGeometricInput          *geometry;
+   SurroundedBuildingSnappyHexMesh           *snappyHexMesh;
+   SurroundedBuildingVTKRendering            *visWidget;
+   SurroundedBuildingWindCharacteristics     *windCharacteristics;
+   SurroundedBuildingTurbulenceModeling      *turbulenceModeling;
+   SurroundedBuildingBoundaryConditions      *boundaryConditions;
+   SurroundedBuildingNumericalSetup          *numericalSetup;
+   SurroundedBuildingResultMonitoring        *resultMonitoring;
+   SurroundedBuildingResultDisplay           *resultDisplay;
 
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
+   RandomVariablesContainer     *theRandomVariablesContainer;
+   QStringList                  varNamesAndValues;
 
-   QPushButton  *plotWindProfiles;
-   QPushButton  *plotWindLoads;
-
-   QString      workingDirPath;
+   QString                      workingDirPath;
 
    bool caseInitialized = false;
 
 };
 
-#endif // ISOLATED_BUILDING_CFD_H
+#endif // SURROUNDED_BUILDING_DOMAIN_CFD_H
