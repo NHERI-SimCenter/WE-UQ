@@ -88,7 +88,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
     // Create widgets
      modePercent = new SC_DoubleLineEdit("modePercent",25);
      modelScale = new SC_DoubleLineEdit("modelScale");
-     fullScaleSpeed = new SC_DoubleLineEdit("fullScaleSpeed");
+     fullScaleSpeed = new SC_DoubleLineEdit("windSpeed");
      fullScaleSpeedUnit = new QLabel(QString(myLengthUnit + "/sec"));
      fullScaleDuration = new SC_DoubleLineEdit("fullScaleDuration");
      seed = new SC_IntLineEdit("seed",42);
@@ -125,6 +125,7 @@ WindForceSpectrum::WindForceSpectrum(RandomVariablesContainer *theRandomVariable
 
     citationQuoteLabel = new QLabel("\nThe backend application used by this selection was provided by Prof. Seymour Spence and his students at the University of Michigan. Users should cite this work as follows:\nSuksuwan, A. and Spence, S.M. Optimization of uncertain structures subject to stochastic wind loads under system-level first excursion constraints: A data-driven approach. Computers & Structures, 2018, 210, pp.58-68.");
     layout->addWidget(citationQuoteLabel,9,0,1,-1);
+    citationQuoteLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
 
     layout->setRowStretch(10,1);
@@ -220,7 +221,7 @@ WindForceSpectrum::inputFromJSON(QJsonObject &jsonObject)
 
     QString myfilepath=filepath->text();
     if (!(myfilepath=="")) {
-            if (myfilepath.endsWith(".json")) {
+            if ((myfilepath.endsWith(".json")) ) {
                 this->parseForceFile(myfilepath);
                 modelScaleLabel -> setStyleSheet("QLabel { color : black; }");
             } else {
@@ -307,20 +308,39 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         // file not read
     }
 
-    dataD = jsonData["D"].toDouble();
-    dataH = jsonData["H"].toDouble();
-    dataW = jsonData["B"].toDouble();
 
+
+    double fs;
+    double Vref;
     QStringList keys;
     if (jsonData.contains("norm_all")) {
         QStringList keys_time = {"B","comp_CFmean","D","f_target","fs","H","norm_all","s_target_real","s_target_imag","Vref"};
         keys = keys_time;
         nstory = jsonData["Fx"].toArray().size();
+        dataD = jsonData["D"].toDouble();
+        dataH = jsonData["H"].toDouble();
+        dataW = jsonData["B"].toDouble();
+        fs = jsonData["fs"].toDouble();
+        Vref = jsonData["Vref"].toDouble();
     } else if  (jsonData.contains("Fx")) {
         QStringList keys_spec = {"B","D","fs","Fx","Fy","H","H","t","Tz","Vref"};
         keys = keys_spec;
         nstory = jsonData["norm_all"].toArray().size()/3;
-    } else {
+        dataD = jsonData["D"].toDouble();
+        dataH = jsonData["H"].toDouble();
+        dataW = jsonData["B"].toDouble();
+        fs = jsonData["fs"].toDouble();
+        Vref = jsonData["Vref"].toDouble();
+    } else if  (jsonData.contains("pressureCoefficients")) {
+        QStringList keys_spec = {"breadth","depth","frequency","height","period","tapLocations","units","windSpeed"};
+        keys = keys_spec;
+        nstory = 0;
+        dataD = jsonData["depth"].toDouble();
+        dataH = jsonData["height"].toDouble();
+        dataW = jsonData["breadth"].toDouble();
+        fs = jsonData["frequency"].toDouble();
+        Vref = jsonData["windSpeed"].toDouble();
+    }else {
         msg->setText("File format not recognized");
         msg->setStyleSheet("QLabel { color : red; }");
         return;
@@ -339,10 +359,8 @@ WindForceSpectrum::parseForceFile(QString myfilepath) {
         }
     }
 
-    double fs = jsonData["fs"].toDouble();
-    double Vref = jsonData["Vref"].toDouble();
 
-    msg_info->setText("The sampling frequency (fs) is "+ QString::number(fs) + " Hz, and the model scale reference wind speed (Vref) is "+ QString::number(Vref) + " " + myLengthUnit + "/sec.");
+    msg_info->setText("The sampling frequency is "+ QString::number(fs) + " Hz, and the model scale reference wind speed is "+ QString::number(Vref) + " " + myLengthUnit + "/sec.");
     msg_info->setStyleSheet("QLabel { color : black; }");
 
     this->updateScale();

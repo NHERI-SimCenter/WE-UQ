@@ -188,3 +188,11 @@ ExperimentalWindForces::copyFiles(QString &destDir) {
     return true;
 }
 
+bool
+ExperimentalWindForces::outputCitation(QJsonObject &jsonObject)
+{
+  jsonObject.insert("citation",QString("Duarte, T.G., Arunachalam, S., Subgranon, A. and Spence, S. M. (2023) “NUncertainty Quantification and Simulation of Wind-Tunnel-Informed Stochastic Wind Loads.” Wind, 3(3):375-393."));
+  jsonObject.insert("description",QString("Multiple stochastic wind force time histories are generated from single user-provided time history input using this module."));
+
+  return true;
+}
