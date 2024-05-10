@@ -227,7 +227,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
 //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
-  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1";
+  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
 
   QList<QString> queues; queues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
