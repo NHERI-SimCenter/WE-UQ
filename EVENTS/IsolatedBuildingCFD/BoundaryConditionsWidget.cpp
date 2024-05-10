@@ -375,12 +375,14 @@ void BoundaryConditionsWidget::onShowWindProfilesClicked()
 
 
     QStringList headerTitles = {"z[m]", "Uav[m/s]",
-                                "R11[m2/s2]",
-                                "R21[m2/s2]", "R22[m2/s2]",
-                                "R31[m2/s2]", "R32[m2/s2]", "R33[m2/s2]",
+                                "R11[m2/s2]", "R12[m2/s2]", "R13[m2/s2]",
+                                "R22[m2/s2]", "R23[m2/s2]",
+                                "R33[m2/s2]",
                                 "xLu[m]", "yLu[m]", "zLu[m]",
                                 "xLv[m]", "yLv[m]", "zLv[m]",
                                 "xLw[m]", "yLw[m]", "zLw[m]"};
+
+
 
     windProfileTable->setHorizontalHeaderLabels(headerTitles);
 
