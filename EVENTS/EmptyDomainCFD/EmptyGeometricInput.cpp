@@ -244,10 +244,17 @@ bool  EmptyGeometricInput::inputFromJSON(QJsonObject &jsonObject)
     QJsonObject geometricDataJson = jsonObject["GeometricData"].toObject();
 
     geometricScaleWidget->setText(QString::number(geometricDataJson["geometricScale"].toDouble()));
-    domainLengthWidget->setText(QString::number(geometricDataJson["domainLength"].toDouble()));
-    domainWidthWidget->setText(QString::number(geometricDataJson["domainWidth"].toDouble()));
-    domainHeightWidget->setText(QString::number(geometricDataJson["domainHeight"].toDouble()));
-    fetchLengthWidget->setText(QString::number(geometricDataJson["fetchLength"].toDouble()));
+
+    double h = 1.0;
+    if(geometricDataJson["normalizationType"].toString() == "Relative")
+    {
+        h = geometricDataJson["buildingHeight"].toDouble()/geometricDataJson["geometricScale"].toDouble();
+    }
+
+    domainLengthWidget->setText(QString::number(h*geometricDataJson["domainLength"].toDouble()));
+    domainWidthWidget->setText(QString::number(h*geometricDataJson["domainWidth"].toDouble()));
+    domainHeightWidget->setText(QString::number(h*geometricDataJson["domainHeight"].toDouble()));
+    fetchLengthWidget->setText(QString::number(h*geometricDataJson["fetchLength"].toDouble()));
     useCOSTDimWidget->setChecked(geometricDataJson["useCOST"].toBool());
 
     QJsonArray originPoint  = geometricDataJson["origin"].toArray();
