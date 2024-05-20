@@ -58,7 +58,6 @@ OpenSeesInput
 OpenSeesPostprocessor
 OpenSeesPreprocessor
 extractEDP
-*.mat
 *.swp
 .base.git/
 *.git

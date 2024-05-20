@@ -1,0 +1,2 @@
+summary: "This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind pressure time histories. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular-shaped building model for response simulation." 
+difficulty: 2
