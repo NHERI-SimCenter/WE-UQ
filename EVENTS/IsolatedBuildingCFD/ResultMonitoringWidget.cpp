@@ -143,10 +143,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     QLabel* numStoriesLabel = new QLabel("Number of Stories: ");
     QLabel* baseLoadWriteIntervalLabel = new QLabel("Write Interval: ");
     QLabel* storyLoadWriteIntervalLabel = new QLabel("Write Interval: ");
-//    QLabel* centerOfRotationLabel = new QLabel("Center of Rotation:");
-//    QLabel* centerOfRotationXLabel = new QLabel("X");
-//    QLabel* centerOfRotationYLabel = new QLabel("Y");
-//    QLabel* centerOfRotationZLabel = new QLabel("Z");
     QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
     
     floorHeightOptions = new QComboBox();
@@ -180,18 +176,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     floorHeight->setEnabled(false);
     floorHeight->setToolTip("Calculated floor to floor height in model-scale");
 
-//    centerOfRotationX = new QLineEdit();
-//    centerOfRotationX->setText("0.0");
-//    centerOfRotationX->setToolTip("X-coordinate of the center of rotation ");
-
-//    centerOfRotationY = new QLineEdit();
-//    centerOfRotationY->setText("0.0");
-//    centerOfRotationY->setToolTip("Y-coordinate of the center of rotation ");
-
-//    centerOfRotationZ = new QLineEdit();
-//    centerOfRotationZ->setText("0.0");
-//    centerOfRotationZ->setToolTip("Z-coordinate of the center of rotation ");
-
     monitorBaseLoad = new QCheckBox();
     monitorBaseLoad->setChecked(true);
     monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
@@ -215,14 +199,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     storyLoadWriteInterval->setMinimumWidth(250);
     monitorStoryLoadLayout->setAlignment(Qt::AlignLeft);
 
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 4, 5, Qt::AlignRight);
-
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 4, 0);
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 4, 2);
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
-//    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
 
     layout->addWidget(monitorBaseLoadGroup);
     layout->addWidget(monitorStoryLoadGroup);

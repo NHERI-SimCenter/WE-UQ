@@ -88,7 +88,6 @@ public slots:
     void onRunBlockMeshClicked();
     void onRunSnappyHexMeshClicked();
     void onRunCheckMeshClicked();
-    void onSaveMeshClicked();
     void onAddSurfaceRefinementButtonClicked();
     void onRemoveSurfaceRefinementButtonClicked();
     void onAddEdgeRefinementButtonClicked();
@@ -118,9 +117,6 @@ private:
 
     QGroupBox    *runMeshGroup;
     QHBoxLayout  *runMeshLayout;
-
-    QGroupBox    *saveMeshGroup;
-    QHBoxLayout  *saveMeshLayout;
 
     //Blockground mesh
     QLineEdit        *xAxisNumCells;

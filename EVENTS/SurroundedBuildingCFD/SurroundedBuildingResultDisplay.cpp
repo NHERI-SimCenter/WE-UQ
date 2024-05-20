@@ -196,7 +196,7 @@ SurroundedBuildingResultDisplay::SurroundedBuildingResultDisplay( SurroundedBuil
     layout->addWidget(plotWindProfileGroup);
     layout->addWidget(plotSpectraGroup);
     layout->addWidget(plotPressureGroup);
-    this->setLayout(layout);
+//    this->setLayout(layout);
 }
 
 

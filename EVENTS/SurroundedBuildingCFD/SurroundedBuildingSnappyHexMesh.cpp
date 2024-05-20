@@ -85,10 +85,6 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     runMeshLayout = new QHBoxLayout();
     runMeshGroup->setLayout(runMeshLayout);
 
-    saveMeshGroup = new QGroupBox("Save Mesh", this);
-    saveMeshLayout = new QHBoxLayout();
-    saveMeshGroup->setLayout( saveMeshLayout);
-
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
@@ -517,17 +513,14 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     QPushButton *runBlockMeshButton = new QPushButton("Run Background Mesh");
     QPushButton *runSnappyMeshButton = new QPushButton("Run Final Mesh");
     QPushButton *runCheckMeshButton = new QPushButton("Check Mesh");
-    QPushButton *saveMeshButton = new QPushButton("Save OpenFOAM Files");
 
     runMeshLayout->addWidget(runBlockMeshButton);
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
-    saveMeshLayout->addWidget(saveMeshButton);
 
     layout->addWidget(snappyHexMeshTab);
     layout->addWidget(generalOptionsGroup);
     layout->addWidget(runMeshGroup);
-    layout->addWidget(saveMeshGroup);
 
     //=============================================================================
 
@@ -546,7 +539,6 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
-    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
     connect(addSurfaceRefinementButton, SIGNAL(clicked()), this, SLOT(onAddSurfaceRefinementButtonClicked()));
     connect(removeSurfaceRefinementButton, SIGNAL(clicked()), this, SLOT(onRemoveSurfaceRefinementButtonClicked()));
     connect(addEdgeRefinementButton, SIGNAL(clicked()), this, SLOT(onAddEdgeRefinementButtonClicked()));
@@ -624,16 +616,6 @@ void SurroundedBuildingSnappyHexMesh::onRunCheckMeshClicked()
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
 }
-
-void SurroundedBuildingSnappyHexMesh::onSaveMeshClicked()
-{
-    statusMessage("Writing OpenFOAM dictionary files ... ");
-
-    mainModel->writeOpenFoamFiles();
-
-    statusMessage("Writing done!");
-}
-
 
 bool SurroundedBuildingSnappyHexMesh::runBlockMeshCommand()
 {
@@ -1217,5 +1199,6 @@ void  SurroundedBuildingSnappyHexMesh::onRemoveEdgeRefinementButtonClicked()
         delete item;
     }
 }
+
 
 

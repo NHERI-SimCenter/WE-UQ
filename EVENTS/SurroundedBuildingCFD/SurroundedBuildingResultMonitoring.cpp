@@ -39,6 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "SurroundedBuildingCFD.h"
 #include "SurroundedBuildingResultMonitoring.h"
 #include <GeneralInformationWidget.h>
+
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -108,198 +109,220 @@ SurroundedBuildingResultMonitoring::SurroundedBuildingResultMonitoring( Surround
 {
     layout = new QVBoxLayout();
 
-    monitorWindProfileGroup = new QGroupBox("Line Probes");
-    monitorWindProfileLayout = new QGridLayout();
-    monitorWindProfileGroup->setLayout(monitorWindProfileLayout);
+    monitorBaseLoadGroup = new QGroupBox("Base Loads");
+    monitorBaseLoadLayout = new QGridLayout();
+    monitorBaseLoadGroup->setLayout(monitorBaseLoadLayout);
 
-    vtkSampleGroup = new QGroupBox("VTK Planes");
-    vtkSampleLayout = new QGridLayout();
-    vtkSampleGroup->setLayout(vtkSampleLayout);
+    monitorStoryLoadGroup = new QGroupBox("Story Loads");
+    monitorStoryLoadLayout = new QGridLayout();
+    monitorStoryLoadGroup->setLayout(monitorStoryLoadLayout);
 
-    //==================================================================
-    //              Record Wind Profiles
-    //==================================================================
-    monitorProfile = new QCheckBox("Record Wind Profiles");
-    monitorProfile->setChecked(true);
-    monitorProfile->setToolTip("If checked monitors widnd profiles");
+    monitorPressureGroup = new QGroupBox("Pressure Data");
+    monitorPressureLayout = new QGridLayout();
+    monitorPressureGroup->setLayout(monitorPressureLayout);
 
-    const int numCols = 9;
-    const int numRows = 2;
+    pressureMonitoringPointsGroup = new QGroupBox("");
+    pressureMonitoringPointsLayout = new QGridLayout();
+    pressureMonitoringPointsGroup->setLayout(pressureMonitoringPointsLayout);
 
-    profileTable = new QTableWidget(numRows, numCols);
+    createPressurePointsGroup = new QGroupBox("");
+    createPressurePointsLayout = new QGridLayout();
+    createPressurePointsGroup->setLayout( createPressurePointsLayout);
 
-    initializeProfileTable(numRows);
-
-    for (int j=0; j < numRows; j++)
-    {
-        QComboBox* fieldName  = new QComboBox();
-        fieldName->addItem("Velocity");
-        fieldName->addItem("Pressure");
-        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-        profileTable->setCellWidget(j, numCols-1, fieldName);
-    }
-
-    for (int i=0; i < numRows; i++)
-    {
-        profileTable->item(i, 0)->setText(tr("Profile%1").arg(i + 1));
-    }
-
-    //Line Probe #1
-    profileTable->item(0, 1)->setText("0.0");
-    profileTable->item(0, 2)->setText("0.0");
-    profileTable->item(0, 3)->setText("0.0");
-    profileTable->item(0, 4)->setText("0.0");
-    profileTable->item(0, 5)->setText("0.0");
-    profileTable->item(0, 6)->setText(QString::number(mainModel->domainHeight()));
-    profileTable->item(0, 7)->setText("50");
-
-    //Line Probe #2
-    profileTable->item(1, 1)->setText(QString::number(-mainModel->fetchLength()));
-    profileTable->item(1, 2)->setText("0.0");
-    profileTable->item(1, 3)->setText("0.0");
-    profileTable->item(1, 4)->setText("0.0");
-    profileTable->item(1, 5)->setText("0.0");
-    profileTable->item(1, 6)->setText(QString::number(mainModel->domainHeight()));
-    profileTable->item(1, 7)->setText("50");
-
-
-    QLabel* profileWriteIntervalLabel = new QLabel("Field Write Interval: ");
-    profileWriteInterval = new QSpinBox();
-    profileWriteInterval->setSingleStep(1);
-    profileWriteInterval->setMinimum(1);
-    profileWriteInterval->setMaximum(10000);
-    profileWriteInterval->setValue(10);
-    profileWriteInterval->setEnabled(true);
-    profileWriteInterval->setToolTip("Writing interval as a multiple of time step for wind profiles");
-    profileWriteInterval->setMinimumWidth(100);
-
-
-    QLabel* profileStartTimeLabel = new QLabel("Write Start Time: ");
-
-    profileStartTime = new QLineEdit();
-    profileStartTime->setText(QString::number(mainModel->getDuration()*0.10));
-    profileStartTime->setEnabled(true);
-    profileStartTime->setToolTip("The start time for writing the probe data.");
-
-
-    addProfile = new QPushButton("Add Profile");
-    removeProfile = new QPushButton("Remove Profile");
-    showProfiles = new QPushButton("Show Profiles");
-
-    monitorWindProfileLayout->addWidget(monitorProfile, 0, 0);
-    monitorWindProfileLayout->addWidget(addProfile, 0, 1);
-    monitorWindProfileLayout->addWidget(removeProfile, 0, 2);
-    monitorWindProfileLayout->addWidget(showProfiles, 0, 3);
-    monitorWindProfileLayout->addWidget(profileTable, 1, 0, 1, 4);
-    monitorWindProfileLayout->addWidget(profileWriteIntervalLabel, 3, 0);
-    monitorWindProfileLayout->addWidget(profileWriteInterval, 3, 1, Qt::AlignLeft);
-    monitorWindProfileLayout->addWidget(profileStartTimeLabel, 3, 2);
-    monitorWindProfileLayout->addWidget(profileStartTime, 3, 3, Qt::AlignLeft);
-
-    connect(addProfile, SIGNAL(clicked()), this, SLOT(onAddProfileClicked()));
-    connect(removeProfile, SIGNAL(clicked()), this, SLOT(onRemoveProfileClicked()));
-    connect(showProfiles, SIGNAL(clicked()), this, SLOT(onShowProfilesClicked()));
-    connect(monitorProfile, SIGNAL(stateChanged(int)), this, SLOT(onMonitorProfileChecked(int)));
+    monitorFlowFieldGroup = new QGroupBox("Flow Field");
+    monitorFlowFieldLayout = new QGridLayout();
+    monitorFlowFieldGroup->setLayout(monitorFlowFieldLayout);
 
 
     //==================================================================
-    //              Sample On Plane
+    //              Monitor Integrated Loads Option
     //==================================================================
 
-    monitorVTKPlane = new QCheckBox("Sample Flow Field");
-    monitorVTKPlane->setChecked(true);
-    monitorVTKPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
+    QLabel* floorHeightOptionsLabel = new QLabel("Floor Height Specification: ");
+    QLabel* floorHeightLabel = new QLabel("Floor to Floor Distance (CFD): ");
+    QLabel* numStoriesLabel = new QLabel("Number of Stories: ");
+    QLabel* baseLoadWriteIntervalLabel = new QLabel("Write Interval: ");
+    QLabel* storyLoadWriteIntervalLabel = new QLabel("Write Interval: ");
+    QLabel* monitorBaseLoadLabel = new QLabel("Monitor Base Loads:");
 
-    int vtkNumCols = 8;
-    int vtkNumRows = 2;
+    floorHeightOptions = new QComboBox();
+    floorHeightOptions->addItem("Uniform Floor Height");
+    //    floorHeightOptions->addItem("Variable Floor Height");
+    floorHeightOptions->setToolTip("Choose constant or variable floor height options");
 
-    vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
+    baseLoadWriteInterval = new QSpinBox();
+    baseLoadWriteInterval->setSingleStep(1);
+    baseLoadWriteInterval->setMinimum(1);
+    baseLoadWriteInterval->setValue(10);
+    baseLoadWriteInterval->setEnabled(true);
+    baseLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for base loads");
 
-    initializeVTKTable(vtkNumRows);
+    storyLoadWriteInterval = new QSpinBox();
+    storyLoadWriteInterval->setSingleStep(1);
+    storyLoadWriteInterval->setMinimum(1);
+    storyLoadWriteInterval->setValue(10);
+    storyLoadWriteInterval->setEnabled(true);
+    storyLoadWriteInterval->setToolTip("Writing interval as a multiple of time step for story loads");
 
-    for (int i=0; i < numRows; i++)
-    {
-        vtkSampleTable->item(i, 0)->setText(tr("Plane%1").arg(i + 1));
-    }
+    numStories = new QSpinBox();
+    numStories->setSingleStep(5);
+    numStories->setMinimum(1);
+    numStories->setMaximum(1000);
+    numStories->setValue(60);
+    numStories->setEnabled(false);
+    numStories->setToolTip("Number of stories in the building");
 
-    for (int j=0; j < vtkNumRows; j++)
-    {
-        QComboBox* axisName  = new QComboBox();
-        axisName->addItem("X");
-        axisName->addItem("Y");
-        axisName->addItem("Z");
-        axisName->setToolTip("Axis normal to the plane.");
+    floorHeight = new QLineEdit();
+    floorHeight->setEnabled(false);
+    floorHeight->setToolTip("Calculated floor to floor height in model-scale");
 
-        vtkSampleTable->setCellWidget(j, 1, axisName);
+    //    centerOfRotationX = new QLineEdit();
+    //    centerOfRotationX->setText("0.0");
+    //    centerOfRotationX->setToolTip("X-coordinate of the center of rotation ");
 
-        if(j == 0)
-        {
-            axisName->setCurrentIndex(1);
-        }
-        else
-        {
-            axisName->setCurrentIndex(2);
-        }
-    }
+    //    centerOfRotationY = new QLineEdit();
+    //    centerOfRotationY->setText("0.0");
+    //    centerOfRotationY->setToolTip("Y-coordinate of the center of rotation ");
 
-    for (int j=0; j < vtkNumRows; j++)
-    {
-        QComboBox* fieldName  = new QComboBox();
-        fieldName->addItem("Velocity");
-        fieldName->addItem("Pressure");
-        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+    //    centerOfRotationZ = new QLineEdit();
+    //    centerOfRotationZ->setText("0.0");
+    //    centerOfRotationZ->setToolTip("Z-coordinate of the center of rotation ");
 
-        vtkSampleTable->setCellWidget(j, vtkNumCols-1, fieldName);
-    }
-
-    //Line Probe #1
-    vtkSampleTable->item(0, 2)->setText("0.0");
-    vtkSampleTable->item(0, 3)->setText("0.0");
-    vtkSampleTable->item(0, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
-    vtkSampleTable->item(0, 5)->setText(QString::number(mainModel->getDuration()*0.10));
-    vtkSampleTable->item(0, 6)->setText(QString::number(mainModel->getDuration()*0.20));
-
-    //Line Probe #2
-    vtkSampleTable->item(1, 2)->setText("0.0");
-    vtkSampleTable->item(1, 3)->setText("0.0");
-    vtkSampleTable->item(1, 4)->setText(QString::number(mainModel->domainHeight()*0.10));
-    vtkSampleTable->item(1, 5)->setText(QString::number(mainModel->getDuration()*0.10));
-    vtkSampleTable->item(1, 6)->setText(QString::number(mainModel->getDuration()*0.20));
+    monitorBaseLoad = new QCheckBox();
+    monitorBaseLoad->setChecked(true);
+    monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
 
 
-    QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
-    vtkWriteInterval = new QSpinBox();
-    vtkWriteInterval->setSingleStep(10);
-    vtkWriteInterval->setMinimum(1);
-    vtkWriteInterval->setValue(10);
-    vtkWriteInterval->setMaximum(10000);
-    vtkWriteInterval->setEnabled(true);
-    vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
-    vtkWriteInterval->setMinimumWidth(100);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoadLabel, 0, 0);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoad, 0, 1);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteIntervalLabel, 1, 0);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteInterval, 1, 1);
+    baseLoadWriteInterval->setMinimumWidth(250);
+    monitorBaseLoadLayout->setAlignment(Qt::AlignLeft);
 
-    addPlane = new QPushButton("Add Plane");
-    removePlane = new QPushButton("Remove Plane");
-    showPlane = new QPushButton("Show Plane");
+    monitorStoryLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
+    monitorStoryLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(numStoriesLabel, 1, 0);
+    monitorStoryLoadLayout->addWidget(numStories, 1, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(floorHeightLabel, 2, 0);
+    monitorStoryLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
+    monitorStoryLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
+    monitorStoryLoadLayout->addWidget(storyLoadWriteInterval, 3, 1, 1, 4);
+    storyLoadWriteInterval->setMinimumWidth(250);
+    monitorStoryLoadLayout->setAlignment(Qt::AlignLeft);
+
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationXLabel, 4, 1, Qt::AlignLeft);
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationYLabel, 4, 3, Qt::AlignRight);
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationZLabel, 4, 5, Qt::AlignRight);
+
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationLabel, 4, 0);
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationX, 4, 2);
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationY, 4, 4);
+    //    monitorIntegratedLoadLayout->addWidget(centerOfRotationZ, 4, 6);
+
+    layout->addWidget(monitorBaseLoadGroup);
+    layout->addWidget(monitorStoryLoadGroup);
+
+    //==================================================================
+    //              Monitor Local Pressure
+    //==================================================================
+
+    QLabel *numTapsAlongWidthLabel = new QLabel("Number of Points Along Width:");
+    QLabel *numTapsAlongDepthLabel = new QLabel("Number of Points Along Depth: ");
+    QLabel *numTapsAlongHeightLabel = new QLabel("Number of Points Along Height: ");
+    QLabel *pressureWriteIntervalLabel = new QLabel("Write Interval:");
 
 
-    vtkSampleLayout->addWidget(monitorVTKPlane, 0, 0);
-    vtkSampleLayout->addWidget(addPlane, 0, 1);
-    vtkSampleLayout->addWidget(removePlane, 0, 2);
-    vtkSampleLayout->addWidget(showPlane, 0, 3);
-    vtkSampleLayout->addWidget(vtkSampleTable, 1, 0, 1, 4);
-    vtkSampleLayout->addWidget(vtkWriteIntervalLabel, 2, 0);
-    vtkSampleLayout->addWidget(vtkWriteInterval, 2, 1, Qt::AlignLeft);
+    pressureWriteInterval = new QSpinBox();
+    pressureWriteInterval->setSingleStep(1);
+    pressureWriteInterval->setMinimum(1);
+    pressureWriteInterval->setValue(10);
+    pressureWriteInterval->setEnabled(true);
+    pressureWriteInterval->setToolTip("Writing interval as a multiple of time step for pressure");
 
 
-    connect(addPlane,SIGNAL(clicked()), this, SLOT(onAddPlaneClicked()));
-    connect(removePlane,SIGNAL(clicked()), this, SLOT(onRemovePlaneClicked()));
-    connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
-    connect(monitorVTKPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
+    monitorSurfacePressure = new QCheckBox("Sample Pressure Data on the Building Surface");
+    monitorSurfacePressure->setChecked(true);
+    monitorSurfacePressure->setToolTip("Monitor surface pressure fluctuations at selected points");
 
-    layout->addWidget(monitorWindProfileGroup);
-    layout->addWidget(vtkSampleGroup);
+
+    createPressurePoints = new QRadioButton("Create a Grid of Sampling Points");
+    createPressurePoints->setChecked(true);
+    createPressurePoints->setToolTip("Greate grid of points for pressure");
+
+    importPressurePoints = new QRadioButton("Import Sampling Points (*.CSV)");
+    importPressurePoints->setChecked(false);
+    importPressurePoints->setToolTip("Import points from a CSV file ");
+
+    openCSVFile = new QPushButton("Open Sampling Point File");
+    openCSVFile->setEnabled(importPressurePoints->isChecked());
+
+    showCoordinateOfPoints = new QPushButton("Show Coordinates of Points");
+
+    numTapsAlongWidth = new QSpinBox();
+    numTapsAlongWidth->setSingleStep(1);
+    numTapsAlongWidth->setValue(8);
+    numTapsAlongWidth->setRange(1, 1000);
+    numTapsAlongWidth->setToolTip("Number of pressure monitoring points along the width of the building");
+
+    numTapsAlongDepth = new QSpinBox();
+    numTapsAlongDepth->setSingleStep(1);
+    numTapsAlongDepth->setValue(5);
+    numTapsAlongDepth->setRange(1, 1000);
+    numTapsAlongDepth->setToolTip("Number of pressure monitoring points along the depth of the building");
+
+    numTapsAlongHeight = new QSpinBox();
+    numTapsAlongHeight->setSingleStep(1);
+    numTapsAlongHeight->setValue(10);
+    numTapsAlongHeight->setRange(1, 1000);
+    numTapsAlongHeight->setToolTip("Number of pressure monitoring points along the height of the building");
+
+    monitorPressureLayout->addWidget(monitorSurfacePressure, 0, 0);
+
+    pressureMonitoringPointsLayout->addWidget(createPressurePointsGroup, 2, 0, 3, 2);
+    monitorPressureLayout->addWidget(pressureMonitoringPointsGroup, 2, 0, 3, 2);
+    pressureMonitoringPointsLayout->setHorizontalSpacing(25);
+
+    pressureMonitoringPointsLayout->addWidget(createPressurePoints, 0, 0);
+    pressureMonitoringPointsLayout->addWidget(importPressurePoints, 0, 3);
+    pressureMonitoringPointsLayout->addWidget(openCSVFile, 2, 3);
+    pressureMonitoringPointsLayout->addWidget(showCoordinateOfPoints, 5, 0, 1, 4);
+
+    createPressurePointsLayout->addWidget(numTapsAlongWidthLabel, 1, 0);
+    createPressurePointsLayout->addWidget(numTapsAlongDepthLabel, 2, 0);
+    createPressurePointsLayout->addWidget(numTapsAlongHeightLabel, 3, 0);
+    createPressurePointsLayout->addWidget(numTapsAlongWidth, 1, 1);
+    createPressurePointsLayout->addWidget(numTapsAlongDepth, 2, 1);
+    createPressurePointsLayout->addWidget(numTapsAlongHeight, 3, 1);
+
+
+    pressureMonitoringPointsLayout->addWidget(pressureWriteIntervalLabel, 7, 0, 1, 2);
+    pressureMonitoringPointsLayout->addWidget(pressureWriteInterval, 7, 1, 1, 2);
+
+    pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
+
+    layout->addWidget(monitorPressureGroup);
+    monitorPressureGroup->setEnabled(false);
+    monitorBaseLoadGroup->setEnabled(false);
+
+    //    layout->addWidget(resultMonitoringGroup);
     this->setLayout(layout);
+
+    //Add signals
+    connect(monitorBaseLoad, SIGNAL(stateChanged(int)), this, SLOT(onMonitorBaseLoadChecked(int)));
+    connect(monitorSurfacePressure, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPressureChecked(int)));
+    connect(createPressurePoints, SIGNAL(toggled(bool)), this, SLOT(onCreatePressurePointsToggled(bool)));
+    connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
+    connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
+
+
+    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
+            [=] (int nFl, double ht) {
+                numStories->setValue(nFl);
+                floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+            });
+
 }
 
 
@@ -313,112 +336,269 @@ void SurroundedBuildingResultMonitoring::clear(void)
 
 }
 
-void SurroundedBuildingResultMonitoring::onAddProfileClicked()
+
+void SurroundedBuildingResultMonitoring::onMonitorBaseLoadChecked(int state)
 {
-
-    int rowIndx = profileTable->rowCount();
-
-    profileTable->insertRow(rowIndx);
-
-    profileTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Profile%1").arg(rowIndx + 1)));
-    profileTable->setItem(rowIndx, 1, new QTableWidgetItem("0.0"));
-    profileTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
-    profileTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
-    profileTable->setItem(rowIndx, 4, new QTableWidgetItem("0.0"));
-    profileTable->setItem(rowIndx, 5, new QTableWidgetItem("0.0"));
-    profileTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->domainHeight())));
-    profileTable->setItem(rowIndx, 7, new QTableWidgetItem("50"));
-
-    QComboBox* fieldName  = new QComboBox();
-    fieldName->addItem("Velocity");
-    fieldName->addItem("Pressure");
-    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-    profileTable->setCellWidget(rowIndx, profileTable->columnCount()-1, fieldName);
-
+    baseLoadWriteInterval->setEnabled(monitorBaseLoad->isChecked());
 }
 
-void SurroundedBuildingResultMonitoring::onRemoveProfileClicked()
+void SurroundedBuildingResultMonitoring::onMonitorPressureChecked(int state)
 {
-    QItemSelectionModel *selected = profileTable->selectionModel();
+    pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
+}
 
-    if(selected->hasSelection())
+void SurroundedBuildingResultMonitoring::onCreatePressurePointsToggled(bool checked)
+{
+    createPressurePointsGroup->setEnabled(createPressurePoints->isChecked());
+    openCSVFile->setEnabled(importPressurePoints->isChecked());
+}
+
+void SurroundedBuildingResultMonitoring::onShowCoordinateOfPointsClicked()
+{
+    QDialog *dialog  = new QDialog(this);
+
+    int dialogHeight = 600;
+    int dialogWidth = 800;
+
+    dialog->setMinimumHeight(dialogHeight);
+    dialog->setMinimumWidth(dialogWidth);
+    dialog->setWindowTitle("Sampling Points");
+
+
+    QWidget* samplePointsWidget = new QWidget();
+
+    QGridLayout* dialogLayout = new QGridLayout();
+
+
+    QList<QVector3D> points = calculatePointCoordinates();
+
+    int numCols = 3; // x, y and z
+    int numRows = points.size(); //acount points on each face of the building (sides and top)
+
+    samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
+    samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
+    samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
+
+
+    QStringList headerTitles = {"X", "Y", "Z"};
+
+    samplingPointsTable->setHorizontalHeaderLabels(headerTitles);
+
+    for (int i=0; i < numCols; i++)
     {
-        for (int i = 0; i <selected->selectedRows().size(); i++)
+        samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
+
+        for (int j=0; j < numRows; j++)
         {
-            profileTable->removeRow(selected->selectedRows()[i].row());
+            samplingPointsTable->setItem(j, i, new QTableWidgetItem(""));
         }
     }
-}
 
-void SurroundedBuildingResultMonitoring::onShowProfilesClicked()
-{
-
-}
-
-void SurroundedBuildingResultMonitoring::onAddPlaneClicked()
-{
-
-    int rowIndx = vtkSampleTable->rowCount();
-
-    vtkSampleTable->insertRow(rowIndx);
-
-    QComboBox* axisName  = new QComboBox();
-    axisName->addItem("X");
-    axisName->addItem("Y");
-    axisName->addItem("Z");
-    axisName->setToolTip("Axis normal to the plane.");
-    axisName->setCurrentIndex(2);
-
-    QComboBox* fieldName  = new QComboBox();
-    fieldName->addItem("Velocity");
-    fieldName->addItem("Pressure");
-    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-    //Line Probe #1
-    vtkSampleTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Plane%1").arg(rowIndx + 1)));
-    vtkSampleTable->setCellWidget(rowIndx, 1, axisName);
-    vtkSampleTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
-    vtkSampleTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
-    vtkSampleTable->setItem(rowIndx, 4, new QTableWidgetItem(QString::number(mainModel->domainHeight()*0.10)));
-    vtkSampleTable->setItem(rowIndx, 5, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.10)));
-    vtkSampleTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.20)));
-    vtkSampleTable->setCellWidget(rowIndx, 7, fieldName);
-
-}
-
-void SurroundedBuildingResultMonitoring::onRemovePlaneClicked()
-{
-    QItemSelectionModel *selected = vtkSampleTable->selectionModel();
-
-    if(selected->hasSelection())
+    for (int i=0; i < numRows; i++)
     {
-        for (int i = 0; i <selected->selectedRows().size(); i++)
+        samplingPointsTable->item(i, 0)->setText(QString::number(points[i].x()));
+        samplingPointsTable->item(i, 1)->setText(QString::number(points[i].y()));
+        samplingPointsTable->item(i, 2)->setText(QString::number(points[i].z()));
+    }
+
+    dialogLayout->addWidget(samplePointsWidget, 0, 0);
+
+    visCoordinateOfPoints(dialogLayout);
+
+    dialog->setLayout(dialogLayout);
+    dialog->exec();
+
+}
+
+void SurroundedBuildingResultMonitoring::visCoordinateOfPoints(QGridLayout* dialogLayout)
+{
+    QVTKRenderWidget *qvtkWidget;
+    vtkSmartPointer<vtkSTLReader> buildingReader;
+    vtkSmartPointer<vtkDataSetMapper> buildingMapper; //mapper
+    vtkNew<vtkActor> buildingActor;// Actor in scene
+    vtkSmartPointer<vtkSimplePointsReader> pointsReader;
+    vtkSmartPointer<vtkDataSetMapper> pointsMapper; //mapper
+    vtkNew<vtkActor> pointsActor;// Actor in scene
+    vtkNew<vtkRenderer> renderer; // VTK Renderer
+    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+
+    qvtkWidget = new QVTKRenderWidget();
+
+    dialogLayout->addWidget(qvtkWidget, 0, 1);
+
+    // Setup reader
+    buildingReader = vtkSmartPointer<vtkSTLReader>::New();
+    buildingReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+    buildingReader->Update();
+
+    //Create mapper
+    buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    buildingMapper->SetInputData(buildingReader->GetOutput());
+    buildingMapper->SetScalarVisibility(false);
+
+    //Set up actor
+    buildingActor->GetProperty()->SetRepresentationToSurface();
+    buildingActor->SetMapper(buildingMapper);
+    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+
+    //point reader
+    pointsReader = vtkSmartPointer<vtkSimplePointsReader>::New();
+    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->Update();
+
+    //point mapper
+    pointsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    pointsMapper->SetInputData(pointsReader->GetOutput());
+    pointsMapper->SetScalarVisibility(false);
+
+    //Set up actor
+    pointsActor->GetProperty()->SetRepresentationToSurface();
+    pointsActor->SetMapper(pointsMapper);
+    pointsActor->GetProperty()->SetColor(1.0, 0, 0);
+    pointsActor->GetProperty()->SetPointSize(10);
+    pointsActor->GetProperty()->RenderPointsAsSpheresOn();
+
+
+    // VTK Renderer
+    // Add Actor to renderer
+    renderer->AddActor(buildingActor);
+    renderer->AddActor(pointsActor);
+    renderer->SetBackground(1.0, 1.0, 1.0);
+
+    // VTK/Qt wedded
+    qvtkWidget->setRenderWindow(renderWindow);
+    qvtkWidget->renderWindow()->AddRenderer(renderer);
+    renderWindow->BordersOn();
+}
+
+void SurroundedBuildingResultMonitoring::onOpenCSVFileClicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), mainModel->caseDir(), tr("CSV Files (*.csv)"));
+
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+}
+
+
+QList<QVector3D> SurroundedBuildingResultMonitoring::calculatePointCoordinates()
+{
+    QList<QVector3D> points;
+
+    int nWidth = numTapsAlongWidth->text().toInt();
+    int nDepth = numTapsAlongDepth->text().toInt();
+    int nHeight = numTapsAlongHeight->text().toInt();
+
+    float x = 0.0;
+    float y = 0.0;
+    float z = 0.0;
+    float tol = 1.0e-6; //tolerance to keep it just away from the face
+
+    double W = mainModel->buildingWidth()/mainModel->geometricScale();
+    double D = mainModel->buildingDepth()/mainModel->geometricScale();
+    double H = mainModel->buildingHeight()/mainModel->geometricScale();
+
+    double angle = qDegreesToRadians(mainModel->windDirection());
+
+
+    float dW = W/(nWidth + 1.0e-10);
+    float dD = D/(nDepth + 1.0e-10);
+    float dH = H/(nHeight + 1.0e-10);
+
+    //Front face of the building
+    x = -0.5*D - tol;
+    for (int i=0; i < nWidth; i++)
+    {
+        y = -0.5*W + 0.5*dW + i*dW;
+        for (int j=0; j < nHeight; j++)
         {
-            vtkSampleTable->removeRow(selected->selectedRows()[i].row());
+            z = 0 + 0.5*dH + j*dH;
+            points.append(QVector3D(x, y, z));
         }
     }
-}
 
-void SurroundedBuildingResultMonitoring::onMonitorProfileChecked(int state)
-{
-    profileTable->setEnabled(monitorProfile->isChecked());
-    profileWriteInterval->setEnabled(monitorProfile->isChecked());
-    profileStartTime->setEnabled(monitorProfile->isChecked());
-    addProfile->setEnabled(monitorProfile->isChecked());
-    removeProfile->setEnabled(monitorProfile->isChecked());
-    showProfiles->setEnabled(monitorProfile->isChecked());
-}
+    //Back face of the building
+    x = 0.5*D + tol;
+    for (int i=0; i < nWidth; i++)
+    {
+        y = -0.5*W + 0.5*dW + i*dW;
+        for (int j=0; j < nHeight; j++)
+        {
+            z = 0 + 0.5*dH + j*dH;
+            points.append(QVector3D(x, y, z));
+        }
+    }
 
-void SurroundedBuildingResultMonitoring::onMonitorPlaneChecked(int state)
-{
-    vtkSampleTable->setEnabled(monitorVTKPlane->isChecked());
-    vtkWriteInterval->setEnabled(monitorVTKPlane->isChecked());
-    addPlane->setEnabled(monitorVTKPlane->isChecked());
-    removePlane->setEnabled(monitorVTKPlane->isChecked());
-    showPlane->setEnabled(monitorVTKPlane->isChecked());
-}
+    //Left face of the building
+    y = -0.5*W - tol;
+    for (int i=0; i < nDepth; i++)
+    {
+        x = -0.5*D + 0.5*dD + i*dD;
+        for (int j=0; j < nHeight; j++)
+        {
+            z = 0 + 0.5*dH + j*dH;
+            points.append(QVector3D(x, y, z));
+        }
+    }
 
+    //Right face of the building
+    y = 0.5*W + tol;
+    for (int i=0; i < nDepth; i++)
+    {
+        x = -0.5*D + 0.5*dD + i*dD;
+        for (int j=0; j < nHeight; j++)
+        {
+            z = 0 + 0.5*dH + j*dH;
+            points.append(QVector3D(x, y, z));
+        }
+    }
+
+    //Top face of the building
+    z = H + tol;
+    for (int i=0; i < nDepth; i++)
+    {
+        x = -0.5*D + 0.5*dD + i*dD;
+
+        for (int j=0; j < nWidth; j++)
+        {
+            y = -0.5*W + 0.5*dW + j*dW;
+
+            points.append(QVector3D(x, y, z));
+        }
+    }
+
+    QList<QVector3D> transPoints;
+
+    for (int i=0; i < points.size(); i++)
+    {
+        x = qCos(angle)*points[i].x() - qSin(angle)*points[i].y();
+        y = qSin(angle)*points[i].x() + qCos(angle)*points[i].y();
+        z = points[i].z();
+
+        transPoints.append(QVector3D(x, y, z));
+    }
+
+
+    //Write to a file
+    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
+    QFile file(fileName);
+
+    file.remove();
+
+    if (file.open(QIODevice::ReadWrite))
+    {
+        QTextStream stream(&file);
+
+        for (int i=0; i < transPoints.size()-1; i++)
+        {
+            stream << transPoints[i].x() << "\t" <<transPoints[i].y() << "\t" << transPoints[i].z() << Qt::endl;
+        }
+        stream << transPoints.last().x() << "\t" <<transPoints.last().y() << "\t" << transPoints.last().z();
+    }
+
+    file.close();
+
+    return transPoints;
+}
 
 bool SurroundedBuildingResultMonitoring::outputToJSON(QJsonObject &jsonObject)
 {
@@ -426,60 +606,35 @@ bool SurroundedBuildingResultMonitoring::outputToJSON(QJsonObject &jsonObject)
 
     QJsonObject resMonitoringJson = QJsonObject();
 
-    resMonitoringJson["monitorWindProfile"] = monitorProfile->isChecked();
-    resMonitoringJson["profileWriteInterval"] = profileWriteInterval->value();
-    resMonitoringJson["profileStartTime"] = profileStartTime->text().toDouble();
+    resMonitoringJson["numStories"] = numStories->value();
+    resMonitoringJson["floorHeight"] = floorHeight->text().toDouble();
 
-    QJsonArray windProfiles;
-    for(int row=0; row < profileTable->rowCount(); row++)
+    QJsonArray centerOfRotation = {mainModel->getBuildingCenter()[0], mainModel->getBuildingCenter()[1], mainModel->getBuildingCenter()[2]};
+    resMonitoringJson["centerOfRotation"] = centerOfRotation;
+
+    resMonitoringJson["storyLoadWriteInterval"] = storyLoadWriteInterval->value();
+    resMonitoringJson["baseLoadWriteInterval"] = baseLoadWriteInterval->value();
+    resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
+
+    resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
+
+    resMonitoringJson["numTapsAlongWidth"] = numTapsAlongWidth->value();
+    resMonitoringJson["numTapsAlongDepth"] = numTapsAlongDepth->value();
+    resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
+
+    resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
+
+
+    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
+    QJsonArray pressureSamplingPoints;
+
+    for(int i=0; i < pointsXYZ.size(); i++)
     {
-       QJsonObject profile = QJsonObject();
-
-        profile["name"] = profileTable->item(row, 0)->text();
-        profile["startX"] = profileTable->item(row, 1)->text().toDouble();
-        profile["startY"] = profileTable->item(row, 2)->text().toDouble();
-        profile["startZ"] = profileTable->item(row, 3)->text().toDouble();
-        profile["endX"] = profileTable->item(row, 4)->text().toDouble();
-        profile["endY"] = profileTable->item(row, 5)->text().toDouble();
-        profile["endZ"] = profileTable->item(row, 6)->text().toDouble();
-        profile["nPoints"] = profileTable->item(row, 7)->text().toInt();
-
-        QComboBox* fieldName  = dynamic_cast<QComboBox*>(profileTable->cellWidget(row, 8));
-        profile["field"] = fieldName->currentText();
-
-        windProfiles.append(profile);
+        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
+        pressureSamplingPoints.append(point);
     }
 
-    resMonitoringJson["windProfiles"] = windProfiles;
-
-
-    resMonitoringJson["monitorVTKPlane"] = monitorVTKPlane->isChecked();
-
-    QJsonArray vtkPlanes;
-    for(int row=0; row < vtkSampleTable->rowCount(); row++)
-    {
-        QJsonObject vtkPlane = QJsonObject();
-
-        vtkPlane["name"] = vtkSampleTable->item(row, 0)->text();
-
-        QComboBox* axisName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 1));
-        vtkPlane["normalAxis"] = axisName->currentText();
-
-        vtkPlane["pointX"] = vtkSampleTable->item(row, 2)->text().toDouble();
-        vtkPlane["pointY"] = vtkSampleTable->item(row, 3)->text().toDouble();
-        vtkPlane["pointZ"] = vtkSampleTable->item(row, 4)->text().toDouble();
-        vtkPlane["startTime"] = vtkSampleTable->item(row, 5)->text().toDouble();
-        vtkPlane["endTime"] = vtkSampleTable->item(row, 6)->text().toDouble();
-
-        QComboBox* fieldName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 7));
-        vtkPlane["field"] = fieldName->currentText();
-
-        vtkPlanes.append(vtkPlane);
-    }
-    resMonitoringJson["vtkPlanes"] = vtkPlanes;
-
-    resMonitoringJson["vtkWriteInterval"] = vtkWriteInterval->value();
-
+    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
 
     jsonObject["resultMonitoring"] = resMonitoringJson;
 
@@ -493,74 +648,29 @@ bool SurroundedBuildingResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 
     QJsonObject resMonitoringJson = jsonObject["resultMonitoring"].toObject();
 
-    monitorProfile->setChecked(resMonitoringJson["monitorWindProfile"].toBool());
-    profileWriteInterval->setValue(resMonitoringJson["profileWriteInterval"].toInt());
-    profileStartTime->setText(QString::number(resMonitoringJson["profileStartTime"].toDouble()));
 
-    //Set wind profiles
-    QJsonArray profiles = resMonitoringJson["windProfiles"].toArray();
+    numStories->setValue(resMonitoringJson["numStories"].toInt());
+    floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
 
-    initializeProfileTable(profiles.size());
+    //    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
 
-    for (int pi = 0; pi < profiles.size(); pi++)
-    {
-        QJsonObject profile  = profiles[pi].toObject();
+    //    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
+    //    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
+    //    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
 
-        profileTable->item(pi, 0)->setText(profile["name"].toString());
-        profileTable->item(pi, 1)->setText(QString::number(profile["startX"].toDouble()));
-        profileTable->item(pi, 2)->setText(QString::number(profile["startY"].toDouble()));
-        profileTable->item(pi, 3)->setText(QString::number(profile["startZ"].toDouble()));
-        profileTable->item(pi, 4)->setText(QString::number(profile["endX"].toDouble()));
-        profileTable->item(pi, 5)->setText(QString::number(profile["endY"].toDouble()));
-        profileTable->item(pi, 6)->setText(QString::number(profile["endZ"].toDouble()));
-        profileTable->item(pi, 7)->setText(QString::number(profile["nPoints"].toInt()));
+    storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
+    baseLoadWriteInterval->setValue(resMonitoringJson["baseLoadWriteInterval"].toInt());
+    monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
 
-        QComboBox* fieldName  = new QComboBox();
-        fieldName->addItem("Velocity");
-        fieldName->addItem("Pressure");
-        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+    monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
 
-        fieldName->setCurrentText(profile["field"].toString());
+    numTapsAlongWidth->setValue(resMonitoringJson["numTapsAlongWidth"].toInt());
+    numTapsAlongDepth->setValue(resMonitoringJson["numTapsAlongDepth"].toInt());
+    numTapsAlongHeight->setValue(resMonitoringJson["numTapsAlongHeight"].toInt());
 
-        profileTable->setCellWidget(pi, 8, fieldName);
-    }
+    pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
 
-    //Set vtk planes
-    QJsonArray vtkPlanes = resMonitoringJson["vtkPlanes"].toArray();
-    monitorVTKPlane->setChecked(resMonitoringJson["monitorVTKPlane"].toBool());
-    vtkWriteInterval->setValue(resMonitoringJson["vtkWriteInterval"].toInt());
-
-    for (int pi = 0; pi < vtkPlanes.size(); pi++)
-    {
-        QJsonObject vtkPlane  = vtkPlanes[pi].toObject();
-
-        vtkSampleTable->item(pi, 0)->setText(vtkPlane["name"].toString());
-
-        QComboBox* axisName  = new QComboBox();
-        axisName->addItem("X");
-        axisName->addItem("Y");
-        axisName->addItem("Z");
-        axisName->setToolTip("Axis normal to the plane.");
-        axisName->setCurrentText(vtkPlane["normalAxis"].toString());
-
-        vtkSampleTable->setCellWidget(pi, 1, axisName);
-
-
-        vtkSampleTable->item(pi, 2)->setText(QString::number(vtkPlane["pointX"].toDouble()));
-        vtkSampleTable->item(pi, 3)->setText(QString::number(vtkPlane["pointY"].toDouble()));
-        vtkSampleTable->item(pi, 4)->setText(QString::number(vtkPlane["pointZ"].toDouble()));
-        vtkSampleTable->item(pi, 5)->setText(QString::number(vtkPlane["startTime"].toDouble()));
-        vtkSampleTable->item(pi, 6)->setText(QString::number(vtkPlane["endTime"].toDouble()));
-
-        QComboBox* fieldName  = new QComboBox();
-        fieldName->addItem("Velocity");
-        fieldName->addItem("Pressure");
-        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
-
-        fieldName->setCurrentText(vtkPlane["feild"].toString());
-
-        vtkSampleTable->setCellWidget(pi, 7, fieldName);
-    }
+    floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
 
     return true;
 }
@@ -568,55 +678,4 @@ bool SurroundedBuildingResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
 void SurroundedBuildingResultMonitoring::updateWidgets()
 {
 }
-
-void SurroundedBuildingResultMonitoring::initializeProfileTable(int numRows)
-{
-    const int numCols = 9;
-
-    profileTable->setRowCount(numRows);
-
-    profileTable->setMaximumHeight(150);
-
-    QStringList headerTitles = {"Name", "start-X", "start-Y", "start-Z", "end-X", "end-Y", "end-Z", "No. Points", "Field"};
-
-    profileTable->setHorizontalHeaderLabels(headerTitles);
-
-    for (int i=0; i < numCols; i++)
-    {
-        profileTable->setColumnWidth(i, profileTable->size().width()/(numCols + 0.25));
-
-        for (int j=0; j < numRows; j++)
-        {
-            profileTable->setItem(j, i, new QTableWidgetItem(""));
-        }
-    }
-}
-
-
-void SurroundedBuildingResultMonitoring::initializeVTKTable(int numRows)
-{
-    const int vtkNumCols = 8;
-
-    vtkSampleTable->setRowCount(numRows);
-
-    vtkSampleTable->setMaximumHeight(150);
-
-    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
-
-    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
-
-    for (int i=0; i < vtkNumCols; i++)
-    {
-        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
-
-        for (int j=0; j < numRows; j++)
-        {
-            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
-        }
-    }
-
-
-}
-
-
 

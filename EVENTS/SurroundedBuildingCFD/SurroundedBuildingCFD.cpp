@@ -104,6 +104,10 @@ bool SurroundedBuildingCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
+    saveMeshGroup = new QGroupBox("Save Mesh", this);
+    saveMeshLayout = new QHBoxLayout();
+    saveMeshGroup->setLayout( saveMeshLayout);
+
     inputTab = new QTabWidget(this);
     //QTabWidget *inputTab = new QTabWidget(this);    
 
@@ -331,7 +335,16 @@ bool SurroundedBuildingCFD::initialize()
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
+    QPushButton *saveMeshButton = new QPushButton("Save Case Files");
+
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
+
+
+    saveMeshLayout->addWidget(saveMeshButton);
+    inputWindowLayout->addWidget(saveMeshGroup);
+
+
 
     //=====================================================
     // Setup the case directory
@@ -922,5 +935,13 @@ void SurroundedBuildingCFD::importMainDomainJsonFile(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
 }
 
+void SurroundedBuildingCFD::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
+
+    writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
+}
 
 
