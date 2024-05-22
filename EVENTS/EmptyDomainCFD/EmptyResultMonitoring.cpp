@@ -530,6 +530,9 @@ bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
     monitorVTKPlane->setChecked(resMonitoringJson["monitorVTKPlane"].toBool());
     vtkWriteInterval->setValue(resMonitoringJson["vtkWriteInterval"].toInt());
 
+    initializeVTKTable(vtkPlanes.size());
+
+
     for (int pi = 0; pi < vtkPlanes.size(); pi++)
     {
         QJsonObject vtkPlane  = vtkPlanes[pi].toObject();
@@ -563,6 +566,9 @@ bool EmptyResultMonitoring::inputFromJSON(QJsonObject &jsonObject)
     }
 
     return true;
+
+
+
 }
 
 void EmptyResultMonitoring::updateWidgets()

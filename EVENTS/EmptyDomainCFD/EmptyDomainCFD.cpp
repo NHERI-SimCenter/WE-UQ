@@ -104,6 +104,10 @@ bool EmptyDomainCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
+    saveMeshGroup = new QGroupBox("Save Mesh", this);
+    saveMeshLayout = new QHBoxLayout();
+    saveMeshGroup->setLayout( saveMeshLayout);
+
     inputTab = new QTabWidget(this);
     //QTabWidget *inputTab = new QTabWidget(this);    
 
@@ -329,9 +333,16 @@ bool EmptyDomainCFD::initialize()
     inputWindowGroup->setLayout(inputWindowLayout);
     inputWindowGroup->setMaximumWidth(windowWidth - 125);
 
+
+    QPushButton *saveMeshButton = new QPushButton("Save Case Files");
+    saveMeshLayout->addWidget(saveMeshButton);
+    inputWindowLayout->addWidget(saveMeshGroup);
+
+
     mainWindowLayout->addWidget(inputWindowGroup);
 
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     //=====================================================
     // Setup the case directory
@@ -357,9 +368,11 @@ bool EmptyDomainCFD::initialize()
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
+
     visWidget = new EmptyVTKRendering(this);
 
     visWindowLayout->addWidget(visWidget);
+
 
     this->setLayout(mainWindowLayout);
 
@@ -932,5 +945,12 @@ void EmptyDomainCFD::importMainDomainJsonFile(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
 }
 
+void EmptyDomainCFD::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
 
+    writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
+}
 
