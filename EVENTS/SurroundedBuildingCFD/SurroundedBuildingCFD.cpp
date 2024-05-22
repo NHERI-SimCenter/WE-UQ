@@ -443,9 +443,7 @@ void SurroundedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
 }
