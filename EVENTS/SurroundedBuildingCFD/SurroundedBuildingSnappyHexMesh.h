@@ -1,6 +1,7 @@
 #ifndef SURROUNDED_SNAPPY_HEX_MESH_H
 #define SURROUNDED_SNAPPY_HEX_MESH_H
 
+
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.

@@ -69,10 +69,19 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonObject>
 #include <QJsonDocument>
 #include "vtkGenericOpenGLRenderWindow.h"
-#include "vtkSmartPointer.h"
+#include <vtkSmartPointer.h>
+#include <vtkGlyph3DMapper.h>
 #include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkNew.h>
+#include <vtkVoxelGrid.h>
+#include <vtkCompositeDataSet.h>
+#include <vtkCellCenters.h>
+//#include <vtkPoissonDiskSampler.h>
+#include <vtkPoints.h>
+#include <vtkMultiBlockDataSet.h>
+#include <vtkOpenFOAMReader.h>
+#include <vtkCleanPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkQtTableView.h>
 #include <vtkRenderWindow.h>
@@ -87,10 +96,12 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkMultiBlockDataSet.h>
 #include <vtkSTLReader.h>
 #include <vtkPointData.h>
+#include <vtkPointSource.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkInformation.h>
 #include <vtkSmartPointer.h>
 #include <vtkUnstructuredGrid.h>
 #include <QVTKRenderWidget.h>
@@ -345,18 +356,130 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
     QWidget* samplePointsWidget = new QWidget();
 
-    QGridLayout* dialogLayout = new QGridLayout();
+    QGridLayout* dialogLayout = new  QGridLayout();
 
 
     QList<QVector3D> points = calculatePointCoordinates();
 
+
+    //==================================================
+    // Setup the VTK window
+    //==================================================
+
+    QVTKRenderWidget *qvtkWidget;
+    qvtkWidget = new QVTKRenderWidget();
+    dialogLayout->addWidget(qvtkWidget,0,0);
+
+    if (mainModel->buildingShape()=="Complex")
+    {
+        vtkNew<vtkCleanPolyData> pointData;
+        pointData->SetInputData(mainModel->getBldgBlock());
+
+        double W = mainModel->buildingWidth()/mainModel->geometricScale();
+        double D = mainModel->buildingDepth()/mainModel->geometricScale();
+        double H = mainModel->buildingHeight()/mainModel->geometricScale();
+
+        double dW = W/(numTapsAlongWidth->text().toInt() + 1.0e-10);
+        double dD = D/(numTapsAlongDepth->text().toInt() + 1.0e-10);
+        double dH = H/(numTapsAlongHeight->text().toInt() + 1.0e-10);
+
+        pointData->SetTolerance(sqrt(dW*dW + dD*dD + dH*dH));
+        pointData->Update();
+
+//        int nVtkPoints = pointData->GetOutput()->GetNumberOfCells();
+//        vtkNew<vtkCellCenters> cellCentersFilter;
+//        cellCentersFilter->SetInputData(pointData->GetOutput());
+//        cellCentersFilter->VertexCellsOff();
+//        cellCentersFilter->Update();
+
+        int nVtkPoints = pointData->GetOutput()->GetNumberOfPoints();
+
+        points.clear();
+
+        for (int i=0; i<nVtkPoints; i++)
+        {
+            QVector3D point;
+            point.setX(pointData->GetOutput()->GetPoint(i)[0]);
+            point.setY(pointData->GetOutput()->GetPoint(i)[1]);
+            point.setZ(pointData->GetOutput()->GetPoint(i)[2]);
+
+            points.append(point);
+        }
+    }
+
+    writeSamplingPoints(points);
+
+    //Building mapper
+    vtkNew<vtkPolyDataMapper>buildingMapper; //mapper
+    buildingMapper->SetInputData(mainModel->getBldgBlock());
+    buildingMapper->Update();
+
+    //Building actor
+    vtkNew<vtkActor> buildingActor;// Actor in scene
+    buildingActor->SetMapper(buildingMapper);
+    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+    buildingActor->GetProperty()->SetRepresentationToSurface();
+    buildingActor->GetProperty()->SetEdgeVisibility(true);
+
+
+    //point reader
+    vtkNew<vtkSimplePointsReader> pointsReader;
+    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->Update();
+
+//    vtkNew<vtkCleanPolyData> pointData;
+//    pointData->SetInputData(mainModel->getBldgBlock());
+//    pointData->SetTolerance(0.01);
+//    pointData->Update();
+
+//    vtkNew<vtkCellCenters> cellCentersFilter;
+//    cellCentersFilter->SetInputData(pointData->GetOutput());
+//    cellCentersFilter->VertexCellsOff();
+//    cellCentersFilter->Update();
+
+
+    vtkNew<vtkDataSetMapper> pointsMapper; //mapper
+    pointsMapper->SetInputData(pointsReader->GetOutput());
+//    pointsMapper->SetInputConnection(cellCentersFilter->GetOutputPort());
+//    pointsMapper->SetInputData(pointData->GetOutput());
+
+
+
+
+    //Points actor
+    vtkNew<vtkActor> pointsActor;// Actor in scene
+    pointsActor->SetMapper(pointsMapper);
+    pointsActor->GetProperty()->SetColor(0.75, 0.75, 0.75);
+    pointsActor->GetProperty()->SetPointSize(10);
+
+    // Add Actor to renderer
+    vtkNew<vtkRenderer> renderer; // VTK Renderer
+    renderer->AddActor(buildingActor);
+    renderer->AddActor(pointsActor);
+    renderer->SetBackground(1.0, 1.0, 1.0);
+
+    // VTK/Qt wedded
+    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+    qvtkWidget->setRenderWindow(renderWindow);
+    qvtkWidget->renderWindow()->AddRenderer(renderer);
+    renderWindow->BordersOn();
+    renderer->ResetCamera();
+    renderWindow->Render();
+
+
+    //=======================================================
+    //Point Table
+    //=======================================================
     int numCols = 3; // x, y and z
     int numRows = points.size(); //acount points on each face of the building (sides and top)
 
     samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
     samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
     samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
-
+    samplingPointsTable->setMaximumWidth(dialogWidth*0.50);
+    samplePointsWidget->setMinimumHeight(dialogHeight*0.95);
+    samplePointsWidget->setMinimumWidth(dialogWidth*0.40);
+    samplePointsWidget->setMaximumWidth(dialogWidth*0.50);
 
     QStringList headerTitles = {"X", "Y", "Z"};
 
@@ -364,12 +487,12 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
     for (int i=0; i < numCols; i++)
     {
-       samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
+        samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
 
-       for (int j=0; j < numRows; j++)
-       {
+        for (int j=0; j < numRows; j++)
+        {
             samplingPointsTable->setItem(j, i, new QTableWidgetItem(""));
-       }
+        }
     }
 
     for (int i=0; i < numRows; i++)
@@ -379,75 +502,93 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
         samplingPointsTable->item(i, 2)->setText(QString::number(points[i].z()));
     }
 
-    dialogLayout->addWidget(samplePointsWidget, 0, 0);
-
-    visCoordinateOfPoints(dialogLayout);
-
+    dialogLayout->addWidget(samplePointsWidget,0,1);
     dialog->setLayout(dialogLayout);
     dialog->exec();
 
 }
 
-void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
-{
-    QVTKRenderWidget *qvtkWidget;
-    vtkSmartPointer<vtkSTLReader> buildingReader;
-    vtkSmartPointer<vtkDataSetMapper> buildingMapper; //mapper
-    vtkNew<vtkActor> buildingActor;// Actor in scene
-    vtkSmartPointer<vtkSimplePointsReader> pointsReader;
-    vtkSmartPointer<vtkDataSetMapper> pointsMapper; //mapper
-    vtkNew<vtkActor> pointsActor;// Actor in scene
-    vtkNew<vtkRenderer> renderer; // VTK Renderer
-    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-
-    qvtkWidget = new QVTKRenderWidget();
-
-    dialogLayout->addWidget(qvtkWidget, 0, 1);
-
-    // Setup reader
-    buildingReader = vtkSmartPointer<vtkSTLReader>::New();
-    buildingReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
-    buildingReader->Update();
-
-    //Create mapper
-    buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    buildingMapper->SetInputData(buildingReader->GetOutput());
-    buildingMapper->SetScalarVisibility(false);
-
-    //Set up actor
-    buildingActor->GetProperty()->SetRepresentationToSurface();
-    buildingActor->SetMapper(buildingMapper);
-    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
-
-    //point reader
-    pointsReader = vtkSmartPointer<vtkSimplePointsReader>::New();
-    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
-    pointsReader->Update();
-
-    //point mapper
-    pointsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    pointsMapper->SetInputData(pointsReader->GetOutput());
-    pointsMapper->SetScalarVisibility(false);
-
-    //Set up actor
-    pointsActor->GetProperty()->SetRepresentationToSurface();
-    pointsActor->SetMapper(pointsMapper);
-    pointsActor->GetProperty()->SetColor(1.0, 0, 0);
-    pointsActor->GetProperty()->SetPointSize(10);
-    pointsActor->GetProperty()->RenderPointsAsSpheresOn();
+//void ResultMonitoringWidget::visCoordinateOfPoints(QGridLayout* dialogLayout)
+//{
+//    QVTKRenderWidget *qvtkWidget;
+////    vtkPolyData* bldgBlock;
+////    vtkNew<vtkDataSetMapper> buildingMapper; //mapper
+////    vtkNew<vtkActor> buildingActor;// Actor in scene
+//    vtkNew<vtkPolyDataMapper> pointsMapper; //mapper
+//    vtkNew<vtkActor> pointsActor;// Actor in scene
+//    vtkNew<vtkRenderer> renderer; // VTK Renderer
+//    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
+////    vtkNew<vtkCleanPolyData> pointData;
 
 
-    // VTK Renderer
-    // Add Actor to renderer
-    renderer->AddActor(buildingActor);
-    renderer->AddActor(pointsActor);
-    renderer->SetBackground(1.0, 1.0, 1.0);
+//    qvtkWidget = new QVTKRenderWidget();
 
-    // VTK/Qt wedded
-    qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
-    renderWindow->BordersOn();
-}
+//    dialogLayout->addWidget(qvtkWidget, 0, 1);
+
+
+////    bldgBlock = mainModel->getBldgBlock();
+
+//    //point reader
+//    pointsReader->SetFileName((mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
+//    pointsReader->Update();
+
+//    //Create mapper
+////    buildingMapper->SetInputData(bldgBlock);
+////    buildingMapper->SetScalarVisibility(false);
+
+//    //Set up actor
+////    buildingActor->GetProperty()->SetRepresentationToSurface();
+////    buildingActor->SetMapper(buildingMapper);
+////    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+
+
+////    vtkPoints* points = bldgBlock->GetPoints();
+
+
+//    //point mapper
+//    pointsMapper->SetInputData(pointsReader->GetOutput());
+////    pointsMapper->SetInputConnection(pointsReader->GetOutputPort());
+////    pointsMapper->SetInputConnection(pointData->GetOutputPort());
+////    pointsMapper->SetScalarVisibility(false);
+
+//    //Set up actor
+////    pointsActor->GetProperty()->SetRepresentationToSurface();
+//    pointsActor->SetMapper(pointsMapper);
+//    pointsActor->GetProperty()->SetColor(1.0, 0, 0);
+//    pointsActor->GetProperty()->SetPointSize(0.01);
+//    pointsActor->GetProperty()->RenderPointsAsSpheresOn();
+
+
+//    // VTK Renderer
+//    // Add Actor to renderer
+////    renderer->AddActor(buildingActor);
+//    renderer->AddActor(pointsActor);
+//    renderer->SetBackground(1.0, 1.0, 1.0);
+
+//    // VTK/Qt wedded
+//    qvtkWidget->setRenderWindow(renderWindow);
+//    qvtkWidget->renderWindow()->AddRenderer(renderer);
+//    renderWindow->BordersOn();
+//    renderWindow->Render();
+//    qvtkWidget->interactor()->Start();
+
+////    vtkNew<vtkPoissonDiskSampler> sample;
+////    sample->SetInputData(buildingReader->GetOutput());
+////    sample->Update();
+
+////    statusMessage("Number of points before:" + QString::number(bldgBlock->GetNumberOfPoints()));
+//    statusMessage("Number of points before:" + QString::number(pointsReader->GetOutput()->GetNumberOfPoints()));
+
+////    bldgBlock->
+
+////    vtkNew<vtkCleanPolyData> cleanPolyData;
+////    cleanPolyData->SetInputData(bldgBlock);
+////    cleanPolyData->SetTolerance(0.01);
+////    cleanPolyData->Update();
+////    auto cleanPts = cleanPolyData->GetOutput()->GetNumberOfPoints();
+
+////    statusMessage("Number of points after:" + QString::number(cleanPts));
+//}
 
 void ResultMonitoringWidget::onOpenCSVFileClicked()
 {
@@ -555,26 +696,6 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
         transPoints.append(QVector3D(x, y, z));
     }
 
-
-    //Write to a file
-    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
-    QFile file(fileName);
-
-    file.remove();
-
-    if (file.open(QIODevice::ReadWrite))
-    {
-        QTextStream stream(&file);
-
-        for (int i=0; i < transPoints.size()-1; i++)
-        {
-            stream << transPoints[i].x() << "\t" <<transPoints[i].y() << "\t" << transPoints[i].z() << Qt::endl;
-        }
-        stream << transPoints.last().x() << "\t" <<transPoints.last().y() << "\t" << transPoints.last().z();
-    }
-
-    file.close();
-
     return transPoints;
 }
 
@@ -655,5 +776,49 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
 
 void ResultMonitoringWidget::updateWidgets()
 {
+}
+
+// Get named block of specified type
+template <class Type>
+Type* ResultMonitoringWidget::findBlock(vtkMultiBlockDataSet* mb, const char* blockName)
+{
+    Type* dataset = nullptr;
+    const unsigned int nblocks = (mb ? mb->GetNumberOfBlocks() : 0u);
+    for (unsigned int blocki = 0; !dataset && blocki < nblocks; ++blocki)
+    {
+        vtkDataObject* obj = mb->GetBlock(blocki);
+        if (strcmp(mb->GetMetaData(blocki)->Get(vtkCompositeDataSet::NAME()), blockName) == 0)
+        {
+            dataset = Type::SafeDownCast(obj);
+        }
+        if (!dataset)
+        {
+            dataset = findBlock<Type>(vtkMultiBlockDataSet::SafeDownCast(obj), blockName);
+        }
+    }
+    return dataset;
+}
+
+
+void ResultMonitoringWidget::writeSamplingPoints(QList<QVector3D> points)
+{
+    //Write to a file
+    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
+    QFile file(fileName);
+
+    file.remove();
+
+    if (file.open(QIODevice::ReadWrite))
+    {
+        QTextStream stream(&file);
+
+        for (int i=0; i < points.size()-1; i++)
+        {
+            stream << points[i].x() << "\t" <<points[i].y() << "\t" << points[i].z() << Qt::endl;
+        }
+        stream << points.last().x() << "\t" <<points.last().y() << "\t" << points.last().z();
+    }
+
+    file.close();
 }
 

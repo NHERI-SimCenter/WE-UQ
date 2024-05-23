@@ -115,7 +115,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTransform.h>
 #include <vtkCaptionActor2D.h>
 
-SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget( IsolatedBuildingCFD *parent)
+SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
 {
     initialize();
@@ -167,11 +167,6 @@ void SimCenterVTKRenderingWidget::initialize()
     menueLayout->addWidget(transparency, 0, 5, Qt::AlignLeft);
     menueLayout->addWidget(reloadCase, 0, 6, Qt::AlignCenter);
 
-
-//    renderWindow  = vtkSmartPointer<vtkDataSetMapper>::New();
-
-//    qvtkWidget->setMinimumSize(300, 500);
-
     visLayout->addWidget(qvtkWidget);
     visGroup->setStyleSheet("border: 2px solid black");
     visLayout->setContentsMargins(0, 0, 0, 0);
@@ -179,18 +174,25 @@ void SimCenterVTKRenderingWidget::initialize()
     layout->addWidget(visGroup);
     this->setLayout(layout);
 
-    connect(viewObject, SIGNAL(currentTextChanged(QString)), this, SLOT(viewObjectChanged(QString)));
-    connect(surfaceRepresentation, SIGNAL(currentTextChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
+    connect(viewObject, SIGNAL(currentIndexChanged(QString)), this, SLOT(viewObjectChanged(QString)));
+    connect(surfaceRepresentation, SIGNAL(currentIndexChanged(QString)), this, SLOT(surfaceRepresentationChanged(QString)));
     connect(reloadCase, SIGNAL(clicked()), this, SLOT(onReloadCaseClicked()));
     connect(transparency, SIGNAL(valueChanged(int)), this, SLOT(onTransparencyChanged(int)));
 
+    initializeVtkObjects();
 
-    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
-    {
-        readMesh();
-    }
+    onReloadCaseClicked();
 
-    initialized = true;
+    showAllMesh();
+
+    surfaceRepresentation->setCurrentIndex(0);
+    allMeshActor->GetProperty()->SetRepresentationToSurface();
+    breakOutActor->GetProperty()->SetRepresentationToSurface();
+    buildingActor->GetProperty()->SetRepresentationToSurface();
+
+    allMeshActor->GetProperty()->SetEdgeVisibility(true);
+    breakOutActor->GetProperty()->SetEdgeVisibility(true);
+    buildingActor->GetProperty()->SetEdgeVisibility(true);
 }
 
 
@@ -198,7 +200,6 @@ SimCenterVTKRenderingWidget::~SimCenterVTKRenderingWidget()
 {
 
 }
-
 
 void SimCenterVTKRenderingWidget::clear(void)
 {
@@ -209,29 +210,37 @@ void SimCenterVTKRenderingWidget::surfaceRepresentationChanged(const QString &ar
 {
     if (arg1 == "Wireframe")
     {
-        actor->GetProperty()->SetRepresentationToWireframe();
-        actor->GetProperty()->SetColor(0, 0, 0);
-
+        allMeshActor->GetProperty()->SetRepresentationToWireframe();
+        breakOutActor->GetProperty()->SetRepresentationToWireframe();
+        buildingActor->GetProperty()->SetRepresentationToWireframe();
     }
     else if (arg1 == "SurfaceWithGrid")
     {
-        actor->GetProperty()->SetRepresentationToSurface();
-        actor->GetProperty()->SetEdgeVisibility(true);
-        actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
+        allMeshActor->GetProperty()->SetRepresentationToSurface();
+        allMeshActor->GetProperty()->SetEdgeVisibility(true);
+
+        breakOutActor->GetProperty()->SetRepresentationToSurface();
+        breakOutActor->GetProperty()->SetEdgeVisibility(true);
+
+        buildingActor->GetProperty()->SetRepresentationToSurface();
+        buildingActor->GetProperty()->SetEdgeVisibility(true);
     }
     else if(arg1 == "Surface")
     {
-        actor->GetProperty()->SetRepresentationToSurface();
-        actor->GetProperty()->SetEdgeVisibility(false);
-        actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
+        allMeshActor->GetProperty()->SetRepresentationToSurface();
+        allMeshActor->GetProperty()->SetEdgeVisibility(false);
+
+        breakOutActor->GetProperty()->SetRepresentationToSurface();
+        breakOutActor->GetProperty()->SetEdgeVisibility(false);
+
+        buildingActor->GetProperty()->SetRepresentationToSurface();
+        buildingActor->GetProperty()->SetEdgeVisibility(false);
     }
     else
     {
         qDebug() << "ERROR .. Surface representation .. type unknown: " << arg1;
     }
 
-    // this is needed for some reason if Basic was last selected item!
-    mapper->Update();
     renderWindow->Render();
 }
 
@@ -249,251 +258,158 @@ void SimCenterVTKRenderingWidget::viewObjectChanged(const QString &arg1)
     {
         showBuildingOnly();
     }
+
     else
     {
         qDebug() << "ERROR .. Surface representation .. type unknown: " << arg1;
     }
 
     // this is needed for some reason if Basic was last selected item!
-    mapper->Update();
+
+    renderer->ResetCamera();
     renderWindow->Render();
 }
 
 
 void SimCenterVTKRenderingWidget::onTransparencyChanged(const int value)
 {
-    actor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
+    allMeshActor->GetProperty()->SetOpacity(1.0 - double(value)/100.0);
     renderWindow->Render();
 }
 
 void SimCenterVTKRenderingWidget::onReloadCaseClicked()
 {
-    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/faces"))
-    {
-        readMesh();
-        actor->GetProperty()->SetRepresentationToSurface();
 
-        surfaceRepresentation->setCurrentIndex(0);
-        viewObject->setCurrentIndex(0);
+    if(initialized)
+    {
+        foamReader = vtkSmartPointer<vtkOpenFOAMReader>::New();
+        bldgSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+    }
+
+    if (QFile::exists(mainModel->caseDir() + "/constant/polyMesh/points"))
+    {
+        readAllMesh();
+
+        readBreakOutSurfaceMesh();
+
+        readBuildingSurfaceMesh();
+
+        drawAxisAndLegend();
+
+        renderer->ResetCamera();
         renderWindow->Render();
     }
 }
 
-void SimCenterVTKRenderingWidget::readMesh()
+void SimCenterVTKRenderingWidget::readAllMesh()
 {
 
     // Setup reader
-    reader = vtkSmartPointer<vtkOpenFOAMReader>::New();
     QString foamFileName  = mainModel->caseDir() + "/vis.foam";
 
     QFile visFoam(foamFileName);
     visFoam.open(QIODevice::WriteOnly);
 
-    reader->SetFileName(foamFileName.toStdString().c_str());
-    reader->Update();
+    foamReader->SetFileName(foamFileName.toStdString().c_str());
+    foamReader->Update();
+    foamReader->SetTimeValue(0);
+    foamReader->CreateCellToPointOn();
+    foamReader->EnableAllPatchArrays();
+    foamReader->Update();
 
-    reader->SetTimeValue(0);
-    reader->CreateCellToPointOn();
-    reader->EnableAllPatchArrays();
-    reader->Update();
+    allMeshBlock = vtkUnstructuredGrid::SafeDownCast(foamReader->GetOutput()->GetBlock(0));
 
-    block0 = vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()->GetBlock(0));
+    //Remove the renderer if any
+    renderer->RemoveActor(allMeshActor);
 
-
-    //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(block0);
-    mapper->SetScalarVisibility(false);
-    actor->GetProperty()->SetRepresentationToSurface();
-    //    mapper->SetScalarRange(block0->GetScalarRange());
+    allMeshMapper->SetInputData(allMeshBlock);
+    allMeshMapper->SetScalarVisibility(false);
 
     // Actor in scene
-    actor->GetProperty()->SetEdgeVisibility(true);
-    //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
+    allMeshActor->SetMapper(allMeshMapper);
+    allMeshActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
 
-
-    // VTK Renderer
     // Add Actor to renderer
-    renderer->AddActor(actor);
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
-
-    // VTK/Qt wedded
-    qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
-    renderWindow->BordersOn();
-
-
-    surfaceRepresentation->setCurrentIndex(0);
-
-    drawAxisAndLegend();
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
-    //Set default transparency to 10%
-//    transparency->setValue(10);
-//    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
-
-
-}
-
-void SimCenterVTKRenderingWidget::showAllMesh()
-{
-    block0 = vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()->GetBlock(0));
-
-    //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(block0);
-    mapper->SetScalarVisibility(false);
-    actor->GetProperty()->SetRepresentationToSurface();
-    //    mapper->SetScalarRange(block0->GetScalarRange());
-
-    // Actor in scene
-    actor->GetProperty()->SetEdgeVisibility(true);
-    //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
-
-    // VTK Renderer
-    // Add Actor to renderer
-    renderer->AddActor(actor);
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
-    // VTK/Qt wedded
-    qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
-    renderWindow->BordersOn();
-
-    surfaceRepresentation->setCurrentIndex(0);
-
-    //Set default transparency to 10%
-    //    transparency->setValue(10);
-    //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
-
-    renderWindow->Render();
-    renderer->ResetCamera();
-
+    renderer->AddActor(allMeshActor);
 }
 
 
-void SimCenterVTKRenderingWidget::showBreakout()
+void SimCenterVTKRenderingWidget::readBuildingSurfaceMesh()
 {
-    vtkSmartPointer<vtkSTLReader> stlReader = vtkSmartPointer<vtkSTLReader>::New();
-    stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
-    stlReader->Update();
 
-    auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
+    if (mainModel->isSnappyHexMeshCompleted())
+    {
+        auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(foamReader->GetOutput());
 
-    vtkNew<vtkAppendPolyData> appendFilter;
-
-    if(mainModel->isSnappyHexMeshCompleted())
-    {        
-        appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "building"));
+        bldgBlock = findBlock<vtkPolyData>(allBlocks, "building");
     }
     else
     {
-        appendFilter->AddInputData(stlReader->GetOutput());
+        bldgSTLReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
+        bldgSTLReader->Update();
+        bldgBlock = bldgSTLReader->GetOutput();
     }
+
+    buildingMapper->SetInputData(bldgBlock);
+    buildingMapper->SetScalarVisibility(false);
+
+    // Actor in scene
+    buildingActor->SetMapper(buildingMapper);
+    buildingActor->GetProperty()->SetColor(colorValue, 0.0, 0.0);
+
+    // Add Actor to renderer
+    renderer->AddActor(buildingActor);
+}
+
+void SimCenterVTKRenderingWidget::readBreakOutSurfaceMesh()
+{
+
+    auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(foamReader->GetOutput());
+
+    vtkNew<vtkAppendPolyData> appendFilter;
 
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "ground"));
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "back"));
     appendFilter->AddInputData(findBlock<vtkPolyData>(allBlocks, "outlet"));
 
     // Remove any duplicate points.
-    vtkNew<vtkCleanPolyData> cleanFilter;
-    cleanFilter->SetInputConnection(appendFilter->GetOutputPort());
-    cleanFilter->Update();
+    breakOutBlock->SetInputConnection(appendFilter->GetOutputPort());
+    breakOutBlock->Update();
 
-    //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(cleanFilter->GetOutput());
-    mapper->SetScalarVisibility(false);
+    breakOutMapper->SetInputData(breakOutBlock->GetOutput());
+    breakOutMapper->SetScalarVisibility(false);
 
+    // Actor in scene
+    breakOutActor->SetMapper(breakOutMapper);
+    breakOutActor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
 
-        // Actor in scene
-    actor->GetProperty()->SetRepresentationToSurface();
-    //    mapper->SetScalarRange(block0->GetScalarRange());
-    actor->GetProperty()->SetEdgeVisibility(true);
-    //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colorValue, colorValue, colorValue);
-
-    // VTK Renderer
     // Add Actor to renderer
-    renderer->AddActor(actor);
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-
-
-    // VTK/Qt added
-    renderWindow->AddRenderer(renderer);
-    qvtkWidget->setRenderWindow(renderWindow);
-    renderWindow->BordersOn();
-
-    surfaceRepresentation->setCurrentIndex(0);
-    renderer->ResetCamera();
-
-    //Set default transparency to 10%
-    //    transparency->setValue(10);
-    //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+    renderer->AddActor(breakOutActor);
 }
 
+void SimCenterVTKRenderingWidget::showAllMesh()
+{
+
+    allMeshActor->VisibilityOn();
+    breakOutActor->VisibilityOff();
+    buildingActor->VisibilityOff();
+}
 
 void SimCenterVTKRenderingWidget::showBuildingOnly()
 {
-    vtkPolyData* bldgBlock;
-    vtkSmartPointer<vtkSTLReader> stlReader;
 
-    if (mainModel->isSnappyHexMeshCompleted())
-    {
-        auto* allBlocks = vtkMultiBlockDataSet::SafeDownCast(reader->GetOutput());
-
-        bldgBlock = findBlock<vtkPolyData>(allBlocks, "building");
-    }
-    else
-    {
-        stlReader = vtkSmartPointer<vtkSTLReader>::New();
-        stlReader->SetFileName((mainModel->caseDir() + "/constant/geometry/building.stl").toStdString().c_str());
-        stlReader->Update();
-        bldgBlock = stlReader->GetOutput();
-    }
-
-    //Create mapper
-    mapper = vtkSmartPointer<vtkDataSetMapper>::New();
-    mapper->SetInputData(bldgBlock);
-    mapper->SetScalarVisibility(false);
-    actor->GetProperty()->SetRepresentationToSurface();
-    //    mapper->SetScalarRange(block0->GetScalarRange());
-
-    // Actor in scene
-    actor->GetProperty()->SetEdgeVisibility(true);
-    //   actor->GetProperty()->SetAmbientColor(0.5, 0.5, 0.5);
-    actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colorValue, colorValue,colorValue);
-    //   actor->GetProperty()->SetOpacity(0.5);
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOff();
+    buildingActor->VisibilityOn();
+}
 
 
-    // VTK Renderer
-    // Add Actor to renderer
-    renderer->AddActor(actor);
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
-    renderer->ResetCamera();
 
-    // VTK/Qt wedded
-    qvtkWidget->setRenderWindow(renderWindow);
-    qvtkWidget->renderWindow()->AddRenderer(renderer);
-    renderWindow->BordersOn();
-
-    surfaceRepresentation->setCurrentIndex(0);
-    renderer->ResetCamera();
-
-    //Set default transparency to 10%
-    //    transparency->setValue(10);
-    //    actor->GetProperty()->SetOpacity(1.0 - 10.0/100.0);
+void SimCenterVTKRenderingWidget::showBreakout()
+{
+    allMeshActor->VisibilityOff();
+    breakOutActor->VisibilityOn();
+    buildingActor->VisibilityOn();
 }
 
 
@@ -528,11 +444,7 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
 
     axisWidget->SetCurrentRenderer(renderer);
 
-
     axisActor->SetShaftTypeToCylinder();
-//    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
-//    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
-//    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
 
     vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
     tprop->ItalicOff();
@@ -553,10 +465,6 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     axisWidget->EnabledOn();
     axisWidget->InteractiveOff();
 
-//    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
-//    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-//    axisInteractor->SetInteractorStyle(style);
-
     //Add "SimCenter" text at the bottom
     vtkSmartPointer<vtkTextActor> textActor;
     textActor = vtkSmartPointer<vtkTextActor>::New();
@@ -576,56 +484,34 @@ void SimCenterVTKRenderingWidget::drawAxisAndLegend()
     renderer->AddActor(textActor);
 }
 
-
-void SimCenterVTKRenderingWidget::drawLineProbes()
+void SimCenterVTKRenderingWidget::initializeVtkObjects()
 {
+    //Setup OpenFOAM mesh reader
+    foamReader = vtkSmartPointer<vtkOpenFOAMReader>::New();
 
-    axisWidget->SetCurrentRenderer(renderer);
+    //Setup STL Reader
+    bldgSTLReader = vtkSmartPointer<vtkSTLReader>::New();
 
+    //Create mappers
+    allMeshMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    breakOutMapper = vtkSmartPointer<vtkDataSetMapper>::New();
+    buildingMapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
-    axisActor->SetShaftTypeToCylinder();
-    //    axisActor->SetCylinderRadius(0.5 * axisActor->GetCylinderRadius());
-    //    axisActor->SetConeRadius(1.025 * axisActor->GetConeRadius());
-    //    axisActor->SetSphereRadius(1.5 * axisActor->GetSphereRadius());
+    //Setup rendered
+    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
 
-    vtkSmartPointer<vtkTextProperty> tprop =  axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
-    tprop->ItalicOff();
-    tprop->ShadowOn();
-    tprop->SetFontFamilyToArial();
-    tprop->SetFontSize(12);
-    axisActor->GetXAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
-    axisActor->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
-    axisActor->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+    // VTK/Qt window
+    qvtkWidget->setRenderWindow(renderWindow);
+    qvtkWidget->renderWindow()->AddRenderer(renderer);
+    renderWindow->BordersOn();
 
-
-    double rgba[4]{0.0, 0.0, 0.0, 0.0};
-    axisColors->GetColor("Carrot", rgba);
-    axisWidget->SetOutlineColor(rgba[0], rgba[1], rgba[2]);
-    axisWidget->SetOrientationMarker(axisActor);
-    axisWidget->SetViewport(0.0, 0.0, 0.25, 0.25);
-    axisWidget->SetInteractor(axisInteractor);
-    axisWidget->EnabledOn();
-    axisWidget->InteractiveOff();
-
-    //    vtkSmartPointer<vtkInteractorStyleTrackballCamera> style;
-    //    style = vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();
-    //    axisInteractor->SetInteractorStyle(style);
-
-    //Add "SimCenter" text at the bottom
-    vtkSmartPointer<vtkTextActor> textActor;
-    textActor = vtkSmartPointer<vtkTextActor>::New();
-    textActor->SetInput("SimCenter");
-
-    // Set the font properties of the legend
-    vtkSmartPointer<vtkTextProperty> textProperty;
-    textProperty = vtkSmartPointer<vtkTextProperty>::New();
-    textProperty->SetColor(1.0, 0.0, 0.0);
-    textProperty->SetFontFamilyAsString("Avalon");
-    textProperty->SetBold(true); // Make the font bold
-    textProperty->SetFontSize(30);
-    textActor->SetTextProperty(textProperty);
-    textActor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedDisplay();
-    textActor->SetPosition(0.025, 0.025);
-
-    renderer->AddActor(textActor);
+    initialized = true;
 }
+
+vtkPolyData* SimCenterVTKRenderingWidget::getBldgBlock()
+{
+    return bldgBlock;
+}
+
+
+

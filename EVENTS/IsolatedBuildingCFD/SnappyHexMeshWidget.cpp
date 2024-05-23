@@ -97,7 +97,6 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     QLabel *resolveFeatureAngleLabel = new QLabel("Feature Resolution Angle:");
     QLabel *runInParalellLabel = new QLabel("Run Mesh in Parallel:");
     QLabel *numProcessorsLabel = new QLabel("Number of Processors:");
-    QLabel *degreesLabel = new QLabel("degrees");
 
     numCellsBetweenLevels = new QSpinBox();
     numCellsBetweenLevels->setSingleStep(1);
@@ -1047,6 +1046,9 @@ void SnappyHexMeshWidget::onAddPrismLayersChecked(int)
 void SnappyHexMeshWidget::onAddRegionClicked()
 {
     refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
+
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
 }
 
 void SnappyHexMeshWidget::onRemoveRegionClicked()
@@ -1060,6 +1062,9 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
             refinementBoxesTable->removeRow(selected->selectedRows()[i].row());
         }
     }
+
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
 }
 
 void SnappyHexMeshWidget::onNumberOfCellsChanged()
@@ -1081,4 +1086,7 @@ void SnappyHexMeshWidget::onMeshSizeChanged()
     edgeRefinementMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())));
     surfaceRefinementMeshSize->setText(QString::number(meshSize/qPow(2, surfaceRefinementLevel->value())));
     prismLayerMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
+
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 3, 100);
 }

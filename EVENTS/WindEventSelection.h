@@ -88,6 +88,7 @@ private:
    SimCenterAppWidget *theSurroundedBuildingCFD;
    SimCenterAppWidget *theDigitalWindTunnel;
    SimCenterAppWidget *theExperimentalWindForces;
+   SimCenterAppWidget *theExperimentalWindPressures;
    SimCenterAppWidget *theWindForceSpectrum;
    SimCenterAppWidget *theDEDM_HRP_Widget;
    SimCenterAppWidget *theLowRiseTPU_Widget;

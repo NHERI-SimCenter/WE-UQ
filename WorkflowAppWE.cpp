@@ -197,7 +197,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     manager->get(QNetworkRequest(QUrl("http://opensees.berkeley.edu/OpenSees/developer/eeuq/use.php")));
 
     //
-    // set the defults in the General Info
+    // set the defaults in the General Info
     //
 
     theGI->setDefaultProperties(1,144,360,360,37.8715,-122.2730);
@@ -225,8 +225,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
-  //  QString appName = "simcenter-weuq-empty-domain-1.0.0";
-  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
+//    QString appName = "simcenter-weuq-empty-domain-1.0.0";
+//  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
+  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+
   QList<QString> queues; queues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
@@ -887,7 +889,14 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
         remoteApplication->setExtraParameters(extraParameters);
     }
 
-
+    //
+    // ouput citation
+    //
+    
+    QJsonObject citations;
+    QString citeFile = templateDirectory + QDir::separator() + tr("please_cite.json");    
+    this->createCitation(citations, citeFile);
+    
     //statusMessage("SetUp Done .. Now starting application");
 
     emit setUpForApplicationRunDone(tmpDirectory, inputFile);
@@ -938,3 +947,43 @@ int
 WorkflowAppWE::getMaxNumParallelTasks() {
     return theUQ_Selection->getNumParallelTasks();
 }
+
+int
+WorkflowAppWE::createCitation(QJsonObject &citation, QString citeFile) {
+  
+  QString cit("{\"WE-UQ\": { \"citations\": [{\"citation\": \"Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Wael Elhaddad, Michael Gardner, & Sang-ri Yi. (2024). NHERI-SimCenter/WE-UQ: Version 3.2.0 (v3.2.0). Zenodo. https://doi.org/10.5281/zenodo.10806694\",\"description\": \"This is the overall tool reference used to indicate the version of the tool.\"},{\"citation\": \"Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706\",\"description\": \" This marker paper describes the SimCenter application framework, which was designed to simulate the impacts of natural hazards on the built environment.It  is a necessary attribute for publishing work resulting from the use of SimCenter tools, software, and datasets.\"}]}}");
+
+  QJsonDocument docC = QJsonDocument::fromJson(cit.toUtf8());
+  if(!docC.isNull()) {
+    if(docC.isObject()) {
+      citation = docC.object();        
+    }  else {
+      qDebug() << "WorkflowdAppWE citation text is not valid JSON: \n" << cit << endl;
+    }
+  }
+  
+  theSIM->outputCitation(citation);
+  theEventSelection->outputCitation(citation);
+  theAnalysisSelection->outputCitation(citation);
+  theUQ_Selection->outputCitation(citation);
+  theEDP_Selection->outputCitation(citation);
+
+  // write the citation to a citeFile if provided
+  
+  if (!citeFile.isEmpty()) {
+    
+    QFile file(citeFile);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+      errorMessage(QString("writeCitation - could not open file") + citeFile);
+      progressDialog->hideProgressBar();
+      return 0;
+    }
+
+    QJsonDocument doc(citation);
+    file.write(doc.toJson());
+    file.close();
+  }
+  
+  return 0;    
+}
+
