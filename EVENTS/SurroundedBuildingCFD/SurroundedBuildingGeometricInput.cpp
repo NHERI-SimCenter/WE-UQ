@@ -157,15 +157,15 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 7, 1, Qt::AlignVCenter);
 
 
-    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Average Width:");
+    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Width:");
     surroundingBuildingsWidthWidget = new QLineEdit();
     surroundingBuildingsWidthWidget->setText("30");
 
-    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Average Depth:");
+    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Depth:");
     surroundingBuildingsDepthWidget = new QLineEdit();
     surroundingBuildingsDepthWidget->setText("30");
 
-    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Average Height:");
+    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Height:");
     surroundingBuildingsHeightWidget = new QLineEdit();
     surroundingBuildingsHeightWidget->setText("75");
 
