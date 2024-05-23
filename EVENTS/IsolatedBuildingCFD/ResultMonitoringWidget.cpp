@@ -39,7 +39,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "IsolatedBuildingCFD.h"
 #include "ResultMonitoringWidget.h"
 #include <GeneralInformationWidget.h>
-
 #include <QPushButton>
 #include <QScrollArea>
 #include <QJsonArray>
@@ -358,9 +357,21 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
 
     QGridLayout* dialogLayout = new  QGridLayout();
 
+    QList<QVector3D> points;
 
-    QList<QVector3D> points = calculatePointCoordinates();
+    if(importPressurePoints->isChecked())
+    {
+        points = importSamplingPointsCSV();
+    }
+    else
+    {
+        points = createSamplingPoints();
+    }
 
+    if (points.size() == 0)
+    {
+        return;
+    }
 
     //==================================================
     // Setup the VTK window
@@ -370,42 +381,42 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     qvtkWidget = new QVTKRenderWidget();
     dialogLayout->addWidget(qvtkWidget,0,0);
 
-    if (mainModel->buildingShape()=="Complex")
-    {
-        vtkNew<vtkCleanPolyData> pointData;
-        pointData->SetInputData(mainModel->getBldgBlock());
+//    if (mainModel->buildingShape()=="Complex" && !importPressurePoints->isChecked())
+//    {
+//        vtkNew<vtkCleanPolyData> pointData;
+//        pointData->SetInputData(mainModel->getBldgBlock());
 
-        double W = mainModel->buildingWidth()/mainModel->geometricScale();
-        double D = mainModel->buildingDepth()/mainModel->geometricScale();
-        double H = mainModel->buildingHeight()/mainModel->geometricScale();
+//        double W = mainModel->buildingWidth()/mainModel->geometricScale();
+//        double D = mainModel->buildingDepth()/mainModel->geometricScale();
+//        double H = mainModel->buildingHeight()/mainModel->geometricScale();
 
-        double dW = W/(numTapsAlongWidth->text().toInt() + 1.0e-10);
-        double dD = D/(numTapsAlongDepth->text().toInt() + 1.0e-10);
-        double dH = H/(numTapsAlongHeight->text().toInt() + 1.0e-10);
+//        double dW = W/(numTapsAlongWidth->text().toInt() + 1.0e-10);
+//        double dD = D/(numTapsAlongDepth->text().toInt() + 1.0e-10);
+//        double dH = H/(numTapsAlongHeight->text().toInt() + 1.0e-10);
 
-        pointData->SetTolerance(sqrt(dW*dW + dD*dD + dH*dH));
-        pointData->Update();
+//        pointData->SetTolerance(sqrt(dW*dW + dD*dD + dH*dH));
+//        pointData->Update();
 
-//        int nVtkPoints = pointData->GetOutput()->GetNumberOfCells();
-//        vtkNew<vtkCellCenters> cellCentersFilter;
-//        cellCentersFilter->SetInputData(pointData->GetOutput());
-//        cellCentersFilter->VertexCellsOff();
-//        cellCentersFilter->Update();
+////        int nVtkPoints = pointData->GetOutput()->GetNumberOfCells();
+////        vtkNew<vtkCellCenters> cellCentersFilter;
+////        cellCentersFilter->SetInputData(pointData->GetOutput());
+////        cellCentersFilter->VertexCellsOff();
+////        cellCentersFilter->Update();
 
-        int nVtkPoints = pointData->GetOutput()->GetNumberOfPoints();
+//        int nVtkPoints = pointData->GetOutput()->GetNumberOfPoints();
 
-        points.clear();
+//        points.clear();
 
-        for (int i=0; i<nVtkPoints; i++)
-        {
-            QVector3D point;
-            point.setX(pointData->GetOutput()->GetPoint(i)[0]);
-            point.setY(pointData->GetOutput()->GetPoint(i)[1]);
-            point.setZ(pointData->GetOutput()->GetPoint(i)[2]);
+//        for (int i=0; i<nVtkPoints; i++)
+//        {
+//            QVector3D point;
+//            point.setX(pointData->GetOutput()->GetPoint(i)[0]);
+//            point.setY(pointData->GetOutput()->GetPoint(i)[1]);
+//            point.setZ(pointData->GetOutput()->GetPoint(i)[2]);
 
-            points.append(point);
-        }
-    }
+//            points.append(point);
+//        }
+//    }
 
     writeSamplingPoints(points);
 
@@ -442,8 +453,6 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     pointsMapper->SetInputData(pointsReader->GetOutput());
 //    pointsMapper->SetInputConnection(cellCentersFilter->GetOutputPort());
 //    pointsMapper->SetInputData(pointData->GetOutput());
-
-
 
 
     //Points actor
@@ -596,10 +605,17 @@ void ResultMonitoringWidget::onOpenCSVFileClicked()
 
    QFileDialog dialog(this);
    dialog.setFileMode(QFileDialog::AnyFile);
+
+
+   if (QFileInfo::exists(fileName))
+   {
+     importedPointsPath = fileName;
+     importedPoints = importSamplingPointsCSV();
+   }
 }
 
 
-QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
+QList<QVector3D> ResultMonitoringWidget::createSamplingPoints()
 {
     QList<QVector3D> points;
 
@@ -622,6 +638,33 @@ QList<QVector3D> ResultMonitoringWidget::calculatePointCoordinates()
     float dW = W/(nWidth + 1.0e-10);
     float dD = D/(nDepth + 1.0e-10);
     float dH = H/(nHeight + 1.0e-10);
+
+    if (mainModel->buildingShape()=="Complex" && mainModel->isSnappyHexMeshCompleted())
+    {
+        vtkNew<vtkCleanPolyData> pointData;
+        pointData->SetInputData(mainModel->getBldgBlock());
+
+
+        pointData->SetTolerance(sqrt(dW*dW + dD*dD + dH*dH));
+        pointData->Update();
+
+        int nVtkPoints = pointData->GetOutput()->GetNumberOfPoints();
+
+        points.clear();
+
+        for (int i=0; i<nVtkPoints; i++)
+        {
+            QVector3D point;
+            point.setX(pointData->GetOutput()->GetPoint(i)[0]);
+            point.setY(pointData->GetOutput()->GetPoint(i)[1]);
+            point.setZ(pointData->GetOutput()->GetPoint(i)[2]);
+
+            points.append(point);
+        }
+
+        return points;
+    }
+
 
     //Front face of the building
     x = -0.5*D - tol;
@@ -716,24 +759,34 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
     resMonitoringJson["monitorBaseLoad"] = monitorBaseLoad->isChecked();
 
     resMonitoringJson["monitorSurfacePressure"] = monitorSurfacePressure->isChecked();
+    resMonitoringJson["importPressureSamplingPoints"] = importPressurePoints->isChecked();
 
     resMonitoringJson["numTapsAlongWidth"] = numTapsAlongWidth->value();
     resMonitoringJson["numTapsAlongDepth"] = numTapsAlongDepth->value();
     resMonitoringJson["numTapsAlongHeight"] = numTapsAlongHeight->value();
 
     resMonitoringJson["pressureWriteInterval"] = pressureWriteInterval->value();
+    resMonitoringJson["importedPressureSamplingPointsPath"] = importedPointsPath;
 
+    generatedPoints  = createSamplingPoints();
+    importedPoints = importSamplingPointsCSV();
 
-    QList<QVector3D> pointsXYZ = calculatePointCoordinates();
-    QJsonArray pressureSamplingPoints;
-
-    for(int i=0; i < pointsXYZ.size(); i++)
+    QJsonArray generatedPointsJson;
+    for(int i=0; i < generatedPoints.size(); i++)
     {
-        QJsonArray point = { pointsXYZ[i].x(), pointsXYZ[i].y(), pointsXYZ[i].z()};
-        pressureSamplingPoints.append(point);
+        QJsonArray point = { generatedPoints[i].x(), generatedPoints[i].y(), generatedPoints[i].z()};
+        generatedPointsJson.append(point);
     }
 
-    resMonitoringJson["pressureSamplingPoints"] = pressureSamplingPoints;
+    QJsonArray importedPointsJson;
+    for(int i=0; i < importedPoints.size(); i++)
+    {
+        QJsonArray point = { importedPoints[i].x(), importedPoints[i].y(), importedPoints[i].z()};
+        importedPointsJson.append(point);
+    }
+
+    resMonitoringJson["generatedPressureSamplingPoints"] = generatedPointsJson;
+    resMonitoringJson["importedPressureSamplingPoints"] = importedPointsJson;
 
     jsonObject["resultMonitoring"] = resMonitoringJson;
 
@@ -751,17 +804,13 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
     numStories->setValue(resMonitoringJson["numStories"].toInt());
     floorHeight->setText(QString::number(resMonitoringJson["floorHeight"].toDouble()));
 
-//    QJsonArray centerOfRotation = resMonitoringJson["centerOfRotation"].toArray();
-
-//    centerOfRotationX->setText(QString::number(centerOfRotation[0].toDouble()));
-//    centerOfRotationY->setText(QString::number(centerOfRotation[1].toDouble()));
-//    centerOfRotationZ->setText(QString::number(centerOfRotation[1].toDouble()));
-
     storyLoadWriteInterval->setValue(resMonitoringJson["storyLoadWriteInterval"].toInt());
     baseLoadWriteInterval->setValue(resMonitoringJson["baseLoadWriteInterval"].toInt());
     monitorBaseLoad->setChecked(resMonitoringJson["monitorBaseLoad"].toBool());
 
     monitorSurfacePressure->setChecked(resMonitoringJson["monitorSurfacePressure"].toBool());
+    importPressurePoints->setChecked(resMonitoringJson["importPressureSamplingPoints"].toBool());
+    importedPointsPath = resMonitoringJson["importedPressureSamplingPointsPath"].toString();
 
     numTapsAlongWidth->setValue(resMonitoringJson["numTapsAlongWidth"].toInt());
     numTapsAlongDepth->setValue(resMonitoringJson["numTapsAlongDepth"].toInt());
@@ -770,6 +819,12 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
     pressureWriteInterval->setValue(resMonitoringJson["pressureWriteInterval"].toInt());
 
     floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+
+    generatedPoints.clear();
+    importedPoints.clear();
+
+    generatedPoints = createSamplingPoints();
+    importedPoints = importSamplingPointsCSV();
 
     return true;
 }
@@ -820,5 +875,39 @@ void ResultMonitoringWidget::writeSamplingPoints(QList<QVector3D> points)
     }
 
     file.close();
+}
+
+QList<QVector3D> ResultMonitoringWidget::importSamplingPointsCSV()
+{
+    QList<QVector3D> points;
+    QFile file(importedPointsPath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Failed to open file:" << file.errorString();
+        return points;
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QStringList fields = line.split(","); // Assuming comma-separated values
+        if (fields.size() != 3) {
+            qDebug() << "Invalid number of fields in line:" << line;
+            continue;
+        }
+
+        bool conversionOK1, conversionOK2, conversionOK3;
+        double x = fields[0].toDouble(&conversionOK1);
+        double y = fields[1].toDouble(&conversionOK2);
+        double z = fields[2].toDouble(&conversionOK3);
+        if (!conversionOK1 || !conversionOK2 || !conversionOK3) {
+            qDebug() << "Failed to convert coordinates in line:" << line;
+            continue;
+        }
+
+        points.append(QVector3D(x, y, z));
+    }
+
+    file.close();
+    return points;
 }
 

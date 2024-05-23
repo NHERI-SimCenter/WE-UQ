@@ -106,6 +106,7 @@ private:
    QPushButton  *importWindProfiles;
    QPushButton  *showWindProfiles;
    QList<QList<double>> windProfiles;
+   QString         windProfilePath = "";
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;

@@ -322,7 +322,12 @@ bool IsolatedBuildingCFD::initialize()
     inputTab->addTab(monitoringWidget, "Monitoring");
     inputTab->addTab(resultsWidget, "Results");
 
+
+    QPushButton *saveMeshButton = new QPushButton("Save Case Files");
+
+
     inputWindowLayout->addWidget(inputTab);
+    inputWindowLayout->addWidget(saveMeshButton);
     inputWindowGroup->setLayout(inputWindowLayout);
     inputWindowGroup->setMaximumWidth(windowWidth - 125);
 
@@ -340,6 +345,7 @@ bool IsolatedBuildingCFD::initialize()
 
     connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     //=====================================================
     // Setup the case directory
@@ -468,6 +474,7 @@ void IsolatedBuildingCFD::readCaseData()
     jsonFile.close();
 
     removeOldFiles();
+
 }
 
 void IsolatedBuildingCFD::onShowResultsClicked()
@@ -794,7 +801,7 @@ bool IsolatedBuildingCFD::cleanCase()
     constDir.removeRecursively();
     systemDir.removeRecursively();
 
-    QFile logFile(caseDir() + QDir::separator() + "log.txt");
+    QFile logFile(caseDir() + QDir::separator() + "log.*");
 
     logFile.remove();
 
@@ -837,8 +844,7 @@ bool IsolatedBuildingCFD::setupCase()
     targetDir.mkpath("constant/simCenter/output");
     targetDir.mkpath("constant/simCenter/input");
     targetDir.mkpath("constant/boundaryData");
-    targetDir.mkpath("constant/boundaryData/windProfile");
-    targetDir.mkpath("constant/boundaryData/sampledData");
+    targetDir.mkpath("constant/boundaryData/inlet");
     targetDir.mkpath("system");
 
     QFile visFoam(caseDir() + "/vis.foam");
@@ -882,7 +888,7 @@ QVector<QVector<double>> IsolatedBuildingCFD::readTxtData(QString fileName)
         data.append(row);
     }
 
-    int count  = 0;
+    int count = 0;
 
     QFile inputFile(fileName);
     if (inputFile.open(QIODevice::ReadOnly))
@@ -968,6 +974,7 @@ double IsolatedBuildingCFD::buildingHeight()
 {
     return geometry->buildingHeightWidget->text().toDouble();
 }
+
 int IsolatedBuildingCFD::numberOfFloors()
 {
     return resultMonitoring->numStories->value();
@@ -1082,3 +1089,11 @@ vtkPolyData* IsolatedBuildingCFD::getBldgBlock()
     return visWidget->getBldgBlock();
 }
 
+void IsolatedBuildingCFD::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
+
+    writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
+}

@@ -134,6 +134,7 @@ public slots:
    void clear(void);
    void onShowResultsClicked();
    void onBrowseCaseDirectoryButtonClicked(void);
+   void onSaveMeshClicked();
 
 private:
    QHBoxLayout          *mainWindowLayout;
