@@ -125,19 +125,19 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     QLabel *domainLengthLabel = new QLabel("Domain Length (X-axis):");
     domainLengthWidget = new QLineEdit();
-    domainLengthWidget->setText("20");
+    domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *domainWidthLabel = new QLabel("Domain Width (Y-axis):");
     domainWidthWidget = new QLineEdit();
-    domainWidthWidget->setText("10");
+    domainWidthWidget->setText(QString::number(getNormDim(10.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *domainHeightLabel = new QLabel("Domain Height (Z-axis):");
     domainHeightWidget = new QLineEdit();
-    domainHeightWidget->setText("6");
+    domainHeightWidget->setText(QString::number(getNormDim(5.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *fetchLengthLabel = new QLabel("Fetch Length (X-axis):");
     fetchLengthWidget = new QLineEdit();
-    fetchLengthWidget->setText("5");
+    fetchLengthWidget->setText(QString::number(getNormDim(5.0*buildingHeightWidget->text().toDouble())));
 
     QLabel *useCOSTDimLabel = new QLabel("COST Recommendation:");
     useCOSTDimWidget = new QCheckBox();
@@ -157,22 +157,27 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     surroundingBuildingsLayout->addWidget(theSurroundingsButton, 0, 0, 7, 1, Qt::AlignVCenter);
 
 
-    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Average Width:");
+    QLabel *surroundingBuildingsWidthLabel = new QLabel("Surrounding Buildings Width:");
     surroundingBuildingsWidthWidget = new QLineEdit();
     surroundingBuildingsWidthWidget->setText("30");
 
-    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Average Depth:");
+    QLabel *surroundingBuildingsDepthLabel = new QLabel("Surrounding Buildings Depth:");
     surroundingBuildingsDepthWidget = new QLineEdit();
     surroundingBuildingsDepthWidget->setText("30");
 
-    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Average Height:");
+    QLabel *surroundingBuildingsHeightLabel = new QLabel("Surrounding Buildings Height:");
     surroundingBuildingsHeightWidget = new QLineEdit();
     surroundingBuildingsHeightWidget->setText("75");
 
 
-    QLabel *streetWidthLabel = new QLabel("Average Street Width:");
-    streetWidthWidget = new QLineEdit();
-    streetWidthWidget->setText("30");
+    QLabel *streetWidthXLabel = new QLabel("Average Street Width (X-axis):");
+    streetWidthXWidget = new QLineEdit();
+    streetWidthXWidget->setText("30");
+
+    QLabel *streetWidthYLabel = new QLabel("Average Street Width (Y-axis):");
+    streetWidthYWidget = new QLineEdit();
+    streetWidthYWidget->setText("30");
+
 
     QLabel *boundingRadiusLabel = new QLabel("Approximate Bounding Radius:");
     boundingRadiusWidget = new QLineEdit();
@@ -194,15 +199,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     surroundingBuildingsLayout->addWidget(surroundingBuildingsDepthWidget, 1, 2);
     surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightLabel, 2, 1);
     surroundingBuildingsLayout->addWidget(surroundingBuildingsHeightWidget, 2, 2);
+    surroundingBuildingsLayout->addWidget(streetWidthXLabel, 3, 1);
+    surroundingBuildingsLayout->addWidget(streetWidthXWidget, 3, 2);
+    surroundingBuildingsLayout->addWidget(streetWidthYLabel, 4, 1);
+    surroundingBuildingsLayout->addWidget(streetWidthYWidget, 4, 2);
+    surroundingBuildingsLayout->addWidget(boundingRadiusLabel, 5, 1);
+    surroundingBuildingsLayout->addWidget(boundingRadiusWidget, 5, 2);
+    surroundingBuildingsLayout->addWidget(randomnessLabel, 6, 1);
+    surroundingBuildingsLayout->addWidget(randomnessWidget, 6, 2);
 
-    surroundingBuildingsLayout->addWidget(streetWidthLabel, 3, 1);
-    surroundingBuildingsLayout->addWidget(streetWidthWidget, 3, 2);
-    surroundingBuildingsLayout->addWidget(boundingRadiusLabel, 4, 1);
-    surroundingBuildingsLayout->addWidget(boundingRadiusWidget, 4, 2);
-    surroundingBuildingsLayout->addWidget(randomnessLabel, 5, 1);
-    surroundingBuildingsLayout->addWidget(randomnessWidget, 5, 2);
-
-    surroundingBuildingsLayout->addWidget(generateSurroundings,6,1,1,2);
+    surroundingBuildingsLayout->addWidget(generateSurroundings,7,1,1,2);
 
 
     QLabel *originOptionsLabel = new QLabel("Absolute Origin: ");
@@ -355,7 +361,8 @@ bool  SurroundedBuildingGeometricInput::outputToJSON(QJsonObject &jsonObject)
     surroundingsData["surroundingBuildingsWidth"] = surroundingBuildingsWidthWidget->text().toDouble();
     surroundingsData["surroundingBuildingsDepth"] = surroundingBuildingsDepthWidget->text().toDouble();
     surroundingsData["surroundingBuildingsHeight"] = surroundingBuildingsHeightWidget->text().toDouble();
-    surroundingsData["streetWidth"] = streetWidthWidget->text().toDouble();
+    surroundingsData["streetWidthX"] = streetWidthXWidget->text().toDouble();
+    surroundingsData["streetWidthY"] = streetWidthYWidget->text().toDouble();
     surroundingsData["boundingRadius"] = boundingRadiusWidget->text().toDouble();
     surroundingsData["randomness"] = randomnessWidget->value();
     geometricDataJson["surroundingBuildingsInformation"] = surroundingsData;
@@ -398,7 +405,8 @@ bool  SurroundedBuildingGeometricInput::inputFromJSON(QJsonObject &jsonObject)
     surroundingBuildingsWidthWidget->setText(QString::number(surroundingsData["surroundingBuildingsWidth"].toDouble()));
     surroundingBuildingsDepthWidget->setText(QString::number(surroundingsData["surroundingBuildingsDepth"].toDouble()));
     surroundingBuildingsHeightWidget->setText(QString::number(surroundingsData["surroundingBuildingsHeight"].toDouble()));
-    streetWidthWidget->setText(QString::number(surroundingsData["streetWidth"].toDouble()));
+    streetWidthXWidget->setText(QString::number(surroundingsData["streetWidthX"].toDouble()));
+    streetWidthXWidget->setText(QString::number(surroundingsData["streetWidthY"].toDouble()));
     boundingRadiusWidget->setText(QString::number(surroundingsData["boundingRadius"].toDouble()));
     randomnessWidget->setValue(surroundingsData["randomness"].toInt());
 
@@ -439,7 +447,7 @@ QVector<double> SurroundedBuildingGeometricInput::coordSysOrigin()
 
 void SurroundedBuildingGeometricInput::useCOSTOptionChecked(int state)
 {
-    //Works fine when Height > Width
+    //Works fine when Height > Width i.e., high rise buildings
     if (useCOSTDimWidget->isChecked())
     {
         domainLengthWidget->setText(QString::number(getNormDim(20.0*buildingHeightWidget->text().toDouble())));

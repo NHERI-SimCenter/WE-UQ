@@ -90,6 +90,8 @@ SurroundedBuildingBoundaryConditions::SurroundedBuildingBoundaryConditions(Surro
     QLabel *sidesLabel = new QLabel("Sides:");
     QLabel *topLabel = new QLabel("Top:");
     QLabel *groundLabel = new QLabel("Ground:");
+    QLabel *buildingLabel = new QLabel("Main Building:");
+    QLabel *surroundingLabel = new QLabel("Surrounding Buildings:");
 
     inletBCType  = new QComboBox();
     inletBCType->addItem("Uniform");
@@ -116,6 +118,18 @@ SurroundedBuildingBoundaryConditions::SurroundedBuildingBoundaryConditions(Surro
     groundBCType->addItem("roughWallFunction");
 
 
+    buildingBCType  = new QComboBox();
+    buildingBCType->addItem("noSlip");
+    buildingBCType->addItem("smoothWallFunction");
+    buildingBCType->addItem("roughWallFunction");
+
+
+    surroundingBCType  = new QComboBox();
+    surroundingBCType->addItem("noSlip");
+    surroundingBCType->addItem("smoothWallFunction");
+    surroundingBCType->addItem("roughWallFunction");
+
+
     QPushButton* domainButton = new QPushButton();
     QPixmap pixmapFlat(":/Resources/IsolatedBuildingCFD/boundaryConditions.png");
 
@@ -123,31 +137,26 @@ SurroundedBuildingBoundaryConditions::SurroundedBuildingBoundaryConditions(Surro
     domainButton->setIconSize(pixmapFlat.rect().size()*.25);
     domainButton->setFixedSize(pixmapFlat.rect().size()*.25);
 
-//    boundaryConditionsLayout->addWidget(domainButton,1,2,4,1,Qt::AlignVCenter); // Qt::AlignVCenter
-    boundaryConditionsLayout->addWidget(domainButton,0,0,7,1, Qt::AlignRight); // Qt::AlignVCenter
-
+    boundaryConditionsLayout->addWidget(domainButton,0,0,8,1, Qt::AlignRight); // Qt::AlignVCenter
 
     boundaryConditionsLayout->addWidget(patchNameLabel, 0, 1, Qt::AlignRight);
-//    boundaryConditionsLayout->addWidget(patchNameLabel, 0, 1);
     boundaryConditionsLayout->addWidget(boundaryConditionTypeLabel, 0, 2);
-
-//    boundaryConditionsLayout->addWidget(inletLabel, 1, 1);
-//    boundaryConditionsLayout->addWidget(groundLabel, 2, 1);
-//    boundaryConditionsLayout->addWidget(outletLabel, 3, 1);
-//    boundaryConditionsLayout->addWidget(sidesLabel, 4, 1);
-//    boundaryConditionsLayout->addWidget(topLabel, 5, 1);
 
     boundaryConditionsLayout->addWidget(inletLabel, 1, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(outletLabel, 2, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(sidesLabel, 3, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(topLabel, 4, 1, Qt::AlignRight);
     boundaryConditionsLayout->addWidget(groundLabel, 5, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(buildingLabel, 6, 1, Qt::AlignRight);
+    boundaryConditionsLayout->addWidget(surroundingLabel, 7, 1, Qt::AlignRight);
 
     boundaryConditionsLayout->addWidget(inletBCType, 1, 2);
     boundaryConditionsLayout->addWidget(outletBCType, 2, 2);
     boundaryConditionsLayout->addWidget(sidesBCType, 3, 2);
     boundaryConditionsLayout->addWidget(topBCType, 4, 2);
     boundaryConditionsLayout->addWidget(groundBCType, 5, 2);
+    boundaryConditionsLayout->addWidget(buildingBCType, 6, 2);
+    boundaryConditionsLayout->addWidget(surroundingBCType, 7, 2);
 
     boundaryConditionsLayout->setHorizontalSpacing(25);
 
@@ -401,6 +410,8 @@ bool SurroundedBuildingBoundaryConditions::outputToJSON(QJsonObject &jsonObject)
     boundaryCondJson["topBoundaryCondition"] = topBCType->currentText();
     boundaryCondJson["sidesBoundaryCondition"] = sidesBCType->currentText();
     boundaryCondJson["groundBoundaryCondition"] = groundBCType->currentText();
+    boundaryCondJson["buildingBoundaryCondition"] = buildingBCType->currentText();
+    boundaryCondJson["surroundingBoundaryCondition"] = surroundingBCType->currentText();
 
 
     if (inletBCType->currentText() == "TInf")
@@ -476,6 +487,8 @@ bool SurroundedBuildingBoundaryConditions::inputFromJSON(QJsonObject &jsonObject
     topBCType->setCurrentText(boundaryCondJson["topBoundaryCondition"].toString());
     sidesBCType->setCurrentText(boundaryCondJson["sidesBoundaryCondition"].toString());
     groundBCType->setCurrentText(boundaryCondJson["groundBoundaryCondition"].toString());
+    buildingBCType->setCurrentText(boundaryCondJson["buildingBoundaryCondition"].toString());
+    surroundingBCType->setCurrentText(boundaryCondJson["surroundingBoundaryCondition"].toString());
 
     if (boundaryCondJson["inletBoundaryCondition"].toString() == "TInf")
     {

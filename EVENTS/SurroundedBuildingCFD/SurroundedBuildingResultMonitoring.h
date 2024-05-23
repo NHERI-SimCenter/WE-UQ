@@ -76,47 +76,67 @@ public:
 signals:
 
 public slots:
-   void clear(void);
-   void onAddProfileClicked();
-   void onRemoveProfileClicked();
-   void onShowProfilesClicked();
-   void onAddPlaneClicked();
-   void onRemovePlaneClicked();
-   void onMonitorProfileChecked(int);
-   void onMonitorPlaneChecked(int);
-
+    void clear(void);
+    void onMonitorBaseLoadChecked(int);
+    void onMonitorPressureChecked(int);
+    void onCreatePressurePointsToggled(bool);
+    void onShowCoordinateOfPointsClicked();
+    void onOpenCSVFileClicked();
 
 private:
 
-   SurroundedBuildingCFD       *mainModel;
+    SurroundedBuildingCFD  *mainModel;
 
-   QVBoxLayout          *layout;
+    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorWindProfileGroup;
-   QGridLayout          *monitorWindProfileLayout;
+    QGroupBox            *monitorBaseLoadGroup;
+    QGridLayout          *monitorBaseLoadLayout;
 
-   QTableWidget         *profileTable;
-   QSpinBox             *profileWriteInterval;
-   QLineEdit            *profileStartTime;
-   QCheckBox            *monitorProfile;
-   QPushButton          *addProfile;
-   QPushButton          *removeProfile;
-   QPushButton          *showProfiles;
+    QGroupBox            *monitorStoryLoadGroup;
+    QGridLayout          *monitorStoryLoadLayout;
 
-   QGroupBox            *vtkSampleGroup;
-   QGridLayout          *vtkSampleLayout;
-   QTableWidget         *vtkSampleTable;
-   QSpinBox             *vtkWriteInterval;
-   QCheckBox            *monitorVTKPlane;
-   QPushButton          *addPlane;
-   QPushButton          *removePlane;
-   QPushButton          *showPlane;
+    QGroupBox            *monitorPressureGroup;
+    QGridLayout          *monitorPressureLayout;
 
-   void initializeProfileTable(int nProfile);
-   void initializeVTKTable(int nVtk);
+    QGroupBox            *pressureMonitoringPointsGroup;
+    QGridLayout          *pressureMonitoringPointsLayout;
+
+    QGroupBox            *createPressurePointsGroup;
+    QGridLayout          *createPressurePointsLayout;
+
+    QGroupBox            *monitorFlowFieldGroup;
+    QGridLayout          *monitorFlowFieldLayout;
+
+    QCheckBox            *monitorBaseLoad;
+    QCheckBox            *monitorSurfacePressure;
+    QCheckBox            *monitorFlowField;
+
+    QRadioButton         *createPressurePoints;
+    QRadioButton         *importPressurePoints;
+
+    QComboBox            *floorHeightOptions;
+
+    QLineEdit            *floorHeight;
+    QSpinBox             *numStories;
+
+    QSpinBox             *baseLoadWriteInterval;
+    QSpinBox             *storyLoadWriteInterval;
+    QSpinBox             *pressureWriteInterval;
+
+    QSpinBox             *numTapsAlongWidth;
+    QSpinBox             *numTapsAlongDepth;
+    QSpinBox             *numTapsAlongHeight;
+    QTableWidget         *samplingPointsTable;
+
+    QPushButton          *openCSVFile;
+    QPushButton          *showCoordinateOfPoints;
+
+    void visCoordinateOfPoints(QGridLayout*);
+    QList<QVector3D> calculatePointCoordinates();
 
 public:
 
 };
 
 #endif // SURROUNDED_BUILDING_RESULT_MONITORING_H
+

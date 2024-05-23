@@ -1,5 +1,6 @@
-#ifndef SURROUNDED_SNAPPY_HEX_MESH_WIDGET_H
-#define SURROUNDED_SNAPPY_HEX_MESH_WIDGET_H
+#ifndef SURROUNDED_SNAPPY_HEX_MESH_H
+#define SURROUNDED_SNAPPY_HEX_MESH_H
+
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -83,98 +84,99 @@ public:
 signals:
 
 public slots:
-   void clear(void);
+    void clear(void);
 
-   void onRunBlockMeshClicked();
-   void onRunSnappyHexMeshClicked();
-   void onRunCheckMeshClicked();
-   void onSaveMeshClicked();
-   void onAddSurfaceRefinementButtonClicked();
-   void onRemoveSurfaceRefinementButtonClicked();
-
-   void onAddRegionClicked();
-   void onRemoveRegionClicked();
-//   void onCheckRegionClicked();
-   void onRunInParallelChecked(int);
-   void onAddPrismLayersChecked(int);
-   void onAddSurfaceRefinementChecked(int);
-   void onAddEdgeRefinementChecked(int);
-   void onNumberOfCellsChanged();
-   void onMeshSizeChanged();
+    void onRunBlockMeshClicked();
+    void onRunSnappyHexMeshClicked();
+    void onRunCheckMeshClicked();
+    void onAddSurfaceRefinementButtonClicked();
+    void onRemoveSurfaceRefinementButtonClicked();
+    void onAddEdgeRefinementButtonClicked();
+    void onRemoveEdgeRefinementButtonClicked();
+    void onAddRegionClicked();
+    void onRemoveRegionClicked();
+    //   void onCheckRegionClicked();
+    void onRunInParallelChecked(int);
+    void onAddPrismLayersChecked(int);
+    void onAddSurfaceRefinementChecked(int);
+    void onAddEdgeRefinementChecked(int);
+    void onNumberOfCellsChanged();
+    void onMeshSizeChanged();
 
 
 private:
 
-   SurroundedBuildingCFD  *mainModel;
+    SurroundedBuildingCFD  *mainModel;
 
-   QVBoxLayout  *layout;
+    QVBoxLayout  *layout;
 
-//   QGroupBox    *snappyHexMeshGroup;
-//   QVBoxLayout  *snappyHexMeshLayout;
+    //   QGroupBox    *snappyHexMeshGroup;
+    //   QVBoxLayout  *snappyHexMeshLayout;
 
-   QGroupBox    *generalOptionsGroup;
-   QGridLayout  *generalOptionsLayout;
+    QGroupBox    *generalOptionsGroup;
+    QGridLayout  *generalOptionsLayout;
 
-   QGroupBox    *runMeshGroup;
-   QHBoxLayout  *runMeshLayout;
+    QGroupBox    *runMeshGroup;
+    QHBoxLayout  *runMeshLayout;
 
-   QGroupBox    *saveMeshGroup;
-   QHBoxLayout  *saveMeshLayout;
+    //Blockground mesh
+    QLineEdit        *xAxisNumCells;
+    QLineEdit        *yAxisNumCells;
+    QLineEdit        *zAxisNumCells;
+    QLineEdit        *xAxisMeshSize;
+    QLineEdit        *yAxisMeshSize;
+    QLineEdit        *zAxisMeshSize;
+    QDoubleSpinBox   *xMeshGrading;
+    QDoubleSpinBox   *yMeshGrading;
+    QDoubleSpinBox   *zMeshGrading;
 
-   //Blockground mesh
-   QLineEdit        *xAxisNumCells;
-   QLineEdit        *yAxisNumCells;
-   QLineEdit        *zAxisNumCells;
-   QLineEdit        *xAxisMeshSize;
-   QLineEdit        *yAxisMeshSize;
-   QLineEdit        *zAxisMeshSize;
-   QDoubleSpinBox   *xMeshGrading;
-   QDoubleSpinBox   *yMeshGrading;
-   QDoubleSpinBox   *zMeshGrading;
+    //General options
+    QSpinBox     *numCellsBetweenLevels;
+    QSpinBox     *resolveFeatureAngle;
+    QSpinBox     *numProcessors;
+    QCheckBox    *runInParallel;
 
-   //General options
-   QSpinBox     *numCellsBetweenLevels;
-   QSpinBox     *resolveFeatureAngle;
-   QSpinBox     *numProcessors;
-   QCheckBox    *runInParallel;
+    //Regional refinements
+    QTableWidget *refinementBoxesTable;
 
-   //Regional refinements
-   QTableWidget *refinementBoxesTable;
+    //Surface refinments
+    QComboBox    *surfaceName;
+    QSpinBox     *minSurfaceRefinementLevel;
+    QSpinBox     *maxSurfaceRefinementLevel;
+    QLineEdit    *surfaceRefinementDistance;
+    QLineEdit    *surfaceRefinementMeshSize;
+    QListWidget  *surfaceRefinementList;
+    QCheckBox    *addSurfaceRefinement;
+    QPushButton  *addSurfaceRefinementButton;
+    QPushButton  *removeSurfaceRefinementButton;
 
-   //Surface refinments
-   QComboBox    *surfaceName;
-   QSpinBox     *surfaceRefinementLevel;
-   QLineEdit    *surfaceRefinementDistance;
-   QLineEdit    *surfaceRefinementMeshSize;
-   QListWidget  *surfaceRefinementList;
-   QPushButton  *addSurfaceRefinementButton;
-   QPushButton  *removeSurfaceRefinementButton;
+    //Add edge refinment
+    QCheckBox    *addEdgeRefinement;
+    QSpinBox     *edgeRefinementLevel;
+    QComboBox    *refinementEdgeName;
+    QLineEdit    *edgeRefinementMeshSize;
+    QListWidget  *edgeRefinementList;
+    QPushButton  *addEdgeRefinementButton;
+    QPushButton  *removeEdgeRefinementButton;
 
-   //Add edge refinment
-   QCheckBox    *addEdgeRefinement;
-   QSpinBox     *edgeRefinementLevel;
-   QComboBox    *refinementEdgeName;
-   QLineEdit    *edgeRefinementMeshSize;
-   QTableWidget *edgeRefinementTable;
+    //Add prism layers
+    QCheckBox        *addPrismLayers;
+    QSpinBox         *numberOfPrismLayers;
+    QDoubleSpinBox   *prismLayerExpansionRatio;
+    QDoubleSpinBox   *finalPrismLayerThickness;
+    QComboBox        *prismLayerSurfaceName;
+    QLineEdit        *prismLayerMeshSize;
+    QTableWidget     *prismLayersTable;
 
-   //Add prism layers
-   QCheckBox        *addPrismLayers;
-   QSpinBox         *numberOfPrismLayers;
-   QDoubleSpinBox   *prismLayerExpansionRatio;
-   QDoubleSpinBox   *finalPrismLayerThickness;
-   QComboBox        *prismLayerSurfaceName;
-   QLineEdit        *prismLayerMeshSize;
-   QTableWidget     *prismLayersTable;
+    QTabWidget       *snappyHexMeshTab;
+    RandomVariablesContainer *theRandomVariablesContainer;
+    QStringList varNamesAndValues;
 
-   QTabWidget       *snappyHexMeshTab;
-   RandomVariablesContainer *theRandomVariablesContainer;
-   QStringList varNamesAndValues;
-
-   //Mesh status variables
-   bool snappyHexMeshCompleted = false;
+    //Mesh status variables
+    bool snappyHexMeshCompleted = false;
 
 public:
 
 };
 
-#endif // SURROUNDED_SNAPPY_HEX_MESH_WIDGET_H
+#endif // SURROUNDED_SNAPPY_HEX_MESH_H

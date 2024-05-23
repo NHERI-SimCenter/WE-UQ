@@ -103,8 +103,8 @@ NumericalSetupWidget::NumericalSetupWidget( IsolatedBuildingCFD *parent)
     numProcessors->setToolTip("Number of processors to run the simulation with");
 
     parallelizationLayout->addWidget(runInParallel, 0, 0);
-    parallelizationLayout->addWidget(numProcessorsLabel, 1, 0);
-    parallelizationLayout->addWidget(numProcessors, 1, 1);
+    parallelizationLayout->addWidget(numProcessorsLabel, 0, 1, Qt::AlignRight);
+    parallelizationLayout->addWidget(numProcessors, 0, 2);
 
 
     //==================================================================
@@ -335,7 +335,6 @@ bool NumericalSetupWidget::outputToJSON(QJsonObject &jsonObject)
     numericalSetupJson["adjustTimeStep"] = adjustTimeStep->isChecked();
     numericalSetupJson["runInParallel"] = runInParallel->isChecked();
     numericalSetupJson["numProcessors"] = numProcessors->value();
-
     jsonObject["numericalSetup"] = numericalSetupJson;
 
     return true;

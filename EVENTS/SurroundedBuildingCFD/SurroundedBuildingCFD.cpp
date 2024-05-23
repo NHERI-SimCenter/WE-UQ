@@ -104,6 +104,10 @@ bool SurroundedBuildingCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
+    saveMeshGroup = new QGroupBox("Save Mesh", this);
+    saveMeshLayout = new QHBoxLayout();
+    saveMeshGroup->setLayout( saveMeshLayout);
+
     inputTab = new QTabWidget(this);
     //QTabWidget *inputTab = new QTabWidget(this);    
 
@@ -185,12 +189,10 @@ bool SurroundedBuildingCFD::initialize()
     QLabel *openFoamVersionLabel = new QLabel("Version of OpenFOAM Distribution: ");
 
     openFoamVersion = new QComboBox ();
-//    openFoamVersion->addItem("7");
-//    openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
-    openFoamVersion->setCurrentIndex(1);
+    openFoamVersion->setCurrentIndex(0);
     openFoamVersion->setMinimumWidth(50);
-    openFoamVersion->setDisabled(true);
+//    openFoamVersion->setDisabled(true);
 
     QTextEdit *modelingProcedureText = new QTextEdit ();
     modelingProcedureText->setReadOnly(true);
@@ -331,7 +333,16 @@ bool SurroundedBuildingCFD::initialize()
 
     mainWindowLayout->addWidget(inputWindowGroup);
 
+    QPushButton *saveMeshButton = new QPushButton("Save Case Files");
+
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
+    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
+
+
+    saveMeshLayout->addWidget(saveMeshButton);
+    inputWindowLayout->addWidget(saveMeshGroup);
+
+
 
     //=====================================================
     // Setup the case directory
@@ -430,9 +441,7 @@ void SurroundedBuildingCFD::writeOpenFoamFiles()
 
     process->waitForFinished(-1);
 
-//    QMessageBox msgBox;
-//    msgBox.setText(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
-//    msgBox.exec();
+    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
     process->close();
 }
@@ -922,5 +931,13 @@ void SurroundedBuildingCFD::importMainDomainJsonFile(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
 }
 
+void SurroundedBuildingCFD::onSaveMeshClicked()
+{
+    statusMessage("Writing OpenFOAM dictionary files ... ");
+
+    writeOpenFoamFiles();
+
+    statusMessage("Writing done!");
+}
 
 
