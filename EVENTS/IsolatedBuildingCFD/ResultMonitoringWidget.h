@@ -119,9 +119,6 @@ private:
 
    QLineEdit            *floorHeight;
    QSpinBox             *numStories;
-//   QLineEdit            *centerOfRotationX;
-//   QLineEdit            *centerOfRotationY;
-//   QLineEdit            *centerOfRotationZ;
 
    QSpinBox             *baseLoadWriteInterval;
    QSpinBox             *storyLoadWriteInterval;

@@ -103,8 +103,8 @@ SurroundedBuildingNumericalSetup::SurroundedBuildingNumericalSetup(SurroundedBui
     numProcessors->setToolTip("Number of processors to run the simulation with");
 
     parallelizationLayout->addWidget(runInParallel, 0, 0);
-    parallelizationLayout->addWidget(numProcessorsLabel, 1, 0);
-    parallelizationLayout->addWidget(numProcessors, 1, 1);
+    parallelizationLayout->addWidget(numProcessorsLabel, 0, 1, Qt::AlignRight);
+    parallelizationLayout->addWidget(numProcessors, 0, 2);
 
 
     //==================================================================

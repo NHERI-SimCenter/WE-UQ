@@ -113,7 +113,8 @@ private:
    QPushButton          *theSurroundingsButton;
    QPushButton          *generateSurroundings;
 
-   QLineEdit            *streetWidthWidget;
+   QLineEdit            *streetWidthXWidget;
+   QLineEdit            *streetWidthYWidget;
    QLineEdit            *boundingRadiusWidget;
    QSpinBox             *randomnessWidget;
 

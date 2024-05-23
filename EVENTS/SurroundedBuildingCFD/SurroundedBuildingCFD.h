@@ -144,6 +144,7 @@ signals:
 public slots:
    void clear(void);
    void onBrowseCaseDirectoryButtonClicked(void);
+   void onSaveMeshClicked();
 
 private:
    QHBoxLayout                  *mainWindowLayout;
@@ -154,6 +155,9 @@ private:
 
    QVBoxLayout                  *visWindowLayout;
    QGroupBox                    *visWindowGroup;
+
+   QGroupBox                    *saveMeshGroup;
+   QHBoxLayout                  *saveMeshLayout;
 
    QGroupBox                    *cfdResultsGroup;
    QGridLayout                  *cfdResultsLayout;

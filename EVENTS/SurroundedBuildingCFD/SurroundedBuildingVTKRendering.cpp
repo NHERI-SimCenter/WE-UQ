@@ -568,7 +568,8 @@ void SurroundedBuildingVTKRendering::initializeVtkObjects()
     surroundingsMapper = vtkSmartPointer<vtkDataSetMapper>::New();
 
     //Setup rendered
-    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
+//    renderer->SetBackground(0.3922, 0.7098, 0.9647); //SimCenter theme
+    renderer->SetBackground(1, 1, 1); //SimCenter theme
 
     // VTK/Qt window
     qvtkWidget->setRenderWindow(renderWindow);
