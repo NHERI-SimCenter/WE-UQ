@@ -452,7 +452,7 @@ void ResultMonitoringWidget::onShowCoordinateOfPointsClicked()
     //Building actor
     vtkNew<vtkActor> buildingActor;// Actor in scene
     buildingActor->SetMapper(buildingMapper);
-    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
+    buildingActor->GetProperty()->SetColor(0.85, 0.0, 0.0);
     buildingActor->GetProperty()->SetRepresentationToSurface();
     buildingActor->GetProperty()->SetEdgeVisibility(true);
 
