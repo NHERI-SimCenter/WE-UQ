@@ -21,6 +21,8 @@
 #include <QStatusBar>
 #include <QWebEngineView>
 
+#include <stdlib.h>
+
 #ifdef ENDLN
 #undef ENDLN
 #endif

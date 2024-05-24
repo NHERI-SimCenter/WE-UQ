@@ -600,10 +600,10 @@ bool SurroundedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
     // and all data to be used in ApplicationDate
     //
 
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["Application"] = "SurroundedBuildingCFD";
-//    QJsonObject dataObj;
-//    jsonObject["ApplicationData"] = dataObj;
+    jsonObject["EventClassification"]="Wind";
+    jsonObject["Application"] = "SurroundedBuildingCFD";
+    QJsonObject dataObj;
+    jsonObject["ApplicationData"] = dataObj;
 
     return true;
 }

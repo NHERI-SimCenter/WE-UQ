@@ -501,8 +501,6 @@ void IsolatedBuildingCFD::onShowResultsClicked()
 
 //    process->close();
 
-
-
     QDialog *dialog  = new QDialog(this);
 
     int dialogHeight = 800;

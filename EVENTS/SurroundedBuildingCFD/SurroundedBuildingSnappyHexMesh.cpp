@@ -203,7 +203,6 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     zAxisMeshSize->setToolTip("Mesh size in z-direction");
     zAxisMeshSize->setEnabled(false);
 
-
     backgroundMeshLayout->addWidget(directionLabel,0,0,Qt::AlignCenter);
     backgroundMeshLayout->addWidget(numberOfCellsLabel,0,1,Qt::AlignCenter);
     backgroundMeshLayout->addWidget(meshGradingLabel,0,2,Qt::AlignCenter);
@@ -329,7 +328,6 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     regionalRefinementWidget->setLayout(regionalRefinementLayout);
     snappyHexMeshTab->addTab(regionalRefinementWidget, "Regional Refinements");
 
-
     //============================================================================
     // Add surface Refinement Tab
     //============================================================================
@@ -361,7 +359,14 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     maxSurfaceRefinementLevel->setRange(numRows + 1, 100);
     maxSurfaceRefinementLevel->setSingleStep(1);
 
+    surfaceRefinementDistance = new QLineEdit();
+    surfaceRefinementDistance->setText("0.10");
 
+    surfaceRefinementMeshSize = new QLineEdit();
+    surfaceRefinementMeshSize->setEnabled(false);
+    surfaceRefinementMeshSize->setText(QString::number(xAxisMeshSize->text().toDouble()/qPow(2, minSurfaceRefinementLevel->value())));
+
+    surfaceRefinementList = new QListWidget();
 
     addSurfaceRefinementButton = new QPushButton("Add Surface Refinement");
     removeSurfaceRefinementButton = new QPushButton("Remove Surface Refinement");
@@ -372,6 +377,7 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
     surfaceRefinementLayout->addWidget(maxRefinementLevelLabel, 3, 0);
     surfaceRefinementLayout->addWidget(refinementDistanceLabel, 4, 0);
     surfaceRefinementLayout->addWidget(surfaceRefinementMeshSizeLabel, 5, 0);
+
 
     surfaceRefinementLayout->addWidget(surfaceName, 1, 1);
     surfaceRefinementLayout->addWidget(minSurfaceRefinementLevel, 2, 1);
@@ -554,6 +560,7 @@ SurroundedBuildingSnappyHexMesh::SurroundedBuildingSnappyHexMesh(SurroundedBuild
 
     onNumberOfCellsChanged();
     onMeshSizeChanged();
+
 }
 
 
