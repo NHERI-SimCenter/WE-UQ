@@ -293,12 +293,16 @@ void EmptyBoundaryConditions::inflowTimeStepChanged(const QString &arg1)
 
 void EmptyBoundaryConditions::onImportWindProfilesClicked()
 {
-    windProfilePath = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
 
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
 
-    readCSV(windProfilePath);
+    if (QFileInfo::exists(fileName))
+    {
+        windProfilePath = fileName;
+        readCSV(windProfilePath);
+    }
 }
 
 bool EmptyBoundaryConditions::readCSV(QString &fileName)

@@ -84,10 +84,6 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     runMeshLayout = new QHBoxLayout();
     runMeshGroup->setLayout(runMeshLayout);
 
-    saveMeshGroup = new QGroupBox("Save Mesh", this);
-    saveMeshLayout = new QHBoxLayout();
-    saveMeshGroup->setLayout( saveMeshLayout);
-
     generalOptionsGroup->setLayout(generalOptionsLayout);
 
     snappyHexMeshTab = new QTabWidget(this);
@@ -344,17 +340,14 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     QPushButton *runBlockMeshButton = new QPushButton("Run Background Mesh");
     QPushButton *runSnappyMeshButton = new QPushButton("Run Final Mesh");
     QPushButton *runCheckMeshButton = new QPushButton("Check Mesh");
-    QPushButton *saveMeshButton = new QPushButton("Save OpenFOAM Files");
 
     runMeshLayout->addWidget(runBlockMeshButton);
     runMeshLayout->addWidget(runSnappyMeshButton);
     runMeshLayout->addWidget(runCheckMeshButton);
-    saveMeshLayout->addWidget(saveMeshButton);
 
     layout->addWidget(snappyHexMeshTab);
     layout->addWidget(generalOptionsGroup);
     layout->addWidget(runMeshGroup);
-    layout->addWidget(saveMeshGroup);
 
     //=============================================================================
 
@@ -370,7 +363,6 @@ EmptySnappyHexMesh::EmptySnappyHexMesh( EmptyDomainCFD *parent)
     connect(runBlockMeshButton, SIGNAL(clicked()), this, SLOT(onRunBlockMeshClicked()));
     connect(runSnappyMeshButton, SIGNAL(clicked()), this, SLOT(onRunSnappyHexMeshClicked()));
     connect(runCheckMeshButton, SIGNAL(clicked()), this, SLOT(onRunCheckMeshClicked()));
-    connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
     connect(xAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
     connect(yAxisNumCells, SIGNAL(textChanged(QString)), this, SLOT(onMeshSizeChanged()));
@@ -437,16 +429,6 @@ void EmptySnappyHexMesh::onRunCheckMeshClicked()
     statusMessage("Checking mesh ... ");
     runCheckMeshCommand();
 }
-
-void EmptySnappyHexMesh::onSaveMeshClicked()
-{
-    statusMessage("Writing OpenFOAM dictionary files ... ");
-
-    mainModel->writeOpenFoamFiles();
-
-    statusMessage("Writing done!");
-}
-
 
 bool EmptySnappyHexMesh::runBlockMeshCommand()
 {
@@ -690,6 +672,14 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
     onNumberOfCellsChanged();
 
 
+    double h = 1.0;
+    QJsonObject geometricDataJson = jsonObject["GeometricData"].toObject();
+
+    if(geometricDataJson["normalizationType"].toString() == "Relative")
+    {
+        h = geometricDataJson["buildingHeight"].toDouble()/geometricDataJson["geometricScale"].toDouble();
+    }
+
     //************************************************************************
 
     //Read snappyHex configuration parameters
@@ -728,12 +718,12 @@ bool EmptySnappyHexMesh::inputFromJSON(QJsonObject &jsonObject)
 
         refinementBoxesTable->item(ri, 0)->setText(region[0].toString());
         refinementBoxesTable->item(ri, 1)->setText(QString::number(region[1].toInt()));
-        refinementBoxesTable->item(ri, 2)->setText(QString::number(region[2].toDouble()));
-        refinementBoxesTable->item(ri, 3)->setText(QString::number(region[3].toDouble()));
-        refinementBoxesTable->item(ri, 4)->setText(QString::number(region[4].toDouble()));
-        refinementBoxesTable->item(ri, 5)->setText(QString::number(region[5].toDouble()));
-        refinementBoxesTable->item(ri, 6)->setText(QString::number(region[6].toDouble()));
-        refinementBoxesTable->item(ri, 7)->setText(QString::number(region[7].toDouble()));
+        refinementBoxesTable->item(ri, 2)->setText(QString::number(h*region[2].toDouble()));
+        refinementBoxesTable->item(ri, 3)->setText(QString::number(h*region[3].toDouble()));
+        refinementBoxesTable->item(ri, 4)->setText(QString::number(h*region[4].toDouble()));
+        refinementBoxesTable->item(ri, 5)->setText(QString::number(h*region[5].toDouble()));
+        refinementBoxesTable->item(ri, 6)->setText(QString::number(h*region[6].toDouble()));
+        refinementBoxesTable->item(ri, 7)->setText(QString::number(h*region[7].toDouble()));
     }
 
     snappyHexMeshCompleted = snappyMeshParamsJson["snappyHexMeshCompleted"].toBool();

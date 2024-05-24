@@ -87,7 +87,6 @@ public slots:
    void onRunBlockMeshClicked();
    void onRunSnappyHexMeshClicked();
    void onRunCheckMeshClicked();
-   void onSaveMeshClicked();
 
    void onAddRegionClicked();
    void onRemoveRegionClicked();
@@ -115,9 +114,6 @@ private:
 
    QGroupBox    *runMeshGroup;
    QHBoxLayout  *runMeshLayout;
-
-   QGroupBox    *saveMeshGroup;
-   QHBoxLayout  *saveMeshLayout;
 
    //Blockground mesh
    QLineEdit        *xAxisNumCells;

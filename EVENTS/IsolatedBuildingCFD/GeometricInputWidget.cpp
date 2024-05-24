@@ -100,7 +100,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     normalizationTypeWidget->addItem("Relative");
     normalizationTypeWidget->addItem("Absolute");
 
-    QLabel *geometricScaleLabel = new QLabel("Geometric Scale:");
+    QLabel *geometricScaleLabel = new QLabel("Geometric Scale: ");
     geometricScaleWidget = new QLineEdit();
     geometricScaleWidget->setText("400.0");
 
