@@ -74,6 +74,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <DigitalWindTunnel.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 #include <SurroundedBuildingCFD/SurroundedBuildingCFD.h>
+#include <QScrollArea>
 
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
@@ -169,7 +170,20 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theExistingEvents = new ExistingSimCenterEvents(theRandomVariablesContainer);
     theStackedWidget->addWidget(theExistingEvents);
 
-    layout->addWidget(theStackedWidget);
+    //    layout->addWidget(theStackedWidget);
+
+    //
+    // put inside a scroll area
+    //
+    
+    QScrollArea *sa = new QScrollArea;
+    sa->setWidgetResizable(true);
+    sa->setLineWidth(0);
+    sa->setFrameShape(QFrame::NoFrame);
+    sa->setWidget(theStackedWidget);
+    layout->addWidget(sa);    
+
+    
     this->setLayout(layout);
     theCurrentEvent=theStochasticModel;
 

@@ -1,0 +1,530 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "LowRiseTPU",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "OpenSeesInput",
+            "ApplicationData": {
+                "fileName": "Shear3d.tcl",
+                "filePath": "{Current_Dir}/."
+            }
+        },
+        "Simulation": {
+            "Application": "MultiModel",
+            "ApplicationData": {
+                "appKey": "Simulation"
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "DefaultValues": {
+        "driverFile": "driver",
+        "edpFiles": [
+            "EDP.json"
+        ],
+        "filenameAIM": "AIM.json",
+        "filenameDL": "BIM.json",
+        "filenameEDP": "EDP.json",
+        "filenameEVENT": "EVENT.json",
+        "filenameSAM": "SAM.json",
+        "filenameSIM": "SIM.json",
+        "rvFiles": [
+            "AIM.json",
+            "SAM.json",
+            "EVENT.json",
+            "SIM.json"
+        ],
+        "workflowInput": "scInput.json",
+        "workflowOutput": "EDP.json"
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "depthBreadth": "3:2",
+            "heightBreadth": "1:4",
+            "incidenceAngle": 0,
+            "pitch": "0.0",
+            "roofType": "Flat",
+            "type": "LowRiseTPU",
+            "windSpeed": 50
+        }
+    ],
+    "GeneralInformation": {
+        "NumberOfStories": 1,
+        "PlanArea": 129600,
+        "StructureType": "RM1",
+        "YearBuilt": 1990,
+        "depth": 2160,
+        "height": 468,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 1,
+        "units": {
+            "force": "kips",
+            "length": "in",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 1440
+    },
+    "Modeling": {
+        "centroidNodes": [
+            11,
+            12,
+            13,
+            14
+        ],
+        "dampingRatio": 0.02,
+        "ndf": 6,
+        "ndm": 3,
+        "randomVar": [
+            {
+                "name": "Es1",
+                "value": "RV.Es1"
+            },
+            {
+                "name": "Es2",
+                "value": "RV.Es2"
+            },
+            {
+                "name": "Es3",
+                "value": "RV.Es3"
+            },
+            {
+                "name": "Esb",
+                "value": "RV.Esb"
+            },
+            {
+                "name": "Fy1",
+                "value": "RV.Fy1"
+            },
+            {
+                "name": "Fy2",
+                "value": "RV.Fy2"
+            },
+            {
+                "name": "Fy3",
+                "value": "RV.Fy3"
+            },
+            {
+                "name": "Fyb",
+                "value": "RV.Fyb"
+            },
+            {
+                "name": "b1",
+                "value": "RV.b1"
+            },
+            {
+                "name": "b2",
+                "value": "RV.b2"
+            },
+            {
+                "name": "b3",
+                "value": "RV.b3"
+            },
+            {
+                "name": "bb",
+                "value": "RV.bb"
+            }
+        ],
+        "responseNodes": [
+            11,
+            12,
+            13,
+            14
+        ],
+        "type": "OpenSeesInput"
+    },
+    "Simulation": {
+        "modelToRun": "RV.MultiModel-Simulation",
+        "models": [
+            {
+                "Application": "OpenSees-Simulation",
+                "ApplicationData": {
+                },
+                "belief": 1,
+                "data": {
+                    "Application": "OpenSees-Simulation",
+                    "algorithm": "Newton",
+                    "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+                    "convergenceTest": "NormUnbalance 1.0e-2 10",
+                    "dampingModel": "Rayleigh Damping",
+                    "firstMode": 1,
+                    "integration": "Newmark 0.5 0.25",
+                    "modalRayleighTangentRatio": 0,
+                    "numModesModal": -1,
+                    "rayleighTangent": "Initial",
+                    "secondMode": 7,
+                    "solver": "Umfpack"
+                }
+            },
+            {
+                "Application": "OpenSees-Simulation",
+                "ApplicationData": {
+                },
+                "belief": 1,
+                "data": {
+                    "Application": "OpenSees-Simulation",
+                    "algorithm": "Newton",
+                    "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+                    "convergenceTest": "NormUnbalance 1.0e-2 10",
+                    "dampingModel": "Modal Damping",
+                    "firstMode": 1,
+                    "integration": "Newmark 0.5 0.25",
+                    "modalRayleighTangentRatio": 0.001,
+                    "numModesModal": 7,
+                    "rayleighTangent": "Initial",
+                    "secondMode": -1,
+                    "solver": "Umfpack"
+                }
+            }
+        ]
+    },
+    "UQ": {
+        "parallelExecution": true,
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 10,
+            "seed": 166
+        },
+        "saveWorkDir": true,
+        "uqType": "Forward Propagation"
+    },
+    "correlationMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+    ],
+    "localAppDir": "/Users/fmckenna/NHERI/SimCenterBackendApplications",
+    "randomVariables": [
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": 0.02,
+            "name": "pDamp",
+            "refCount": 5,
+            "upperbound": 0.05,
+            "value": "RV.pDamp",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "inputType": "Parameters",
+            "mean": 29000,
+            "name": "Es1",
+            "refCount": 1,
+            "stdDev": 2900,
+            "value": "RV.Es1",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Lognormal",
+            "inputType": "Moments",
+            "mean": 29000,
+            "name": "Es2",
+            "refCount": 1,
+            "stdDev": 2900,
+            "value": "RV.Es2",
+            "variableClass": "Uncertain"
+        },
+        {
+            "alphas": 5,
+            "betas": 5,
+            "distribution": "Beta",
+            "inputType": "Parameters",
+            "lowerbound": 28000,
+            "name": "Es3",
+            "refCount": 1,
+            "upperbound": 30000,
+            "value": "RV.Es3",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": 25000,
+            "name": "Esb",
+            "refCount": 0,
+            "upperbound": 33000,
+            "value": "RV.Esb",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Weibull",
+            "inputType": "Parameters",
+            "name": "Fy1",
+            "refCount": 0,
+            "scaleparam": 50,
+            "shapeparam": 5,
+            "value": "RV.Fy1",
+            "variableClass": "Uncertain"
+        },
+        {
+            "alphaparam": 0.1,
+            "betaparam": 50,
+            "distribution": "Gumbel",
+            "inputType": "Parameters",
+            "name": "Fy2",
+            "refCount": 0,
+            "value": "RV.Fy2",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Gamma",
+            "inputType": "Parameters",
+            "k": 50,
+            "lambda": 0.9,
+            "name": "Fy3",
+            "refCount": 0,
+            "value": "RV.Fy3",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Chisquare",
+            "inputType": "Parameters",
+            "k": 100,
+            "name": "Fyb",
+            "refCount": 0,
+            "value": "RV.Fyb",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Exponential",
+            "inputType": "Parameters",
+            "lambda": 100,
+            "name": "b1",
+            "refCount": 0,
+            "value": "RV.b1",
+            "variableClass": "Uncertain"
+        },
+        {
+            "Values": [
+                0.005,
+                0.01,
+                0.015
+            ],
+            "Weights": [
+                0.25,
+                0.5,
+                0.25
+            ],
+            "distribution": "Discrete",
+            "inputType": "Parameters",
+            "name": "b2",
+            "refCount": 0,
+            "value": "RV.b2",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "inputType": "Parameters",
+            "mean": 0.01,
+            "name": "b3",
+            "refCount": 0,
+            "stdDev": 0.001,
+            "value": "RV.b3",
+            "variableClass": "Uncertain"
+        },
+        {
+            "distribution": "Normal",
+            "inputType": "Parameters",
+            "mean": 0.01,
+            "name": "bb",
+            "refCount": 0,
+            "stdDev": 0.001,
+            "value": "RV.bb",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "/Users/fmckenna/NHERI/SimCenterBackendApplications",
+    "runType": "runningLocal",
+    "workingDir": "/Users/fmckenna/Documents/WE-UQ/LocalWorkDir"
+}
