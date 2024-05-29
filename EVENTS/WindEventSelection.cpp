@@ -176,8 +176,8 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     connect(eventSelection,SIGNAL(currentTextChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 
     // status and error messaging
-    //connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
-    //connect(theEmptyDomainCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+    connect(theIsolatedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
+    connect(theSurroundedBuildingCFD, SIGNAL(errorMessage(QString)), this,SLOT(sendErrorMessage(QString)));
 }
 
 WindEventSelection::~WindEventSelection()

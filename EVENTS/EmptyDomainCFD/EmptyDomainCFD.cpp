@@ -192,7 +192,7 @@ bool EmptyDomainCFD::initialize()
 //    openFoamVersion->addItem("7");
 //    openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
-    openFoamVersion->setCurrentIndex(1);
+    openFoamVersion->setCurrentIndex(0);
     openFoamVersion->setMinimumWidth(50);
     openFoamVersion->setDisabled(true);
 
