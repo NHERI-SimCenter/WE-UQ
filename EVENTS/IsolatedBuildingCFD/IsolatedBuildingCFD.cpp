@@ -184,10 +184,10 @@ bool IsolatedBuildingCFD::initialize()
     QLabel *openFoamVersionLabel = new QLabel("Version of OpenFOAM Distribution: ");
 
     openFoamVersion = new QComboBox ();
-    openFoamVersion->addItem("7");
-    openFoamVersion->addItem("9");
+//    openFoamVersion->addItem("7");
+//    openFoamVersion->addItem("9");
     openFoamVersion->addItem("10");
-    openFoamVersion->setCurrentIndex(2);
+    openFoamVersion->setCurrentIndex(0);
     openFoamVersion->setMinimumWidth(50);
 
 
@@ -696,7 +696,17 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
         caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
     }
 
-    openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
+
+    QString foamVersion = jsonObject["OpenFoamVersion"].toString();
+
+    //Check if it's version 10 other wise switch to 10
+    //the backend application running on TACC uses OpenFOAM-10 for now
+    if(foamVersion != "10")
+    {
+        foamVersion = "10";
+    }
+
+    openFoamVersion->setCurrentText(foamVersion);
 
     geometry->inputFromJSON(jsonObject);
     snappyHexMesh->inputFromJSON(jsonObject);
