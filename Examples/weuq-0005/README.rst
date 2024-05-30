@@ -3,6 +3,7 @@
 
 .. figure:: figures/weuq-0005.png
    :align: center
+   :alt: Image showing error in description
    :width: 500
 
 

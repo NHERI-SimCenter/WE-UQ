@@ -11,6 +11,7 @@ This example estimates the probabilistic response of a building model excited by
 
 .. figure:: figures/we16_main.png
    :align: center
+   :alt: A scientific image illustrating an experimental setup and data visualization. On the left, a photographic inset shows a laboratory setup with a patterned floor and a crystalline structure in the center. This connects to a 3D scatter plot in the center of the image, with multicolored dots representing data points in a cube-shaped coordinate system. On the right, there are four separate single-dimensional plots with blue waveforms, likely representing some fluctuating variable over time or another dimension. The plots are aligned vertically and appear to be related to the data shown in the 3D scatter plot.
    :width: 50%
    :figclass: align-center
 
@@ -62,6 +63,7 @@ Workflow
 
 .. figure:: figures/we16_UQ.png
    :align: center
+   :alt: Screenshot of a user interface for configuring uncertainty quantification (UQ) methods. The UI includes dropdown menus and checkboxes for options such as "UQ Method," "Forward Propagation," and "UQ Engine" with "Dakota" selected. Additional settings include "Parallel Execution," "Save Working dirs," "Method LHS," number of samples set to 50, and a seed value of 716. A vertical navigation bar on the left shows menu items like GI, SIM, EVT, and FEM.
    :width: 90%
    :figclass: align-center
 
@@ -72,6 +74,7 @@ Workflow
 
 .. figure:: figures/we16_GI.png
    :align: center
+   :alt: Screenshot of a user interface displaying 'Building Information' with fields for Name, Properties (with inputs for Year Built, Number of Stories, Structural Type, Height, Width, Depth, and Plan Area), Location (with coordinates for Latitude and Longitude), and Units for Force, Length, and Temperature. The properties are filled with example data, such as the year 1990, 25 stories, and structural type RM1. The Units fields are set to Newtons, Meters, and Celsius. On the left side of the image is a vertical navigation menu with items labeled UQ, G|, SIM, EVT, FEM, EDP, RV, and RES, with G| currently selected.
    :width: 90%
    :figclass: align-center
 
@@ -81,6 +84,7 @@ Workflow
 
 .. figure:: figures/we16_SIM.png
    :align: center
+   :alt: Screenshot of a Building Model Generator interface with various input fields for specifying building information, such as Number of Stories, Floor Weights, and Story Stiffness for X and Y directions, as well as other parameters like Damping Ratio and Yield Strength. The interface also has a table with multiple rows of data for weights, heights, and stiffness coefficients, among other factors, representing different story levels of a building in a multi-degree-of-freedom (MDOF) model.
    :width: 90%
    :figclass: align-center
 
@@ -114,6 +118,7 @@ Workflow
 
 .. figure:: figures/we16_EVT.png
    :align: center
+   :alt: Screenshot of a software interface with a section labeled "Load Generator" for configuring experimental wind pressures. The form includes fields for 'Percentage of Modes', 'Full Scale Reference Wind Speed', 'Full Scale Duration', 'Seed', 'File Name', and 'Model Scale'. The 'File Name' field contains a file path, and there is a 'Choose' button next to it. Additional parameters are below including 'Window Size', 'Overlap Percentage', 'CPSD Group Size', and 'Selected Taps' with a list of numbers. The sidebar on the left has menu items like UQ, GI, SIM, EVT (highlighted), FEM, EDP, RV, and RES.
    :width: 90%
    :figclass: align-center
 
@@ -127,6 +132,7 @@ Workflow
 
 .. figure:: figures/we16_RV.png
    :align: center
+   :alt: Screenshot of a software interface with a sidebar on the left showing different menu options like UQ, GI, SIM, EVT, FEM, EDP, and RV highlighted. The main area is titled 'Input Random Variables' with fields for defining a variable named 'dummy' with a 'Normal' distribution, a mean of '10', and a standard deviation of '5'. There are buttons for 'Add', 'Clear All', 'Correlation Matrix', 'Show PDF', 'Export', and 'Import'.
    :width: 90%
    :figclass: align-center
 
@@ -152,6 +158,7 @@ The response statistics are first displayed.
 
 .. figure:: figures/we16_RES1.png
    :align: center
+   :alt: A screenshot displaying a statistical summary with data values including Name, Mean, StdDev (standard deviation), Skewness, and Kurtosis for different items, with names like "1-PFA-1-1", "1-RMSA-1-2", and "1-PFD-1-2". Each row represents a different data set with respective statistical measures. The layout is neat, with each measure in its own column, and the information is presented on a grey and white interface.
    :width: 90%
    :figclass: align-center
 
@@ -161,6 +168,7 @@ Additionally, the user can browse the sample realization values and inspect the 
 
 .. figure:: figures/we16_RES2.png
    :align: center
+   :alt: Screenshot of a software interface with a scatter plot and a data table. The scatter plot shows a positive correlation between two variables labeled "1-PID-21-2" and "1-PID-21-1" with a correlation coefficient of 0.97. The data table contains numerical values for various parameters like "1-PFA-21-2," "1-RMSA-21-1," "1-PFD-21-1," and others, with some cells highlighted. There are also buttons for saving data such as "Save Table," "Save Columns Separately," "Save RVs," and "Save QoIs." The interface includes a side menu with options like "UQ," "GI," "SIM," "EVT," "FEM," "EDP," "RV," and "RES."
    :width: 90%
    :figclass: align-center
 

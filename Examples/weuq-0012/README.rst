@@ -15,6 +15,7 @@ This example estimates the probabilistic response of a building model excited by
 
 .. figure:: figures/we12_1.png
    :align: center
+   :alt: A diagram demonstrating a concept, possibly related to signal processing. On the left side, there is a series of irregular waveforms next to a simple representation of a high-rise building. Arrows point to the right, where similar waveforms are shown. Each waveform is followed by an arrow pointing down towards another waveform with variations, and each slightly varying waveform is located next to a representation of the same building. The flow of the diagram suggests a process or transformation being applied to the initial waveform, resulting in different outcomes each with the same visual representation of the building.
    :figclass: align-center
    :width: 50%
 
@@ -59,6 +60,7 @@ The experimental records should first be reformatted by the user such that **win
 
 .. figure:: figures/we12_2.png
    :align: center
+   :alt: Interior of a large room with an array of upright standing transparent rods organized in a grid pattern on the floor, and a single structure built with similar rods in the foreground. The room's floors are marked with blue tape for positioning.
    :figclass: align-center
    :width: 300
 
@@ -69,6 +71,7 @@ The experimental records should first be reformatted by the user such that **win
 
 .. figure:: figures/we12_3.png
    :align: center
+   :alt: Four line graphs depicting noisy data over a period of 30 seconds. Each chart represents a different floor of a structure, with the x-axis labeled "time (sec)" and the y-axis showing different measures: force in Newtons (N) for the 10th, 15th, and 25th floors, and torque in Newton meters (Nm) for the 20th floor. The graphs are labeled on the y-axes as Fx for the 10th and 25th floors, Fy for the 15th floor, and Tz for the 20th floor. The noisy data suggests variability and fluctuation in the respective measured quantities.
    :figclass: align-center
    :width: 800
 
@@ -86,6 +89,7 @@ Workflow
 
 .. figure:: figures/we12_UQ.png
    :align: center
+   :alt: Screenshot of a software interface featuring a section titled "UQ Method" with options for "Forward Propagation" and "UQ Engine" set to "Dakota". Two checkboxes are marked "Parallel Execution" and "Save Working dirs". Below, there is a drop-down menu set to "LHS" for method, a numeric field for "# Samples" with the number 50, and another field for "Seed" with the number 716. On the left, there is a vertical navigation bar with the highlighted option "UQ" and other options labeled "GI", "SIM", "EVT", and "FEM".
    :width: 700
    :figclass: align-center
 
@@ -96,6 +100,7 @@ Workflow
 
 .. figure:: figures/we12_GI.png
    :align: center
+   :alt: A screenshot of a graphical user interface titled "Building Information" displaying various input fields for property details such as name, year built, number of stories, structural type, height, width, depth, plan area, and location coordinates with latitude and longitude. Also present are dropdown menus for units of force, length, and temperature set to Newtons, meters, and Celsius respectively. A column on the left side shows abbreviated menu items such as UQ, GI, SIM, EVT, FEM, EDP, RV, and RES, with the GI menu item highlighted.
    :width: 700
    :figclass: align-center
 
@@ -105,6 +110,7 @@ Workflow
 
 .. figure:: figures/we12_SIM.png
    :align: center
+   :alt: Screenshot of an interface labeled "Building Model Generator" with various input fields for building information and parameters. The parameters include number of stories, floor weights, stiffness, yield strength, damping ratio, and more, with numerical values provided in different fields. The interface appears to be part of a software tool used for simulating or analyzing building structures.
    :width: 700
    :figclass: align-center
 
@@ -138,6 +144,7 @@ Workflow
 
 .. figure:: figures/we12_EVT.png
    :align: center
+   :alt: Screenshot of a software interface with options for "Load Generator" related to "Experimental Wind Forces." Parameters include Percentage of Modes, Full Scale Reference Wind Speed, Full Scale Duration, Seed, and File Name with an input path specified. Additional information is provided like Model Scale, sampling frequency, model scale reference wind speed, Window Size, Overlap Percentage, and a reference to a backend application used by the selection provided by Prof. Seymour Spence and students at the University of Michigan with a citation for their work.
    :width: 700
    :figclass: align-center
 
@@ -151,6 +158,7 @@ Workflow
 
 .. figure:: figures/we12_RV.png
    :align: center
+   :alt: Screenshot of a user interface for inputting random variables, with a navigation sidebar on the left with options labeled UQ, GI, SIM, EVT, FEM, EDP, and RV highlighted. The main panel shows a form titled "Input Random Variables" where a variable named "dummy" with a "Normal" distribution is listed, with a mean value of "10" and a standard deviation of "5". There are buttons for "Add", "Clear All", and "Correlation Matrix," as well as "Export" and "Import" options in the upper right corner. Additionally, a button labeled "Show PDI" is visible next to the standard deviation field.
    :width: 700
    :figclass: align-center
 
@@ -176,6 +184,7 @@ The response statistics are first displayed.
 
 .. figure:: figures/we12_RES1.png
    :align: center
+   :alt: A screenshot displaying a statistical data table with several rows under different categories such as UQ, SIM, EVT, FEM, EDP, RV, and RES. Each row contains an entry with columns labeled Name, Mean, StdDev (Standard Deviation), Skewness, and Kurtosis. The names include identifiers like 1-PFA-1-1, 1-RMSA-1-2, and others with corresponding numerical values in their respective columns. The table is part of a larger interface with tabs for 'Summary' and 'Data Values' visible at the top.
    :width: 700
    :figclass: align-center
 
@@ -185,6 +194,7 @@ Additionally, the user can browse the sample realization values and inspect the 
 
 .. figure:: figures/we12_RES2.png
    :align: center
+   :alt: A screenshot displaying a data analytics software interface with a scatter plot and a data table. The plot is labeled "Data Values" with points representing samples, and a highlighted "Run # 9" is visible. The correlation coefficient is noted as 0.96. A table to the right contains numerous columns with numerical values, some cells highlighted in blue, indicating selected data points. Various tabs and options such as "Save Table" are available, suggesting functionalities to manipulate and store the data.
    :width: 700
    :figclass: align-center
 

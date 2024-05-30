@@ -13,6 +13,7 @@ In this example, the CFD-based workflow for determining the wind-induced respons
 
 .. figure:: figures/we14_study_building.svg
    :align: center
+   :alt: Image showing error in description
    :width: 35%
 
    Geometry and configuration of the study building
@@ -77,6 +78,7 @@ Specify the details of uncertainty analysis in the **UQ** panel. This example us
 
 .. figure:: figures/we14_UQ_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 80%
    :figclass: align-center
 
@@ -89,6 +91,7 @@ Next, in the **GI** panel, specify the properties of the building and the unit s
 
 .. figure:: figures/we14_GI_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Set the building properties in **GI** panel
@@ -119,6 +122,7 @@ In the SIM panel, select the "MDOF" generator. Specify the **Floor Weights** bas
    
 .. figure:: figures/we14_SIM_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Define the structural properties in the **SIM** panel
@@ -133,6 +137,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
 .. figure:: figures/we14_EVT_Start_tab.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Setting up the case directory and OpenFOAM version in the *Start* tab
@@ -143,6 +148,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
 .. figure:: figures/we14_EVT_Import_stl.svg
    :align: center
+   :alt: Image showing error in description
    :width: 100%
 
    Import the building geometry 
@@ -151,6 +157,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 .. _fig-we14-geometry-tab:
 .. figure:: figures/we14_EVT_Geometry_tab.svg
    :align: center
+   :alt: Image showing error in description
    :width: 100%
 
    Defining the domain dimensions and the building geometry.  
@@ -164,6 +171,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_Mesh_tab.svg
       :align: center
+   :alt: Image showing error in description
       :width: 100%
 
       Define the computational grid in the *Mesh* tab
@@ -175,6 +183,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    
    .. figure:: figures/we14_EVT_Mesh_RegionalRefinement_tab.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Create regional refinements
@@ -186,6 +195,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_Mesh_SurfaceRefinement_tab.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Create surface refinements
@@ -196,6 +206,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_Mesh_EdgeRefinement_tab.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Apply further refinements along the building edges
@@ -206,6 +217,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_Mesh_PrismLayers_tab.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Adding Prism Layers
@@ -217,6 +229,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_Mesh_View.svg
       :align: center
+   :alt: Image showing error in description
       :width: 100%
 
       Breakout View of the Mesh
@@ -229,6 +242,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we14_EVT_BoundaryConditions.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Setup the *Boundary Conditions*  
@@ -247,6 +261,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
 .. figure:: figures/we14_EVT_NumericalSetup.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Edit inputs in the *Numerical Setup* tab
@@ -262,6 +277,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
   
    .. figure:: figures/we14_EVT_Monitoring.svg
       :align: center
+   :alt: Image showing error in description
       :width: 75%
 
       Select the outputs from CFD in the *Monitoring* tab
@@ -274,6 +290,7 @@ The finite element analysis options are specified in the **FEM** panel. For this
 
 .. figure:: figures/we14_FEM_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Setup the Finite Element analysis options
@@ -284,6 +301,7 @@ Next, specify Engineering Demand Parameters (EDPs) in the **EDP** panel. Select 
 
 .. figure:: figures/we14_EDP_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Select the EDPs to measure
@@ -294,6 +312,7 @@ The random variables are defined in **RV** tab. Here, the floor stiffness named 
 
 .. figure:: figures/we14_RV_panel.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Define the Random Variable (RV)
@@ -304,6 +323,7 @@ Running the Simulation
 
 .. figure:: figures/we14_RunJob.svg
    :align: center
+   :alt: Image showing error in description
    :width: 80%
 
    Submit the simulation to the remote server (DesignSafe-CI)
@@ -321,6 +341,7 @@ The *Summary* tab of the panel shows the four statistical moments of the EDPs wh
 
 .. figure:: figures/we14_RES_Summary.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
 
    Summary of the recorded EDPs in **RES** panel
@@ -329,6 +350,7 @@ By switching to the *Data Values* tab, the user can also visualize all the reali
 
 .. figure:: figures/we14_RES_DataValues.svg
    :align: center
+   :alt: Image showing error in description
    :width: 75%
    :figclass: align-center
 
@@ -344,6 +366,7 @@ The full simulation data can be retrieved from *DesignSafe* and visualized remot
 
 .. figure:: figures/we14_CFD_Results.svg
    :align: center
+   :alt: Image showing error in description
    :width: 100%
    :figclass: align-center
 
