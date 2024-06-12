@@ -660,6 +660,10 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
     statusMessage("\n" + process->readAllStandardOutput() + "\n" + process->readAllStandardError());
 
+//    QMessageBox msgBox;
+//    msgBox.setText(process->readAllStandardOutput());
+//    msgBox.exec();
+
     process->close();
 
     snappyHexMeshCompleted = false;
@@ -769,13 +773,14 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
 {
 
     QString casePath = mainModel->caseDir();
+    qDebug() << "CASE_PATH: " << casePath;
     QString commands;
     QProcess *process = new QProcess(this);
     process->setWorkingDirectory(casePath);
 
-    #ifdef Q_OS_MACOS
-        QString localFoamPath = "/home/openfoam";
-        QString dockerImage = "openfoam/openfoam10-paraview510";
+#ifdef Q_OS_MACOS
+    QString localFoamPath = "/home/openfoam";
+    QString dockerImage = "openfoam/openfoam10-paraview510";
 
 	QDir homeDir(QDir::homePath());
 	QString sourceBash("");
