@@ -39,6 +39,11 @@
       "name": "E8: Wind-tunnel Informed Stochastic Wind Pressure Generator",
       "description": "",
       "inputFile": "weuq-0016/src/input.json"
+    },
+    {
+      "name": "E9: Wind Load Evaluation on a Building with Surroundings Using CFD",
+      "description": "",
+      "inputFile": "weuq-0017/src/input.json"
     }
   ]
 }

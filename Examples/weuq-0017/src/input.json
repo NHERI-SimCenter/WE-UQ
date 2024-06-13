@@ -1,0 +1,418 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "SurroundedBuildingCFD",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "Dakota-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "DefaultValues": {
+        "driverFile": "driver",
+        "edpFiles": [
+            "EDP.json"
+        ],
+        "filenameAIM": "AIM.json",
+        "filenameDL": "BIM.json",
+        "filenameEDP": "EDP.json",
+        "filenameEVENT": "EVENT.json",
+        "filenameSAM": "SAM.json",
+        "filenameSIM": "SIM.json",
+        "rvFiles": [
+            "AIM.json",
+            "SAM.json",
+            "EVENT.json",
+            "SIM.json"
+        ],
+        "workflowInput": "scInput.json",
+        "workflowOutput": "EDP.json"
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "GeometricData": {
+                "buildingDepth": 24,
+                "buildingHeight": 18,
+                "buildingWidth": 16,
+                "domainHeight": 1.8,
+                "domainLength": 7.2,
+                "domainWidth": 2.2,
+                "fetchLength": 2.2,
+                "geometricScale": 100,
+                "origin": [
+                    0,
+                    0,
+                    0
+                ],
+                "originOption": "Building Bottom Center",
+                "surroundingBuildingsInformation": {
+                    "boundingRadius": 100,
+                    "randomness": 0,
+                    "streetWidthX": 30,
+                    "streetWidthY": 30,
+                    "surroundingBuildingsDepth": 24,
+                    "surroundingBuildingsHeight": 18,
+                    "surroundingBuildingsWidth": 16
+                },
+                "useCOST": true,
+                "windDirection": 0
+            },
+            "OpenFoamVersion": "10",
+            "angleUnit": "degree",
+            "blockMeshParameters": {
+                "backBoundaryType": "symmetry",
+                "frontBoundaryType": "symmetry",
+                "groundBoundaryType": "wall",
+                "inletBoundaryType": "patch",
+                "outletBoundaryType": "patch",
+                "topBoundaryType": "symmetry",
+                "xGrading": 1,
+                "xNumCells": 120,
+                "yGrading": 1,
+                "yNumCells": 36,
+                "zGrading": 1,
+                "zNumCells": 30
+            },
+            "boundaryConditions": {
+                "buildingBoundaryCondition": "smoothWallFunction",
+                "groundBoundaryCondition": "roughWallFunction",
+                "inletBoundaryCondition": "MeanABL",
+                "outletBoundaryCondition": "zeroPressureOutlet",
+                "sidesBoundaryCondition": "slip",
+                "surroundingBoundaryCondition": "smoothWallFunction",
+                "topBoundaryCondition": "slip"
+            },
+            "caseDirectoryPath": "{Current_Dir}/.",
+            "lengthUnit": "m",
+            "massUnit": "kg",
+            "numericalSetup": {
+                "adjustTimeStep": true,
+                "duration": 19,
+                "maxCourantNumber": 4,
+                "numCorrectors": 2,
+                "numNonOrthogonalCorrectors": 1,
+                "numOuterCorrectors": 1,
+                "numProcessors": 96,
+                "runInParallel": true,
+                "solverType": "pimpleFoam",
+                "timeStep": 0.0025
+            },
+            "resultMonitoring": {
+                "baseLoadWriteInterval": 1,
+                "centerOfRotation": [
+                    0,
+                    0,
+                    0
+                ],
+                "floorHeight": 0.018,
+                "monitorBaseLoad": false,
+                "monitorSurfacePressure": false,
+                "numStories": 6,
+                "numTapsAlongDepth": 1,
+                "numTapsAlongHeight": 1,
+                "numTapsAlongWidth": 1,
+                "pressureSamplingPoints": [
+                    [
+                        -0.12000100314617157,
+                        -1.7881393032936899e-09,
+                        0.09000000357627869
+                    ],
+                    [
+                        0.12000100314617157,
+                        -1.7881393032936899e-09,
+                        0.09000000357627869
+                    ],
+                    [
+                        -2.6822091214739885e-09,
+                        -0.08000099658966064,
+                        0.09000000357627869
+                    ],
+                    [
+                        -2.6822091214739885e-09,
+                        0.08000099658966064,
+                        0.09000000357627869
+                    ],
+                    [
+                        -2.6822091214739885e-09,
+                        -1.7881393032936899e-09,
+                        0.18000100553035736
+                    ]
+                ],
+                "pressureWriteInterval": 1,
+                "storyLoadWriteInterval": 2
+            },
+            "snappyHexMeshParameters": {
+                "addEdgeRefinements": true,
+                "addPrismLayers": false,
+                "addSurfaceRefinements": true,
+                "buildingSTLName": "building",
+                "edgeRefinements": [
+                    {
+                        "level": 6,
+                        "meshSize": 0.0015625,
+                        "name": "building"
+                    },
+                    {
+                        "level": 5,
+                        "meshSize": 0.0018865,
+                        "name": "surroundings"
+                    }
+                ],
+                "finalPrismLayerThickness": 0.5,
+                "lengthUnit": "m",
+                "numCellsBetweenLevels": 5,
+                "numProcessors": 4,
+                "numberOfPrismLayers": 5,
+                "prismLayerExpansionRatio": 1.15,
+                "prismLayerSurfaceName": "building",
+                "refinementBoxes": [
+                    [
+                        "Box1",
+                        1,
+                        -2.2,
+                        -1.1,
+                        0,
+                        2,
+                        1.1,
+                        0.9
+                    ],
+                    [
+                        "Box2",
+                        2,
+                        -2.2,
+                        -1.1,
+                        0,
+                        1.25,
+                        1.1,
+                        0.45
+                    ],
+                    [
+                        "Box3",
+                        3,
+                        -0.9,
+                        -0.25,
+                        0,
+                        0.9,
+                        0.25,
+                        0.3
+                    ]
+                ],
+                "resolveFeatureAngle": 30,
+                "runInParallel": false,
+                "snappyHexMeshCompleted": false,
+                "surfaceRefinements": [
+                    {
+                        "distance": 0.1,
+                        "maxLevel": 4,
+                        "meshSize": 0.00279151,
+                        "minLevel": 4,
+                        "name": "surroundings"
+                    },
+                    {
+                        "distance": 0.1,
+                        "maxLevel": 5,
+                        "meshSize": 0.003125,
+                        "minLevel": 5,
+                        "name": "building"
+                    }
+                ],
+                "surroundingsSTLName": "surroundings"
+            },
+            "timeUnit": "s",
+            "turbulenceModeling": {
+                "DESModelType": "SpalartAllmarasDES",
+                "LESModelType": "Smagorinsky",
+                "RANSModelType": "kEpsilon",
+                "simulationType": "LES"
+            },
+            "type": "SurroundedBuildingCFD",
+            "windCharacteristics": {
+                "aerodynamicRoughnessLength": 0.003,
+                "airDensity": 1.225,
+                "kinematicViscosity": 1.5e-05,
+                "referenceHeight": 0.18,
+                "referenceWindSpeed": 8.25,
+                "timeScale": 33.3333,
+                "velocityScale": 3
+            }
+        }
+    ],
+    "GeneralInformation": {
+        "NumberOfStories": 6,
+        "PlanArea": 129600,
+        "StructureType": "RM1",
+        "YearBuilt": 1990,
+        "depth": 24,
+        "height": 18,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "TPU_Surrounded",
+        "planArea": 129600,
+        "stories": 6,
+        "units": {
+            "force": "N",
+            "length": "m",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 16
+    },
+    "Modeling": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 1000000,
+        "Fyy": 1000000,
+        "Krz": 10000000,
+        "Kx": 100000000,
+        "Ky": 100000000,
+        "ModelData": [
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 3,
+                "kx": 100000000,
+                "ky": 100000000,
+                "weight": 10000000
+            }
+        ],
+        "dampingRatio": "RV.dpg",
+        "height": 3,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 6,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": 10000000
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": -1,
+        "rayleighTangent": "Initial",
+        "secondMode": -1,
+        "solver": "Umfpack"
+    },
+    "UQ": {
+        "parallelExecution": true,
+        "samplingMethodData": {
+            "method": "LHS",
+            "samples": 500,
+            "seed": 870
+        },
+        "saveWorkDir": true,
+        "uqType": "Forward Propagation"
+    },
+    "correlationMatrix": [
+        1
+    ],
+    "localAppDir": "C:/Users/fanta/SimCenter/SourceCode/NHERI-SimCenter/SimCenterBackendApplications",
+    "randomVariables": [
+        {
+            "distribution": "Normal",
+            "inputType": "Parameters",
+            "mean": 0.02,
+            "name": "dpg",
+            "refCount": 2,
+            "stdDev": 0.004,
+            "value": "RV.dpg",
+            "variableClass": "Uncertain"
+        }
+    ],
+    "remoteAppDir": "C:/Users/fanta/SimCenter/SourceCode/NHERI-SimCenter/SimCenterBackendApplications",
+    "runType": "runningLocal",
+    "workingDir": "C:/Users/fanta/Documents/WE-UQ/LocalWorkDir"
+}
