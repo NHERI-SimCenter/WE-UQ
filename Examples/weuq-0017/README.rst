@@ -1,35 +1,25 @@
-.. _weuq-0013:
+.. _weuq-0017:
 
-Digital Wind Tunnel II: Wind Loads on Isolated Building with Simple Geometry
-============================================================================
+Digital Wind Tunnel III: Wind Loads on a Building with Surroundings
+=====================================================================
 
 +----------------+-------------------------+
 | Problem files  | :weuq-0017:`/`          |
 +----------------+-------------------------+
 
-This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building with simple box-type geometry subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation is completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
+This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating wind-induced response of a building by modeling the effect of the surroundings. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental data taken from Tokyo Polytechnic University (TPU) aerodynamic database.
 
-.. _fig-we13-1:
+.. _fig-we17-1:
 
-.. figure:: figures/we13_computational_domain.svg
+.. figure:: figures/surrounded_building_fig1.png
    :align: center
-   :width: 600
+   :width: 60%
 
-   Setup of the CFD model: approaching wind, computational domain and the study building.
+   Setup of the CFD model: approaching wind, computational domain, study building, and surrounding buildings.
 
+In full-scale, the main building measures 18 m high with a 24 m x 16 m plan dimensions. For simplicity, the CFD model is created in model scale (at 1:100 geometric scale) resembling that of the experimental version. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Important geometric and flow properties are provided in :numref:`tbl-we17-1`.  
 
-Target Experimental Measurement 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Relevant geometric and flow properties taken from the TPU database are provided :numref:`tbl-we13-1` . These parameters are then specified in WE-UQ as demonstrated in :ref:`workflow-section`. In full-scale, the study building measures 200 m high with a 40 m square plan dimension. However, for simplicity, the CFD model is created in model scale (at 1:400 geometric scale) resembling that of the experimental version. 
-
-.. _fig-we13-tpu-model:
-
-.. figure:: figures/we13_tpu_building_demo.jpg
-   :align: center
-   :width: 400
-
-
-.. _tbl-we13-1:
+.. _tbl-we17-1:
 
 .. table:: Parameters needed to define the CFD model (taken from TPU database)
    :align: center
@@ -37,31 +27,31 @@ Relevant geometric and flow properties taken from the TPU database are provided 
    +---------------------+----------------------------------------------+------------------+---------------+
    |Parameter            |Description                                   |Value             | Unit          |
    +=====================+==============================================+==================+===============+
-   |:math:`B`            |Building width                                | 0.1              | m             |
+   |:math:`B`            |Building width                                | 0.16             | m             |
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`D`            |Building depth                                | 0.1              | m             | 
+   |:math:`D`            |Building depth                                | 0.24             | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`H`            |Building height                               | 0.5              | m             | 
+   |:math:`H`            |Building height                               | 0.18             | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_L`    |Geometric scale of the model                  | 1/400            |               | 
+   |:math:`\lambda_L`    |Geometric scale of the model                  | 1/100            |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`\lambda_V`    |Velocity scale of the model                   | 1/4              |               | 
+   |:math:`\lambda_V`    |Velocity scale of the model                   | 1/3              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\lambda_T`    |Time scale of the model                       | 100              |               | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`U_H`          |Roof-height mean wind speed                   | 11.2518          | m/s           | 
+   |:math:`U_H`          |Roof-height mean wind speed in model scale    | 8.25             | m/s           | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`T`            |Duration of the simulation in model scale     | 10               | s             | 
+   |:math:`T`            |Duration of the simulation in model scale     | 19.0             | s             | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\theta`       |Wind direction                                | 0                |degrees        | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.03             | m             | 
+   |:math:`z_0`          |Aerodynamic roughness length in full scale    | 0.3              | m             | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\rho_{air}`   |Air density                                   | 1.225            | kg/m^3        | 
    +---------------------+----------------------------------------------+------------------+---------------+
    |:math:`\nu_{air}`    |Kinematic viscosity of air                    | :math:`1.5e^{-5}`| m^2/s         | 
    +---------------------+----------------------------------------------+------------------+---------------+
-   |:math:`f_{s}`        |Sampling frequency (rate)                     | 1000             | Hz            | 
+   |:math:`f_{s}`        |Sampling frequency (rate)                     | 500              | Hz            | 
    +---------------------+----------------------------------------------+------------------+---------------+
 
 
