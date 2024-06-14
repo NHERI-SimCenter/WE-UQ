@@ -13,6 +13,7 @@ This project collaborates with the University of Florida (UF) NHERI Experimental
 
 .. figure:: figures/UFWindTunnel.png
    :align: center
+   :alt: Schematic diagram of a wind tunnel configuration, showing the components aligned in the direction of airflow. From left to right, labels indicate a fan bank, screens, and a honeycomb structure at the inlet, followed by a terraformer section, a development section, and finally the test section featuring a circular object. The diagram includes dimensions with a total tunnel length of 29,500 mm, test section width of 6,000 mm, and height of 3,000 mm. The flow direction is indicated as positive x, aligning with the axis and reference origin labeled on the diagram.
    :width: 600
    :figclass: align-center
 
@@ -22,6 +23,7 @@ The Digital Wind Tunnel would allow users to edit the geometric information and 
 
 .. figure:: figures/DWTsketch.png
    :align: center
+   :alt: Illustration showing a zoomed-in section of a material with a complex internal structure. The top part of the image displays an enlarged schematic view of the material's weave pattern within a highlighted yellow outline, suggesting a detailed analysis or focus on the fine structure. Below, the material appears as a three-dimensional rectangular block with a chaotic mix of red and brown elements within, representing the microscopic composition or perhaps the flow of particles or fibers within the material. A curved arrow connecting the two parts indicates a relationship between the macro view and the micro view of the material's internal makeup.
    :width: 600
    :figclass: align-center
 
@@ -34,6 +36,7 @@ The first step to run a CFD simulation in the Digital Wind Tunnel is to set up a
 
 .. figure:: figures/openfoam_structure.png
    :align: center
+   :alt: The image displays a diagram showing the structure of a case directory for computational fluid dynamics (CFD) simulation. At the top, a folder labeled "Case directory" branches into three main folders: "system," "constant," and "0" for initial/boundary conditions. The "system" folder is detailed with files such as "blockMeshDict," "controlDict," "fvSolution," and "fvSchemes." The "constant" folder includes "transportProperties" and "turbulenceProperties," while the "0" folder contains a file named "polyMesh." The folders and files are represented by icons that resemble blue file folders and document symbols, and the diagram's layout suggests the hierarchical organization of these elements within the case directory.
    :width: 400
    :figclass: align-center
 
@@ -43,6 +46,7 @@ To run a simulation in the Digital Wind Tunnel, select the **EVT** panel in the 
 
 .. figure:: figures/User-interface.png
    :align: center
+   :alt: Screenshot of the "WE-UQ: Wind Engineering with Uncertainty Quantification" software interface. It shows a section with parameters for a computational fluid dynamics simulation inside a digital wind tunnel, including fields for inlet and outlet length, and options for force calculation. To the right, there's a 3D graphical representation of a wind tunnel with the label "Inlet" indicating the air entry section. At the bottom of the interface, there are buttons to run the simulation or to get it from DesignSafe, and an option to exit the program.
    :width: 500
    :figclass: align-center
 
@@ -70,6 +74,7 @@ Alternatively, users can run a CFD simulation using the benchmark CFD model embe
 
 .. figure:: figures/Mesh.png
    :align: center
+   :alt: A 3D digital grid model of a rectangular object. The grid appears denser in the center, creating a shaded effect that gives the impression of depth, with blue towards the center and fading to lighter tones toward the edges. This image likely represents a simplified visualization or wireframe of a 3D object, often used in computer graphics and modeling to depict the form and structure before adding textures or details.
    :width: 400
    :figclass: align-center
 
@@ -93,6 +98,7 @@ In the context of *direct specification*, the Digital Wind Tunnel allows users t
 
 .. figure:: figures/table.png
    :align: center
+   :alt: A screenshot of a spreadsheet containing a large table with multiple columns of numeric data values. The column headers include terms like 'mean(U)', 'rms(u')', 'rms(v)', 'rms(w)', 'xl(m)', 'yl(m)', and several others. Each row corresponds to different data points labeled by numbers in the 'Points (mm)' column ranging from 5 to 285. The data appears to represent various measurements and calculations possibly related to a physics or engineering experiment.
    :width: 1000
    :figclass: align-center
 
@@ -121,6 +127,7 @@ scales along the height based on the uploaded table.
 
 .. figure:: figures/Direct_table.png
    :align: center
+   :alt: Screenshot of a user interface for a software application, displaying "Model parameters" with an option for "User-defined inflow boundary data". A table is shown with columns for Points (mm), meanU (m/s), '<u'u'> (m2/s2), '<u'v'> (m2/s2), and '<u'w'> (m2/s2). Five rows of data are visible with Point values ranging from 5 to 45 mm and corresponding meanU values from approximately 6.1 to 7.9 m/s. The '<u'v'> column has a constant value of -0.5476, while the '<u'w'> and the last column contain only zeros. Additionally, there's a button labeled "browse" near the top right to select a .csv data file.
    :width: 800
    :figclass: align-center
    
@@ -134,6 +141,7 @@ If the wind tunnel data is not available, the user can also specify the inflow c
 
 .. figure:: figures/TInF_function.png
    :align: center
+   :alt: Screenshot of a user interface displaying 'Inflow turbulence parameters' for a simulation or analysis. It contains adjustable settings for 'Profile type' set to 'logarithmic model', 'Friction model parameters' with inputs for 'Friction velocity (u*)' and 'Roughness height (z0)', both set to '0'. Below, there is an option to 'load R and L from file' or 'enter R and L manually', with radio buttons to select either. The 'Reynolds stress (symmetric tensor)' section lists a 3x3 matrix of numerical input fields with diagonal values set to '1.00' and off-diagonal values set to '0.00'. Additional fields for 'reference angle (deg)', 'reference distance', and 'alpha (vector)' with numerical inputs at '0.0' and '1.00' or '0.000' respectively. The 'Length scales (tensor)' section mirrors the structure of the Reynolds stress with similar values, along with another 'reference angle (deg)' field at the bottom set to '0.0'. All input fields have adjustment arrows, suggesting they are interactive elements allowing the user to customize the parameters for their specific requirements.
    :width: 500
    :figclass: align-center
 
@@ -167,6 +175,7 @@ After the CFD model is set up, the next step is to run the CFD simulations. Pres
 
 .. figure:: figures/Post-processing.png
    :align: center
+   :alt: Image showing error in description
    :width: 500
    :figclass: align-center
 
