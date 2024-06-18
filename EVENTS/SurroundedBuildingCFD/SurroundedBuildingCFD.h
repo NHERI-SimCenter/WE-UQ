@@ -159,8 +159,8 @@ private:
    QGroupBox                    *saveMeshGroup;
    QHBoxLayout                  *saveMeshLayout;
 
-   QGroupBox                    *cfdResultsGroup;
-   QGridLayout                  *cfdResultsLayout;
+//   QGroupBox                    *cfdResultsGroup;
+//   QGridLayout                  *cfdResultsLayout;
 
    QWidget                      *femSpecific;
    QLineEdit                    *caseDirectoryPathWidget;

@@ -135,8 +135,8 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionLayout = new QGridLayout();
 
 
-    cfdResultsGroup = new QGroupBox("CFD Results", this);
-    cfdResultsLayout = new QGridLayout();
+//    cfdResultsGroup = new QGroupBox("CFD Results", this);
+//    cfdResultsLayout = new QGridLayout();
 
 
     QLabel *casePathLabel = new QLabel("Path: ");
@@ -255,7 +255,7 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
     unitSystemGroup->setLayout(unitSystemLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
-    cfdResultsGroup->setLayout(cfdResultsLayout);
+//    cfdResultsGroup->setLayout(cfdResultsLayout);
 
     generalWidget->setLayout(startLayout);
     geometryWidget->setLayout(geometryLayout);
@@ -311,7 +311,7 @@ bool IsolatedBuildingCFD::initialize()
     monitoringLayout->addWidget(resultMonitoring);
     monitoringLayout->addStretch();
 
-    resultsLayout->addWidget(cfdResultsGroup);
+//    resultsLayout->addWidget(cfdResultsGroup);
     resultsLayout->addStretch();
 
     inputTab->addTab(generalWidget, "Start");
@@ -340,10 +340,10 @@ bool IsolatedBuildingCFD::initialize()
     plotWindProfiles->setEnabled(false);
     plotWindLoads->setEnabled(false);
 
-    cfdResultsLayout->addWidget(plotWindProfiles);
-    cfdResultsLayout->addWidget(plotWindLoads);
+//    cfdResultsLayout->addWidget(plotWindProfiles);
+//    cfdResultsLayout->addWidget(plotWindLoads);
 
-    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
+//    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
     connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 

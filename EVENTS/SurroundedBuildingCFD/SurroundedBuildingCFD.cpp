@@ -104,7 +104,7 @@ bool SurroundedBuildingCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
-    saveMeshGroup = new QGroupBox("Save Mesh", this);
+    saveMeshGroup = new QGroupBox("Save Data", this);
     saveMeshLayout = new QHBoxLayout();
     saveMeshGroup->setLayout( saveMeshLayout);
 
@@ -141,8 +141,8 @@ bool SurroundedBuildingCFD::initialize()
     openFoamVersionLayout = new QGridLayout();
 
 
-    cfdResultsGroup = new QGroupBox("CFD Results", this);
-    cfdResultsLayout = new QGridLayout();
+//    cfdResultsGroup = new QGroupBox("CFD Results", this);
+//    cfdResultsLayout = new QGridLayout();
 
 
     QLabel *casePathLabel = new QLabel("Path: ");
@@ -257,7 +257,7 @@ bool SurroundedBuildingCFD::initialize()
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
     unitSystemGroup->setLayout(unitSystemLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
-    cfdResultsGroup->setLayout(cfdResultsLayout);
+//    cfdResultsGroup->setLayout(cfdResultsLayout);
 
     generalWidget->setLayout(startLayout);
     geometryWidget->setLayout(geometryLayout);
@@ -265,7 +265,7 @@ bool SurroundedBuildingCFD::initialize()
     BCWidget->setLayout(BCLayout);
     numericalSetupWidget->setLayout(numericalSetupLayout);
     monitoringWidget->setLayout(monitoringLayout);
-    resultsWidget->setLayout(resultsLayout);
+//    resultsWidget->setLayout(resultsLayout);
 
     //Controls for geometric input
     geometry = new SurroundedBuildingGeometricInput(this);
