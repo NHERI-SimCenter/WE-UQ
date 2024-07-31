@@ -46,6 +46,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "NumericalSetupWidget.h"
 #include "WindCharacteristicsWidget.h"
 #include "ResultMonitoringWidget.h"
+#include "ResultDisplayWidget.h"
 #include <qcustomplot.h>
 #include <QPushButton>
 #include <QScrollArea>
@@ -286,6 +287,9 @@ bool IsolatedBuildingCFD::initialize()
     //Add result monitoring widget
     resultMonitoring = new ResultMonitoringWidget(this);
 
+    //Add result display widget
+    resultDisplay = new ResultDisplayWidget(this);
+
     //Populate each tab
     startLayout->addWidget(generalDescriptionGroup);
     startLayout->addWidget(caseDirectoryGroup);
@@ -311,7 +315,7 @@ bool IsolatedBuildingCFD::initialize()
     monitoringLayout->addWidget(resultMonitoring);
     monitoringLayout->addStretch();
 
-//    resultsLayout->addWidget(cfdResultsGroup);
+    resultsLayout->addWidget(resultDisplay);
     resultsLayout->addStretch();
 
     inputTab->addTab(generalWidget, "Start");
@@ -997,6 +1001,21 @@ double IsolatedBuildingCFD::geometricScale()
 double IsolatedBuildingCFD::windDirection()
 {
     return geometry->windDirectionWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::baseLoadSamplingTime()
+{
+    return resultMonitoring->baseLoadWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
+}
+
+double IsolatedBuildingCFD::storyLoadSamplingTime()
+{
+    return resultMonitoring->storyLoadWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
+}
+
+double IsolatedBuildingCFD::pressureSamplingTime()
+{
+    return resultMonitoring->pressureWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
 }
 
 QString IsolatedBuildingCFD::buildingShape()

@@ -1,5 +1,5 @@
-#ifndef RESULT_MONITORING_WIDGET_H
-#define RESULT_MONITORING_WIDGET_H
+#ifndef RESULT_DISPLAY_WIDGET_H
+#define RESULT_DISPLAY_WIDGET_H
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -39,7 +39,11 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 // Written by: Abiy
 
-#include <SimCenterAppWidget.h>
+#include <SC_ResultsWidget.h>
+#include <QtCharts/QChart>
+#include <vector>
+#include <complex>
+using namespace QtCharts;
 
 class InputWidgetParameters;
 class RandomVariablesContainer;
@@ -55,34 +59,37 @@ class QTabWidget;
 class QTableWidget;
 class QGroupBox;
 class QPushButton;
-class IsolatedBuildingCFD;
+class EmptyDomainCFD;
 class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
-class vtkMultiBlockDataSet;
+class QRadioButton;
 
-class ResultMonitoringWidget: public SimCenterAppWidget
+class ResultDisplayWidget: public SC_ResultsWidget
 {
     friend class IsolatedBuildingCFD;
 
     Q_OBJECT
 public:
-    explicit ResultMonitoringWidget(IsolatedBuildingCFD *parent = 0);
-    ~ResultMonitoringWidget();
+    explicit ResultDisplayWidget(IsolatedBuildingCFD *parent = 0);
+    ~ResultDisplayWidget();
 
-    bool outputToJSON(QJsonObject &jsonObject);
+    //bool outputToJSON(QJsonObject &jsonObject);
+    int processResults(QString &outputFile, QString &dirName);    
     bool inputFromJSON(QJsonObject &jsonObject);
     void updateWidgets();
+    bool simulationCompleted();
 
 signals:
 
 public slots:
    void clear(void);
-   void onMonitorBaseLoadChecked(int);
-   void onMonitorPressureChecked(int);
-   void onCreatePressurePointsToggled(bool);
-   void onShowCoordinateOfPointsClicked();
-   void onOpenCSVFileClicked();
+   void onShowBaseLoadDataClicked(void);
+   void onShowStoryLoadDataClicked(void);
+   void onShowPressureDataClicked(void);
+   void onBaseLoadTableCellClicked(int row, int col);
+   void onStoryLoadTableCellClicked(int row, int col);
+   void onPressureTableCellClicked(int row, int col);
 
 private:
 
@@ -90,66 +97,38 @@ private:
 
    QVBoxLayout          *layout;
 
-   QGroupBox            *monitorIntegratedLoadsGroup;
-   QGridLayout          *monitorIntegratedLoadsLayout;
+   QGroupBox            *showBaseLoadDataGroup;
+   QGridLayout          *showBaseLoadDataLayout;
+   QPushButton          *showBaseLoadData;
+   QTableWidget         *baseLoadTable;
+   QTableWidget         *baseLoadSummaryTable;
+   QChart               *baseTSChart;
+   QChart               *baseSpecChart;
 
-   QGroupBox            *monitorBaseLoadGroup;
-   QGridLayout          *monitorBaseLoadLayout;
+   QGroupBox            *showStoryLoadDataGroup;
+   QGridLayout          *showStoryLoadDataLayout;
+   QPushButton          *showStoryLoadData;
+   QTableWidget         *storyLoadTable;
+   QTableWidget         *storyLoadSummaryTable;
+   QChart               *storyTSChart;
+   QChart               *storySpecChart;
 
-   QGroupBox            *monitorStoryLoadGroup;
-   QGridLayout          *monitorStoryLoadLayout;
+   QGroupBox            *showPressureDataGroup;
+   QGridLayout          *showPressureDataLayout;
+   QPushButton          *showPressureData;
+   QTableWidget         *pressureLoadTable;
+   QTableWidget         *pressureLoadSummaryTable;
+   QChart               *pressureTSChart;
+   QChart               *pressureSpecChart;
 
-   QGroupBox            *monitorPressureGroup;
-   QGridLayout          *monitorPressureLayout;
-
-   QGroupBox            *pressureMonitoringPointsGroup;
-   QGridLayout          *pressureMonitoringPointsLayout;
-
-   QGroupBox            *createPressurePointsGroup;
-   QGridLayout          *createPressurePointsLayout;
-
-   QGroupBox            *monitorFlowFieldGroup;
-   QGridLayout          *monitorFlowFieldLayout;
-
-   QCheckBox            *monitorBaseLoad;
-   QCheckBox            *monitorSurfacePressure;
-   QCheckBox            *monitorFlowField;
-
-   QRadioButton         *createPressurePoints;
-   QRadioButton         *importPressurePoints;
-
-   QComboBox            *floorHeightOptions;
-
-   QLineEdit            *floorHeight;
-   QSpinBox             *numStories;
-
-   QSpinBox             *baseLoadWriteInterval;
-   QSpinBox             *storyLoadWriteInterval;
-   QSpinBox             *pressureWriteInterval;
-
-   QSpinBox             *numTapsAlongWidth;
-   QSpinBox             *numTapsAlongDepth;
-   QSpinBox             *numTapsAlongHeight;
-   QTableWidget         *samplingPointsTable;
-
-   QPushButton          *openCSVFile;
-   QPushButton          *showCoordinateOfPoints;
-
-   QString importedPointsPath;
-
-   QList<QVector3D> createSamplingPoints();
-   QList<QVector3D> importSamplingPointsCSV();
-
-   QList<QVector3D> importedPoints;
-   QList<QVector3D> generatedPoints;
-
-   void writeSamplingPoints(QList<QVector3D> points);
-   //Read a block from mesh
-   template <class Type>
-   Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   //Functions
+   void fft(std::vector<std::complex<double>> &x);
+   QVector<QVector<double>> getStatistics(QTableWidget* table);
+   void onTableCellClicked(int row, int col, QTableWidget* table,  QChart* chartTS, QChart* chartSpec);
+   QVector<QVector<double>> readLoadTextFile(const QString &filePath);
 
 public:
 
 };
 
-#endif // RESULT_MONITORING_WIDGET_H
+#endif // RESULT_DISPLAY_WIDGET_H

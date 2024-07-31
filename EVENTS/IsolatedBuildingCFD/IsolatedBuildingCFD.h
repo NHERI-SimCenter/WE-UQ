@@ -55,6 +55,7 @@ class SimCenterVTKRenderingWidget;
 class NumericalSetupWidget;
 class WindCharacteristicsWidget;
 class ResultMonitoringWidget;
+class ResultDisplayWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -113,6 +114,10 @@ public:
     int numberOfFloors();
 
     double geometricScale();
+    double baseLoadSamplingTime();
+    double storyLoadSamplingTime();
+    double pressureSamplingTime();
+
     double windDirection();
     QString buildingShape();
 
@@ -177,6 +182,7 @@ private:
    BoundaryConditionsWidget     *boundaryConditions;
    NumericalSetupWidget         *numericalSetup;
    ResultMonitoringWidget       *resultMonitoring;
+   ResultDisplayWidget          *resultDisplay;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
