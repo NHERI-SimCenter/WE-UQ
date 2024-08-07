@@ -8,18 +8,17 @@
 #include <QThread>
 #include <QObject>
 #include <QDebug>
-
-#include <AgaveCurl.h>
-#include <WorkflowAppWE.h>
-
 #include <QTime>
 #include <QTextStream>
 #include <GoogleAnalytics.h>
 #include <QStandardPaths>
 #include <QDir>
-#include <SimCenterPreferences.h>
 #include <QStatusBar>
 #include <QWebEngineView>
+
+#include <TapisV3.h>
+#include <WorkflowAppWE.h>
+#include <SimCenterPreferences.h>
 
 #include <stdlib.h>
 
@@ -125,10 +124,12 @@ int main(int argc, char *argv[])
     //
 
     QString tenant("designsafe");
-    QString storage("agave://designsafe.storage.default/");
+    // QString storage("agave://designsafe.storage.default/");
+    QString storage("designsafe.storage.default/");        
     QString dirName("WE-UQ");
 
-    AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage, &dirName);
+    // AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage, &dirName);
+    TapisV3 *theRemoteService = new TapisV3(tenant, storage, &dirName);        
 
 
     //
