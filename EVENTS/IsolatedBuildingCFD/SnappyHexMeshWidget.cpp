@@ -358,7 +358,7 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     surfaceName->setEnabled(false);
 
     surfaceRefinementLevel = new QSpinBox();
-    surfaceRefinementLevel->setRange(numRows + 1, 100);
+    surfaceRefinementLevel->setRange(numRows, 100);
     surfaceRefinementLevel->setSingleStep(1);
 
     surfaceRefinementDistance = new QLineEdit();
@@ -414,7 +414,8 @@ SnappyHexMeshWidget::SnappyHexMeshWidget( IsolatedBuildingCFD *parent)
     refinementEdgeName->setEnabled(false);
 
     edgeRefinementLevel = new QSpinBox();
-    edgeRefinementLevel->setRange(numRows + 3, 100);
+//    edgeRefinementLevel->setRange(numRows + 3, 100);
+    edgeRefinementLevel->setRange(numRows + 2, 100);
     edgeRefinementLevel->setSingleStep(1);
 
     edgeRefinementMeshSize = new QLineEdit();
@@ -1034,8 +1035,8 @@ void SnappyHexMeshWidget::onAddRegionClicked()
 {
     refinementBoxesTable->insertRow(refinementBoxesTable->rowCount());
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount(), 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
 }
 
 void SnappyHexMeshWidget::onRemoveRegionClicked()
@@ -1050,8 +1051,8 @@ void SnappyHexMeshWidget::onRemoveRegionClicked()
         }
     }
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount(), 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
 }
 
 void SnappyHexMeshWidget::onNumberOfCellsChanged()
@@ -1074,6 +1075,6 @@ void SnappyHexMeshWidget::onMeshSizeChanged()
     surfaceRefinementMeshSize->setText(QString::number(meshSize/qPow(2, surfaceRefinementLevel->value())));
     prismLayerMeshSize->setText(QString::number(meshSize/qPow(2, edgeRefinementLevel->value())/numberOfPrismLayers->value()));
 
-    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
-    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 2, 100);
+    surfaceRefinementLevel->setRange(refinementBoxesTable->rowCount(), 100);
+    edgeRefinementLevel->setRange(refinementBoxesTable->rowCount() + 1, 100);
 }

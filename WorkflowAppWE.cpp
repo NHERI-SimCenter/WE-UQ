@@ -96,6 +96,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <GoogleAnalytics.h>
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
+#include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -227,10 +228,11 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
 //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
-  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+  QString empAppName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
 
-  QList<QString> queues; queues << "normal" << "fast";
-  SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
+  QList<QString> empQueues;
+  empQueues << "normal" << "fast";
+  SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(empAppName, empQueues, theRemoteService, theEmptyDomain, theToolDialog);
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
   
   // Set the path to the input file
@@ -242,6 +244,31 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
         theEmp->initialize();
     }
   });
+
+
+  //
+  // Add Isolated Building CFD Model Tools
+  //
+  IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs);
+  //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
+  //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
+  QString isoAppName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+
+  QList<QString> isoQueues;
+  isoQueues << "normal" << "fast";
+  SC_RemoteAppTool *theIsoBldgTool = new SC_RemoteAppTool(isoAppName, isoQueues, theRemoteService, theIsoBldg, theToolDialog);
+  theToolDialog->addTool(theIsoBldgTool, "Isolated Building CFD Simulation");
+
+  // Set the path to the input file
+  QAction *showIsoBldg = toolsMenu->addAction("&CFD - Isolated Building Wind Load Simulation");
+  connect(showIsoBldg, &QAction::triggered, this, [this, theDialog=theToolDialog, theIsoBldg=theIsoBldg] {
+      theDialog->showTool("Isolated Building CFD Simulation");
+      if(!theIsoBldg->isInitialize())
+      {
+          theIsoBldg->initialize();
+      }
+  });
+
 
   //
   // Add SimpleTest Example
