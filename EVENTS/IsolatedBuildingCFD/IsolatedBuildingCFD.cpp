@@ -624,7 +624,25 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
 
     if (!newCaseDir.exists())
     {
-       return;
+
+       QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+       QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+                                                    + "LocalWorkDir" + QDir::separator()
+                                                    + "IsolatedBuildingCFD");
+       workingDir.mkpath(workingDirPath);
+
+       caseDirectoryPathWidget->setText(workingDirPath);
+
+       if(!isCaseConfigured())
+       {
+           setupCase();
+       }
+
+       if (!isMeshed())
+       {
+           snappyHexMesh->onRunBlockMeshClicked();
+       }
     }
 
     caseDirectoryPathWidget->setText(fileName);
@@ -683,6 +701,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
                                                      + "LocalWorkDir" + QDir::separator()
                                                      + "IsolatedBuildingCFD");
         workingDir.mkpath(workingDirPath);
+
         caseDirectoryPathWidget->setText(workingDirPath);
 
         if(!isCaseConfigured())
