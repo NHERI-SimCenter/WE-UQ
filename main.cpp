@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("3.3.1");
+    QCoreApplication::setApplicationVersion("4.0.0");
 
     Q_INIT_RESOURCE(images1);
 
@@ -162,8 +162,8 @@ int main(int argc, char *argv[])
     QString manualURL("https://nheri-simcenter.github.io/WE-UQ-Documentation/");
     w.setDocumentationURL(manualURL);
 
-    QString messageBoardURL("https://simcenter-messageboard.designsafe-ci.org/smf/index.php?board=5.0");
-    w.setFeedbackURL(messageBoardURL);
+    //    QString messageBoardURL("https://simcenter-messageboard.designsafe-ci.org/smf/index.php?board=5.0");
+    QString messageBoardURL("https://github.com/orgs/NHERI-SimCenter/discussions/categories/we-uq");      w.setFeedbackURL(messageBoardURL);
 
     //
     // move remote interface to a thread
