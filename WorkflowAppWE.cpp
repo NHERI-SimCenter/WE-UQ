@@ -225,12 +225,19 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
-//    QString appName = "simcenter-weuq-empty-domain-1.0.0";
-//  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
-  QString appName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+  QString appName = "simcenter-weuq-cfd-frontera";
+  QString appVersion = "1.0.0";
+  QString machine = "frontera";      
 
   QList<QString> queues; queues << "normal" << "fast";
-  SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName, queues, theRemoteService, theEmptyDomain, theToolDialog);
+  SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName,
+							      appVersion,
+							      machine,
+							      queues,
+							      theRemoteService,
+							      theEmptyDomain,
+							      theToolDialog);
+  
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
   
   // Set the path to the input file
