@@ -183,8 +183,12 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numStories->setMinimum(1);
     numStories->setMaximum(1000);
     numStories->setValue(60);
-    numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
+
+    if(!mainModel->isLaunchedAsTool)
+    {
+        numStories->setEnabled(false);
+    }
 
     floorHeight = new QLineEdit();
     floorHeight->setEnabled(false);
@@ -308,13 +312,16 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
 
+    if (!mainModel->isLaunchedAsTool)
+    {
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
+            [=] (int nFl, double ht) {
+             numStories->setValue(nFl);
+             floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+        });
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
-	    [=] (int nFl, double ht) {
-         numStories->setValue(nFl);
-         floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
-	});
+    }
 
 }
 

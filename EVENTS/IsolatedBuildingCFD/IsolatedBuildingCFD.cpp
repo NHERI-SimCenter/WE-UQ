@@ -85,10 +85,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <Qt3DRender/QMesh>
 
 
-IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
-
+    this->isLaunchedAsTool = isLaunchedAsTool;
 }
 
 bool IsolatedBuildingCFD::initialize()
@@ -383,11 +383,14 @@ bool IsolatedBuildingCFD::initialize()
 
     caseInitialized = true;
 
-    //Update the GI Tabe once the data is read
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    if (!isLaunchedAsTool)
+    {
+        //Update the GI Tabe once the data is read
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        theGI->setLengthUnit("m");
+        theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+        theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    }
 
     this->adjustSize();
 
@@ -739,13 +742,16 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
     reloadMesh();
+//    isLaunchedAsTool = jsonObject["isLaunchedAsTool"].toBool();
 
-    //Update the GI Tabe once the data is read
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
-
+    if (!isLaunchedAsTool)
+    {
+        //Update the GI Tabe once the data is read
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        theGI->setLengthUnit("m");
+        theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+        theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    }
     return true;
 }
 
@@ -754,6 +760,7 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject["EventClassification"] = "Wind";
     jsonObject["type"] = "IsolatedBuildingCFD";
+    jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
 
     jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
     jsonObject["OpenFoamVersion"] = openFoamVersion->currentText();
@@ -785,6 +792,8 @@ bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
     jsonObject["EventClassification"]="Wind";
     jsonObject["Application"] = "IsolatedBuildingCFD";
+    jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
+
     QJsonObject dataObj;
     jsonObject["ApplicationData"] = dataObj;
 

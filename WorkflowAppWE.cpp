@@ -228,10 +228,12 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
 //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
-  QString empAppName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+//  QString empAppName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+  QString empAppName = "simcenter-weuq-openfoam-frontera";
 
   QList<QString> empQueues;
-  empQueues << "normal" << "fast";
+  empQueues << "small";
+//  empQueues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(empAppName, empQueues, theRemoteService, theEmptyDomain, theToolDialog);
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
   
@@ -249,10 +251,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
   // Add Isolated Building CFD Model Tools
   //
-  IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs);
+  IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
   //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
   //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
-  QString isoAppName = "simcenter-weuq-empty-domain-stampede3-1.0.1u1";
+  QString isoAppName = "simcenter-weuq-openfoam-frontera";
 
   QList<QString> isoQueues;
   isoQueues << "normal" << "fast";

@@ -73,7 +73,7 @@ class IsolatedBuildingCFD : public SimCenterAppWidget
     Q_OBJECT
 
 public:
-    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool=false, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
     //Methods
@@ -132,6 +132,8 @@ public:
     double getTimeStep();
 
     vtkPolyData* getBldgBlock();
+
+    bool isLaunchedAsTool = false;
 
 signals:
 
@@ -193,7 +195,6 @@ private:
    QString      workingDirPath;
 
    bool caseInitialized = false;
-
 };
 
 #endif // ISOLATED_BUILDING_CFD_H
