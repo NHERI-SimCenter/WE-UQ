@@ -257,13 +257,19 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add Isolated Building CFD Model Tools
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
-  //    QString appName = "simcenter-weuq-empty-domain-1.0.0";
-  //  QString appName = "simcenter-weuq-empty-domain-1.0.1u1";
   QString isoAppName = "simcenter-weuq-openfoam-frontera";
-
+  QString isoAppVersion = "1.0.0";
+  QString isoMachine = "frontera";
   QList<QString> isoQueues;
+
   isoQueues << "normal" << "fast";
-  SC_RemoteAppTool *theIsoBldgTool = new SC_RemoteAppTool(isoAppName, isoQueues, theRemoteService, theIsoBldg, theToolDialog);
+  SC_RemoteAppTool *theIsoBldgTool = new SC_RemoteAppTool(isoAppName,
+                                                          isoAppVersion,
+                                                          isoMachine,
+                                                          isoQueues,
+                                                          theRemoteService,
+                                                          theIsoBldg,
+                                                          theToolDialog);
   theToolDialog->addTool(theIsoBldgTool, "Isolated Building CFD Simulation");
 
   // Set the path to the input file
