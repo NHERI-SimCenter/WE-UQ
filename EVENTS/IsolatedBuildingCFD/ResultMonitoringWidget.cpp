@@ -119,6 +119,10 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 {
     layout = new QVBoxLayout();
 
+    monitorIntegratedLoadsGroup = new QGroupBox("Integrated Loads");
+    monitorIntegratedLoadsLayout = new QGridLayout();
+    monitorIntegratedLoadsGroup->setLayout(monitorIntegratedLoadsLayout);
+
     monitorBaseLoadGroup = new QGroupBox("Base Loads");
     monitorBaseLoadLayout = new QGridLayout();
     monitorBaseLoadGroup->setLayout(monitorBaseLoadLayout);
@@ -179,8 +183,12 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     numStories->setMinimum(1);
     numStories->setMaximum(1000);
     numStories->setValue(60);
-    numStories->setEnabled(false);
     numStories->setToolTip("Number of stories in the building");
+
+    if(!mainModel->isLaunchedAsTool)
+    {
+        numStories->setEnabled(false);
+    }
 
     floorHeight = new QLineEdit();
     floorHeight->setEnabled(false);
@@ -191,12 +199,11 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorBaseLoad->setToolTip("Monitor overall wind load at the base of the building");
 
 
-    monitorBaseLoadLayout->addWidget(monitorBaseLoadLabel, 0, 0);
-    monitorBaseLoadLayout->addWidget(monitorBaseLoad, 0, 1);
-    monitorBaseLoadLayout->addWidget(baseLoadWriteIntervalLabel, 1, 0);
-    monitorBaseLoadLayout->addWidget(baseLoadWriteInterval, 1, 1);
-    baseLoadWriteInterval->setMinimumWidth(250);
-    monitorBaseLoadLayout->setAlignment(Qt::AlignLeft);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoadLabel, 0, 0, Qt::AlignTop);
+    monitorBaseLoadLayout->addWidget(monitorBaseLoad, 0, 1, Qt::AlignTop);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteIntervalLabel, 1, 0, Qt::AlignTop);
+    monitorBaseLoadLayout->addWidget(baseLoadWriteInterval, 1, 1, Qt::AlignTop);
+
 
     monitorStoryLoadLayout->addWidget(floorHeightOptionsLabel, 0, 0);
     monitorStoryLoadLayout->addWidget(floorHeightOptions, 0, 1, 1, 4);
@@ -206,12 +213,14 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorStoryLoadLayout->addWidget(floorHeight, 2, 1, 1, 4);
     monitorStoryLoadLayout->addWidget(storyLoadWriteIntervalLabel, 3, 0);
     monitorStoryLoadLayout->addWidget(storyLoadWriteInterval, 3, 1, 1, 4);
-    storyLoadWriteInterval->setMinimumWidth(250);
     monitorStoryLoadLayout->setAlignment(Qt::AlignLeft);
 
 
-    layout->addWidget(monitorBaseLoadGroup);
-    layout->addWidget(monitorStoryLoadGroup);
+    monitorIntegratedLoadsLayout->addWidget(monitorBaseLoadGroup, 0, 0, Qt::AlignTop);
+    monitorIntegratedLoadsLayout->addWidget(monitorStoryLoadGroup, 0, 1);
+
+
+    layout->addWidget(monitorIntegratedLoadsGroup);
 
     //==================================================================
     //              Monitor Local Pressure
@@ -303,13 +312,16 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(showCoordinateOfPoints, SIGNAL(clicked()), this, SLOT(onShowCoordinateOfPointsClicked()));
     connect(openCSVFile, SIGNAL(clicked()), this, SLOT(onOpenCSVFileClicked()));
 
+    if (!mainModel->isLaunchedAsTool)
+    {
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
+            [=] (int nFl, double ht) {
+             numStories->setValue(nFl);
+             floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
+        });
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged,
-	    [=] (int nFl, double ht) {
-         numStories->setValue(nFl);
-         floorHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->numberOfFloors()/mainModel->geometricScale()));
-	});
+    }
 
 }
 

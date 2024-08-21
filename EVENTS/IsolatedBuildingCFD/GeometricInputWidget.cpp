@@ -256,11 +256,14 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     connect(importSTLButton, SIGNAL(clicked()), this, SLOT(onImportSTLButtonClicked()));
     connect(generateBuildingSTL, SIGNAL(clicked()), this, SLOT(onGenerateBuildingSTL()));
 
-    //Disable editing in the event section
-    buildingWidthWidget->setEnabled(false);
-    buildingHeightWidget->setEnabled(false);
-    buildingDepthWidget->setEnabled(false);
+    //Disable editing in the event section if the whole workflow is used
 
+    if(!mainModel->isLaunchedAsTool)
+    {
+        buildingWidthWidget->setEnabled(false);
+        buildingHeightWidget->setEnabled(false);
+        buildingDepthWidget->setEnabled(false);
+    }
 
     initializeImportSTLDialog();
 
@@ -268,19 +271,22 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     // Sync with general information tab
     //=====================================================
 
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+    if(!mainModel->isLaunchedAsTool)
+    {
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
 
 
-    connect(theGI, &GeneralInformationWidget::buildingDimensionsChanged ,
-            [=] (double width, double depth, double area) {
-                buildingWidthWidget->setText(QString::number(convertToMeter(width, theGI->getLengthUnit())));
-                buildingDepthWidget->setText(QString::number(convertToMeter(depth, theGI->getLengthUnit())));
-            });
+        connect(theGI, &GeneralInformationWidget::buildingDimensionsChanged ,
+                [=] (double width, double depth, double area) {
+                    buildingWidthWidget->setText(QString::number(convertToMeter(width, theGI->getLengthUnit())));
+                    buildingDepthWidget->setText(QString::number(convertToMeter(depth, theGI->getLengthUnit())));
+                });
 
-    connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged ,
-            [=] (int nFloors, double height) {
-                buildingHeightWidget->setText(QString::number(convertToMeter(height, theGI->getLengthUnit())));
-            });
+        connect(theGI, &GeneralInformationWidget::numStoriesOrHeightChanged ,
+                [=] (int nFloors, double height) {
+                    buildingHeightWidget->setText(QString::number(convertToMeter(height, theGI->getLengthUnit())));
+                });
+    }
 
     layout->addWidget(dimAndScaleGroup);
     layout->addWidget(buildingTypeGroup);

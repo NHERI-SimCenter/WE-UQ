@@ -46,6 +46,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "NumericalSetupWidget.h"
 #include "WindCharacteristicsWidget.h"
 #include "ResultMonitoringWidget.h"
+#include "ResultDisplayWidget.h"
 #include <qcustomplot.h>
 #include <QPushButton>
 #include <QScrollArea>
@@ -84,10 +85,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <Qt3DRender/QMesh>
 
 
-IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
+IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool, QWidget *parent)
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
-
+    this->isLaunchedAsTool = isLaunchedAsTool;
 }
 
 bool IsolatedBuildingCFD::initialize()
@@ -135,8 +136,8 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionLayout = new QGridLayout();
 
 
-    cfdResultsGroup = new QGroupBox("CFD Results", this);
-    cfdResultsLayout = new QGridLayout();
+//    cfdResultsGroup = new QGroupBox("CFD Results", this);
+//    cfdResultsLayout = new QGridLayout();
 
 
     QLabel *casePathLabel = new QLabel("Path: ");
@@ -255,7 +256,7 @@ bool IsolatedBuildingCFD::initialize()
     openFoamVersionGroup->setLayout(openFoamVersionLayout);
     unitSystemGroup->setLayout(unitSystemLayout);
     caseDirectoryGroup->setLayout(caseDirectoryLayout);
-    cfdResultsGroup->setLayout(cfdResultsLayout);
+//    cfdResultsGroup->setLayout(cfdResultsLayout);
 
     generalWidget->setLayout(startLayout);
     geometryWidget->setLayout(geometryLayout);
@@ -286,6 +287,9 @@ bool IsolatedBuildingCFD::initialize()
     //Add result monitoring widget
     resultMonitoring = new ResultMonitoringWidget(this);
 
+    //Add result display widget
+    resultDisplay = new ResultDisplayWidget(this);
+
     //Populate each tab
     startLayout->addWidget(generalDescriptionGroup);
     startLayout->addWidget(caseDirectoryGroup);
@@ -311,7 +315,7 @@ bool IsolatedBuildingCFD::initialize()
     monitoringLayout->addWidget(resultMonitoring);
     monitoringLayout->addStretch();
 
-    resultsLayout->addWidget(cfdResultsGroup);
+    resultsLayout->addWidget(resultDisplay);
     resultsLayout->addStretch();
 
     inputTab->addTab(generalWidget, "Start");
@@ -340,10 +344,10 @@ bool IsolatedBuildingCFD::initialize()
     plotWindProfiles->setEnabled(false);
     plotWindLoads->setEnabled(false);
 
-    cfdResultsLayout->addWidget(plotWindProfiles);
-    cfdResultsLayout->addWidget(plotWindLoads);
+//    cfdResultsLayout->addWidget(plotWindProfiles);
+//    cfdResultsLayout->addWidget(plotWindLoads);
 
-    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
+//    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
     connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
@@ -379,11 +383,14 @@ bool IsolatedBuildingCFD::initialize()
 
     caseInitialized = true;
 
-    //Update the GI Tabe once the data is read
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    if (!isLaunchedAsTool)
+    {
+        //Update the GI Tabe once the data is read
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        theGI->setLengthUnit("m");
+        theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+        theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    }
 
     this->adjustSize();
 
@@ -620,7 +627,25 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
 
     if (!newCaseDir.exists())
     {
-       return;
+
+       QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+       QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+                                                    + "LocalWorkDir" + QDir::separator()
+                                                    + "IsolatedBuildingCFD");
+       workingDir.mkpath(workingDirPath);
+
+       caseDirectoryPathWidget->setText(workingDirPath);
+
+       if(!isCaseConfigured())
+       {
+           setupCase();
+       }
+
+       if (!isMeshed())
+       {
+           snappyHexMesh->onRunBlockMeshClicked();
+       }
     }
 
     caseDirectoryPathWidget->setText(fileName);
@@ -679,6 +704,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
                                                      + "LocalWorkDir" + QDir::separator()
                                                      + "IsolatedBuildingCFD");
         workingDir.mkpath(workingDirPath);
+
         caseDirectoryPathWidget->setText(workingDirPath);
 
         if(!isCaseConfigured())
@@ -716,13 +742,16 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
     reloadMesh();
+//    isLaunchedAsTool = jsonObject["isLaunchedAsTool"].toBool();
 
-    //Update the GI Tabe once the data is read
-    GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
-    theGI->setLengthUnit("m");
-    theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
-    theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
-
+    if (!isLaunchedAsTool)
+    {
+        //Update the GI Tabe once the data is read
+        GeneralInformationWidget *theGI = GeneralInformationWidget::getInstance();
+        theGI->setLengthUnit("m");
+        theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
+        theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
+    }
     return true;
 }
 
@@ -731,6 +760,7 @@ bool IsolatedBuildingCFD::outputToJSON(QJsonObject &jsonObject)
 
     jsonObject["EventClassification"] = "Wind";
     jsonObject["type"] = "IsolatedBuildingCFD";
+    jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
 
     jsonObject["caseDirectoryPath"] = caseDirectoryPathWidget->text();
     jsonObject["OpenFoamVersion"] = openFoamVersion->currentText();
@@ -760,10 +790,15 @@ bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
     // and all data to be used in ApplicationDate
     //
 
-    jsonObject["EventClassification"]="Wind";
-    jsonObject["Application"] = "IsolatedBuildingCFD";
-    QJsonObject dataObj;
-    jsonObject["ApplicationData"] = dataObj;
+    if(!isLaunchedAsTool)
+    {
+        jsonObject["EventClassification"]="Wind";
+        jsonObject["Application"] = "IsolatedBuildingCFD";
+        jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
+
+        QJsonObject dataObj;
+        jsonObject["ApplicationData"] = dataObj;
+    }
 
     return true;
 }
@@ -997,6 +1032,21 @@ double IsolatedBuildingCFD::geometricScale()
 double IsolatedBuildingCFD::windDirection()
 {
     return geometry->windDirectionWidget->text().toDouble();
+}
+
+double IsolatedBuildingCFD::baseLoadSamplingTime()
+{
+    return resultMonitoring->baseLoadWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
+}
+
+double IsolatedBuildingCFD::storyLoadSamplingTime()
+{
+    return resultMonitoring->storyLoadWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
+}
+
+double IsolatedBuildingCFD::pressureSamplingTime()
+{
+    return resultMonitoring->pressureWriteInterval->text().toDouble()*numericalSetup->timeStep->text().toDouble();
 }
 
 QString IsolatedBuildingCFD::buildingShape()

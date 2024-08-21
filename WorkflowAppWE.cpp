@@ -96,6 +96,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <GoogleAnalytics.h>
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
+#include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -225,6 +226,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
+
   QString appName = "simcenter-weuq-cfd-frontera";
   QString appVersion = "1.0.0";
   QString machine = "frontera";      
@@ -249,6 +251,37 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
         theEmp->initialize();
     }
   });
+
+
+  //
+  // Add Isolated Building CFD Model Tools
+  //
+  IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
+  QString isoAppName = "simcenter-weuq-cfd-frontera";
+  QString isoAppVersion = "1.0.0";
+  QString isoMachine = "frontera";
+  QList<QString> isoQueues;
+
+  isoQueues << "normal" << "fast";
+  SC_RemoteAppTool *theIsoBldgTool = new SC_RemoteAppTool(isoAppName,
+                                                          isoAppVersion,
+                                                          isoMachine,
+                                                          isoQueues,
+                                                          theRemoteService,
+                                                          theIsoBldg,
+                                                          theToolDialog);
+  theToolDialog->addTool(theIsoBldgTool, "Isolated Building CFD Simulation");
+
+  // Set the path to the input file
+  QAction *showIsoBldg = toolsMenu->addAction("&CFD - Isolated Building Wind Load Simulation");
+  connect(showIsoBldg, &QAction::triggered, this, [this, theDialog=theToolDialog, theIsoBldg=theIsoBldg] {
+      theDialog->showTool("Isolated Building CFD Simulation");
+      if(!theIsoBldg->isInitialize())
+      {
+          theIsoBldg->initialize();
+      }
+  });
+
 
   //
   // Add SimpleTest Example

@@ -90,6 +90,9 @@ private:
 
    QVBoxLayout          *layout;
 
+   QGroupBox            *monitorIntegratedLoadsGroup;
+   QGridLayout          *monitorIntegratedLoadsLayout;
+
    QGroupBox            *monitorBaseLoadGroup;
    QGridLayout          *monitorBaseLoadLayout;
 

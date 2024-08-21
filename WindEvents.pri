@@ -32,6 +32,7 @@ SOURCES += \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.cpp \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultDisplayWidget.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyDomainCFD.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyVTKRendering.cpp \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyGeometricInput.cpp \
@@ -109,6 +110,7 @@ HEADERS  += \
     $$PWD/EVENTS/IsolatedBuildingCFD/NumericalSetupWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/WindCharacteristicsWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/ResultMonitoringWidget.h \
+    $$PWD/EVENTS/IsolatedBuildingCFD/ResultDisplayWidget.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyDomainCFD.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyVTKRendering.h \
     $$PWD/EVENTS/EmptyDomainCFD/EmptyGeometricInput.h \

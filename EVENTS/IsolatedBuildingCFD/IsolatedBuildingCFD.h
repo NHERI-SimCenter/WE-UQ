@@ -55,6 +55,7 @@ class SimCenterVTKRenderingWidget;
 class NumericalSetupWidget;
 class WindCharacteristicsWidget;
 class ResultMonitoringWidget;
+class ResultDisplayWidget;
 class QVBoxLayout;
 class QHBoxLayout;
 class QSpinBox;
@@ -72,7 +73,7 @@ class IsolatedBuildingCFD : public SimCenterAppWidget
     Q_OBJECT
 
 public:
-    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent = 0);
+    explicit IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool=false, QWidget *parent = 0);
     ~IsolatedBuildingCFD();
 
     //Methods
@@ -113,6 +114,10 @@ public:
     int numberOfFloors();
 
     double geometricScale();
+    double baseLoadSamplingTime();
+    double storyLoadSamplingTime();
+    double pressureSamplingTime();
+
     double windDirection();
     QString buildingShape();
 
@@ -127,6 +132,8 @@ public:
     double getTimeStep();
 
     vtkPolyData* getBldgBlock();
+
+    bool isLaunchedAsTool = false;
 
 signals:
 
@@ -146,8 +153,8 @@ private:
    QVBoxLayout          *visWindowLayout;
    QGroupBox            *visWindowGroup;
 
-   QGroupBox            *cfdResultsGroup;
-   QGridLayout          *cfdResultsLayout;
+//   QGroupBox            *cfdResultsGroup;
+//   QGridLayout          *cfdResultsLayout;
 
    QWidget              *femSpecific;
    QLineEdit            *caseDirectoryPathWidget;
@@ -177,6 +184,7 @@ private:
    BoundaryConditionsWidget     *boundaryConditions;
    NumericalSetupWidget         *numericalSetup;
    ResultMonitoringWidget       *resultMonitoring;
+   ResultDisplayWidget          *resultDisplay;
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
@@ -187,7 +195,6 @@ private:
    QString      workingDirPath;
 
    bool caseInitialized = false;
-
 };
 
 #endif // ISOLATED_BUILDING_CFD_H
