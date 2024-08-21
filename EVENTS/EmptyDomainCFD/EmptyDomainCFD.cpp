@@ -599,17 +599,12 @@ bool EmptyDomainCFD::outputToJSON(QJsonObject &jsonObject)
 
 bool EmptyDomainCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
 
-    //
-    // per API, need to add name of application to be called in AppLication
-    // and all data to be used in ApplicationDate
-    //
+  //
+  // per API, need to add name of application to be called in AppLication
+  // and all data to be used in ApplicationDate
+  //
 
-//    jsonObject["EventClassification"]="Wind";
-//    jsonObject["Application"] = "EmptyDomainCFD";
-//    QJsonObject dataObj;
-//    jsonObject["ApplicationData"] = dataObj;
-
-    return true;
+  return true;
 }
 
 
