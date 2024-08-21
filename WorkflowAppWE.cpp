@@ -227,7 +227,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 
-  QString appName = "simcenter-weuq-cfd-frontera";
+  QString appName = "simcenter-weuq-openfoam-frontera";
   QString appVersion = "1.0.0";
   QString machine = "frontera";      
 

@@ -790,12 +790,15 @@ bool IsolatedBuildingCFD::outputAppDataToJSON(QJsonObject &jsonObject) {
     // and all data to be used in ApplicationDate
     //
 
-    jsonObject["EventClassification"]="Wind";
-    jsonObject["Application"] = "IsolatedBuildingCFD";
-    jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
+    if(!isLaunchedAsTool)
+    {
+        jsonObject["EventClassification"]="Wind";
+        jsonObject["Application"] = "IsolatedBuildingCFD";
+        jsonObject["isLaunchedAsTool"] = isLaunchedAsTool;
 
-    QJsonObject dataObj;
-    jsonObject["ApplicationData"] = dataObj;
+        QJsonObject dataObj;
+        jsonObject["ApplicationData"] = dataObj;
+    }
 
     return true;
 }
