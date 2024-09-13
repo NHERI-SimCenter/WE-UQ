@@ -683,26 +683,26 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
         QString localFoamPath = "/home/openfoam";
         QString dockerImage = "openfoam/openfoam10-paraview510";
 
-	QDir homeDir(QDir::homePath());
-	QString sourceBash("");
-	if (homeDir.exists(".bash_profile")) {
-	  sourceBash = QString("source $HOME/.bash_profile; ");
-	} else if (homeDir.exists(".bashrc")) {
-	  sourceBash = QString("source $HOME/.bashrc; ");
-	} else if (homeDir.exists(".zprofile")) {
-	  sourceBash = QString("source $HOME/.zprofile; ");
-	} else if (homeDir.exists(".zshrc")) {
-	  sourceBash = QString("source $HOME/.zshrc; ");
-	} else
-	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
-	
-        commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit\"");
+        QDir homeDir(QDir::homePath());
+        QString sourceBash("");
+        if (homeDir.exists(".bash_profile")) {
+          sourceBash = QString("source $HOME/.bash_profile; ");
+        } else if (homeDir.exists(".bashrc")) {
+          sourceBash = QString("source $HOME/.bashrc; ");
+        } else if (homeDir.exists(".zprofile")) {
+          sourceBash = QString("source $HOME/.zprofile; ");
+        } else if (homeDir.exists(".zshrc")) {
+          sourceBash = QString("source $HOME/.zshrc; ");
+        } else
+          this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 
-	qDebug() << commands;
-	
-        //Actual command on the terminal
-        //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit"
+            commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
+                       +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit\"");
+
+        qDebug() << commands;
+
+            //Actual command on the terminal
+            //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit"
 
     #else
 

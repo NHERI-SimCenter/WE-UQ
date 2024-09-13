@@ -622,7 +622,16 @@ bool SurroundedBuildingCFD::copyFiles(QString &destDir) {
 
      QString caseName = "SurroundedBuildingCFD";
 
-     bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
+     //Copy each directory in the OF case directory
+     QStringList foamDirs = {"constant", "system", "0"};
+
+     bool copyResults  = true;
+
+     for(QString dir:foamDirs)
+     {
+        qDebug() << "Copying " << dir;
+        copyResults *= this->copyPath(caseDir() + QDir::separator() + dir, destDir + QDir::separator() + caseName + QDir::separator() + dir, false);
+     }
 
      //Remove the 'constant/polyMesh' directory
      // Makes it slow to transfer the mesh to DesignSafe
@@ -630,13 +639,13 @@ bool SurroundedBuildingCFD::copyFiles(QString &destDir) {
      QDir polyMeshDir(destDir + QDir::separator() + caseName + QDir::separator() + "constant" + QDir::separator() + "polyMesh");
      polyMeshDir.removeRecursively();
 
-     if (result == false) {
+     if (copyResults == false) {
          QString errorMessage; errorMessage = "SurroundedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;
          emit sendFatalMessage(errorMessage);
          qDebug() << errorMessage;
      }
 
-     return result;
+     return copyResults;
  }
 
 bool SurroundedBuildingCFD::cleanCase()
