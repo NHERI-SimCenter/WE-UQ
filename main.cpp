@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Sang-ri Yi, Michael Gardner, & Wael Elhaddad. (2024). NHERI-SimCenter/WE-UQ: Version 3.4.0 (v3.4.0). Zenodo. https://doi.org/10.5281/zenodo.11406484 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Sang-ri Yi, Michael Gardner, & Wael Elhaddad. (2024). NHERI-SimCenter/WE-UQ: Version 4.0.0 (v4.0.0). Zenodo. https://doi.org/10.5281/zenodo.13356549 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
     
     w.setCite(citeText);
 
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 
     //Setting Google Analytics Tracking Information
     
-    /* *********************************************************************** 
+#ifdef _SC_RELEASE
     GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
     GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
     GoogleAnalytics::CreateSessionId();
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
     view.show();
     view.hide();
     
-    *********************************************************************** */
+#endif
     
     //
     // RUN the GUI

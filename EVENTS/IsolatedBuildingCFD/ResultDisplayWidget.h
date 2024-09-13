@@ -64,6 +64,7 @@ class QDoubleSpinBox;
 class QLabel;
 class QRadioButton;
 class QRadioButton;
+class IsolatedBuildingCFD;
 
 class ResultDisplayWidget: public SC_ResultsWidget
 {
