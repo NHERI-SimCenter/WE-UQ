@@ -308,6 +308,44 @@
       },
       "tags": [
       ]
+    },
+    "weuq-0017": {
+      "id": "weuq-0017",
+      "base": "weuq-0017",
+      "title": "Digital Wind Tunnel III: Wind Loads on a Building with Surroundings",
+      "doc": [
+          "weuq-0017/figures/we17_surrounded_building_demo.png",
+          "weuq-0017/README.rst",   
+          "weuq-0017/figures/we17_EDP_panel.svg",
+          "weuq-0017/figures/we17_EVT_BoundaryConditions.svg",
+          "weuq-0017/figures/we17_EVT_Geometry_tab.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_EdgeRefinement_tab.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_RegionalRefinement_tab.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_Run.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_SurfaceRefinement_tab.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_View.svg",
+          "weuq-0017/figures/we17_EVT_Mesh_tab.svg",
+          "weuq-0017/figures/we17_EVT_Monitoring.svg",
+          "weuq-0017/figures/we17_EVT_NumericalSetup.svg",
+          "weuq-0017/figures/we17_EVT_Start_tab.svg",
+          "weuq-0017/figures/we17_FEM_panel.svg",
+          "weuq-0017/figures/we17_GI_panel.svg",
+          "weuq-0017/figures/we17_MonitorJob.svg",
+          "weuq-0017/figures/we17_RV_panel.svg",
+          "weuq-0017/figures/we17_RunJob.svg",
+          "weuq-0017/figures/we17_SIM_panel.svg",
+          "weuq-0017/figures/we17_UQ_panel.svg"
+      ],
+      "entry_point": "weuq-0017/./input.json",
+      "summary": "This example demonstrates application of CFD for simulating wind loads on a building with surroundings and estimating the resulting structural responses.",
+      "logo": "we17_surrounded_building_demo.png",
+      "published": "2023-09-12T21:30:53.946381-08:00\"",
+      "categories": {
+        "Difficulty": "0",
+        "Simulation": "OpenSees-Simulation"
+      },
+      "tags": [
+      ]
     }
   },
   "categories": {
