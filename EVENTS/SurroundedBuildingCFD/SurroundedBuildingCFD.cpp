@@ -641,8 +641,8 @@ bool SurroundedBuildingCFD::copyFiles(QString &destDir) {
 
      if (copyResults == false) {
          QString errorMessage; errorMessage = "SurroundedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;
-         emit sendFatalMessage(errorMessage);
          qDebug() << errorMessage;
+         fatalMessage(errorMessage);
      }
 
      return copyResults;

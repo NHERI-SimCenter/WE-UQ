@@ -386,8 +386,9 @@ HighRiseTPU::inputAppDataFromJSON(QJsonObject &jsonObject) {
      bool result = this->copyFile(name1, destDir);
      if (result == false) {
          QString errorMessage; errorMessage = "HighRiseTPU - failed to copy file: " + name1 + "to: " + destDir;
-         emit sendFatalMessage(errorMessage);
-         qDebug() << errorMessage;
+         qDebug() << errorMessage;	 
+         fatalMessage(errorMessage);
+
      }
      return result;
  }

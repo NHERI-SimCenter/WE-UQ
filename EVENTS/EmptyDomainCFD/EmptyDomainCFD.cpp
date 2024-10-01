@@ -670,8 +670,8 @@ bool EmptyDomainCFD::copyFiles(QString &destDir) {
 
      if (copyResults == false) {
          QString errorMessage; errorMessage = "EmptyDomainCFD - failed to copy file: " + caseDir() + " to: " + destDir;
-         emit sendFatalMessage(errorMessage);
-         qDebug() << errorMessage;
+         qDebug() << errorMessage;	
+         fatalMessage(errorMessage); 
      }
 
      return copyResults;
