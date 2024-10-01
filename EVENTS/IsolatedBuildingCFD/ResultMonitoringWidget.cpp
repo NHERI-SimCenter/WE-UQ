@@ -135,6 +135,10 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     monitorPressureLayout = new QGridLayout();
     monitorPressureGroup->setLayout(monitorPressureLayout);
 
+    vtkSampleGroup = new QGroupBox("VTK Planes");
+    vtkSampleLayout = new QGridLayout();
+    vtkSampleGroup->setLayout(vtkSampleLayout);
+
     pressureMonitoringPointsGroup = new QGroupBox("");
     pressureMonitoringPointsLayout = new QGridLayout();
     pressureMonitoringPointsGroup->setLayout(pressureMonitoringPointsLayout);
@@ -300,8 +304,94 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
 
     pressureMonitoringPointsGroup->setEnabled(monitorSurfacePressure->isChecked());
 
+
+
+    //==================================================================
+    //              Sample On Plane
+    //==================================================================
+
+    monitorVTKPlane = new QCheckBox("Sample Flow Field");
+    monitorVTKPlane->setChecked(true);
+    monitorVTKPlane->setToolTip("If checked, monitors flow field on plane i.e. using VTK");
+
+    const int vtkNumCols = 8;
+    const int vtkNumRows = 2;
+
+    vtkSampleTable = new QTableWidget(vtkNumRows, vtkNumCols);
+
+    initializeVTKTable(vtkNumRows);
+
+    for (int i=0; i < vtkNumRows; i++)
+    {
+        vtkSampleTable->item(i, 0)->setText(tr("Plane%1").arg(i + 1));
+    }
+
+    for (int j=0; j < vtkNumRows; j++)
+    {
+        QComboBox* axisName  = new QComboBox();
+        axisName->addItem("X");
+        axisName->addItem("Y");
+        axisName->addItem("Z");
+        axisName->setToolTip("Axis normal to the plane.");
+
+        vtkSampleTable->setCellWidget(j, 1, axisName);
+
+        if(j == 0)
+        {
+            axisName->setCurrentIndex(1);
+        }
+        else
+        {
+            axisName->setCurrentIndex(2);
+        }
+    }
+
+    for (int j=0; j < vtkNumRows; j++)
+    {
+        QComboBox* fieldName  = new QComboBox();
+        fieldName->addItem("Velocity");
+        fieldName->addItem("Pressure");
+        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+        vtkSampleTable->setCellWidget(j, vtkNumCols-1, fieldName);
+    }
+
+    QLabel* vtkWriteIntervalLabel = new QLabel("Flow Write Interval: ");
+    vtkWriteInterval = new QSpinBox();
+    vtkWriteInterval->setSingleStep(10);
+    vtkWriteInterval->setMinimum(1);
+    vtkWriteInterval->setValue(10);
+    vtkWriteInterval->setMaximum(10000);
+    vtkWriteInterval->setEnabled(true);
+    vtkWriteInterval->setToolTip("Writing interval as a multiple of time step for flow field");
+    vtkWriteInterval->setMinimumWidth(100);
+
+    addPlane = new QPushButton("Add Plane");
+    removePlane = new QPushButton("Remove Plane");
+    showPlane = new QPushButton("Show Plane");
+
+
+    vtkSampleLayout->addWidget(monitorVTKPlane, 0, 0);
+    vtkSampleLayout->addWidget(addPlane, 0, 1);
+    vtkSampleLayout->addWidget(removePlane, 0, 2);
+    vtkSampleLayout->addWidget(showPlane, 0, 3);
+    vtkSampleLayout->addWidget(vtkSampleTable, 1, 0, 1, 4);
+    vtkSampleLayout->addWidget(vtkWriteIntervalLabel, 2, 0);
+    vtkSampleLayout->addWidget(vtkWriteInterval, 2, 1, Qt::AlignLeft);
+
+
+    connect(addPlane,SIGNAL(clicked()), this, SLOT(onAddPlaneClicked()));
+    connect(removePlane,SIGNAL(clicked()), this, SLOT(onRemovePlaneClicked()));
+    connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
+    connect(monitorVTKPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
+
+
+
+
+
     layout->addWidget(monitorPressureGroup);
-    
+    layout->addWidget(vtkSampleGroup);
+
     //    layout->addWidget(resultMonitoringGroup);
     this->setLayout(layout);
 
@@ -757,7 +847,6 @@ QList<QVector3D> ResultMonitoringWidget::createSamplingPoints()
 bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
 {
     // Writes wind load monitoring options JSON file.
-
     QJsonObject resMonitoringJson = QJsonObject();
 
     resMonitoringJson["numStories"] = numStories->value();
@@ -800,6 +889,35 @@ bool ResultMonitoringWidget::outputToJSON(QJsonObject &jsonObject)
     resMonitoringJson["generatedPressureSamplingPoints"] = generatedPointsJson;
     resMonitoringJson["importedPressureSamplingPoints"] = importedPointsJson;
 
+
+    resMonitoringJson["monitorVTKPlane"] = monitorVTKPlane->isChecked();
+
+    QJsonArray vtkPlanes;
+    for(int row=0; row < vtkSampleTable->rowCount(); row++)
+    {
+        QJsonObject vtkPlane = QJsonObject();
+
+        vtkPlane["name"] = vtkSampleTable->item(row, 0)->text();
+
+        QComboBox* axisName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 1));
+        vtkPlane["normalAxis"] = axisName->currentText();
+
+        vtkPlane["pointX"] = vtkSampleTable->item(row, 2)->text().toDouble();
+        vtkPlane["pointY"] = vtkSampleTable->item(row, 3)->text().toDouble();
+        vtkPlane["pointZ"] = vtkSampleTable->item(row, 4)->text().toDouble();
+        vtkPlane["startTime"] = vtkSampleTable->item(row, 5)->text().toDouble();
+        vtkPlane["endTime"] = vtkSampleTable->item(row, 6)->text().toDouble();
+
+        QComboBox* fieldName  = dynamic_cast<QComboBox*>(vtkSampleTable->cellWidget(row, 7));
+        vtkPlane["field"] = fieldName->currentText();
+
+        vtkPlanes.append(vtkPlane);
+    }
+    resMonitoringJson["vtkPlanes"] = vtkPlanes;
+
+    resMonitoringJson["vtkWriteInterval"] = vtkWriteInterval->value();
+
+
     jsonObject["resultMonitoring"] = resMonitoringJson;
 
     return true;
@@ -837,6 +955,48 @@ bool ResultMonitoringWidget::inputFromJSON(QJsonObject &jsonObject)
 
     generatedPoints = createSamplingPoints();
     importedPoints = importSamplingPointsCSV();
+
+
+    //Set vtk planes
+    QJsonArray vtkPlanes = resMonitoringJson["vtkPlanes"].toArray();
+    monitorVTKPlane->setChecked(resMonitoringJson["monitorVTKPlane"].toBool());
+    vtkWriteInterval->setValue(resMonitoringJson["vtkWriteInterval"].toInt());
+
+    initializeVTKTable(vtkPlanes.size());
+
+
+    for (int pi = 0; pi < vtkPlanes.size(); pi++)
+    {
+        QJsonObject vtkPlane  = vtkPlanes[pi].toObject();
+
+        vtkSampleTable->item(pi, 0)->setText(vtkPlane["name"].toString());
+
+        QComboBox* axisName  = new QComboBox();
+        axisName->addItem("X");
+        axisName->addItem("Y");
+        axisName->addItem("Z");
+        axisName->setToolTip("Axis normal to the plane.");
+        axisName->setCurrentText(vtkPlane["normalAxis"].toString());
+
+        vtkSampleTable->setCellWidget(pi, 1, axisName);
+
+
+        vtkSampleTable->item(pi, 2)->setText(QString::number(vtkPlane["pointX"].toDouble()));
+        vtkSampleTable->item(pi, 3)->setText(QString::number(vtkPlane["pointY"].toDouble()));
+        vtkSampleTable->item(pi, 4)->setText(QString::number(vtkPlane["pointZ"].toDouble()));
+        vtkSampleTable->item(pi, 5)->setText(QString::number(vtkPlane["startTime"].toDouble()));
+        vtkSampleTable->item(pi, 6)->setText(QString::number(vtkPlane["endTime"].toDouble()));
+
+        QComboBox* fieldName  = new QComboBox();
+        fieldName->addItem("Velocity");
+        fieldName->addItem("Pressure");
+        fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+        fieldName->setCurrentText(vtkPlane["feild"].toString());
+
+        vtkSampleTable->setCellWidget(pi, 7, fieldName);
+    }
+
 
     return true;
 }
@@ -923,3 +1083,82 @@ QList<QVector3D> ResultMonitoringWidget::importSamplingPointsCSV()
     return points;
 }
 
+
+void ResultMonitoringWidget::initializeVTKTable(int numRows)
+{
+    const int vtkNumCols = 8;
+
+    vtkSampleTable->setRowCount(numRows);
+
+    vtkSampleTable->setMaximumHeight(150);
+
+    QStringList vtkTitles = {"Name", "Normal", "point-X", "point-Y", "point-Z", "Start Time", "End Time", "Field"};
+
+    vtkSampleTable->setHorizontalHeaderLabels(vtkTitles);
+
+    for (int i=0; i < vtkNumCols; i++)
+    {
+        vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
+
+        for (int j=0; j < numRows; j++)
+        {
+            vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
+        }
+    }
+}
+
+
+
+void ResultMonitoringWidget::onAddPlaneClicked()
+{
+
+    int rowIndx = vtkSampleTable->rowCount();
+
+    vtkSampleTable->insertRow(rowIndx);
+
+    QComboBox* axisName  = new QComboBox();
+    axisName->addItem("X");
+    axisName->addItem("Y");
+    axisName->addItem("Z");
+    axisName->setToolTip("Axis normal to the plane.");
+    axisName->setCurrentIndex(2);
+
+    QComboBox* fieldName  = new QComboBox();
+    fieldName->addItem("Velocity");
+    fieldName->addItem("Pressure");
+    fieldName->setToolTip("Name of the field to monitor, e.g., velocity or pressure field.");
+
+    //Add VTK plane
+    vtkSampleTable->setItem(rowIndx, 0, new QTableWidgetItem(tr("Plane%1").arg(rowIndx + 1)));
+    vtkSampleTable->setCellWidget(rowIndx, 1, axisName);
+    vtkSampleTable->setItem(rowIndx, 2, new QTableWidgetItem("0.0"));
+    vtkSampleTable->setItem(rowIndx, 3, new QTableWidgetItem("0.0"));
+    vtkSampleTable->setItem(rowIndx, 4, new QTableWidgetItem(QString::number(mainModel->buildingHeightModelScale()*(2.0/3.0))));
+    vtkSampleTable->setItem(rowIndx, 5, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.10)));
+    vtkSampleTable->setItem(rowIndx, 6, new QTableWidgetItem(QString::number(mainModel->getDuration()*0.20)));
+    vtkSampleTable->setCellWidget(rowIndx, 7, fieldName);
+
+}
+
+void ResultMonitoringWidget::onRemovePlaneClicked()
+{
+    QItemSelectionModel *selected = vtkSampleTable->selectionModel();
+
+    if(selected->hasSelection())
+    {
+        for (int i = 0; i <selected->selectedRows().size(); i++)
+        {
+            vtkSampleTable->removeRow(selected->selectedRows()[i].row());
+        }
+    }
+}
+
+
+void ResultMonitoringWidget::onMonitorPlaneChecked(int state)
+{
+    vtkSampleTable->setEnabled(monitorVTKPlane->isChecked());
+    vtkWriteInterval->setEnabled(monitorVTKPlane->isChecked());
+    addPlane->setEnabled(monitorVTKPlane->isChecked());
+    removePlane->setEnabled(monitorVTKPlane->isChecked());
+    showPlane->setEnabled(monitorVTKPlane->isChecked());
+}

@@ -73,6 +73,8 @@ private:
    SimCenterAppWidget *theCurrentEDP;
    SimCenterAppWidget *theStandardWindEDPs;
    SimCenterAppWidget *theUserDefinedEDPs;
+   SimCenterAppWidget *theSurrogateEDPs;
+
 };
 
 #endif // WIND_SELECTION_H

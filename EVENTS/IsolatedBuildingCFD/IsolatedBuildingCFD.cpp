@@ -104,7 +104,7 @@ bool IsolatedBuildingCFD::initialize()
     visWindowLayout = new QVBoxLayout();
     visWindowGroup = new QGroupBox();
 
-    QTabWidget *inputTab = new QTabWidget(this);
+    inputTab = new QTabWidget(this);
 
     QWidget *generalWidget = new QWidget();
     QWidget *geometryWidget = new QWidget();
@@ -813,11 +813,22 @@ bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
 bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
 
-     writeOpenFoamFiles();
+    writeOpenFoamFiles();
 
-     QString caseName = "IsolatedBuildingCFD";
+    QString caseName = "IsolatedBuildingCFD";
 
-     bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
+
+    //Copy each directory in the OF case directory
+    QStringList foamDirs = {"constant", "system", "0"};
+
+    bool copyResults  = true;
+
+    for(QString dir:foamDirs)
+    {
+        qDebug() << "Copying " << dir;
+        copyResults *= this->copyPath(caseDir() + QDir::separator() + dir, destDir + QDir::separator() + caseName + QDir::separator() + dir, false);
+    }
+
 
      //Remove the 'constant/polyMesh' directory
      // Makes it slow to transfer the mesh to DesignSafe
@@ -825,13 +836,13 @@ bool IsolatedBuildingCFD::copyFiles(QString &destDir) {
      QDir polyMeshDir(destDir + QDir::separator() + caseName + QDir::separator() + "constant" + QDir::separator() + "polyMesh");
      polyMeshDir.removeRecursively();
 
-     if (result == false) {
+     if (copyResults == false) {
          QString errorMessage; errorMessage = "IsolatedBuildingCFD - failed to copy file: " + caseDir() + " to: " + destDir;
          emit sendFatalMessage(errorMessage);
          qDebug() << errorMessage;
      }
 
-     return result;
+     return copyResults;
  }
 
 bool IsolatedBuildingCFD::cleanCase()
@@ -1024,6 +1035,23 @@ int IsolatedBuildingCFD::numberOfFloors()
 }
 
 
+
+double IsolatedBuildingCFD::buildingWidthModelScale()
+{
+    return buildingWidth()/geometricScale();
+}
+
+double IsolatedBuildingCFD::buildingDepthModelScale()
+{
+    return buildingDepth()/geometricScale();
+}
+
+double IsolatedBuildingCFD::buildingHeightModelScale()
+{
+    return buildingHeight()/geometricScale();;
+}
+
+
 double IsolatedBuildingCFD::geometricScale()
 {
     return geometry->geometricScaleWidget->text().toDouble();
@@ -1145,6 +1173,19 @@ double IsolatedBuildingCFD::getTimeStep()
 vtkPolyData* IsolatedBuildingCFD::getBldgBlock()
 {
     return visWidget->getBldgBlock();
+}
+
+double IsolatedBuildingCFD::getDuration()
+{
+    return numericalSetup->duration->text().toDouble();
+}
+
+
+SC_ResultsWidget* IsolatedBuildingCFD::getResultsWidget(QWidget *parent)
+{
+    inputTab->setCurrentIndex(6);
+    statusMessage("Isolated building CFD results downloaded! Now processing...");
+    return resultDisplay;
 }
 
 void IsolatedBuildingCFD::onSaveMeshClicked()

@@ -123,7 +123,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
-    theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivity);
+    theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 
     localApp = new LocalApplication("sWHALE.py");
@@ -164,6 +164,11 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
     connect(theJobManager, SIGNAL(closeDialog()), this, SLOT(runComplete()));    
     
+
+    // SY connect queryEVT and the reply
+    connect(theUQ_Selection, SIGNAL(queryEVT()), theEventSelection, SLOT(replyEventType()));
+    connect(theEventSelection, SIGNAL(typeEVT(QString)), theUQ_Selection, SLOT(setEventType(QString)));
+
     //
     // create layout to hold component selection
     //
@@ -228,6 +233,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 
+//  QString appName = "simcenter-weuq-openfoam-frontera";
   QString appName = "simcenter-weuq-cfd-frontera";
   QString appVersion = "1.0.0";
   QString machine = "frontera";      
@@ -258,6 +264,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add Isolated Building CFD Model Tools
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
+//  QString isoAppName = "simcenter-weuq-openfoam-frontera";
   QString isoAppName = "simcenter-weuq-cfd-frontera";
   QString isoAppVersion = "1.0.0";
   QString isoMachine = "frontera";
@@ -430,6 +437,11 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
         return result;
 
     result = theRunWidget->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    // sy - to save results
+    result = theResults->outputToJSON(jsonObjectTop);
     if (result == false)
         return result;
 

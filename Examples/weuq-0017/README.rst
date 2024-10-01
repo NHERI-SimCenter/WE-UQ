@@ -334,6 +334,20 @@ Visualizing the CFD Output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The simulated case directory can be directly accessed on the *DesignSafe* data depot and visualized remotely using Paraview. The following plots show sample visualization of the instantaneous flow field.  
 
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0017/we17_vis_plane1.mp4" width="1000" height="500"> </video>   
+   </div>
+
+.. raw:: html
+
+   <div style="text-align: center;">
+      <video controls src="../../../../../_static/videos/WE-UQ/weuq-0017/we17_vis_plane2.mp4" width="1000" height="500"> </video>   
+   </div>
+
+
 In :numref:`fig-we17-CFD-result1`, the streamlines of the approaching flow, as it passes around the building, are shown. On the building surface, the calculated pressure coefficients are displayed. It also shows the inside view of the mesh underlying.    
 
 .. _fig-we17-CFD-result1:
