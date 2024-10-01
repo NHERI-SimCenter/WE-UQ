@@ -232,6 +232,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 
+//  QString appName = "simcenter-weuq-openfoam-frontera";
   QString appName = "simcenter-weuq-cfd-frontera";
   QString appVersion = "1.0.0";
   QString machine = "frontera";      
@@ -262,6 +263,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add Isolated Building CFD Model Tools
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
+//  QString isoAppName = "simcenter-weuq-openfoam-frontera";
   QString isoAppName = "simcenter-weuq-cfd-frontera";
   QString isoAppVersion = "1.0.0";
   QString isoMachine = "frontera";

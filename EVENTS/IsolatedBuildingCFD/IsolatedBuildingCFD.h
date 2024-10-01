@@ -111,6 +111,9 @@ public:
     double buildingWidth();
     double buildingDepth();
     double buildingHeight();
+    double buildingWidthModelScale();
+    double buildingDepthModelScale();
+    double buildingHeightModelScale();
     int numberOfFloors();
 
     double geometricScale();
@@ -132,6 +135,8 @@ public:
     double getTimeStep();
 
     vtkPolyData* getBldgBlock();
+    SC_ResultsWidget* getResultsWidget(QWidget *parent);
+    double getDuration();
 
     bool isLaunchedAsTool = false;
 
@@ -176,6 +181,7 @@ private:
    QGridLayout          *openFoamVersionLayout;
    QComboBox            *openFoamVersion;
 
+   QTabWidget                   *inputTab;
    GeometricInputWidget         *geometry;
    SnappyHexMeshWidget          *snappyHexMesh;
    SimCenterVTKRenderingWidget  *visWidget;

@@ -615,13 +615,11 @@ void EmptyResultMonitoring::initializeVTKTable(int numRows)
     {
         vtkSampleTable->setColumnWidth(i, vtkSampleTable->size().width()/(vtkNumCols + 0.25));
 
-        for (int j=0; j < numRows; j++)
+        for(int j=0; j < numRows; j++)
         {
             vtkSampleTable->setItem(j, i, new QTableWidgetItem(""));
         }
     }
-
-
 }
 
 

@@ -83,6 +83,9 @@ public slots:
    void onCreatePressurePointsToggled(bool);
    void onShowCoordinateOfPointsClicked();
    void onOpenCSVFileClicked();
+   void onAddPlaneClicked();
+   void onRemovePlaneClicked();
+   void onMonitorPlaneChecked(int);
 
 private:
 
@@ -135,6 +138,16 @@ private:
    QPushButton          *openCSVFile;
    QPushButton          *showCoordinateOfPoints;
 
+
+   QGroupBox            *vtkSampleGroup;
+   QGridLayout          *vtkSampleLayout;
+   QTableWidget         *vtkSampleTable;
+   QSpinBox             *vtkWriteInterval;
+   QCheckBox            *monitorVTKPlane;
+   QPushButton          *addPlane;
+   QPushButton          *removePlane;
+   QPushButton          *showPlane;
+
    QString importedPointsPath;
 
    QList<QVector3D> createSamplingPoints();
@@ -147,6 +160,7 @@ private:
    //Read a block from mesh
    template <class Type>
    Type* findBlock(vtkMultiBlockDataSet* mb, const char* blockName);
+   void initializeVTKTable(int nVtk);
 
 public:
 

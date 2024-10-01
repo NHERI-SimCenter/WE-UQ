@@ -136,7 +136,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
     QLabel *windDirectionLabel = new QLabel("Wind Direction:");
     windDirectionWidget = new QSpinBox;
-    windDirectionWidget->setRange(0, 90);
+    windDirectionWidget->setRange(0, 360);
     windDirectionWidget->setSingleStep(10);
     windDirectionWidget->setValue(0);
 
@@ -450,13 +450,11 @@ void GeometricInputWidget::buildingShapeChanged(const QString &arg)
     {
         importSTLButton->setEnabled(false);
         importSTLLabel->setEnabled(false);
-        generateBuildingSTL->setEnabled(true);
     }
     else if(arg == "Complex")
     {
         importSTLButton->setEnabled(true);
         importSTLLabel->setEnabled(true);
-        generateBuildingSTL->setEnabled(false);
     }
 }
 
@@ -741,9 +739,19 @@ void GeometricInputWidget::onSTLImportButtonClicked()
         double depth = (yMax-yMin)*scale;
         double height = (zMax-zMin)*scale;
 
-        theGI->setLengthUnit("m");
-        theGI->setNumStoriesAndHeight(mainModel->numberOfFloors(), height);
-        theGI->setBuildingDimensions(width, depth, width*depth);
+        if(mainModel->isLaunchedAsTool)
+        {
+            buildingWidthWidget->setText(QString::number(width));
+            buildingDepthWidget->setText(QString::number(depth));
+            buildingHeightWidget->setText(QString::number(height));
+        }
+
+        else
+        {
+            theGI->setLengthUnit("m");
+            theGI->setNumStoriesAndHeight(mainModel->numberOfFloors(), height);
+            theGI->setBuildingDimensions(width, depth, width*depth);
+        }
 
         mainModel->writeOpenFoamFiles();
     }
@@ -766,9 +774,6 @@ void GeometricInputWidget::onSTLCancelButtonClicked()
 
 void  GeometricInputWidget::onGenerateBuildingSTL()
 {
-    if(buildingShape->currentText() == "Simple")
-    {
-        mainModel->writeOpenFoamFiles();
-        mainModel->reloadMesh();
-    }
+    mainModel->writeOpenFoamFiles();
+    mainModel->reloadMesh();
 }

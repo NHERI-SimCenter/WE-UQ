@@ -80,11 +80,11 @@ public slots:
    void onAddProfileClicked();
    void onRemoveProfileClicked();
    void onShowProfilesClicked();
+   void onMonitorProfileChecked(int);
+
+   void onMonitorPlaneChecked(int);
    void onAddPlaneClicked();
    void onRemovePlaneClicked();
-   void onMonitorProfileChecked(int);
-   void onMonitorPlaneChecked(int);
-
 
 private:
 
