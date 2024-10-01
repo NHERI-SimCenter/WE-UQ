@@ -1,0 +1,299 @@
+{
+    "Applications": {
+        "EDP": {
+            "Application": "StandardWindEDP",
+            "ApplicationData": {
+            }
+        },
+        "Events": [
+            {
+                "Application": "StochasticWindWittigSinha",
+                "ApplicationData": {
+                },
+                "EventClassification": "Wind"
+            }
+        ],
+        "Modeling": {
+            "Application": "MDOF_BuildingModel",
+            "ApplicationData": {
+            }
+        },
+        "Simulation": {
+            "Application": "OpenSees-Simulation",
+            "ApplicationData": {
+            }
+        },
+        "UQ": {
+            "Application": "SimCenter-UQ",
+            "ApplicationData": {
+            }
+        }
+    },
+    "DefaultValues": {
+        "driverFile": "driver",
+        "edpFiles": [
+            "EDP.json"
+        ],
+        "filenameAIM": "AIM.json",
+        "filenameDL": "BIM.json",
+        "filenameEDP": "EDP.json",
+        "filenameEVENT": "EVENT.json",
+        "filenameSAM": "SAM.json",
+        "filenameSIM": "SIM.json",
+        "rvFiles": [
+            "AIM.json",
+            "SAM.json",
+            "EVENT.json",
+            "SIM.json"
+        ],
+        "workflowInput": "scInput.json",
+        "workflowOutput": "EDP.json"
+    },
+    "EDP": {
+        "type": "StandardWindEDP"
+    },
+    "Events": [
+        {
+            "EventClassification": "Wind",
+            "dragCoefficient": 1.3,
+            "exposureCategory": "B",
+            "gustSpeed": "RV.gustWS",
+            "seed": "None",
+            "type": "StochasticWindWittigSinha"
+        }
+    ],
+    "GeneralInformation": {
+        "NumberOfStories": 9,
+        "PlanArea": 129600,
+        "StructureType": "RM1",
+        "YearBuilt": 1990,
+        "depth": 1600,
+        "height": 1400,
+        "location": {
+            "latitude": 37.8715,
+            "longitude": -122.273
+        },
+        "name": "",
+        "planArea": 129600,
+        "stories": 9,
+        "units": {
+            "force": "kips",
+            "length": "in",
+            "temperature": "C",
+            "time": "sec"
+        },
+        "width": 1600
+    },
+    "Modeling": {
+        "Bx": 0.1,
+        "By": 0.1,
+        "Fyx": 1000000,
+        "Fyy": 1000000,
+        "Krz": 10000000000,
+        "Kx": 100,
+        "Ky": 100,
+        "ModelData": [
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": 100,
+                "weight": 144
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            },
+            {
+                "Fyx": 1000000,
+                "Fyy": 1000000,
+                "Ktheta": 10000000000,
+                "bx": 0.1,
+                "by": 0.1,
+                "height": 155.556,
+                "kx": "RV.k",
+                "ky": "RV.k",
+                "weight": "RV.w"
+            }
+        ],
+        "dampingRatio": 0.02,
+        "height": 155.556,
+        "massX": 0,
+        "massY": 0,
+        "numStories": 9,
+        "randomVar": [
+        ],
+        "responseX": 0,
+        "responseY": 0,
+        "type": "MDOF_BuildingModel",
+        "weight": 144
+    },
+    "Simulation": {
+        "Application": "OpenSees-Simulation",
+        "algorithm": "Newton",
+        "analysis": "Transient -numSubLevels 2 -numSubSteps 10",
+        "convergenceTest": "NormUnbalance 1.0e-2 10",
+        "dampingModel": "Rayleigh Damping",
+        "firstMode": 1,
+        "integration": "Newmark 0.5 0.25",
+        "modalRayleighTangentRatio": 0,
+        "numModesModal": 1,
+        "rayleighTangent": "Initial",
+        "secondMode": 6,
+        "solver": "Umfpack"
+    },
+    "UQ": {
+        "surrogateMethodInfo": {
+            "DoEmethod": "None",
+            "IntensityMeasure": {
+            },
+            "accuracyLimit": 0.02,
+            "advancedOpt": false,
+            "existingDoE": false,
+            "initialDoE": -1,
+            "inpFile": "NA",
+            "kernel": "Radial Basis",
+            "linear": false,
+            "logTransform": false,
+            "method": "Sampling and Simulation",
+            "nuggetOpt": "Optimize",
+            "nuggetString": "NA",
+            "numRepl": -1,
+            "numSampToBeRepl": -1,
+            "outFile": "NA",
+            "parallelExecution": true,
+            "samples": 30,
+            "seed": 135,
+            "timeLimit": 60,
+            "useGeoMean": true
+        },
+        "uqType": "Train GP Surrogate Model"
+    },
+    "correlationMatrix": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1
+    ],
+    "localAppDir": "C:/Users/SimCenter/Sangri/SimCenterBackendApplications",
+    "randomVariables": [
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": 1500,
+            "name": "k",
+            "refCount": 1,
+            "upperbound": 2500,
+            "value": "RV.k",
+            "variableClass": "Uniform"
+        },
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": 1200,
+            "name": "w",
+            "refCount": 1,
+            "upperbound": 2000,
+            "value": "RV.w",
+            "variableClass": "Uniform"
+        },
+        {
+            "distribution": "Uniform",
+            "inputType": "Parameters",
+            "lowerbound": 15,
+            "name": "gustWS",
+            "refCount": 1,
+            "upperbound": 25,
+            "value": "RV.gustWS",
+            "variableClass": "Uniform"
+        }
+    ],
+    "remoteAppDir": "C:/Users/SimCenter/Sangri/SimCenterBackendApplications",
+    "resultType": "SimCenterUQResultsSampling",
+    "runType": "runningLocal",
+    "summary": [
+    ],
+    "workingDir": "C:/Users/SimCenter/Documents/WE-UQ/LocalWorkDir"
+}
