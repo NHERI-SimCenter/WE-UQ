@@ -97,6 +97,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <GoogleAnalytics.h>
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
+#include <Utils/FileOperations.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -845,14 +846,32 @@ WorkflowAppWE::setUpForApplicationRun(QString &workingDir, QString &subDir) {
     QString tmpDirName = QString("tmp.SimCenter");
     QDir workDir(workingDir);
 
+    if (!workDir.exists()) {
+      QString msg("WE-UQ::setUpForApplicationRun: The Working Dir Does not Exist: "); msg += workingDir;
+      this->fatalMessage(msg);
+      return; 
+    }
+    
     QString tmpDirectory = workDir.absoluteFilePath(tmpDirName);
     QDir destinationDirectory(tmpDirectory);
 
-    if(destinationDirectory.exists()) {
-      destinationDirectory.removeRecursively();
-    } else
-      destinationDirectory.mkpath(tmpDirectory);
-
+    if(destinationDirectory.exists())
+      if (SCUtils::isSafeToRemoveRecursivily(tmpDirectory))
+	destinationDirectory.removeRecursively();
+      else {
+	QString msg("The Program stopped, it was about to recursivily remove: ");
+	msg += tmpDirectory;
+	fatalMessage(msg);
+	return;	
+      }
+    
+    if (destinationDirectory.mkpath(tmpDirectory) == false) {
+      QString msg("WE-UQ::setUpForApplicationRun: Could not mkdir: ");
+      msg += tmpDirectory;
+      this->fatalMessage(msg);	
+    }
+    
+    destinationDirectory.mkpath(tmpDirectory);
     QString templateDirectory  = destinationDirectory.absoluteFilePath(subDir);
     destinationDirectory.mkpath(templateDirectory);
 
