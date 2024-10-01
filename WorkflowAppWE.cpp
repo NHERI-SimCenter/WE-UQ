@@ -122,7 +122,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
-    theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivity);
+    theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 
     localApp = new LocalApplication("sWHALE.py");
@@ -163,6 +163,11 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
     connect(theJobManager, SIGNAL(closeDialog()), this, SLOT(runComplete()));    
     
+
+    // SY connect queryEVT and the reply
+    connect(theUQ_Selection, SIGNAL(queryEVT()), theEventSelection, SLOT(replyEventType()));
+    connect(theEventSelection, SIGNAL(typeEVT(QString)), theUQ_Selection, SLOT(setEventType(QString)));
+
     //
     // create layout to hold component selection
     //
@@ -429,6 +434,11 @@ WorkflowAppWE::outputToJSON(QJsonObject &jsonObjectTop) {
         return result;
 
     result = theRunWidget->outputToJSON(jsonObjectTop);
+    if (result == false)
+        return result;
+
+    // sy - to save results
+    result = theResults->outputToJSON(jsonObjectTop);
     if (result == false)
         return result;
 
