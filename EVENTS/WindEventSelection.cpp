@@ -363,6 +363,12 @@ void WindEventSelection::eventSelectionChanged(const QString &arg1)
 
 
 void
+WindEventSelection::replyEventType(void)
+{
+    emit typeEVT("WE"); // used in surrogate
+}
+
+void
 WindEventSelection::sendStatusMessage(QString message) {
     ProgramOutputDialog *theDialog=ProgramOutputDialog::getInstance();
     theDialog->appendInfoMessage(message);

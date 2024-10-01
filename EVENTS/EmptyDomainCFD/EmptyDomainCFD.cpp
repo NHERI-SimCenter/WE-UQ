@@ -533,7 +533,37 @@ bool EmptyDomainCFD::inputFromJSON(QJsonObject &jsonObject)
 {
     this->clear();
 
-    caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+    QString foamPath = jsonObject["caseDirectoryPath"].toString();
+
+    QDir foamDir(foamPath);
+
+    if (!foamDir.exists(foamPath))
+    {
+        QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+
+        QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
+                                                     + "LocalWorkDir" + QDir::separator()
+                                                     + "EmptyDomainCFD");
+        workingDir.mkpath(workingDirPath);
+
+        caseDirectoryPathWidget->setText(workingDirPath);
+
+        if(!isCaseConfigured())
+        {
+            setupCase();
+        }
+
+        if (!isMeshed())
+        {
+            snappyHexMesh->onRunBlockMeshClicked();
+        }
+    }
+    else
+    {
+        caseDirectoryPathWidget->setText(jsonObject["caseDirectoryPath"].toString());
+    }
+
+
     openFoamVersion->setCurrentText(jsonObject["OpenFoamVersion"].toString());
 
     geometry->inputFromJSON(jsonObject);
@@ -621,7 +651,16 @@ bool EmptyDomainCFD::copyFiles(QString &destDir) {
 
      QString caseName = "EmptyDomainCFD";
 
-     bool result = this->copyPath(caseDir(), destDir + QDir::separator() + caseName, false);
+     //Copy each directory in the OF case directory
+     QStringList foamDirs = {"constant", "system", "0"};
+
+     bool copyResults  = true;
+
+     for(QString dir:foamDirs)
+     {
+        qDebug() << "Copying " << dir;
+        copyResults *= this->copyPath(caseDir() + QDir::separator() + dir, destDir + QDir::separator() + caseName + QDir::separator() + dir, false);
+     }
 
      //Remove the 'constant/polyMesh' directory
      // Makes it slow to transfer the mesh to DesignSafe
@@ -629,13 +668,13 @@ bool EmptyDomainCFD::copyFiles(QString &destDir) {
      QDir polyMeshDir(destDir + QDir::separator() + caseName + QDir::separator() + "constant" + QDir::separator() + "polyMesh");
      polyMeshDir.removeRecursively();
 
-     if (result == false) {
+     if (copyResults == false) {
          QString errorMessage; errorMessage = "EmptyDomainCFD - failed to copy file: " + caseDir() + " to: " + destDir;
-         emit sendFatalMessage(errorMessage);
-         qDebug() << errorMessage;
+         qDebug() << errorMessage;	
+         fatalMessage(errorMessage); 
      }
 
-     return result;
+     return copyResults;
  }
 
 bool EmptyDomainCFD::cleanCase()

@@ -39,6 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 // Written: fmckenna
 
 #include "WindEDP_Selection.h"
+#include "SurrogateEDP.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -77,6 +78,7 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     edpSelection = new QComboBox();
     edpSelection->addItem(tr("Standard Wind"));
     edpSelection->addItem(tr("User Defined"));
+    edpSelection->addItem(tr("None (only for surrogate)"));
     edpSelection->setObjectName("EDPSelectionComboBox");
 
     //    edpSelection->setItemData(1, "A Seismic event using Seismic Hazard Analysis and Record Selection/Scaling", Qt::ToolTipRole);
@@ -99,7 +101,15 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     theStackedWidget->addWidget(theStandardWindEDPs);
 
     theUserDefinedEDPs = new UserDefinedEDP();
-    theStackedWidget->addWidget(theUserDefinedEDPs);
+    theStackedWidget->addWidget(theUserDefinedEDPs);    
+
+    SurrogateEDP * theSurrogateEDPs_tmp = SurrogateEDP::getInstance();
+    theSurrogateEDPs = theSurrogateEDPs_tmp;
+
+    connect(theSurrogateEDPs_tmp, &SurrogateEDP::surrogateSelected, [=](){
+       edpSelection->setCurrentIndex(2);
+    });
+    theStackedWidget->addWidget(theSurrogateEDPs);
 
     layout->addWidget(theStackedWidget);
     //layout->setMargin(0);
@@ -150,7 +160,11 @@ void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
         theStackedWidget->setCurrentIndex(1);
         theCurrentEDP = theUserDefinedEDPs;
     }
-
+    else if (arg1 == "None (only for surrogate)") {
+        theStackedWidget->setCurrentIndex(2);
+        theCurrentEDP = theSurrogateEDPs;
+    qDebug() << "EDP_Selection::Changed tp Auto Defined";
+    }
     else {
         qDebug() << "ERROR .. WindEDP_Selection selection .. type unknown: " << arg1;
     }
@@ -188,6 +202,9 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
     } else if ((type == QString("UserDefinedEDP")) ||
                (type == QString("User Defined EDPs"))) {
         index = 1;
+    } else if ((type == QString("None (only for surrogate)")) ||
+                 (type == QString("SurrogateEDP"))) {
+        index = 2;
     } else {
         errorMessage("WindEDP_Selection - no valid type found");
         return false;
