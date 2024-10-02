@@ -83,7 +83,6 @@ public:
     bool inputFromJSON(QJsonObject &rvObject);
     void clear(void);
 
-    //void setMainWindow(MainWindow* window);
     void onRunButtonClicked();
     void onRemoteRunButtonClicked();
     void onRemoteGetButtonClicked();

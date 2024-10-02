@@ -248,6 +248,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 							      theToolDialog);
   
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
+  theEmptyDomainTool->setAppNameReport("Empty Domain Simulation");
   
   // Set the path to the input file
   QAction *showEmptyDomain = toolsMenu->addAction("&CFD - Empty Domain Simulation");
@@ -264,7 +265,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add Isolated Building CFD Model Tools
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
-//  QString isoAppName = "simcenter-weuq-openfoam-frontera";
+  //  QString isoAppName = "simcenter-weuq-openfoam-frontera";
   QString isoAppName = "simcenter-weuq-cfd-frontera";
   QString isoAppVersion = "1.0.0";
   QString isoMachine = "frontera";
@@ -279,6 +280,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
                                                           theIsoBldg,
                                                           theToolDialog);
   theToolDialog->addTool(theIsoBldgTool, "Isolated Building CFD Simulation");
+  theIsoBldgTool->setAppNameReport("Isolated Building Simulation");  
 
   // Set the path to the input file
   QAction *showIsoBldg = toolsMenu->addAction("&CFD - Isolated Building Wind Load Simulation");
@@ -289,23 +291,6 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
           theIsoBldg->initialize();
       }
   });
-
-
-  //
-  // Add SimpleTest Example
-  //
-
-//  RemoteAppTest *theTest = new RemoteAppTest();
-//  QString appNameTest = "remoteAppTest-1.0.0";
-//  QList<QString> queuesTest; queuesTest << "normal" << "fast";
-//  SC_RemoteAppTool *theTestTool = new SC_RemoteAppTool(appNameTest, queuesTest, theRemoteService, theTest, theToolDialog);
-//  theToolDialog->addTool(theTestTool, "Build and Run MPI Program");
-  
-//  // Set the path to the input file
-//  QAction *showTest = toolsMenu->addAction("&Build and Run MPI Program");
-//  connect(showTest, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theTestTool] {
-//    theDialog->showTool("Build and Run MPI Program");
-//  });
 
   //
   // Add Tools to menu bar
