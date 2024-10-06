@@ -233,6 +233,8 @@ int main(int argc, char *argv[])
     //Setting Google Analytics Tracking Information
     
 #ifdef _SC_RELEASE
+
+    qDebug() << "Running a Release Version of WE-UQ";
     GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
     GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
     GoogleAnalytics::CreateSessionId();
@@ -246,6 +248,16 @@ int main(int argc, char *argv[])
     view.hide();
     
 #endif
+
+#ifdef _ANALYTICS
+
+    qDebug() << "compiled with _ANALYTICS";    
+    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+    GoogleAnalytics::CreateSessionId();
+    GoogleAnalytics::StartSession();
+    
+#endif    
     
     //
     // RUN the GUI
@@ -253,6 +265,19 @@ int main(int argc, char *argv[])
     
     int res = a.exec();
 
+
+#ifdef _GA_AFTER
+
+    qDebug() << "compiled with: _GA_AFTER";
+    // Opening a QWebEngineView and using github to get app geographic usage
+    QWebEngineView view;
+    view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
+    view.resize(1024, 750);
+    view.show();
+    view.hide();
+    
+#endif
+    
     //
     // on done with event loop, logout & stop the thread
     //
