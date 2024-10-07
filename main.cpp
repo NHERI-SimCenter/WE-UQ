@@ -95,7 +95,6 @@ int main(int argc, char *argv[])
     // full path to debug.log file
     logFilePath = logFilePath + QDir::separator() + QString("debug.log");
 
-
     //
     // window scaling
     //
@@ -103,8 +102,9 @@ int main(int argc, char *argv[])
 
 
     // remove old log file
-    // QFile debugFile(logFilePath);
-    // debugFile.remove();
+    QFile debugFile(logFilePath);
+    if (debugFile.exists())
+      debugFile.remove();
 
     QApplication a(argc, argv);
 
