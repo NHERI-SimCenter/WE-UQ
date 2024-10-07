@@ -98,6 +98,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 #include <Utils/FileOperations.h>
+#include <FronteraMachine.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -126,9 +127,10 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 
+    TapisMachine *theMachine = new FronteraMachine();
+    
     localApp = new LocalApplication("sWHALE.py");
-    remoteApp = new RemoteApplication("sWHALE.py", theService);
-
+    remoteApp = new RemoteApplication("sWHALE.py", theService, theMachine, nullptr);
 
     //QStringList filesToDownload; filesToDownload << "inputRWHALE.json" << "input_data.zip" << "Results.zip";
     theJobManager = new RemoteJobManager(theService);
@@ -145,25 +147,42 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
         currentApp = localApp;
         setUpForApplicationRun(workingDir, subDir);
     });
-
-    connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     connect(localApp,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
-
+    connect(localApp,SIGNAL(runComplete()), this, SLOT(runComplete()));
+    connect(localApp,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(localApp,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(localApp,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+    
     connect(remoteApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
     {
         currentApp = remoteApp;
         setUpForApplicationRun(workingDir, subDir);
     });
+    connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
+    connect(remoteApp,SIGNAL(successfullJobStart()), this, SLOT(runComplete()));
+    connect(remoteApp,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(remoteApp,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(remoteApp,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+    
     connect(theJobManager,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
     connect(theJobManager,SIGNAL(loadFile(QString&)), this, SLOT(loadFile(QString&)));
-
-    connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
-
-    connect(localApp,SIGNAL(runComplete()), this, SLOT(runComplete()));
-    connect(remoteApp,SIGNAL(successfullJobStart()), this, SLOT(runComplete()));
-    connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
     connect(theJobManager, SIGNAL(closeDialog()), this, SLOT(runComplete()));    
+    connect(theJobManager,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(theJobManager,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(theJobManager,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+
+    connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     
+    connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
 
     // SY connect queryEVT and the reply
     connect(theUQ_Selection, SIGNAL(queryEVT()), theEventSelection, SLOT(replyEventType()));
