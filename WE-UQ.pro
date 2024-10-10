@@ -105,7 +105,7 @@ mac {
     
     } else {
 
-    INCLUDEPATH += /usr/local/vtk-9.1
+    INCLUDEPATH += /usr/include/vtk-9.1
     LIBS += -L/lib/x86_64-linux-gnu \
     -lvtkViewsCore-9.1 \
     -lvtkFiltersCore-9.1 \
