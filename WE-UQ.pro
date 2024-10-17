@@ -35,6 +35,7 @@ INCLUDEPATH += /usr/local/include/vtk-9.2
 
 
 win32 {
+
     LIBS +=  -lAdvapi32
     RC_ICONS = icons/NHERI-WEuq-Icon.ico
     DEPENDPATH += $$PWD/../VTK/Release/bin
@@ -67,7 +68,8 @@ win32 {
 
 } else {
 
-    mac {
+mac {
+
     ICON = icons/NHERI-WEuq-Icon.icns
 #    DEPENDPATH += $$PWD/../VTK/lib
 #    DEPENDPATH += $$PWD/../VTK/Release/bin
@@ -100,34 +102,35 @@ win32 {
     -lvtkIOImage-9.2 \
     -lvtkIOLegacy-9.2 \
     -lvtksys-9.2
+    
     } else {
 
-    INCLUDEPATH += /usr/local/include/vtk-9.2
-    LIBS += -L/usr/local/lib \
-    -lvtkViewsCore-9.2 \
-    -lvtkFiltersCore-9.2 \
-    -lvtkCommonColor-9.2 \
-    -lvtkFiltersSources-9.2 \
-    -lvtkCommonCore-9.2 \
-    -lvtkFiltersGeometry-9.2 \
-    -lvtkRenderingCore-9.2 \
-    -lvtkInteractionStyle-9.2\
-    -lvtkCommonTransforms-9.2\
-    -lvtkInteractionWidgets-9.2\
-    -lvtkRenderingAnnotation-9.2 \
-    -lvtkRenderingContextOpenGL2-9.2 \
-    -lvtkRenderingFreeType-9.2 \
-    -lvtkRenderingGL2PSOpenGL2-9.2 \
-    -lvtkCommonExecutionModel-9.2 \
-    -lvtkCommonDataModel-9.2 \
-    -lvtkGUISupportQt-9.2 \
-    -lvtkRenderingOpenGL2-9.2 \
-    -lvtkIOGeometry-9.2 \
-    -lvtkViewsQt-9.2 \
-    -lvtkImagingCore-9.2 \
-    -lvtkIOImage-9.2 \
-    -lvtkIOLegacy-9.2 \
-    -lvtksys-9.2
+    INCLUDEPATH += /usr/include/vtk-9.1
+    LIBS += -L/lib/x86_64-linux-gnu \
+    -lvtkViewsCore-9.1 \
+    -lvtkFiltersCore-9.1 \
+    -lvtkCommonColor-9.1 \
+    -lvtkFiltersSources-9.1 \
+    -lvtkCommonCore-9.1 \
+    -lvtkFiltersGeometry-9.1 \
+    -lvtkRenderingCore-9.1 \
+    -lvtkInteractionStyle-9.1\
+    -lvtkCommonTransforms-9.1\
+    -lvtkInteractionWidgets-9.1\
+    -lvtkRenderingAnnotation-9.1 \
+    -lvtkRenderingContextOpenGL2-9.1 \
+    -lvtkRenderingFreeType-9.1 \
+    -lvtkRenderingGL2PSOpenGL2-9.1 \
+    -lvtkCommonExecutionModel-9.1 \
+    -lvtkCommonDataModel-9.1 \
+    -lvtkGUISupportQt-9.1 \
+    -lvtkRenderingOpenGL2-9.1 \
+    -lvtkIOGeometry-9.1 \
+    -lvtkViewsQt-9.1 \
+    -lvtkImagingCore-9.1 \
+    -lvtkIOImage-9.1 \
+    -lvtkIOLegacy-9.1 \
+    -lvtksys-9.1
     }
     }
 

@@ -332,7 +332,7 @@ In addition, by switching to the *Data Values* tab, you can see all the realizat
 
 Visualizing the CFD Output
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The simulated case directory can be directly accessed on the *DesignSafe* data depot and visualized remotely using Paraview. The following plots show sample visualization of the instantaneous flow field.  
+Once the results are retried the simulated case directory can be directly accessed from the local case directory given in *Start* tab of the **EVT** panel. The following videos show sample visualization of the instantaneous flow field.  
 
 
 .. raw:: html
@@ -346,25 +346,4 @@ The simulated case directory can be directly accessed on the *DesignSafe* data d
    <div style="text-align: center;">
       <video controls src="../../../../../_static/videos/WE-UQ/weuq-0017/we17_vis_plane2.mp4" width="1000" height="500"> </video>   
    </div>
-
-
-In :numref:`fig-we17-CFD-result1`, the streamlines of the approaching flow, as it passes around the building, are shown. On the building surface, the calculated pressure coefficients are displayed. It also shows the inside view of the mesh underlying.    
-
-.. _fig-we17-CFD-result1:
-
-.. figure:: figures/we17_CFD_Results_StreamLines.svg
-   :align: center
-   :width: 75%
-
-   Streamlines of the instantaneous velocity field around the building.
-
-Similarly, in :numref:`fig-we17-CFD-result2`, the instantaneous velocity contours on the horizontal and vertical sections taken in the vicinity of the building are shown. The figure also shows the flow structure (bottom right plot) around the building. It can be seen that important flow features such as vortex shading, turbulence at the wake, and horseshoe vortex in the front of the building are captured. We recommend the user first inspect the CFD output before proceeding with results in the **RES** panel. This type of qualitative check constitutes the first step of verification (quality assurance) for the predicted wind loads.     
-
-.. _fig-we17-CFD-result2:
-
-.. figure:: figures/we17_CFD_Results.svg
-   :align: center
-   :width: 75%
-
-   Instantaneous velocity field around the building.
 

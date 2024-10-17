@@ -98,6 +98,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 #include <Utils/FileOperations.h>
+#include <FronteraMachine.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -126,9 +127,10 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 
+    TapisMachine *theMachine = new FronteraMachine();
+    
     localApp = new LocalApplication("sWHALE.py");
-    remoteApp = new RemoteApplication("sWHALE.py", theService);
-
+    remoteApp = new RemoteApplication("sWHALE.py", theService, theMachine, nullptr);
 
     //QStringList filesToDownload; filesToDownload << "inputRWHALE.json" << "input_data.zip" << "Results.zip";
     theJobManager = new RemoteJobManager(theService);
@@ -145,25 +147,42 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
         currentApp = localApp;
         setUpForApplicationRun(workingDir, subDir);
     });
-
-    connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     connect(localApp,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
-
+    connect(localApp,SIGNAL(runComplete()), this, SLOT(runComplete()));
+    connect(localApp,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(localApp,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(localApp,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+    
     connect(remoteApp, &Application::setupForRun, this, [this](QString &workingDir, QString &subDir)
     {
         currentApp = remoteApp;
         setUpForApplicationRun(workingDir, subDir);
     });
+    connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
+    connect(remoteApp,SIGNAL(successfullJobStart()), this, SLOT(runComplete()));
+    connect(remoteApp,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(remoteApp,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(remoteApp,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+    
     connect(theJobManager,SIGNAL(processResults(QString&)), this, SLOT(processResults(QString&)));
     connect(theJobManager,SIGNAL(loadFile(QString&)), this, SLOT(loadFile(QString&)));
-
-    connect(remoteApp,SIGNAL(successfullJobStart()), theRunWidget, SLOT(hide()));
-
-    connect(localApp,SIGNAL(runComplete()), this, SLOT(runComplete()));
-    connect(remoteApp,SIGNAL(successfullJobStart()), this, SLOT(runComplete()));
-    connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
     connect(theJobManager, SIGNAL(closeDialog()), this, SLOT(runComplete()));    
+    connect(theJobManager,SIGNAL(sendErrorMessage(QString)),
+	    this,SLOT(errorMessage(QString)));
+    connect(theJobManager,SIGNAL(sendStatusMessage(QString)),
+	    this,SLOT(statusMessage(QString)));
+    connect(theJobManager,SIGNAL(sendFatalMessage(QString)),
+	    this,SLOT(fatalMessage(QString)));
+
+    connect(this,SIGNAL(setUpForApplicationRunDone(QString&, QString &)), theRunWidget, SLOT(setupForRunApplicationDone(QString&, QString &)));
     
+    connect(theService, SIGNAL(closeDialog()), this, SLOT(runComplete()));
 
     // SY connect queryEVT and the reply
     connect(theUQ_Selection, SIGNAL(queryEVT()), theEventSelection, SLOT(replyEventType()));
@@ -248,6 +267,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 							      theToolDialog);
   
   theToolDialog->addTool(theEmptyDomainTool, "Empty Domain Simulation");
+  theEmptyDomainTool->setAppNameReport("Empty Domain Simulation");
   
   // Set the path to the input file
   QAction *showEmptyDomain = toolsMenu->addAction("&CFD - Empty Domain Simulation");
@@ -264,7 +284,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   // Add Isolated Building CFD Model Tools
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
-//  QString isoAppName = "simcenter-weuq-openfoam-frontera";
+  //  QString isoAppName = "simcenter-weuq-openfoam-frontera";
   QString isoAppName = "simcenter-weuq-cfd-frontera";
   QString isoAppVersion = "1.0.0";
   QString isoMachine = "frontera";
@@ -279,6 +299,7 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
                                                           theIsoBldg,
                                                           theToolDialog);
   theToolDialog->addTool(theIsoBldgTool, "Isolated Building CFD Simulation");
+  theIsoBldgTool->setAppNameReport("Isolated Building Simulation");  
 
   // Set the path to the input file
   QAction *showIsoBldg = toolsMenu->addAction("&CFD - Isolated Building Wind Load Simulation");
@@ -289,23 +310,6 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
           theIsoBldg->initialize();
       }
   });
-
-
-  //
-  // Add SimpleTest Example
-  //
-
-//  RemoteAppTest *theTest = new RemoteAppTest();
-//  QString appNameTest = "remoteAppTest-1.0.0";
-//  QList<QString> queuesTest; queuesTest << "normal" << "fast";
-//  SC_RemoteAppTool *theTestTool = new SC_RemoteAppTool(appNameTest, queuesTest, theRemoteService, theTest, theToolDialog);
-//  theToolDialog->addTool(theTestTool, "Build and Run MPI Program");
-  
-//  // Set the path to the input file
-//  QAction *showTest = toolsMenu->addAction("&Build and Run MPI Program");
-//  connect(showTest, &QAction::triggered, this,[this, theDialog=theToolDialog, theEmp = theTestTool] {
-//    theDialog->showTool("Build and Run MPI Program");
-//  });
 
   //
   // Add Tools to menu bar
