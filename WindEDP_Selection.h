@@ -72,6 +72,7 @@ private:
    QStackedWidget *theStackedWidget;
    SimCenterAppWidget *theCurrentEDP;
    SimCenterAppWidget *theStandardWindEDPs;
+   SimCenterAppWidget *theComponentAndCladdingEDP;
    SimCenterAppWidget *theUserDefinedEDPs;
    SimCenterAppWidget *theSurrogateEDPs;
 

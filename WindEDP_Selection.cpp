@@ -36,7 +36,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: fmckenna & Abiy Melaku
 
 #include "WindEDP_Selection.h"
 #include "SurrogateEDP.h"
@@ -77,6 +77,7 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     label->setMinimumWidth(250);
     edpSelection = new QComboBox();
     edpSelection->addItem(tr("Standard Wind"));
+    edpSelection->addItem(tr("Component and Cladding EDP"));
     edpSelection->addItem(tr("User Defined"));
     edpSelection->addItem(tr("None (only for surrogate)"));
     edpSelection->setObjectName("EDPSelectionComboBox");
@@ -156,12 +157,17 @@ void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
         theCurrentEDP = theStandardWindEDPs;
     }
 
-    else if(arg1 == "User Defined") {
+    else if(arg1 == "Component and Cladding EDP") {
         theStackedWidget->setCurrentIndex(1);
+        theCurrentEDP = theComponentAndCladdingEDP;
+    }
+
+    else if(arg1 == "User Defined") {
+        theStackedWidget->setCurrentIndex(2);
         theCurrentEDP = theUserDefinedEDPs;
     }
     else if (arg1 == "None (only for surrogate)") {
-        theStackedWidget->setCurrentIndex(2);
+        theStackedWidget->setCurrentIndex(3);
         theCurrentEDP = theSurrogateEDPs;
     qDebug() << "EDP_Selection::Changed tp Auto Defined";
     }
@@ -199,12 +205,15 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
     if ((type == QString("Standard Wind EDPs")) ||
             (type == QString("StandardWindEDP"))) {
         index = 0;
+    } else if ((type == QString("ComponentAndCladdingEDP")) ||
+               (type == QString("Component and Cladding EDP"))) {
+        index = 1;
     } else if ((type == QString("UserDefinedEDP")) ||
                (type == QString("User Defined EDPs"))) {
-        index = 1;
+        index = 2;
     } else if ((type == QString("None (only for surrogate)")) ||
                  (type == QString("SurrogateEDP"))) {
-        index = 2;
+        index = 3;
     } else {
         errorMessage("WindEDP_Selection - no valid type found");
         return false;
