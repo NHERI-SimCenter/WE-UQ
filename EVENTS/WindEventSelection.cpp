@@ -185,7 +185,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     
     this->setLayout(layout);
-    theCurrentEvent=theStochasticModel;
+    theCurrentEvent = theStochasticModel;
 
     connect(eventSelection,SIGNAL(currentTextChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 

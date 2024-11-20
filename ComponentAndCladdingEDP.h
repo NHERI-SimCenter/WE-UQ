@@ -1,5 +1,5 @@
-#ifndef WIND_SELECTION_H
-#define WIND_SELECTION_H
+#ifndef COMPONENT_AND_CLADDING_EDP
+#define COMPONENT_AND_CLADDING_EDP
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
@@ -37,46 +37,47 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: Abiy Melaku
 
 #include <SimCenterAppWidget.h>
 
 #include <QGroupBox>
 #include <QVector>
+#include <QGridLayout>
+#include <QComboBox>
+#include <QPushButton>
+#include <QGroupBox>
+#include <QGridLayout>
 
-class QComboBox;
-class QStackedWidget;
-class UserDefinedApplication;
+class InputWidgetParameters;
 
-class WindEDP_Selection : public  SimCenterAppWidget
+class ComponentAndCladdingEDP : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit WindEDP_Selection(QWidget *parent = 0);
-    ~WindEDP_Selection();
+    explicit ComponentAndCladdingEDP(QWidget *parent = 0);
+    ~ComponentAndCladdingEDP();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
-    bool copyFiles(QString &destName);
+    bool copyFiles(QString &dirName);
 
-    void clear(void);
 
 signals:
 
 public slots:
-   void edpSelectionChanged(const QString &arg1);
+    void clear(void);
+    void onBrowseButtonClicked(void);
 
 private:
-   QComboBox   *edpSelection;
-   QStackedWidget *theStackedWidget;
-   SimCenterAppWidget *theCurrentEDP;
-   SimCenterAppWidget *theStandardWindEDPs;
-   SimCenterAppWidget *theComponentAndCladdingEDP;
-   SimCenterAppWidget *theUserDefinedEDPs;
-   SimCenterAppWidget *theSurrogateEDPs;
+
+    QLineEdit   *componentDefFilePath;
+    QPushButton *importButton;
+    QGroupBox   *importComponentGroup;
+    QGridLayout *importComponentLayout;
 
 };
 
-#endif // WIND_SELECTION_H
+#endif // COMPONENT_AND_CLADDING_EDP
