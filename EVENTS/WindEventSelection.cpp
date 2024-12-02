@@ -439,3 +439,11 @@ bool WindEventSelection::supportsLocalRun()
 {
     return theCurrentEvent->supportsLocalRun();
 }
+
+
+
+
+SimCenterAppWidget* WindEventSelection::getCurrentEvent()
+{
+    return theCurrentEvent;
+}

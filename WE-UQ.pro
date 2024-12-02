@@ -143,12 +143,14 @@ include(./WindEvents.pri)
 SOURCES += main.cpp \
     WorkflowAppWE.cpp \
     RunWidget.cpp \
+    ComponentAndCladdingWindEDP.cpp \
     WindEDP_Selection.cpp \
     StandardWindEDP.cpp
 
 HEADERS  += \
     WorkflowAppWE.h \
     RunWidget.h \
+    ComponentAndCladdingWindEDP.h \
     StandardWindEDP.h \
     WindEDP_Selection.h
 

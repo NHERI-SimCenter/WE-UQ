@@ -68,6 +68,8 @@ class QCheckBox;
 class QFormLayout;
 class QLabel;
 class vtkPolyData;
+
+
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT

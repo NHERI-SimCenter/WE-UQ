@@ -124,6 +124,8 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
+    theEDP_Selection->setSelectedEvent(theEventSelection);
+
     theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 

@@ -48,15 +48,16 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QPushButton>
 #include <QGroupBox>
 #include <QGridLayout>
+#include <QCheckBox>
 
 class InputWidgetParameters;
 
-class ComponentAndCladdingEDP : public SimCenterAppWidget
+class ComponentAndCladdingWindEDP : public SimCenterAppWidget
 {
     Q_OBJECT
 public:
-    explicit ComponentAndCladdingEDP(QWidget *parent = 0);
-    ~ComponentAndCladdingEDP();
+    explicit ComponentAndCladdingWindEDP(QWidget *parent = 0);
+    ~ComponentAndCladdingWindEDP();
 
     bool outputToJSON(QJsonObject &rvObject);
     bool inputFromJSON(QJsonObject &rvObject);
@@ -64,12 +65,17 @@ public:
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &dirName);
 
+    bool initialize();
+    bool isInitialize();
+
+    void setSelectedEvent(SimCenterAppWidget* event);
 
 signals:
 
 public slots:
     void clear(void);
     void onBrowseButtonClicked(void);
+    void onShowCompGeometryButtonClicked();
 
 private:
 
@@ -77,7 +83,15 @@ private:
     QPushButton *importButton;
     QGroupBox   *importComponentGroup;
     QGridLayout *importComponentLayout;
+    SimCenterAppWidget *windEventSelection;
 
+    QPushButton *showCompGeometryButton;
+    QCheckBox   *considerWindDirection;
+    QCheckBox   *snapToBuilding;
+
+    bool initialized;
+
+    bool generateCompGeometry();
 };
 
 #endif // COMPONENT_AND_CLADDING_EDP
