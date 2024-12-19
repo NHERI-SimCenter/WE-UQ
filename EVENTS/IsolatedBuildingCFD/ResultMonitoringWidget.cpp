@@ -385,10 +385,6 @@ ResultMonitoringWidget::ResultMonitoringWidget( IsolatedBuildingCFD *parent)
     connect(showPlane,SIGNAL(clicked()), this, SLOT(onShowPlaneClicked()));
     connect(monitorVTKPlane, SIGNAL(stateChanged(int)), this, SLOT(onMonitorPlaneChecked(int)));
 
-
-
-
-
     layout->addWidget(monitorPressureGroup);
     layout->addWidget(vtkSampleGroup);
 

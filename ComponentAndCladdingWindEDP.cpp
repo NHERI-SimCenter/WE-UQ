@@ -87,6 +87,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTestUtilities.h>
 #include <vtkSimplePointsReader.h>
 #include <WindEventSelection.h>
+#include <SimCenterPreferences.h>
+#include <QProcess>
 
 ComponentAndCladdingWindEDP::ComponentAndCladdingWindEDP(QWidget *parent)
     : SimCenterAppWidget(parent)
@@ -130,14 +132,8 @@ bool ComponentAndCladdingWindEDP::initialize()
     importComponentLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft); // Align the group box contents to the top-left
 
 
-
-
-
-
     connect(importButton, SIGNAL(clicked()), this, SLOT(onBrowseButtonClicked()));
     connect(showCompGeometryButton, SIGNAL(clicked()), this, SLOT(onShowCompGeometryButtonClicked()));
-
-
 
     //==================================================
     // Setup the VTK window to visualize components
@@ -238,6 +234,83 @@ void ComponentAndCladdingWindEDP::clear(void)
 
 void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 {
+    //First check if the component JSON file is properly defined
+
+    QFile jsonFile(componentDefFilePath->text());
+
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("WE-UQ Error");
+        msgBox.setText("The JSON file for component and cladding is is not correctly defined!");
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+
+        return;
+    }
+
+    // Open the JSON file
+    QFile file(componentDefFilePath->text());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() << "Could not open file:" << componentDefFilePath->text();
+        return;
+    }
+
+    // Read the file content
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    // Parse JSON content
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+    if (jsonDoc.isNull() || !jsonDoc.isObject()) {
+        qCritical() << "Invalid JSON format.";
+        return;
+    }
+
+    QJsonObject rootObj = jsonDoc.object();
+
+
+    // Parse components array
+    QJsonArray components = rootObj.value("components").toArray();
+    for (const QJsonValue& componentValue : components)
+    {
+        QJsonObject componentObj = componentValue.toObject();
+
+        int componentId = componentObj.value("componentId").toInt();
+        QString componentName = componentObj.value("componentName").toString();
+        QString componentType = componentObj.value("componentType").toString();
+        int samplingDensity = componentObj.value("samplingDensity").toInt();
+
+        // Step 6: Parse geometries array
+        QJsonArray geometries = componentObj.value("geometries").toArray();
+        for (const QJsonValue& geometryValue : geometries) {
+            QJsonObject geometryObj = geometryValue.toObject();
+
+            int geometryId = geometryObj.value("geometryId").toInt();
+            QString shape = geometryObj.value("shape").toString();
+
+            qDebug() << "\n\tGeometry ID:" << geometryId
+                     << "\n\tShape:" << shape;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     QDialog *dialog  = new QDialog(this);
 
     int dialogHeight = 600;
@@ -245,7 +318,7 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 
     dialog->setMinimumHeight(dialogHeight);
     dialog->setMinimumWidth(dialogWidth);
-    dialog->setWindowTitle("Component Geometry Check");
+    dialog->setWindowTitle("Component Geometry");
 
 
     QGridLayout* dialogLayout = new  QGridLayout();
@@ -296,12 +369,12 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     //        }
     //    }
 
-    generateCompGeometry();
 
 
     WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
     IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
 
+    generateCompGeometry(theIso->caseDir());
 
     //Building mapper
     vtkNew<vtkPolyDataMapper>buildingMapper; //mapper
@@ -315,28 +388,30 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     buildingActor->GetProperty()->SetRepresentationToSurface();
     buildingActor->GetProperty()->SetEdgeVisibility(true);
 
+    vtkSmartPointer<vtkSTLReader> componentSTLReader = vtkSmartPointer<vtkSTLReader>::New();
+    componentSTLReader->SetFileName((theIso->caseDir() + "/constant/geometry/components/components_geometry.stl").toStdString().c_str());
+    componentSTLReader->Update();
+
+    //Component mapper
+    vtkNew<vtkPolyDataMapper>componentgMapper; //mapper
+    componentgMapper->SetInputData(componentSTLReader->GetOutput());
+    componentgMapper->Update();
+
+    //Component actor
+    vtkNew<vtkActor> componentActor;// Actor in scene
+    componentActor->SetMapper(componentgMapper);
+    componentActor->GetProperty()->SetColor(0.0, 0.0, 1.0);
+    componentActor->GetProperty()->SetRepresentationToSurface();
+    componentActor->GetProperty()->SetEdgeVisibility(false);
 
     //point reader
     vtkNew<vtkSimplePointsReader> pointsReader;
-    pointsReader->SetFileName((theIso->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
+    pointsReader->SetFileName((theIso->caseDir() + "/constant/geometry/components/probe_points.txt").toStdString().c_str());
     pointsReader->Update();
 
-    //    vtkNew<vtkCleanPolyData> pointData;
-    //    pointData->SetInputData(mainModel->getBldgBlock());
-    //    pointData->SetTolerance(0.01);
-    //    pointData->Update();
-
-    //    vtkNew<vtkCellCenters> cellCentersFilter;
-    //    cellCentersFilter->SetInputData(pointData->GetOutput());
-    //    cellCentersFilter->VertexCellsOff();
-    //    cellCentersFilter->Update();
-
-
+    //point mapper
     vtkNew<vtkDataSetMapper> pointsMapper; //mapper
     pointsMapper->SetInputData(pointsReader->GetOutput());
-    //    pointsMapper->SetInputConnection(cellCentersFilter->GetOutputPort());
-    //    pointsMapper->SetInputData(pointData->GetOutput());
-
 
     //Points actor
     vtkNew<vtkActor> pointsActor;// Actor in scene
@@ -348,6 +423,7 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     vtkNew<vtkRenderer> renderer; // VTK Renderer
     renderer->AddActor(buildingActor);
     renderer->AddActor(pointsActor);
+    renderer->AddActor(componentActor);
     renderer->SetBackground(1.0, 1.0, 1.0);
 
     // VTK/Qt wedded
@@ -469,26 +545,50 @@ void ComponentAndCladdingWindEDP::setSelectedEvent(SimCenterAppWidget* event)
 }
 
 
-bool ComponentAndCladdingWindEDP::generateCompGeometry()
+bool ComponentAndCladdingWindEDP::generateCompGeometry(QString caseDir)
 {
-//    //Write to a file
-//    QString fileName = mainModel->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt";
-//    QFile file(fileName);
+    //Run python script to create component geometry
+    QString scriptPath = pyScriptsPath() + "/generate_component_geometry.py";
+    QString jsonPath = caseDir + QDir::separator() + "constant" + QDir::separator() + "simCenter" + QDir::separator() + "input";
+    QString comptJsonPath = componentDefFilePath->text();
+    QString outputPath =caseDir;
+    QString templatePath = templateDictDir();
 
-//    file.remove();
+    QString program = SimCenterPreferences::getInstance()->getPython();
+    QStringList arguments;
 
-//    if (file.open(QIODevice::ReadWrite))
-//    {
-//        QTextStream stream(&file);
+    arguments << scriptPath << jsonPath << comptJsonPath << templatePath << outputPath;
 
-//        for (int i=0; i < points.size()-1; i++)
-//        {
-//            stream << points[i].x() << "\t" <<points[i].y() << "\t" << points[i].z() << Qt::endl;
-//        }
-//        stream << points.last().x() << "\t" <<points.last().y() << "\t" << points.last().z();
-//    }
+    QProcess *process = new QProcess(this);
 
-//    file.close();
+    process->start(program, arguments);
+
+    process->waitForFinished(-1);
+
+    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+
+    process->close();
 
     return true;
+}
+
+
+
+QString ComponentAndCladdingWindEDP::pyScriptsPath()
+{
+    QString backendAppDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+                            + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
+                            + QString("IsolatedBuildingCFD");
+
+    return backendAppDir;
+}
+
+
+QString IsolatedBuildingCFD::templateDictDir()
+{
+    QString templateDictsDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+                               + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
+                               + QString("IsolatedBuildingCFD") + QDir::separator() + QString("templateOF10Dicts");
+
+    return templateDictsDir;
 }

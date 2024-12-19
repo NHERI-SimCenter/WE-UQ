@@ -211,6 +211,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     windProfileOption = new QComboBox();
     windProfileOption->addItem("Table");
     windProfileOption->addItem("ESDU");
+    windProfileOption->addItem("WRF Model");
     windProfileOption->setToolTip("Specify the wind profile from tabulated data for Engineering Sciences Data Unit (ESDU)");
 
 

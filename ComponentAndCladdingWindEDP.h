@@ -69,6 +69,8 @@ public:
     bool isInitialize();
 
     void setSelectedEvent(SimCenterAppWidget* event);
+    QString pyScriptsPath();
+    QString templateDictDir();
 
 signals:
 
@@ -91,7 +93,7 @@ private:
 
     bool initialized;
 
-    bool generateCompGeometry();
+    bool generateCompGeometry(QString caseDir);
 };
 
 #endif // COMPONENT_AND_CLADDING_EDP
