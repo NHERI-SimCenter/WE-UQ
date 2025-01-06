@@ -89,6 +89,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <WindEventSelection.h>
 #include <SimCenterPreferences.h>
 #include <QProcess>
+#include <QHeaderView>
 
 ComponentAndCladdingWindEDP::ComponentAndCladdingWindEDP(QWidget *parent)
     : SimCenterAppWidget(parent)
@@ -270,105 +271,26 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 
     QJsonObject rootObj = jsonDoc.object();
 
+    QWidget* componentsWidget = new QWidget();
+//    componentsWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    // Parse components array
-    QJsonArray components = rootObj.value("components").toArray();
-    for (const QJsonValue& componentValue : components)
-    {
-        QJsonObject componentObj = componentValue.toObject();
-
-        int componentId = componentObj.value("componentId").toInt();
-        QString componentName = componentObj.value("componentName").toString();
-        QString componentType = componentObj.value("componentType").toString();
-        int samplingDensity = componentObj.value("samplingDensity").toInt();
-
-        // Step 6: Parse geometries array
-        QJsonArray geometries = componentObj.value("geometries").toArray();
-        for (const QJsonValue& geometryValue : geometries) {
-            QJsonObject geometryObj = geometryValue.toObject();
-
-            int geometryId = geometryObj.value("geometryId").toInt();
-            QString shape = geometryObj.value("shape").toString();
-
-            qDebug() << "\n\tGeometry ID:" << geometryId
-                     << "\n\tShape:" << shape;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    QDialog *dialog  = new QDialog(this);
-
-    int dialogHeight = 600;
-    int dialogWidth = 800;
-
-    dialog->setMinimumHeight(dialogHeight);
-    dialog->setMinimumWidth(dialogWidth);
+    // Setup the QDialog
+    QDialog* dialog = new QDialog(this);
     dialog->setWindowTitle("Component Geometry");
+    dialog->resize(800, 600);  // Set initial size
 
-
-    QGridLayout* dialogLayout = new  QGridLayout();
-
+    // Create a horizontal layout for the dialog
+    QHBoxLayout* dialogLayout = new QHBoxLayout();
+    dialogLayout->setContentsMargins(0, 0, 0, 0);
+    dialogLayout->setSpacing(5);
+    dialogLayout->setAlignment(Qt::AlignTop); // Align the layout to the top
 
     //==================================================
     // Setup the VTK window
     //==================================================
 
-    QVTKRenderWidget *qvtkWidget;
-    qvtkWidget = new QVTKRenderWidget();
-    dialogLayout->addWidget(qvtkWidget,0,0);
-
-    //    if (mainModel->buildingShape()=="Complex" && !importPressurePoints->isChecked())
-    //    {
-    //        vtkNew<vtkCleanPolyData> pointData;
-    //        pointData->SetInputData(mainModel->getBldgBlock());
-
-    //        double W = mainModel->buildingWidth()/mainModel->geometricScale();
-    //        double D = mainModel->buildingDepth()/mainModel->geometricScale();
-    //        double H = mainModel->buildingHeight()/mainModel->geometricScale();
-
-    //        double dW = W/(numTapsAlongWidth->text().toInt() + 1.0e-10);
-    //        double dD = D/(numTapsAlongDepth->text().toInt() + 1.0e-10);
-    //        double dH = H/(numTapsAlongHeight->text().toInt() + 1.0e-10);
-
-    //        pointData->SetTolerance(sqrt(dW*dW + dD*dD + dH*dH));
-    //        pointData->Update();
-
-    ////        int nVtkPoints = pointData->GetOutput()->GetNumberOfCells();
-    ////        vtkNew<vtkCellCenters> cellCentersFilter;
-    ////        cellCentersFilter->SetInputData(pointData->GetOutput());
-    ////        cellCentersFilter->VertexCellsOff();
-    ////        cellCentersFilter->Update();
-
-    //        int nVtkPoints = pointData->GetOutput()->GetNumberOfPoints();
-
-    //        points.clear();
-
-    //        for (int i=0; i<nVtkPoints; i++)
-    //        {
-    //            QVector3D point;
-    //            point.setX(pointData->GetOutput()->GetPoint(i)[0]);
-    //            point.setY(pointData->GetOutput()->GetPoint(i)[1]);
-    //            point.setZ(pointData->GetOutput()->GetPoint(i)[2]);
-
-    //            points.append(point);
-    //        }
-    //    }
-
+    QVTKRenderWidget* qvtkWidget = new QVTKRenderWidget();
+    qvtkWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
     WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
@@ -384,13 +306,14 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     //Building actor
     vtkNew<vtkActor> buildingActor;// Actor in scene
     buildingActor->SetMapper(buildingMapper);
-    buildingActor->GetProperty()->SetColor(0.85, 0.0, 0.0);
+    buildingActor->GetProperty()->SetColor(0.5, 0.5, 0.5);
     buildingActor->GetProperty()->SetRepresentationToSurface();
-    buildingActor->GetProperty()->SetEdgeVisibility(true);
+    buildingActor->GetProperty()->SetEdgeVisibility(false);
 
     vtkSmartPointer<vtkSTLReader> componentSTLReader = vtkSmartPointer<vtkSTLReader>::New();
     componentSTLReader->SetFileName((theIso->caseDir() + "/constant/geometry/components/components_geometry.stl").toStdString().c_str());
     componentSTLReader->Update();
+
 
     //Component mapper
     vtkNew<vtkPolyDataMapper>componentgMapper; //mapper
@@ -416,7 +339,7 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     //Points actor
     vtkNew<vtkActor> pointsActor;// Actor in scene
     pointsActor->SetMapper(pointsMapper);
-    pointsActor->GetProperty()->SetColor(0.75, 0.75, 0.75);
+    pointsActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
     pointsActor->GetProperty()->SetPointSize(10);
 
     // Add Actor to renderer
@@ -435,43 +358,64 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     renderWindow->Render();
 
 
-//    //=======================================================
-//    //Point Table
-//    //=======================================================
-//    int numCols = 3; // x, y and z
-//    int numRows = points.size(); //acount points on each face of the building (sides and top)
+    //=======================================================
+    //Component Table
+    //=======================================================
 
-//    samplingPointsTable = new QTableWidget(numRows, numCols, samplePointsWidget);
-//    samplingPointsTable->setMinimumHeight(dialogHeight*0.95);
-//    samplingPointsTable->setMinimumWidth(dialogWidth*0.40);
-//    samplingPointsTable->setMaximumWidth(dialogWidth*0.50);
-//    samplePointsWidget->setMinimumHeight(dialogHeight*0.95);
-//    samplePointsWidget->setMinimumWidth(dialogWidth*0.40);
-//    samplePointsWidget->setMaximumWidth(dialogWidth*0.50);
+    QJsonArray components = rootObj.value("components").toArray();
 
-//    QStringList headerTitles = {"X", "Y", "Z"};
+    QStringList headerTitles = {"Name", "Type", "Geometries", "Demand", "Load", "Probe Density" };
 
-//    samplingPointsTable->setHorizontalHeaderLabels(headerTitles);
+    int numCols = headerTitles.size();
+    int numRows = components.size();
 
-//    for (int i=0; i < numCols; i++)
-//    {
-//        samplingPointsTable->setColumnWidth(i, samplingPointsTable->size().width()/numCols - 15);
+    QTableWidget* componentsTable = new QTableWidget(numRows, numCols, componentsWidget);
+    componentsTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-//        for (int j=0; j < numRows; j++)
-//        {
-//            samplingPointsTable->setItem(j, i, new QTableWidgetItem(""));
-//        }
-//    }
 
-//    for (int i=0; i < numRows; i++)
-//    {
-//        samplingPointsTable->item(i, 0)->setText(QString::number(points[i].x()));
-//        samplingPointsTable->item(i, 1)->setText(QString::number(points[i].y()));
-//        samplingPointsTable->item(i, 2)->setText(QString::number(points[i].z()));
-//    }
+    componentsTable->setHorizontalHeaderLabels(headerTitles);
 
-//    dialogLayout->addWidget(samplePointsWidget,0,1);
+    for (int i=0; i < numCols; i++)
+    {
+//        componentsTable->setColumnWidth(i, componentsTable->size().width()/numCols - 15);
+
+        for (int j=0; j < numRows; j++)
+        {
+            componentsTable->setItem(j, i, new QTableWidgetItem(""));
+        }
+    }
+
+    // Parse components array using index-based for loop
+    for (int i = 0; i < components.size(); ++i)
+    {
+        QJsonObject componentObj = components[i].toObject();
+
+        int componentId = componentObj.value("componentId").toInt();
+        QString componentType = componentObj.value("componentType").toString();
+        QString componentName = componentObj.value("componentName").toString();
+        QString loadValue = componentObj.value("loadValue").toString();
+        QString loadType = componentObj.value("loadType").toString();
+        QJsonArray geometries = componentObj.value("geometries").toArray();
+        int samplingDensity = componentObj.value("samplingDensity").toInt();
+
+        componentsTable->item(i, 0)->setText(componentName);
+        componentsTable->item(i, 1)->setText(componentType);
+        componentsTable->item(i, 2)->setText(QString::number(geometries.size()));
+        componentsTable->item(i, 3)->setText(loadType);
+        componentsTable->item(i, 4)->setText(loadValue);
+        componentsTable->item(i, 5)->setText(QString::number(samplingDensity));
+    }
+
+    // Resize columns to fit text content
+    componentsTable->resizeColumnsToContents();
+
     dialog->setLayout(dialogLayout);
+
+    // Add QVTKRenderWidget and QTableWidget to the layout
+    dialogLayout->addWidget(qvtkWidget, 1);        // VTK widget takes half the space
+//    dialogLayout->addWidget(componentsTable, 1);   // Table takes the other half
+    dialogLayout->addWidget(componentsTable, 1, Qt::AlignTop);
+
     dialog->exec();
 }
 
@@ -584,7 +528,7 @@ QString ComponentAndCladdingWindEDP::pyScriptsPath()
 }
 
 
-QString IsolatedBuildingCFD::templateDictDir()
+QString ComponentAndCladdingWindEDP::templateDictDir()
 {
     QString templateDictsDir = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
                                + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
