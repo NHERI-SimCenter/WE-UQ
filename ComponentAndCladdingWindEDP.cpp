@@ -135,80 +135,7 @@ bool ComponentAndCladdingWindEDP::initialize()
 
     connect(importButton, SIGNAL(clicked()), this, SLOT(onBrowseButtonClicked()));
     connect(showCompGeometryButton, SIGNAL(clicked()), this, SLOT(onShowCompGeometryButtonClicked()));
-
-    //==================================================
-    // Setup the VTK window to visualize components
-    // to check their alignment with the building
-    //==================================================
-
-//    WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
-//    IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
-
-
-//    if (!theIso)
-//    {
-//        qDebug() << "Error: theIsolatedBuildingCFD is not of type IsolatedBuildingCFD.";
-
-//        QMessageBox msgBox;
-//        msgBox.setWindowTitle("WE-UQ Error");
-//        msgBox.setText("This EDP currently works only with IsolatedBuildingCFD event!");
-//        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-//        msgBox.setDefaultButton(QMessageBox::Ok);
-//        msgBox.exec();
-
-//        return false;
-//    }
-
-//    QVTKRenderWidget *qvtkWidget;
-//    qvtkWidget = new QVTKRenderWidget();
-//    layout->addWidget(qvtkWidget,0,0);
-
-
-
-//    //Building mapper
-//    vtkNew<vtkPolyDataMapper>buildingMapper; //mapper
-//    buildingMapper->SetInputData(theIso->getBldgBlock());
-//    buildingMapper->Update();
-
-//    //Building actor
-//    vtkNew<vtkActor> buildingActor;// Actor in scene
-//    buildingActor->SetMapper(buildingMapper);
-//    buildingActor->GetProperty()->SetColor(0.85, 0.0, 0.0);
-//    buildingActor->GetProperty()->SetRepresentationToSurface();
-//    buildingActor->GetProperty()->SetEdgeVisibility(false);
-
-
-//    //point reader
-//    vtkNew<vtkSimplePointsReader> pointsReader;
-//    pointsReader->SetFileName((theIso->caseDir() + "/constant/simCenter/input/defaultSamplingPoints.txt").toStdString().c_str());
-//    pointsReader->Update();
-
-
-//    vtkNew<vtkDataSetMapper> pointsMapper; //mapper
-//    pointsMapper->SetInputData(pointsReader->GetOutput());
-
-
-//    //Points actor
-//    vtkNew<vtkActor> pointsActor;// Actor in scene
-//    pointsActor->SetMapper(pointsMapper);
-//    pointsActor->GetProperty()->SetColor(0.75, 0.75, 0.75);
-//    pointsActor->GetProperty()->SetPointSize(10);
-
-//    // Add Actor to renderer
-//    vtkNew<vtkRenderer> renderer; // VTK Renderer
-//    renderer->AddActor(buildingActor);
-//    renderer->AddActor(pointsActor);
-//    renderer->SetBackground(1.0, 1.0, 1.0);
-
-//    // VTK/Qt wedded
-//    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-//    qvtkWidget->setRenderWindow(renderWindow);
-//    qvtkWidget->renderWindow()->AddRenderer(renderer);
-//    renderWindow->BordersOn();
-//    renderer->ResetCamera();
-//    renderWindow->Render();
-
-
+\
     layout->addWidget(importComponentGroup);
 
     this->setLayout(layout);
@@ -217,9 +144,6 @@ bool ComponentAndCladdingWindEDP::initialize()
 
     return true;
 }
-
-
-
 
 
 ComponentAndCladdingWindEDP::~ComponentAndCladdingWindEDP()
@@ -339,7 +263,7 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     //Points actor
     vtkNew<vtkActor> pointsActor;// Actor in scene
     pointsActor->SetMapper(pointsMapper);
-    pointsActor->GetProperty()->SetColor(1.0, 0.0, 0.0);
+    pointsActor->GetProperty()->SetColor(0.0, 1.0, 0.0);
     pointsActor->GetProperty()->SetPointSize(10);
 
     // Add Actor to renderer
@@ -390,7 +314,7 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     {
         QJsonObject componentObj = components[i].toObject();
 
-        int componentId = componentObj.value("componentId").toInt();
+//        int componentId = componentObj.value("componentId").toInt();
         QString componentType = componentObj.value("componentType").toString();
         QString componentName = componentObj.value("componentName").toString();
         QString loadValue = componentObj.value("loadValue").toString();
@@ -442,6 +366,42 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
 {
     // just need to send the class type here.. type needed in object in case user screws up
     jsonObject["type"]="ComponentAndCladdingWindEDP";
+
+    QFile jsonFile(componentDefFilePath->text());
+
+    if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("WE-UQ Error");
+        msgBox.setText("The JSON file for component and cladding is is not correctly defined!");
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.exec();
+
+        false;
+    }
+
+    // Open the JSON file
+    QFile file(componentDefFilePath->text());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qCritical() <<"Could not open file:" << componentDefFilePath->text();
+        false;
+    }
+
+    // Read the file content
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    // Parse JSON content
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+    if (jsonDoc.isNull() || !jsonDoc.isObject()) {
+        qCritical() << "Invalid JSON format.";
+        false;
+    }
+
+    QJsonObject rootObj = jsonDoc.object();
+
+    jsonObject["components"] = rootObj.value("components");
 
     return true;
 }

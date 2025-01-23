@@ -215,7 +215,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     windProfileOption->setToolTip("Specify the wind profile from tabulated data for Engineering Sciences Data Unit (ESDU)");
 
 
-    importWindProfiles = new QPushButton("Import(*.csv)");
+    importWindProfiles = new QPushButton("Import Table");
     importWindProfiles->setVisible(true);
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
@@ -284,6 +284,10 @@ void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
     else if(arg1 == "Table")
     {
         importWindProfiles->setVisible(true);
+    }
+    else if(arg1 == "WRF Model")
+    {
+        importWindProfiles->setVisible(false);
     }
     else
     {

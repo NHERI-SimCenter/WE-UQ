@@ -106,9 +106,9 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     timeScale->setEnabled(false);
     timeScale->setToolTip("Time scale of the simulation, calculated directely from length and velocity scale");
 
-    referenceWindSpeed = new QLineEdit();
+    referenceWindSpeed = new LineEditRV(mainModel->getRandVarContainer());
     referenceWindSpeed->setText("10.0");
-    referenceWindSpeed->setValidator(new QDoubleValidator());
+//    referenceWindSpeed->setValidator(new QDoubleValidator());
     referenceWindSpeed->setToolTip("Wind speed at reference height in model scale");
 
     referenceHeight = new QLineEdit();

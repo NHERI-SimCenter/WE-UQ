@@ -137,6 +137,7 @@ public:
     double getTimeStep();
 
     vtkPolyData* getBldgBlock();
+    RandomVariablesContainer* getRandVarContainer();
     SC_ResultsWidget* getResultsWidget(QWidget *parent);
     double getDuration();
 
