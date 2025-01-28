@@ -119,7 +119,7 @@ bool ComponentAndCladdingWindEDP::initialize()
     snapToBuilding->setChecked(true);
     snapToBuilding->setToolTip("If checked, snaps the component geometry to the building surface even if there is a gap.");
 
-    showCompGeometryButton = new QPushButton("Map Component Geometry onto Building Surfaces");
+    showCompGeometryButton = new QPushButton("Map Component Geometry onto Building Surface");
 
 
     importComponentLayout->addWidget(importJsonLabel, 0, 0);
@@ -402,6 +402,7 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
     QJsonObject rootObj = jsonDoc.object();
 
     jsonObject["components"] = rootObj.value("components");
+    jsonObject["componentDefFilePath"] = componentDefFilePath->text();
 
     return true;
 }
@@ -410,6 +411,9 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
 bool ComponentAndCladdingWindEDP::inputFromJSON(QJsonObject &jsonObject)
 {
     Q_UNUSED(jsonObject);
+
+    componentDefFilePath->setText(jsonObject["componentDefFilePath"].toString());
+
     return true;
 }
 
