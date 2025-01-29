@@ -118,7 +118,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 .. _fig-we19-geometry-tab:
 .. figure:: figures/we19_EVT_Geometry_tab.svg
    :align: center
-   :width: 100%
+   :width: 95%
 
    Defining the domain dimensions and the building geometry.  
 
@@ -127,7 +127,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    
    .. figure:: figures/we19_EVT_Mesh_tab.svg
       :align: center
-      :width: 100%
+      :width: 75%
 
       Define the computational grid in the *Mesh* tab
 
@@ -156,7 +156,7 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
 
    .. figure:: figures/we19_EVT_Mesh_View.svg
       :align: center
-      :width: 100%
+      :width: 85%
 
       Breakout View of the Mesh
    
