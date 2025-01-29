@@ -185,7 +185,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
 
     
     this->setLayout(layout);
-    theCurrentEvent=theStochasticModel;
+    theCurrentEvent = theStochasticModel;
 
     connect(eventSelection,SIGNAL(currentTextChanged(QString)),this,SLOT(eventSelectionChanged(QString)));
 
@@ -438,4 +438,12 @@ WindEventSelection::copyFiles(QString &destDir) {
 bool WindEventSelection::supportsLocalRun()
 {
     return theCurrentEvent->supportsLocalRun();
+}
+
+
+
+
+SimCenterAppWidget* WindEventSelection::getCurrentEvent()
+{
+    return theCurrentEvent;
 }

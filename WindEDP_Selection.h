@@ -43,6 +43,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QGroupBox>
 #include <QVector>
+
 class QComboBox;
 class QStackedWidget;
 class UserDefinedApplication;
@@ -59,6 +60,7 @@ public:
     bool outputAppDataToJSON(QJsonObject &rvObject);
     bool inputAppDataFromJSON(QJsonObject &rvObject);
     bool copyFiles(QString &destName);
+    void setSelectedEvent(SimCenterAppWidget* event);
 
     void clear(void);
 
@@ -68,12 +70,14 @@ public slots:
    void edpSelectionChanged(const QString &arg1);
 
 private:
-   QComboBox   *edpSelection;
-   QStackedWidget *theStackedWidget;
+   QComboBox          *edpSelection;
+   QStackedWidget     *theStackedWidget;
    SimCenterAppWidget *theCurrentEDP;
    SimCenterAppWidget *theStandardWindEDPs;
+   SimCenterAppWidget *theComponentAndCladdingWindEDP;
    SimCenterAppWidget *theUserDefinedEDPs;
    SimCenterAppWidget *theSurrogateEDPs;
+   SimCenterAppWidget *windEventSelection;
 
 };
 

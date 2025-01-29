@@ -1,11 +1,11 @@
-#ifndef WIND_CHARACTERISTICS_WIDGET_H
-#define WIND_CHARACTERISTICS_WIDGET_H
+#ifndef COMPONENT_AND_CLADDING_EDP
+#define COMPONENT_AND_CLADDING_EDP
 
 /* *****************************************************************************
 Copyright (c) 2016-2017, The Regents of the University of California (Regents).
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
+Redistribution and use in source and binary forms, with or without 
 modification, are permitted provided that the following conditions are met:
 
 1. Redistributions of source code must retain the above copyright notice, this
@@ -29,84 +29,71 @@ The views and conclusions contained in the software and documentation are those
 of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
 
-REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+REGENTS SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
 THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS
-PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
+THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY, PROVIDED HEREUNDER IS 
+PROVIDED "AS IS". REGENTS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, 
 UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written by: Abiy
+// Written: Abiy Melaku
 
 #include <SimCenterAppWidget.h>
 
+#include <QGroupBox>
+#include <QVector>
+#include <QGridLayout>
+#include <QComboBox>
+#include <QPushButton>
+#include <QGroupBox>
+#include <QGridLayout>
+#include <QCheckBox>
+
 class InputWidgetParameters;
-class RandomVariablesContainer;
-class QComboBox;
-class QGridLayout;
-class QVBoxLayout;
-class QHBoxLayout;
-class QSpinBox;
-class QCheckBox;
-class QLineEdit;
-class LineEditRV;
-class QTabWidget;
-class QTableWidget;
-class QGroupBox;
-class QPushButton;
-class IsolatedBuildingCFD;
-class QDoubleSpinBox;
-class QLabel;
-class QRadioButton;
 
-class WindCharacteristicsWidget: public SimCenterAppWidget
+class ComponentAndCladdingWindEDP : public SimCenterAppWidget
 {
-    friend class IsolatedBuildingCFD;
-
     Q_OBJECT
 public:
-    explicit WindCharacteristicsWidget(IsolatedBuildingCFD *parent = 0);
-    ~WindCharacteristicsWidget();
+    explicit ComponentAndCladdingWindEDP(QWidget *parent = 0);
+    ~ComponentAndCladdingWindEDP();
 
-    bool outputToJSON(QJsonObject &jsonObject);
-    bool inputFromJSON(QJsonObject &jsonObject);
+    bool outputToJSON(QJsonObject &rvObject);
+    bool inputFromJSON(QJsonObject &rvObject);
+    bool outputAppDataToJSON(QJsonObject &rvObject);
+    bool inputAppDataFromJSON(QJsonObject &rvObject);
+    bool copyFiles(QString &dirName);
 
-    void updateWidgets();
+    bool initialize();
+    bool isInitialize();
 
-    double getTimeScale();
-
+    void setSelectedEvent(SimCenterAppWidget* event);
+    QString pyScriptsPath();
+    QString templateDictDir();
 
 signals:
 
 public slots:
-   void clear(void);
-   void onCalculateReynoldsNumber();
-   void onVelocityScaleChanged();
-
+    void clear(void);
+    void onBrowseButtonClicked(void);
+    void onShowCompGeometryButtonClicked();
 
 private:
 
-   IsolatedBuildingCFD  *mainModel;
+    QLineEdit   *componentDefFilePath;
+    QPushButton *importButton;
+    QGroupBox   *importComponentGroup;
+    QGridLayout *importComponentLayout;
+    SimCenterAppWidget *windEventSelection;
 
-   QVBoxLayout          *layout;
+    QPushButton *showCompGeometryButton;
+    QCheckBox   *considerWindDirection;
+    QCheckBox   *snapToBuilding;
 
-   QGroupBox            *windCharacteristicsGroup;
-   QGridLayout          *windCharacteristicsLayout;
+    bool initialized;
 
-   QLineEdit            *velocityScale;
-   QLineEdit            *timeScale;
-   QLineEdit            *referenceWindSpeed;
-   QLineEdit            *windSpeedScalingFactor;
-   QLineEdit            *referenceHeight;
-   QLineEdit            *airDensity;
-   QLineEdit            *kinematicViscosity;
-   QLineEdit            *reynoldsNumber;
-   QLineEdit            *aerodynamicRoughnessLength;
-   QPushButton          *calculateReynoldsNumber;
-
-public:
-
+    bool generateCompGeometry(QString caseDir);
 };
 
-#endif // WIND_CHARACTERISTICS_WIDGET_H
+#endif // COMPONENT_AND_CLADDING_EDP
