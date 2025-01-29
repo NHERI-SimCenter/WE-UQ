@@ -91,6 +91,7 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     QLabel *timeScaleLabel = new QLabel("Time Scale: ");
     QLabel *referenceHeightLabel = new QLabel("Reference Height:");
     QLabel *referenceWindSpeedLabel = new QLabel("Wind Speed at Reference Height:");
+    QLabel *windSpeedScalingFactorLabel = new QLabel("Wind Speed Scaling Factor:");
     QLabel *aerodynamicRoughnessLengthLabel = new QLabel("Roughness Length:");
     QLabel *airDensityLabel = new QLabel("Air Density:");
     QLabel *kinematicViscosityLabel = new QLabel("Kinematic Viscosity:");
@@ -106,10 +107,15 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     timeScale->setEnabled(false);
     timeScale->setToolTip("Time scale of the simulation, calculated directely from length and velocity scale");
 
-    referenceWindSpeed = new LineEditRV(mainModel->getRandVarContainer());
+    referenceWindSpeed = new QLineEdit();
+//    referenceWindSpeed = new LineEditRV(mainModel->getRandVarContainer());
     referenceWindSpeed->setText("10.0");
-//    referenceWindSpeed->setValidator(new QDoubleValidator());
+    referenceWindSpeed->setValidator(new QDoubleValidator());
     referenceWindSpeed->setToolTip("Wind speed at reference height in model scale");
+
+    windSpeedScalingFactor = new LineEditRV(mainModel->getRandVarContainer());
+    windSpeedScalingFactor->setText("1.0");
+    windSpeedScalingFactor->setToolTip("Scaling factor to make the wind speed as a random variable");
 
     referenceHeight = new QLineEdit();
     referenceHeight->setText(QString::number(mainModel->buildingHeight()/mainModel->geometricScale()));
@@ -149,14 +155,14 @@ WindCharacteristicsWidget::WindCharacteristicsWidget(IsolatedBuildingCFD *parent
     windCharacteristicsLayout->addWidget(timeScale, 0, 3);
 
     windCharacteristicsLayout->addWidget(referenceWindSpeedLabel, 1, 0);
-    windCharacteristicsLayout->addWidget(referenceHeightLabel, 2, 0);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 3, 0);
+    windCharacteristicsLayout->addWidget(windSpeedScalingFactorLabel, 2, 0);
+    windCharacteristicsLayout->addWidget(referenceHeightLabel, 3, 0);
+    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLengthLabel, 4, 0);
 
     windCharacteristicsLayout->addWidget(referenceWindSpeed, 1, 1);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 2, 1);
-//    windCharacteristicsLayout->addWidget(lengthUnitLabel, 1, 2,Qt::AlignLeft);
-    windCharacteristicsLayout->addWidget(referenceHeight, 2, 1);
-    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 3, 1);
+    windCharacteristicsLayout->addWidget(windSpeedScalingFactor, 2, 1);
+    windCharacteristicsLayout->addWidget(referenceHeight, 3, 1);
+    windCharacteristicsLayout->addWidget(aerodynamicRoughnessLength, 4, 1);
 
     windCharacteristicsLayout->addWidget(airDensityLabel, 1, 2);
     windCharacteristicsLayout->addWidget(kinematicViscosityLabel, 2, 2);
@@ -210,6 +216,7 @@ bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
 
     windCharJson["velocityScale"] = velocityScale->text().toDouble();
     windCharJson["timeScale"] = timeScale->text().toDouble();
+    windCharJson["windSpeedScalingFactor"] = windSpeedScalingFactor->text().toDouble();
     windCharJson["referenceWindSpeed"] = referenceWindSpeed->text().toDouble();
     windCharJson["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
     windCharJson["kinematicViscosity"] = kinematicViscosity->text().toDouble();
@@ -231,6 +238,12 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
 
     velocityScale->setText(QString::number(windCharJson["velocityScale"].toDouble()));
     timeScale->setText(QString::number(windCharJson["timeScale"].toDouble()));
+
+
+    if (windCharJson.contains("windSpeedScalingFactor"))
+    {
+        windSpeedScalingFactor->setText(QString::number(windCharJson["windSpeedScalingFactor"].toDouble()));
+    }
     referenceWindSpeed->setText(QString::number(windCharJson["referenceWindSpeed"].toDouble()));
     referenceHeight->setText(QString::number(windCharJson["referenceHeight"].toDouble()));
     aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));
