@@ -103,6 +103,7 @@ private:
    QGridLayout  *inflowLayout;
 
    QComboBox    *windProfileOption;
+   QPushButton  *importWRF;
    QPushButton  *importWindProfiles;
    QPushButton  *showWindProfiles;
    QList<QList<double>> windProfiles;

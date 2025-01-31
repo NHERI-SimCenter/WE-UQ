@@ -44,6 +44,11 @@
       "name": "E9: Wind Load Evaluation on a Building with Surroundings Using CFD",
       "description": "",
       "inputFile": "weuq-0017/src/input.json"
+    },
+    {
+      "name": "E10: Wind Load Evaluation on Components and Clading using CFD",
+      "description": "",
+      "inputFile": "weuq-0019/src/input.json"
     }
   ]
 }

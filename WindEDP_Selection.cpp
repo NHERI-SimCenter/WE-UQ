@@ -36,31 +36,29 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: fmckenna
+// Written: fmckenna & Abiy Melaku
 
 #include "WindEDP_Selection.h"
 #include "SurrogateEDP.h"
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-
 #include <QStackedWidget>
 #include <QComboBox>
-
-
 #include <QPushButton>
 #include <QJsonObject>
 #include <QJsonArray>
-
 #include <QLabel>
 #include <QLineEdit>
 #include <QDebug>
 #include <QFileDialog>
 #include <QPushButton>
 #include <SectionTitle.h>
-
 #include <StandardWindEDP.h>
 #include <UserDefinedEDP.h>
+#include <ComponentAndCladdingWindEDP.h>
+#include <WindEventSelection.h>
+#include <IsolatedBuildingCFD.h>
+#include <QMessageBox>
 
 WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEDP(0)
@@ -73,10 +71,11 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
 
     QHBoxLayout *theSelectionLayout = new QHBoxLayout();
     SectionTitle *label = new SectionTitle();
-    label->setText(QString("Engineering Demand Paramaters Generator"));
+    label->setText(QString("Engineering Demand Parameters Generator"));
     label->setMinimumWidth(250);
     edpSelection = new QComboBox();
     edpSelection->addItem(tr("Standard Wind"));
+    edpSelection->addItem(tr("Component and Cladding EDP"));
     edpSelection->addItem(tr("User Defined"));
     edpSelection->addItem(tr("None (only for surrogate)"));
     edpSelection->setObjectName("EDPSelectionComboBox");
@@ -99,6 +98,9 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
 
     theStandardWindEDPs = new StandardWindEDP();
     theStackedWidget->addWidget(theStandardWindEDPs);
+
+    theComponentAndCladdingWindEDP = new ComponentAndCladdingWindEDP();
+    theStackedWidget->addWidget(theComponentAndCladdingWindEDP);
 
     theUserDefinedEDPs = new UserDefinedEDP();
     theStackedWidget->addWidget(theUserDefinedEDPs);    
@@ -156,14 +158,49 @@ void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
         theCurrentEDP = theStandardWindEDPs;
     }
 
-    else if(arg1 == "User Defined") {
+    else if(arg1 == "Component and Cladding EDP") {
+
+        WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
+        IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
+
+        if (!theIso)
+        {
+            qDebug() << "Error: theIsolatedBuildingCFD is not of type IsolatedBuildingCFD.";
+
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("WE-UQ Error");
+            msgBox.setText("Currently, this EDP works only with IsolatedBuildingCFD EVENT!");
+            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+
+            theStackedWidget->setCurrentIndex(0);
+            theCurrentEDP = theStandardWindEDPs;
+            edpSelection->setCurrentIndex(0);
+            return;
+        }
+
         theStackedWidget->setCurrentIndex(1);
+        theCurrentEDP = theComponentAndCladdingWindEDP;
+
+        ComponentAndCladdingWindEDP* ccEDP  = dynamic_cast<ComponentAndCladdingWindEDP*>(theComponentAndCladdingWindEDP);
+
+        if (!ccEDP->isInitialize())
+        {
+            ccEDP->setSelectedEvent(windEventSelection);
+            ccEDP->initialize();
+        }
+
+    }
+
+    else if(arg1 == "User Defined") {
+        theStackedWidget->setCurrentIndex(2);
         theCurrentEDP = theUserDefinedEDPs;
     }
     else if (arg1 == "None (only for surrogate)") {
-        theStackedWidget->setCurrentIndex(2);
+        theStackedWidget->setCurrentIndex(3);
         theCurrentEDP = theSurrogateEDPs;
-    qDebug() << "EDP_Selection::Changed tp Auto Defined";
+    qDebug() << "EDP_Selection::Changed to Auto Defined";
     }
     else {
         qDebug() << "ERROR .. WindEDP_Selection selection .. type unknown: " << arg1;
@@ -199,12 +236,15 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
     if ((type == QString("Standard Wind EDPs")) ||
             (type == QString("StandardWindEDP"))) {
         index = 0;
+    } else if ((type == QString("ComponentAndCladdingWindEDP")) ||
+               (type == QString("Component and Cladding EDP"))) {
+        index = 1;
     } else if ((type == QString("UserDefinedEDP")) ||
                (type == QString("User Defined EDPs"))) {
-        index = 1;
+        index = 2;
     } else if ((type == QString("None (only for surrogate)")) ||
                  (type == QString("SurrogateEDP"))) {
-        index = 2;
+        index = 3;
     } else {
         errorMessage("WindEDP_Selection - no valid type found");
         return false;
@@ -238,3 +278,9 @@ WindEDP_Selection::clear(void) {
         return  theCurrentEDP->clear();
     }
 }
+
+void WindEDP_Selection::setSelectedEvent(SimCenterAppWidget* event)
+{
+    windEventSelection = event;
+}
+

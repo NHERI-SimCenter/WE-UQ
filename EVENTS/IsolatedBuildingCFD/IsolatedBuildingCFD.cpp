@@ -89,6 +89,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     this->isLaunchedAsTool = isLaunchedAsTool;
+//    this->theRandomVariablesContainer = theRandomVariableIW;
 }
 
 bool IsolatedBuildingCFD::initialize()
@@ -894,6 +895,7 @@ bool IsolatedBuildingCFD::setupCase()
     targetDir.mkpath("0");
     targetDir.mkpath("constant");
     targetDir.mkpath("constant/geometry");
+    targetDir.mkpath("constant/geometry/components");
     targetDir.mkpath("constant/simCenter");
     targetDir.mkpath("constant/simCenter/output");
     targetDir.mkpath("constant/simCenter/input");
@@ -1196,3 +1198,9 @@ void IsolatedBuildingCFD::onSaveMeshClicked()
 
     statusMessage("Writing done!");
 }
+
+RandomVariablesContainer* IsolatedBuildingCFD::getRandVarContainer()
+{
+    return theRandomVariablesContainer;
+}
+

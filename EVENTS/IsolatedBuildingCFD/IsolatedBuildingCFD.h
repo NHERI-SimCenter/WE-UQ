@@ -68,6 +68,8 @@ class QCheckBox;
 class QFormLayout;
 class QLabel;
 class vtkPolyData;
+
+
 class IsolatedBuildingCFD : public SimCenterAppWidget
 {
     Q_OBJECT
@@ -135,6 +137,7 @@ public:
     double getTimeStep();
 
     vtkPolyData* getBldgBlock();
+    RandomVariablesContainer* getRandVarContainer();
     SC_ResultsWidget* getResultsWidget(QWidget *parent);
     double getDuration();
 

@@ -66,6 +66,7 @@ public:
     bool inputAppDataFromJSON(QJsonObject &jsonObject);
     bool copyFiles(QString &destName);
     bool supportsLocalRun() override;
+    SimCenterAppWidget* getCurrentEvent();
 
 signals:
     void statusMessage(QString message);
