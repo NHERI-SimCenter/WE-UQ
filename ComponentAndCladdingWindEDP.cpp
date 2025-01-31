@@ -38,6 +38,8 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include <QJsonObject>
 #include "ComponentAndCladdingWindEDP.h"
+#include <SC_FileEdit.h>
+
 #include <QLabel>
 #include <QGroupBox>
 #include <QGridLayout>
@@ -107,9 +109,9 @@ bool ComponentAndCladdingWindEDP::initialize()
     importComponentGroup->setLayout(importComponentLayout);
 
     QLabel *importJsonLabel = new QLabel("Components Geometry JSON Path:");
-    componentDefFilePath = new QLineEdit();
-    importButton = new QPushButton("Browse");
-
+    //FMK  componentDefFilePath = new QLineEdit();
+    componentDefFilePath = new SC_FileEdit("componentDefFilePath");    
+    //FMK  importButton = new QPushButton("Browse");
 
     considerWindDirection = new QCheckBox("Consider Wind Direction");
     considerWindDirection->setChecked(true);
@@ -124,7 +126,7 @@ bool ComponentAndCladdingWindEDP::initialize()
 
     importComponentLayout->addWidget(importJsonLabel, 0, 0);
     importComponentLayout->addWidget(componentDefFilePath, 0, 1);
-    importComponentLayout->addWidget(importButton, 0, 2);
+    //FMK importComponentLayout->addWidget(importButton, 0, 2);
     importComponentLayout->addWidget(considerWindDirection, 1, 0);
     importComponentLayout->addWidget(snapToBuilding, 2, 0);
     importComponentLayout->addWidget(showCompGeometryButton, 3, 0, 1, 3);
@@ -161,7 +163,8 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 {
     //First check if the component JSON file is properly defined
 
-    QFile jsonFile(componentDefFilePath->text());
+    // FMK QFile jsonFile(componentDefFilePath->text());
+  QFile jsonFile(componentDefFilePath->getFilename());
 
     if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -175,16 +178,17 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
         return;
     }
 
+    // FMK - double check!!
     // Open the JSON file
-    QFile file(componentDefFilePath->text());
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qCritical() << "Could not open file:" << componentDefFilePath->text();
-        return;
-    }
+    //    QFile file(componentDefFilePath->text());
+    //if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    //    qCritical() << "Could not open file:" << componentDefFilePath->text();
+    //    return;
+    // }
 
     // Read the file content
-    QByteArray jsonData = file.readAll();
-    file.close();
+    QByteArray jsonData = jsonFile.readAll();
+    jsonFile.close();
 
     // Parse JSON content
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
@@ -346,14 +350,14 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 void ComponentAndCladdingWindEDP::onBrowseButtonClicked()
 {
 
-    QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), componentDefFilePath->text(), tr("JSON Files (*.json)"));
+    QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), componentDefFilePath->getFilename(), tr("JSON Files (*.json)"));
 
 
     QFile jsonFile(stlFileName);
 
     if (jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
-        componentDefFilePath->setText(stlFileName);
+        componentDefFilePath->setFilename(stlFileName);
     }
     else
     {
@@ -367,7 +371,7 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
     // just need to send the class type here.. type needed in object in case user screws up
     jsonObject["type"]="ComponentAndCladdingWindEDP";
 
-    QFile jsonFile(componentDefFilePath->text());
+    QFile jsonFile(componentDefFilePath->getFilename());
 
     if (!jsonFile.open(QFile::ReadOnly | QFile::Text))
     {
@@ -381,16 +385,19 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
         false;
     }
 
+    /* DOUBLE WHAMMY AGAIN!
     // Open the JSON file
     QFile file(componentDefFilePath->text());
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qCritical() <<"Could not open file:" << componentDefFilePath->text();
         false;
     }
+    */
+    
 
     // Read the file content
-    QByteArray jsonData = file.readAll();
-    file.close();
+    QByteArray jsonData = jsonFile.readAll();
+    jsonFile.close();
 
     // Parse JSON content
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
@@ -402,7 +409,8 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
     QJsonObject rootObj = jsonDoc.object();
 
     jsonObject["components"] = rootObj.value("components");
-    jsonObject["componentDefFilePath"] = componentDefFilePath->text();
+    componentDefFilePath->outputToJSON(jsonObject);
+    //FMK jsonObject["componentDefFilePath"] = componentDefFilePath->text();
 
     return true;
 }
@@ -412,7 +420,8 @@ bool ComponentAndCladdingWindEDP::inputFromJSON(QJsonObject &jsonObject)
 {
     Q_UNUSED(jsonObject);
 
-    componentDefFilePath->setText(jsonObject["componentDefFilePath"].toString());
+    //componentDefFilePath->setText(jsonObject["componentDefFilePath"].toString());
+    componentDefFilePath->inputFromJSON(jsonObject);    
 
     return true;
 }
@@ -439,6 +448,7 @@ bool ComponentAndCladdingWindEDP::inputAppDataFromJSON(QJsonObject &jsonObject) 
 
 bool ComponentAndCladdingWindEDP::copyFiles(QString &dirName) {
     Q_UNUSED(dirName);
+    componentDefFilePath->copyFile(dirName);        
     return true;
 }
 
@@ -458,7 +468,7 @@ bool ComponentAndCladdingWindEDP::generateCompGeometry(QString caseDir)
     //Run python script to create component geometry
     QString scriptPath = pyScriptsPath() + "/generate_component_geometry.py";
     QString jsonPath = caseDir + QDir::separator() + "constant" + QDir::separator() + "simCenter" + QDir::separator() + "input";
-    QString comptJsonPath = componentDefFilePath->text();
+    QString comptJsonPath = componentDefFilePath->getFilename();
     QString outputPath =caseDir;
     QString templatePath = templateDictDir();
 
