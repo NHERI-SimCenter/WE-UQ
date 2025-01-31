@@ -216,7 +216,7 @@ bool WindCharacteristicsWidget::outputToJSON(QJsonObject &jsonObject)
 
     windCharJson["velocityScale"] = velocityScale->text().toDouble();
     windCharJson["timeScale"] = timeScale->text().toDouble();
-    windCharJson["windSpeedScalingFactor"] = windSpeedScalingFactor->text().toDouble();
+    windCharJson["windSpeedScalingFactor"] = windSpeedScalingFactor->text();
     windCharJson["referenceWindSpeed"] = referenceWindSpeed->text().toDouble();
     windCharJson["aerodynamicRoughnessLength"] = aerodynamicRoughnessLength->text().toDouble()/mainModel->geometricScale();
     windCharJson["kinematicViscosity"] = kinematicViscosity->text().toDouble();
@@ -239,11 +239,22 @@ bool WindCharacteristicsWidget::inputFromJSON(QJsonObject &jsonObject)
     velocityScale->setText(QString::number(windCharJson["velocityScale"].toDouble()));
     timeScale->setText(QString::number(windCharJson["timeScale"].toDouble()));
 
-
     if (windCharJson.contains("windSpeedScalingFactor"))
     {
-        windSpeedScalingFactor->setText(QString::number(windCharJson["windSpeedScalingFactor"].toDouble()));
+        if (windCharJson["windSpeedScalingFactor"].isDouble())
+        {
+            windSpeedScalingFactor->setText(QString::number(windCharJson["windSpeedScalingFactor"].toDouble()));
+        }
+        else if (windCharJson["windSpeedScalingFactor"].isString())
+        {
+            windSpeedScalingFactor->setText(windCharJson["windSpeedScalingFactor"].toString());
+        }
     }
+    else
+    {
+        windSpeedScalingFactor->setText("1.0");
+    }
+
     referenceWindSpeed->setText(QString::number(windCharJson["referenceWindSpeed"].toDouble()));
     referenceHeight->setText(QString::number(windCharJson["referenceHeight"].toDouble()));
     aerodynamicRoughnessLength->setText(QString::number(mainModel->geometricScale()*windCharJson["aerodynamicRoughnessLength"].toDouble()));

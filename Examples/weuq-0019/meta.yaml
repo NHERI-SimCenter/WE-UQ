@@ -1,0 +1,2 @@
+summary: "This example demonstrated a workflow for evaluating wind loads on building components and cladding. The target structure used in this example is a simple single family low-rise building with gable roof. For computing component and cladding loads, the workflow uses a transient CFD simulation. The example defines the design wind speed is as random variable and the related uncertainites are propagated throught the workflow to computed final wind loads"
+difficulty: 3 
