@@ -51,6 +51,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QCheckBox>
 
 class InputWidgetParameters;
+class SC_FileEdit;
 
 class ComponentAndCladdingWindEDP : public SimCenterAppWidget
 {
@@ -81,7 +82,7 @@ public slots:
 
 private:
 
-    QLineEdit   *componentDefFilePath;
+    SC_FileEdit   *componentDefFilePath;
     QPushButton *importButton;
     QGroupBox   *importComponentGroup;
     QGridLayout *importComponentLayout;

@@ -97,7 +97,7 @@ private:
    QLineEdit            *velocityScale;
    QLineEdit            *timeScale;
    QLineEdit            *referenceWindSpeed;
-   QLineEdit            *windSpeedScalingFactor;
+   LineEditRV            *windSpeedScalingFactor;
    QLineEdit            *referenceHeight;
    QLineEdit            *airDensity;
    QLineEdit            *kinematicViscosity;
