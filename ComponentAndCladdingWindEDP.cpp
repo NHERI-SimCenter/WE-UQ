@@ -381,18 +381,8 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
-
-        false;
+        return false;
     }
-
-    /* DOUBLE WHAMMY AGAIN!
-    // Open the JSON file
-    QFile file(componentDefFilePath->text());
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qCritical() <<"Could not open file:" << componentDefFilePath->text();
-        false;
-    }
-    */
     
 
     // Read the file content
@@ -403,7 +393,7 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
     if (jsonDoc.isNull() || !jsonDoc.isObject()) {
         qCritical() << "Invalid JSON format.";
-        false;
+        return false;
     }
 
     QJsonObject rootObj = jsonDoc.object();
@@ -465,6 +455,8 @@ void ComponentAndCladdingWindEDP::setSelectedEvent(SimCenterAppWidget* event)
 
 bool ComponentAndCladdingWindEDP::generateCompGeometry(QString caseDir)
 {
+    updateJSON(caseDir);
+
     //Run python script to create component geometry
     QString scriptPath = pyScriptsPath() + "/generate_component_geometry.py";
     QString jsonPath = caseDir + QDir::separator() + "constant" + QDir::separator() + "simCenter" + QDir::separator() + "input";
@@ -510,3 +502,42 @@ QString ComponentAndCladdingWindEDP::templateDictDir()
 
     return templateDictsDir;
 }
+
+
+void ComponentAndCladdingWindEDP::updateJSON(QString caseDir)
+{
+    QFile compJsonFile(componentDefFilePath->getFilename());
+
+    if (!compJsonFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        qCritical() << "The JSON file for component and cladding is is not correctly defined!";
+    }
+
+    // Read the file content
+    QByteArray jsonData = compJsonFile.readAll();
+    compJsonFile.close();
+
+    // Parse JSON content
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+    if (jsonDoc.isNull() || !jsonDoc.isObject()) {
+        qCritical() << "Invalid JSON format.";
+    }
+
+
+    //Write it to JSON becase it is needed for the mesh generation before the final simulation is run.
+    //In future only one JSON file in temp.SimCenter directory might be enough
+    QString inputFilePath = caseDir + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                            + QDir::separator() + "input" + QDir::separator() + "ComponentDefinition.json";
+
+
+    QFile jsonFile(inputFilePath);
+    if (!jsonFile.open(QFile::WriteOnly | QFile::Text))
+    {
+        qDebug() << "Cannot find the path: " << inputFilePath;
+    }
+
+    jsonFile.write(jsonDoc.toJson());
+
+    jsonFile.close();
+}
+
