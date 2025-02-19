@@ -160,25 +160,25 @@ void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
 
     else if(arg1 == "Component and Cladding EDP") {
 
-        WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
-        IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
+//        WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
+//        IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
 
-        if (!theIso)
-        {
-            qDebug() << "Error: theIsolatedBuildingCFD is not of type IsolatedBuildingCFD.";
+//        if (!theIso)
+//        {
+//            qDebug() << "Error: theIsolatedBuildingCFD is not of type IsolatedBuildingCFD.";
 
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("WE-UQ Error");
-            msgBox.setText("Currently, this EDP works only with IsolatedBuildingCFD EVENT!");
-            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.exec();
+//            QMessageBox msgBox;
+//            msgBox.setWindowTitle("WE-UQ Error");
+//            msgBox.setText("Currently, this EDP works only with IsolatedBuildingCFD EVENT!");
+//            msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+//            msgBox.setDefaultButton(QMessageBox::Ok);
+//            msgBox.exec();
 
-            theStackedWidget->setCurrentIndex(0);
-            theCurrentEDP = theStandardWindEDPs;
-            edpSelection->setCurrentIndex(0);
-            return;
-        }
+//            theStackedWidget->setCurrentIndex(0);
+//            theCurrentEDP = theStandardWindEDPs;
+//            edpSelection->setCurrentIndex(0);
+//            return;
+//        }
 
         theStackedWidget->setCurrentIndex(1);
         theCurrentEDP = theComponentAndCladdingWindEDP;
@@ -218,7 +218,6 @@ WindEDP_Selection::outputAppDataToJSON(QJsonObject &jsonObject)
 bool
 WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
 {
-
     // get name from "Application" key
 
     QString type;

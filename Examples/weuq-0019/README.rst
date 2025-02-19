@@ -7,7 +7,7 @@ Computing Wind Loads on Building Components and Cladding
 | Problem files  | :weuq-0019:`/`          |
 +----------------+-------------------------+
 
-This examples demonstrated a workflow for evaluating component and cladding loads on buildings. The geometry of the building used for this study is a gable roof low rise building taken from Tokyo Polytechnic University (TPU) aerodynamic database. :numref:`fig-we19-1` shows the study building in the CFD model. The STL geometry of the building can be found :github:`here <Examples/weuq-0019/src/buildingGeometry/tpu_building.stl>` that can be imported to the workflow. Most of the input parameters used in this example are similar to the example in :numref:`weuq-0015`.  
+This examples demonstrated a workflow for evaluating component and cladding loads on buildings. The geometry of the building used for this study is a gable roof low rise building taken from Tokyo Polytechnic University (TPU) aerodynamic database. :numref:`fig-we19-1` shows the study building in the CFD model. The STL geometry of the building can be found :github:`here <Examples/weuq-0019/src/tpu_building_geometry.stl>` that can be imported to the workflow. Most of the input parameters used in this example are similar to the example in :numref:`weuq-0015`.  
 
 .. _fig-we19-1:
 
@@ -162,30 +162,19 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    
 4. To define initial and boundary conditions, select *Boundary Conditions* tab. 
 
-   * Based on the values given in :numref:`tbl-we14-1`, set the **Velocity Scale** to 1, **Wind Speed At Reference Height** to :math:`60 m/s`, and the **Reference Height** as building height, which is :math:`442.1 m`. For the **Aerodynamic Roughness Length** use :math:`0.03 m`. Set  **Air Density** and **Kinematic Viscosity** to :math:`1.225 \, kg/m^3` and :math:`1.5 \times 10^{-5} \, m^2/s`, respectively. The Reynolds number (:math:`Re`) can be determined by clicking **Calculate** button, which gives :math:`1.77 \times 10^{9}`.
-
-   * At the **Inlet** of the domain use *MeanABL* which specifies a mean velocity profile based on the logarithmic profile. For **Outlet** set a *zeroPressureOutlet* boundary condition. On the **Side** and **Top** faces of the domain use *slip* wall boundary conditions. For the **Ground** surface, apply *roughWallFunction*. Finally, the **Building** surface uses *smoothWallFunction* assuming the building has a smooth surface.   
+   * Based on the values given in :numref:`tbl-we19-1`, set the boundary conditions as shown in the following figure. Here the **Wind Speed Scaling Factor** is defined as a random variable and the uncertainties will be propagated in the wind load calculation. At the **Inlet** of the domain use *TInf* with the specified inflow generation method (DFM). Then, select *Table* for the **Wind Profile** and import the wind characteristics from :github:`here <Examples/weuq-0019/src/wind_profile.csv>`
 
    .. figure:: figures/we19_EVT_BoundaryConditions.svg
       :align: center
-   :alt: Image showing error in description
       :width: 75%
 
       Setup the *Boundary Conditions*  
 
-5. Specify turbulence modeling, solver type, duration and time step options in the *Numerical Setup* tab. 
-   
-   * In **Turbulence Modeling** group, set **Simulation Type** to *LES* and select *Smagorinsky* for the **Sub-grid Scale Model**.
-  
-   * For the **Solver Type**, specify *pisoFoam* and put 1 for **Number of Non-Orthogonal Correctors** to add an additional iteration for the non-orthogonal grid close to the building surface.  
-  
-   * For the **Duration** of the simulation, use :math:`1200 s` based on what is defined in :numref:`tbl-we14-1`. Determined the approximate **Time Steep** by clicking the **Calculate** button. For this example, the estimated time step that gives a Courant number close to unity is :math:`0.0143913 s`, which is changed to :math:`0.01 s` for convenience.  
+5. Specify turbulence modeling, solver type, duration and time step options in the *Numerical Setup* tab as shown bellow. 
 
-   * Check the **Run Simulation in Parallel** option and specify the **Number of Processors** to the 56. 
+.. _fig-we19-CFD-num-setup:
 
-.. _fig-we14-CFD-num-setup:
-
-.. figure:: figures/we14_EVT_NumericalSetup.svg
+.. figure:: figures/we19_EVT_NumericalSetup.svg
    :align: center
    :alt: Image showing error in description
    :width: 75%
@@ -193,50 +182,45 @@ To set up the CFD model, in the **EVT** panel, select "CFD - Wind Loads on Isola
    Edit inputs in the *Numerical Setup* tab
 
 
-6. Monitor wind loads from the CFD simulation in the *Monitoring* tab.  
- 
-   * Check **Monitor Base Loads** to record integrated loads at the base of the building, and set the **Write Interval** to 10.
-  
-   * Change the **Write Interval** for story loads to 10, which gives records the loads at an interval of :math:`\Delta t \times 10 = 0.1s`. 
-  
-   * Since only integrated loads are needed for the analysis, uncheck the **Sample Pressure Data on the Building Surface** option. 
-  
-   .. figure:: figures/we14_EVT_Monitoring.svg
+6. Monitor wind loads from the CFD simulation in the *Monitoring* tab. Leave this tab options as shown bellow. 
+
+   .. figure:: figures/we19_EVT_Monitoring.svg
       :align: center
-   :alt: Image showing error in description
       :width: 75%
 
       Select the outputs from CFD in the *Monitoring* tab
 
 Finite Element Analysis
 """""""""""""""""""""""""
-The finite element analysis options are specified in the **FEM** panel. For this example, keep the default values as seen in :numref:`fig-we14-FEM-panel`. 
+Please leave this panel to the default values, since no structural analysis is needed. We are mainly interested in evaluating wind loads on components and cladding. 
 
-.. _fig-we14-FEM-panel:
 
-.. figure:: figures/we14_FEM_panel.svg
-   :align: center
-   :alt: Image showing error in description
-   :width: 75%
-
-   Setup the Finite Element analysis options
 
 Engineering Demand Parameter
-""""""""""""""""""""""""""""""
-Next, specify Engineering Demand Parameters (EDPs) in the **EDP** panel. Select *Standard Wind* EDPs which include floor displacement, acceleration and inter-story drift.  
+"""""""""""""""""""""""""""""
+Next, specify Engineering Demand Parameters(EDPs) in the **EDP** panel. Select *Component and Cladding EDP* option which allows the user to define the geometry of components. In the current workflow this is done using JSON file, which is provided in :github:`here <Examples/weuq-0019/src/ComponentDefinition.json>`.
 
-.. figure:: figures/we14_EDP_panel.svg
+.. figure:: figures/we19_EDP_panel.svg
    :align: center
-   :alt: Image showing error in description
    :width: 75%
 
    Select the EDPs to measure
 
+
+Once specifying the path to this file in **Component Geometry JSON Path**, click **Map Component Geometry onto Building Surface**. This will map the comonent geometries on to the building surface as shown in the following figure.  
+
+.. figure:: figures/we19_EDP_panel_components.svg
+   :align: center
+   :width: 75%
+
+   Map components to the building geometry.  
+
+
 Random Variables
 """""""""""""""""
-The random variables are defined in **RV** tab. Here, the floor stiffness named as :math:`k` in **SIM** panel is automatically assigned as a random variable. Select *Normal* for its probability **Distribution**  with :math:`5 \times 10^{8}` for the **Mean** and :math:`5 \times 10^{7}` for **Standard Dev**. 
+Since the wind speed scaling factor is defined as a random variable, it will show up this panel. Now for the radom variable **wsF** set *Normal* for its probability **Distribution**  with :math:`1.0` **Mean** value and :math:`0.2` **Standard Dev**. 
 
-.. figure:: figures/we14_RV_panel.svg
+.. figure:: figures/we19_RV_panel.svg
    :align: center
    :alt: Image showing error in description
    :width: 75%
@@ -245,58 +229,37 @@ The random variables are defined in **RV** tab. Here, the floor stiffness named 
 
 Running the Simulation 
 """""""""""""""""""""""
- To run the CFD simulation, first login to *DesignSafe* with your credential. Then, run the job remotely by clicking **RUN at DesignSafe**. Give the simulation a **Job Name**.  Set **Num Nodes** to 1 and **# Processes Per Node** to 56. For the **Max Run Time**, specify *20:00:00*. Finally, click the **Submit** button to send the job to *DesignSafe*.  
+The CFD simulation for this example is already run, and results are collected. The users can run the remain part of the workflow locally by clicking **RUN** button.
 
-.. figure:: figures/we14_RunJob.svg
-   :align: center
-   :alt: Image showing error in description
-   :width: 80%
-
-   Submit the simulation to the remote server (DesignSafe-CI)
 
 Results
 """""""""
-The status of the remote job can be tracked by clicking **GET from DesignSafe**. Once the remote job finishes, the results can be reloaded by selecting the **Retrieve Data** option by right-clicking on the job name. Then, the results will be displayed in the **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
+Once the example is run, the results will aromatically show up . Then, the results will be displayed in the **RES** tab. The responses qualitative reported for *Standard* EDP include statistics of floor displacement, acceleration and inter-story drift, e.g.,    
 
-      * 1-PFA-0-1: represents **peak floor acceleration** at the **ground floor** for **component 1** (x-dir)
-      * 1-PFD-1-2: represents **peak floor displacement** (relative to the ground) at the **1st floor** ceiling for **component 2** (y-dir)
-      * 1-PID-3-1: represents  **peak inter-story drift ratio** of the **3rd floor** for **component 1** (x-dir) and
-      * 1-RMSA-108-1: represents **root-mean-squared acceleration** of the **106th floor** for **component 1** (x-dir).   
+      * 1-MP-zone1: represents **mean pressure** on a cladding/component element named **zone1** 
+      * 1-RP-zone2: represents **root-mean-square pressure** on a cladding/component element named **zone2** 
+      * 1-PP-zone1: represents **peak pressure** on a cladding/component element named **zone1** 
+      * 1-MF-dr1: represents **mean force** on a component element named **dr1** 
+      * 1-RP-wd1: represents **root-mean-square force** on a component element named **wd1** 
+      * 1-PF-wd1: represents **peak force** on a component element named **wd1** 
 
 The *Summary* tab of the panel shows the four statistical moments of the EDPs which include *Mean*, *StdDev*, *Skewness* and *Kurtosis*. 
 
-.. figure:: figures/we14_RES_Summary.svg
+.. figure:: figures/we19_RES_Summary.svg
    :align: center
-   :alt: Image showing error in description
    :width: 75%
 
    Summary of the recorded EDPs in **RES** panel
 
-By switching to the *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the top-floor acceleration with floor stiffness. 
+By switching to the *Data Values* tab, the user can also visualize all the realizations of the simulation. The figure below shows the variation of the peak pressure variation with the wind speed used in the simulation. 
 
-.. figure:: figures/we14_RES_DataValues.svg
+.. figure:: figures/we19_RES_DataValues.svg
    :align: center
-   :alt: Image showing error in description
    :width: 75%
    :figclass: align-center
 
-   (scatter-plot) Top-floor acceleration vs floor stiffness, (table) Report of EDPs for all realizations   
+   (scatter-plot) Peak pressure vs wind speed, (table) Report of EDPs for all realizations   
 
-
-
-Flow visualization 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The full simulation data can be retrieved from *DesignSafe* and visualized remotely using Paraview. :numref:`fig-we14-CFD-result` shows the streamlines and velocity contour taken on a vertical stream-wise section. From the plots, it is visible that important flow features such as vortex shading and turbulence at the wake are captured.  
-
-.. _fig-we14-CFD-result:
-
-.. figure:: figures/we14_CFD_Results.svg
-   :align: center
-   :alt: Image showing error in description
-   :width: 100%
-   :figclass: align-center
-
-   Instantaneous velocity field around the building.
 
 .. [Franke2007] Franke, J., Hellsten, A., Schlünzen, K.H. and Carissimo, B., 2007. COST Action 732: Best practice guideline for the CFD simulation of flows in the urban environment.
 
