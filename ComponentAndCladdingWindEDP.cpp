@@ -224,7 +224,9 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     WindEventSelection* evt = dynamic_cast<WindEventSelection*>(windEventSelection);
     IsolatedBuildingCFD* theIso = dynamic_cast<IsolatedBuildingCFD*>(evt->getCurrentEvent());
 
-    generateCompGeometry(theIso->caseDir());
+    caseDirCFD = theIso->caseDir();
+
+    generateCompGeometry(caseDirCFD);
 
     //Building mapper
     vtkNew<vtkPolyDataMapper>buildingMapper; //mapper
@@ -401,6 +403,8 @@ bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)
     jsonObject["components"] = rootObj.value("components");
     componentDefFilePath->outputToJSON(jsonObject);
     //FMK jsonObject["componentDefFilePath"] = componentDefFilePath->text();
+
+    generateCompGeometry(caseDirCFD);
 
     return true;
 }

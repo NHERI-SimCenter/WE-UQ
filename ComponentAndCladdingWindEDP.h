@@ -73,6 +73,7 @@ public:
     void setSelectedEvent(SimCenterAppWidget* event);
     QString pyScriptsPath();
     QString templateDictDir();
+    QString caseDirCFD;
 
 signals:
 
