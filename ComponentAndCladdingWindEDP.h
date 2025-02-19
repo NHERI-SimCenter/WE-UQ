@@ -68,10 +68,12 @@ public:
 
     bool initialize();
     bool isInitialize();
+    void updateJSON(QString caseDir);
 
     void setSelectedEvent(SimCenterAppWidget* event);
     QString pyScriptsPath();
     QString templateDictDir();
+    QString caseDirCFD;
 
 signals:
 

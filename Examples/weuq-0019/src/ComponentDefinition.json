@@ -1,0 +1,1199 @@
+{
+    "components": [
+        {
+            "componentId": 0,
+            "componentName": "zone1",
+            "componentType": "roof",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "geometryName": "zone1_1",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        0,
+                        -4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                },
+                {
+                    "geometryId": 1,
+                    "geometryName": "zone1_2",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        0,
+                        4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 10
+        },
+        {
+            "componentId": 1,
+            "componentName": "zone2",
+            "componentType": "roof",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "geometryName": "zone2_1",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        -11.2,
+                        -4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 1,
+                    "geometryName": "zone2_2",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        11.2,
+                        -4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 2,
+                    "geometryName": "zone2_3",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        -11.2,
+                        4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 3,
+                    "geometryName": "zone2_4",
+                    "height": 6.89294,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        11.2,
+                        4.8,
+                        9.27991
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 4,
+                    "geometryName": "zone2_5",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        0,
+                        -0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                },
+                {
+                    "geometryId": 4,
+                    "geometryName": "zone2_6",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        0,
+                        0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 2,
+            "componentName": "zone3",
+            "componentType": "roof",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "geometryName": "zone3_1",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        -11.2,
+                        -0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 1,
+                    "geometryName": "zone3_2",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        -0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        11.2,
+                        -0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 2,
+                    "geometryName": "zone3_3",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        -11.2,
+                        0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 3,
+                    "geometryName": "zone3_4",
+                    "height": 1.72323,
+                    "normal": [
+                        0,
+                        0.371367,
+                        0.928485
+                    ],
+                    "origin": [
+                        11.2,
+                        0.8,
+                        10.87979
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 3,
+            "componentName": "zone4",
+            "componentType": "wall",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "points": [
+                        [
+                            -12,
+                            6.4,
+                            0
+                        ],
+                        [
+                            -12,
+                            -6.4,
+                            0
+                        ],
+                        [
+                            -12,
+                            -6.4,
+                            8.64
+                        ],
+                        [
+                            -12,
+                            0,
+                            11.2
+                        ],
+                        [
+                            -12,
+                            6.4,
+                            8.64
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 1,
+                    "points": [
+                        [
+                            12,
+                            6.4,
+                            0
+                        ],
+                        [
+                            12,
+                            -6.4,
+                            0
+                        ],
+                        [
+                            12,
+                            -6.4,
+                            8.64
+                        ],
+                        [
+                            12,
+                            0,
+                            11.2
+                        ],
+                        [
+                            12,
+                            6.4,
+                            8.64
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 2,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        0,
+                        -8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                },
+                {
+                    "geometryId": 2,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        0,
+                        8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 20.8
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 10
+        },
+        {
+            "componentId": 4,
+            "componentName": "zone5",
+            "componentType": "wall",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "points": [
+                        [
+                            -12,
+                            8,
+                            0
+                        ],
+                        [
+                            -12,
+                            6.4,
+                            0
+                        ],
+                        [
+                            -12,
+                            6.4,
+                            8.64
+                        ],
+                        [
+                            -12,
+                            8,
+                            8
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 1,
+                    "points": [
+                        [
+                            12,
+                            8,
+                            0
+                        ],
+                        [
+                            12,
+                            6.4,
+                            0
+                        ],
+                        [
+                            12,
+                            6.4,
+                            8.64
+                        ],
+                        [
+                            12,
+                            8,
+                            8
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 2,
+                    "points": [
+                        [
+                            -12,
+                            -8,
+                            0
+                        ],
+                        [
+                            -12,
+                            -6.4,
+                            0
+                        ],
+                        [
+                            -12,
+                            -6.4,
+                            8.64
+                        ],
+                        [
+                            -12,
+                            -8,
+                            8
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 3,
+                    "points": [
+                        [
+                            12,
+                            -8,
+                            0
+                        ],
+                        [
+                            12,
+                            -6.4,
+                            0
+                        ],
+                        [
+                            12,
+                            -6.4,
+                            8.64
+                        ],
+                        [
+                            12,
+                            -8,
+                            8
+                        ]
+                    ],
+                    "shape": "polygon"
+                },
+                {
+                    "geometryId": 4,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -11.2,
+                        -8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 5,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        11.2,
+                        -8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 6,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -11.2,
+                        8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                },
+                {
+                    "geometryId": 7,
+                    "height": 8,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        11.2,
+                        8,
+                        4
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.6
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 5,
+            "componentName": "wd1",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        -1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        -12,
+                        -4,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 6,
+            "componentName": "wd2",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        -1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        -12,
+                        4,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 7,
+            "componentName": "wd3",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        -1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        -12,
+                        -4,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 8,
+            "componentName": "wd4",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        -1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        -12,
+                        4,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 9,
+            "componentName": "wd5",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        12,
+                        -4,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 10,
+            "componentName": "wd6",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        12,
+                        4,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 11,
+            "componentName": "wd7",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        12,
+                        -4,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 12,
+            "componentName": "wd8",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2.5,
+                    "normal": [
+                        1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        12,
+                        4,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 1.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 13,
+            "componentName": "wd9",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        -9,
+                        -8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 14,
+            "componentName": "wd10",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        -4.5,
+                        -8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 15,
+            "componentName": "wd11",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        9,
+                        -8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 16,
+            "componentName": "wd12",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        4.5,
+                        -8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 17,
+            "componentName": "wd13",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        -9,
+                        -8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 18,
+            "componentName": "wd14",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        -4.5,
+                        -8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 19,
+            "componentName": "wd15",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        9,
+                        -8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 20,
+            "componentName": "wd16",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        4.5,
+                        -8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 21,
+            "componentName": "wd17",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -9,
+                        8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 22,
+            "componentName": "wd18",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -4.5,
+                        8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 23,
+            "componentName": "wd19",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        9,
+                        8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 24,
+            "componentName": "wd20",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        4.5,
+                        8,
+                        2
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 25,
+            "componentName": "wd21",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -9,
+                        8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 26,
+            "componentName": "wd22",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        -4.5,
+                        8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 27,
+            "componentName": "wd23",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        9,
+                        8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 28,
+            "componentName": "wd24",
+            "componentType": "window",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 1.5,
+                    "normal": [
+                        0,
+                        1,
+                        0
+                    ],
+                    "origin": [
+                        4.5,
+                        8,
+                        6
+                    ],
+                    "shape": "rectangle",
+                    "width": 2.5
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 5
+        },
+        {
+            "componentId": 29,
+            "componentName": "dr1",
+            "componentType": "door",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 3,
+                    "normal": [
+                        0,
+                        -1,
+                        0
+                    ],
+                    "origin": [
+                        0,
+                        -8,
+                        1.5
+                    ],
+                    "shape": "rectangle",
+                    "width": 2
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 6
+        },
+        {
+            "componentId": 30,
+            "componentName": "dr2",
+            "componentType": "door",
+            "geometries": [
+                {
+                    "geometryId": 0,
+                    "height": 2,
+                    "normal": [
+                        1,
+                        0,
+                        0
+                    ],
+                    "origin": [
+                        12,
+                        0,
+                        1.5
+                    ],
+                    "shape": "rectangle",
+                    "width": 3
+                }
+            ],
+            "loadType": "pressure",
+            "loadValue": "peak",
+            "samplingDensity": 6
+        }
+    ],
+    "considerWindDirection": true,
+    "sampleTimeInterval": 10,
+    "snapToBuilding": true
+}
