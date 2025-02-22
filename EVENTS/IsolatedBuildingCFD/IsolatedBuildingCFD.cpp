@@ -89,6 +89,7 @@ IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVari
     : SimCenterAppWidget(parent), theRandomVariablesContainer(theRandomVariableIW)
 {
     this->isLaunchedAsTool = isLaunchedAsTool;
+    this->parentWidget = parent;
 //    this->theRandomVariablesContainer = theRandomVariableIW;
 }
 
@@ -155,8 +156,8 @@ bool IsolatedBuildingCFD::initialize()
                                                  + "LocalWorkDir" + QDir::separator()
                                                  + "IsolatedBuildingCFD");
 
-    if (!workingDir.exists(workingDirPath))
-        workingDir.mkpath(workingDirPath);
+//    if (!workingDir.exists(workingDirPath))
+//        workingDir.mkpath(workingDirPath);
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
@@ -345,10 +346,7 @@ bool IsolatedBuildingCFD::initialize()
     plotWindProfiles->setEnabled(false);
     plotWindLoads->setEnabled(false);
 
-//    cfdResultsLayout->addWidget(plotWindProfiles);
-//    cfdResultsLayout->addWidget(plotWindLoads);
 
-//    connect(plotWindProfiles, SIGNAL(clicked()), this, SLOT(onShowResultsClicked()));
     connect(browseCaseDirectoryButton, SIGNAL(clicked()), this, SLOT(onBrowseCaseDirectoryButtonClicked()));
     connect(saveMeshButton, SIGNAL(clicked()), this, SLOT(onSaveMeshClicked()));
 
@@ -413,9 +411,12 @@ void IsolatedBuildingCFD::updateJSON()
 
 
     QFile jsonFile(inputFilePath);
+
     if (!jsonFile.open(QFile::WriteOnly | QFile::Text))
     {
         qDebug() << "Cannot find the path: " << inputFilePath;
+
+        return;
     }
 
     QJsonObject jsonObject;
@@ -694,17 +695,16 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     this->clear();
     QString foamPath = jsonObject["caseDirectoryPath"].toString();
 
-
     QDir foamDir(foamPath);
 
-    if (!foamDir.exists(foamPath))
+    if (!foamDir.exists(foamPath) || foamPath == "")
     {
         QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
 
         QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
                                                      + "LocalWorkDir" + QDir::separator()
                                                      + "IsolatedBuildingCFD");
-        workingDir.mkpath(workingDirPath);
+//        workingDir.mkpath(workingDirPath);
 
         caseDirectoryPathWidget->setText(workingDirPath);
 
@@ -743,6 +743,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
     numericalSetup->inputFromJSON(jsonObject);
     resultMonitoring->inputFromJSON(jsonObject);
     reloadMesh();
+
 //    isLaunchedAsTool = jsonObject["isLaunchedAsTool"].toBool();
 
     if (!isLaunchedAsTool)
@@ -753,6 +754,7 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
         theGI->setNumStoriesAndHeight(numberOfFloors(), buildingHeight());
         theGI->setBuildingDimensions(buildingWidth(), buildingDepth(), buildingWidth()*buildingDepth());
     }
+
     return true;
 }
 
@@ -809,6 +811,21 @@ bool IsolatedBuildingCFD::inputAppDataFromJSON(QJsonObject &jsonObject) {
 
     Q_UNUSED(jsonObject);
     return true;
+//    QString appName;
+//    appName = jsonObject.value("Application").toString();
+//    if (appName == "IsolatedBuildingCFD")
+//    {
+//        // this->modelSelectionChanged(QString("/*Wittig*/ & Sinha (1975)"));
+//        // thisinputAppDataFromJSON(jsonObject); // no check for NULL as cannot be if i can write code!
+//        //
+//    }
+
+//    else {
+//        QString message = QString("IsolatedBuildingCFD::inputAppDataFromJSON - unknown application string: ") + appName;
+//        //    qDebug() << message;
+//        emit errorMessage(message);
+//    }
+
 }
 
 
@@ -852,13 +869,16 @@ bool IsolatedBuildingCFD::cleanCase()
     QDir constDir(caseDir() + QDir::separator() + "constant");
     QDir systemDir(caseDir() + QDir::separator() + "system");
 
-    zeroDir.removeRecursively();
-    constDir.removeRecursively();
-    systemDir.removeRecursively();
+    if (systemDir.exists())
+    {
+        zeroDir.removeRecursively();
+        constDir.removeRecursively();
+        systemDir.removeRecursively();
 
-    QFile logFile(caseDir() + QDir::separator() + "log.*");
+        QFile logFile(caseDir() + QDir::separator() + "log.*");
 
-    logFile.remove();
+        logFile.remove();
+    }
 
     return true;
 }
@@ -890,21 +910,24 @@ bool IsolatedBuildingCFD::setupCase()
     if (!targetDir.exists())
     {
         targetDir.mkpath(caseDir());
+        targetDir.refresh();
     }
 
     targetDir.mkpath("0");
     targetDir.mkpath("constant");
+    targetDir.mkpath("system");
+
     targetDir.mkpath("constant/geometry");
-    targetDir.mkpath("constant/geometry/components");
     targetDir.mkpath("constant/simCenter");
+    targetDir.mkpath("constant/boundaryData");
+    targetDir.mkpath("constant/geometry/components");
     targetDir.mkpath("constant/simCenter/output");
     targetDir.mkpath("constant/simCenter/input");
-    targetDir.mkpath("constant/boundaryData");
     targetDir.mkpath("constant/boundaryData/inlet");
-    targetDir.mkpath("system");
 
     QFile visFoam(caseDir() + "/vis.foam");
     visFoam.open(QIODevice::WriteOnly);
+    visFoam.close();
 
     //Write dictionary files
     writeOpenFoamFiles();
