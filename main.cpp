@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("4.1.0");
+    QCoreApplication::setApplicationVersion("4.2.1");
 
     Q_INIT_RESOURCE(images1);
 
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     if (debugFile.exists())
       debugFile.remove();
 
-    QApplication a(argc, argv);
+    QApplication mainApp(argc, argv);
 
     QByteArray envVar = qgetenv("QTDIR");       //  check if the app is run in Qt Creator
 
@@ -131,13 +131,12 @@ int main(int argc, char *argv[])
     // AgaveCurl *theRemoteService = new AgaveCurl(tenant, storage, &dirName);
     TapisV3 *theRemoteService = new TapisV3(tenant, storage, &dirName);        
 
-
     //
     // create the main window
     //
 
     WorkflowAppWidget *theInputApp = new WorkflowAppWE(theRemoteService);
-    MainWindowWorkflowApp w(QString("WE-UQ: Wind Engineering with Uncertainty Quantification"),theInputApp, theRemoteService);
+    MainWindowWorkflowApp w(QString("WE-UQ: Wind Engineering with Uncertainty Quantification"), theInputApp, theRemoteService);
 
     /*
     QFile aboutTXT(":/Resources/docs/textAboutWEUQ.html");
@@ -154,7 +153,7 @@ int main(int argc, char *argv[])
     QString version = QString("Version ") + QCoreApplication::applicationVersion();
     w.setVersion(version);
 
-    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2024). NHERI-SimCenter/WE-UQ: Version 4.1.0 (v4.1.0). Zenodo. https://doi.org/10.5281/zenodo.13865388 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
+    QString citeText("1)Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2025). NHERI-SimCenter/WE-UQ: Version 4.2.0 (v4.2.0). Zenodo. https://doi.org/10.5281/zenodo.14895011 \n\n2) Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706");
     
     w.setCite(citeText);
 
@@ -203,7 +202,7 @@ int main(int argc, char *argv[])
 #endif
 
     if(file.open(QFile::ReadOnly)) {
-      a.setStyleSheet(file.readAll());
+      mainApp.setStyleSheet(file.readAll());
       file.close();
     } else {
       qDebug() << "could not open stylesheet";
@@ -224,7 +223,7 @@ int main(int argc, char *argv[])
 #endif
 
     if(WEUQfile.open(QFile::ReadOnly)) {
-      a.setStyleSheet(a.styleSheet().append(WEUQfile.readAll()));
+      mainApp.setStyleSheet(mainApp.styleSheet().append(WEUQfile.readAll()));
       WEUQfile.close();
     } else {
       qDebug() << "could not open stylesheet";
@@ -263,7 +262,7 @@ int main(int argc, char *argv[])
     // RUN the GUI
     //
     
-    int res = a.exec();
+    int res = mainApp.exec();
 
 
 #ifdef _GA_AFTER

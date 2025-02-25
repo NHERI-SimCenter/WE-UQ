@@ -92,6 +92,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SimCenterPreferences.h>
 #include <QProcess>
 #include <QHeaderView>
+#include <QApplication>
 
 ComponentAndCladdingWindEDP::ComponentAndCladdingWindEDP(QWidget *parent)
     : SimCenterAppWidget(parent)
@@ -110,8 +111,10 @@ bool ComponentAndCladdingWindEDP::initialize()
 
     QLabel *importJsonLabel = new QLabel("Components Geometry JSON Path:");
     //FMK  componentDefFilePath = new QLineEdit();
-    componentDefFilePath = new SC_FileEdit("componentDefFilePath");    
-    //FMK  importButton = new QPushButton("Browse");
+    componentDefFilePath = new SC_FileEdit("componentDefFilePath");
+//    importButton = new QPushButton("Browse");
+
+
 
     considerWindDirection = new QCheckBox("Consider Wind Direction");
     considerWindDirection->setChecked(true);
@@ -126,7 +129,7 @@ bool ComponentAndCladdingWindEDP::initialize()
 
     importComponentLayout->addWidget(importJsonLabel, 0, 0);
     importComponentLayout->addWidget(componentDefFilePath, 0, 1);
-    //FMK importComponentLayout->addWidget(importButton, 0, 2);
+//    importComponentLayout->addWidget(importButton, 0, 2);
     importComponentLayout->addWidget(considerWindDirection, 1, 0);
     importComponentLayout->addWidget(snapToBuilding, 2, 0);
     importComponentLayout->addWidget(showCompGeometryButton, 3, 0, 1, 3);
@@ -135,9 +138,10 @@ bool ComponentAndCladdingWindEDP::initialize()
     importComponentLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft); // Align the group box contents to the top-left
 
 
-    connect(importButton, SIGNAL(clicked()), this, SLOT(onBrowseButtonClicked()));
+//    connect(importButton, SIGNAL(clicked()), this, SLOT(onBrowseButtonClicked()));
     connect(showCompGeometryButton, SIGNAL(clicked()), this, SLOT(onShowCompGeometryButtonClicked()));
-\
+
+
     layout->addWidget(importComponentGroup);
 
     this->setLayout(layout);
@@ -217,7 +221,15 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     // Setup the VTK window
     //==================================================
 
+
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
+
     QVTKRenderWidget* qvtkWidget = new QVTKRenderWidget();
+    qvtkWidget->setRenderWindow(renderWindow);
+
+    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+    renderWindow->AddRenderer(renderer);
+
     qvtkWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
@@ -273,14 +285,12 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     pointsActor->GetProperty()->SetPointSize(10);
 
     // Add Actor to renderer
-    vtkNew<vtkRenderer> renderer; // VTK Renderer
     renderer->AddActor(buildingActor);
     renderer->AddActor(pointsActor);
     renderer->AddActor(componentActor);
     renderer->SetBackground(1.0, 1.0, 1.0);
 
     // VTK/Qt wedded
-    vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
     qvtkWidget->setRenderWindow(renderWindow);
     qvtkWidget->renderWindow()->AddRenderer(renderer);
     renderWindow->BordersOn();
@@ -341,7 +351,8 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
 
     dialog->setLayout(dialogLayout);
 
-    // Add QVTKRenderWidget and QTableWidget to the layout
+
+    // Add QVTKRenderWidget and QTableWidget to the layou
     dialogLayout->addWidget(qvtkWidget, 1);        // VTK widget takes half the space
 //    dialogLayout->addWidget(componentsTable, 1);   // Table takes the other half
     dialogLayout->addWidget(componentsTable, 1, Qt::AlignTop);
@@ -349,23 +360,23 @@ void ComponentAndCladdingWindEDP::onShowCompGeometryButtonClicked()
     dialog->exec();
 }
 
-void ComponentAndCladdingWindEDP::onBrowseButtonClicked()
-{
+//void ComponentAndCladdingWindEDP::onBrowseButtonClicked()
+//{
 
-    QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), componentDefFilePath->getFilename(), tr("JSON Files (*.json)"));
+//    QString stlFileName = QFileDialog::getOpenFileName(this, tr("Open JSON File"), componentDefFilePath->getFilename(), tr("JSON Files (*.json)"));
 
 
-    QFile jsonFile(stlFileName);
+//    QFile jsonFile(stlFileName);
 
-    if (jsonFile.open(QFile::ReadOnly | QFile::Text))
-    {
-        componentDefFilePath->setFilename(stlFileName);
-    }
-    else
-    {
-        qDebug() << "Cannot find the path: " << stlFileName;
-    }
-}
+//    if (jsonFile.open(QFile::ReadOnly | QFile::Text))
+//    {
+//        componentDefFilePath->setFilename(stlFileName);
+//    }
+//    else
+//    {
+//        qDebug() << "Cannot find the path: " << stlFileName;
+//    }
+//}
 
 
 bool ComponentAndCladdingWindEDP::outputToJSON(QJsonObject &jsonObject)

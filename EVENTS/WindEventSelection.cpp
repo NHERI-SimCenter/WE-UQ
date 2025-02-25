@@ -79,6 +79,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariableIW, RemoteService* remoteService, QWidget *parent)
     : SimCenterAppWidget(parent), theCurrentEvent(0), theRandomVariablesContainer(theRandomVariableIW)
 {
+
     QVBoxLayout *layout = new QVBoxLayout();
 
     //
@@ -140,7 +141,7 @@ WindEventSelection::WindEventSelection(RandomVariablesContainer *theRandomVariab
     theStochasticModel = new StochasticWindInput(theRandomVariablesContainer);
     theStackedWidget->addWidget(theStochasticModel);
 
-    theIsolatedBuildingCFD = new IsolatedBuildingCFD(theRandomVariablesContainer);
+    theIsolatedBuildingCFD = new IsolatedBuildingCFD(theRandomVariablesContainer,false, parent);
     theStackedWidget->addWidget(theIsolatedBuildingCFD);
 
     theSurroundedBuildingCFD = new SurroundedBuildingCFD(theRandomVariablesContainer);
@@ -215,7 +216,6 @@ WindEventSelection::outputToJSON(QJsonObject &jsonObject)
 
 bool
 WindEventSelection::inputFromJSON(QJsonObject &jsonObject) {
-
     QString type;
     QJsonObject theEvent;
 
@@ -415,10 +415,10 @@ WindEventSelection::inputAppDataFromJSON(QJsonObject &jsonObject)
     } else
         return false;
 
-
     // if worked, just invoke method on new type
 
     if (theCurrentEvent != 0 && !theEvent.isEmpty()) {
+
         return theCurrentEvent->inputAppDataFromJSON(theEvent);
     }
 

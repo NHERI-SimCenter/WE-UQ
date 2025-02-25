@@ -148,6 +148,7 @@ WindEDP_Selection::inputFromJSON(QJsonObject &jsonObject) {
 
 void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
 {
+
     //
     // switch stacked widgets depending on text
     // note type output in json and name in pull down are not the same and hence the ||
@@ -181,7 +182,10 @@ void WindEDP_Selection::edpSelectionChanged(const QString &arg1)
 //        }
 
         theStackedWidget->setCurrentIndex(1);
+
+
         theCurrentEDP = theComponentAndCladdingWindEDP;
+
 
         ComponentAndCladdingWindEDP* ccEDP  = dynamic_cast<ComponentAndCladdingWindEDP*>(theComponentAndCladdingWindEDP);
 
@@ -232,6 +236,7 @@ WindEDP_Selection::inputAppDataFromJSON(QJsonObject &jsonObject)
 
     // based on application name value set edp type
     int index = 0;
+
     if ((type == QString("Standard Wind EDPs")) ||
             (type == QString("StandardWindEDP"))) {
         index = 0;

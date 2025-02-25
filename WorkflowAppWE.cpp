@@ -120,7 +120,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theRVs = RandomVariablesContainer::getInstance();
     theGI = GeneralInformationWidget::getInstance();
     theSIM = new SIM_Selection(true, true);
-    theEventSelection = new WindEventSelection(theRVs, theService);
+    theEventSelection = new WindEventSelection(theRVs, theService, this);
     theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
@@ -139,6 +139,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     SimCenterWidget *theWidgets[1];// =0;
     theRunWidget = new RunWidget(localApp, remoteApp, theWidgets, 0);
+
 
     //
     // connect signals and slots
@@ -628,6 +629,7 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     // get each of the main widgets to input themselves
     //
 
+
     if (jsonObject.contains("GeneralInformation")) {
         QJsonObject jsonObjGeneralInformation = jsonObject["GeneralInformation"].toObject();
         if (theGI->inputFromJSON(jsonObjGeneralInformation) == false) {
@@ -645,10 +647,10 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         // note: Events is different because the object is an Array
         if (theApplicationObject.contains("Events")) {
             //  QJsonObject theObject = theApplicationObject["Events"].toObject(); it is null object, actually an array
+
             if (theEventSelection->inputAppDataFromJSON(theApplicationObject) == false) {
                 this->errorMessage("WE_UQ: failed to read Event Application");
             }
-
         } else {
             this->errorMessage("WE_UQ: failed to find Event Application");
             return false;
@@ -659,7 +661,7 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
 
         if (theSIM->inputAppDataFromJSON(theApplicationObject) == false)
             this->errorMessage("WE_UQ: failed to read SIM application");
-	
+
         if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false)
             this->errorMessage("WE_UQ: failed to read FEM application");
 
@@ -674,16 +676,19 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         }
 
     } else
+    {
         return false;
+    }
 
     /*
     ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
     */
 
     theEventSelection->inputFromJSON(jsonObject);
+
     theRVs->inputFromJSON(jsonObject);
     theRunWidget->inputFromJSON(jsonObject);
-        
+
     if (jsonObject.contains("EDP")) {
         QJsonObject edpObj = jsonObject["EDP"].toObject();
         if (theEDP_Selection->inputFromJSON(edpObj) == false)
@@ -692,7 +697,6 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         this->errorMessage("WE_UQ: failed to find EDP data");
         return false;
     }
-
 
     if (theUQ_Selection->inputFromJSON(jsonObject) == false)
        this->errorMessage("WE_UQ: failed to read UQ Method data");
@@ -1028,7 +1032,7 @@ WorkflowAppWE::getMaxNumParallelTasks() {
 int
 WorkflowAppWE::createCitation(QJsonObject &citation, QString citeFile) {
 
-  QString cit("{\"WE-UQ\": { \"citations\": [{\"citation\": \"Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2024). NHERI-SimCenter/WE-UQ: Version 4.1.0 (v4.1.0). Zenodo. https://doi.org/10.5281/zenodo.13865388\",\"description\": \"This is the overall tool reference used to indicate the version of the tool.\"},{\"citation\": \"Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706\",\"description\": \" This marker paper describes the SimCenter application framework, which was designed to simulate the impacts of natural hazards on the built environment.It  is a necessary attribute for publishing work resulting from the use of SimCenter tools, software, and datasets.\"}]}}");
+  QString cit("{\"WE-UQ\": { \"citations\": [{\"citation\": \"Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2025). NHERI-SimCenter/WE-UQ: Version 4.2.0 (v4.2.0). Zenodo. https://doi.org/10.5281/zenodo.14895011\",\"description\": \"This is the overall tool reference used to indicate the version of the tool.\"},{\"citation\": \"Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706\",\"description\": \" This marker paper describes the SimCenter application framework, which was designed to simulate the impacts of natural hazards on the built environment.It  is a necessary attribute for publishing work resulting from the use of SimCenter tools, software, and datasets.\"}]}}");
 
   QJsonDocument docC = QJsonDocument::fromJson(cit.toUtf8());
   if(!docC.isNull()) {
