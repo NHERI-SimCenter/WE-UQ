@@ -79,13 +79,13 @@ signals:
 
 public slots:
     void clear(void);
-    void onBrowseButtonClicked(void);
+//    void onBrowseButtonClicked(void);
     void onShowCompGeometryButtonClicked();
 
 private:
 
     SC_FileEdit   *componentDefFilePath;
-    QPushButton *importButton;
+//    QPushButton *importButton;
     QGroupBox   *importComponentGroup;
     QGridLayout *importComponentLayout;
     SimCenterAppWidget *windEventSelection;

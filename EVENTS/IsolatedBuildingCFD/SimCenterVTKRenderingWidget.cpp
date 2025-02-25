@@ -114,6 +114,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vtkTextActor.h>
 #include <vtkTransform.h>
 #include <vtkCaptionActor2D.h>
+#include <QApplication>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -134,9 +135,17 @@ void SimCenterVTKRenderingWidget::initialize()
     visLayout = new QGridLayout();
     visGroup->setLayout(visLayout);
 
+//    QMessageBox msgBox;
+//    msgBox.setText(QString::number(QApplication::instance()));
+//    msgBox.exec();
+
+    // Ensure OpenGL format is set
+//    QSurfaceFormat::setDefaultFormat(QVTKRenderWidget::defaultFormat());
+
     renderWindow = vtkSmartPointer<vtkGenericOpenGLRenderWindow>::New();
 
-    qvtkWidget = new QVTKRenderWidget(renderWindow);
+    qvtkWidget = new QVTKRenderWidget();
+    qvtkWidget->setRenderWindow(renderWindow);
 
     QLabel *viewLabel = new QLabel("View:");
     QLabel *surfaceRepresentationLabel = new QLabel("Representation:");

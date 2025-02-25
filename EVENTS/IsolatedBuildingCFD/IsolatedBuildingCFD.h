@@ -143,6 +143,8 @@ public:
 
     bool isLaunchedAsTool = false;
 
+    QWidget *parentWidget = nullptr;
+
 signals:
 
 public slots:

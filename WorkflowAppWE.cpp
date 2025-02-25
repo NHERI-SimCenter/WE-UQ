@@ -120,7 +120,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theRVs = RandomVariablesContainer::getInstance();
     theGI = GeneralInformationWidget::getInstance();
     theSIM = new SIM_Selection(true, true);
-    theEventSelection = new WindEventSelection(theRVs, theService);
+    theEventSelection = new WindEventSelection(theRVs, theService, this);
     theAnalysisSelection = new FEA_Selection(true);
 
     theEDP_Selection = new WindEDP_Selection(theRVs);
@@ -139,6 +139,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
 
     SimCenterWidget *theWidgets[1];// =0;
     theRunWidget = new RunWidget(localApp, remoteApp, theWidgets, 0);
+
 
     //
     // connect signals and slots
@@ -628,6 +629,7 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
     // get each of the main widgets to input themselves
     //
 
+
     if (jsonObject.contains("GeneralInformation")) {
         QJsonObject jsonObjGeneralInformation = jsonObject["GeneralInformation"].toObject();
         if (theGI->inputFromJSON(jsonObjGeneralInformation) == false) {
@@ -645,10 +647,10 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         // note: Events is different because the object is an Array
         if (theApplicationObject.contains("Events")) {
             //  QJsonObject theObject = theApplicationObject["Events"].toObject(); it is null object, actually an array
+
             if (theEventSelection->inputAppDataFromJSON(theApplicationObject) == false) {
                 this->errorMessage("WE_UQ: failed to read Event Application");
             }
-
         } else {
             this->errorMessage("WE_UQ: failed to find Event Application");
             return false;
@@ -659,7 +661,7 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
 
         if (theSIM->inputAppDataFromJSON(theApplicationObject) == false)
             this->errorMessage("WE_UQ: failed to read SIM application");
-	
+
         if (theAnalysisSelection->inputAppDataFromJSON(theApplicationObject) == false)
             this->errorMessage("WE_UQ: failed to read FEM application");
 
@@ -674,16 +676,19 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         }
 
     } else
+    {
         return false;
+    }
 
     /*
     ** Note to me - RVs and Events treated differently as both use arrays .. rethink API!
     */
 
     theEventSelection->inputFromJSON(jsonObject);
+
     theRVs->inputFromJSON(jsonObject);
     theRunWidget->inputFromJSON(jsonObject);
-        
+
     if (jsonObject.contains("EDP")) {
         QJsonObject edpObj = jsonObject["EDP"].toObject();
         if (theEDP_Selection->inputFromJSON(edpObj) == false)
@@ -692,7 +697,6 @@ WorkflowAppWE::inputFromJSON(QJsonObject &jsonObject)
         this->errorMessage("WE_UQ: failed to find EDP data");
         return false;
     }
-
 
     if (theUQ_Selection->inputFromJSON(jsonObject) == false)
        this->errorMessage("WE_UQ: failed to read UQ Method data");
