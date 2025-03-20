@@ -134,7 +134,7 @@ EmptyNumericalSetup::EmptyNumericalSetup(EmptyDomainCFD *parent)
 
     numCorrectors = new QSpinBox();
     numCorrectors->setSingleStep(1);
-    numCorrectors->setMinimum(2);
+    numCorrectors->setMinimum(1);
     numCorrectors->setValue(2);
     numCorrectors->setEnabled(false);
     numCorrectors->setToolTip("Number of pressure correction loops");
