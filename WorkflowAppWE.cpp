@@ -249,6 +249,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   QMenu *toolsMenu = new QMenu(tr("&Tools"),menuBar);
   SC_ToolDialog *theToolDialog = new SC_ToolDialog(this);
 
+  //Abiy - detach it from the parent, otherwise it will always floats on the top
+  //of all the windows that are open and which makes it anoying
+//  SC_ToolDialog *theToolDialog = new SC_ToolDialog(nullptr);
+
   //
   // Add empty domain to Tools
   //
@@ -1032,7 +1036,7 @@ WorkflowAppWE::getMaxNumParallelTasks() {
 int
 WorkflowAppWE::createCitation(QJsonObject &citation, QString citeFile) {
 
-  QString cit("{\"WE-UQ\": { \"citations\": [{\"citation\": \"Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2025). NHERI-SimCenter/WE-UQ: Version 4.2.0 (v4.2.0). Zenodo. https://doi.org/10.5281/zenodo.14895011\",\"description\": \"This is the overall tool reference used to indicate the version of the tool.\"},{\"citation\": \"Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706\",\"description\": \" This marker paper describes the SimCenter application framework, which was designed to simulate the impacts of natural hazards on the built environment.It  is a necessary attribute for publishing work resulting from the use of SimCenter tools, software, and datasets.\"}]}}");
+  QString cit("{\"WE-UQ\": { \"citations\": [{\"citation\": \"Frank McKenna, Abiy Melaku, Fei Ding, Jiawei Wan, Peter Mackenzie-Helnwein, Michael Gardner, Sang-ri Yi, Aakash Bangalore Satish, & Wael Elhaddad. (2025). NHERI-SimCenter/WE-UQ: Version 4.2.0 (v4.2.0). Zenodo.  https://doi.org/10.5281/zenodo.14895011\",\"description\": \"This is the overall tool reference used to indicate the version of the tool.\"},{\"citation\": \"Gregory G. Deierlein, Frank McKenna, Adam Zsarnóczay, Tracy Kijewski-Correa, Ahsan Kareem, Wael Elhaddad, Laura Lowes, Matthew J. Schoettler, and Sanjay Govindjee (2020) A Cloud-Enabled Application Framework for Simulating Regional-Scale Impacts of Natural Hazards on the Built Environment. Frontiers in the Built Environment. 6:558706. doi: 10.3389/fbuil.2020.558706\",\"description\": \" This marker paper describes the SimCenter application framework, which was designed to simulate the impacts of natural hazards on the built environment.It  is a necessary attribute for publishing work resulting from the use of SimCenter tools, software, and datasets.\"}]}}");
 
   QJsonDocument docC = QJsonDocument::fromJson(cit.toUtf8());
   if(!docC.isNull()) {
