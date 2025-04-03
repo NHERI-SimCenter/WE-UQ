@@ -83,6 +83,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTextEdit>
 #include <QFormLayout>
 #include <Qt3DRender/QMesh>
+#include <Utils/FileOperations.h>
 
 
 SurroundedBuildingCFD::SurroundedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
@@ -151,12 +152,11 @@ bool SurroundedBuildingCFD::initialize()
     caseDirectoryPathWidget = new QLineEdit();
     QString currentAppDir = QCoreApplication::applicationDirPath();
 
-    QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-    if (!workingDir.exists())
-        workingDir.mkpath(".");
+    QString workDirPath = SCUtils::getAppWorkDir();  
+    QDir workingDir(workDirPath);
 
-    QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                 + "LocalWorkDir" + QDir::separator()
+    QString workingDirPath = workingDir.filePath(workDirPath + "LocalWorkDir"
+						 + QDir::separator()
                                                  + "SurroundedBuildingCFD");
 
     if (!workingDir.exists(workingDirPath))

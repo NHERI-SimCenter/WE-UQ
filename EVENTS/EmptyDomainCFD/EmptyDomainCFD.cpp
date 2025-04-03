@@ -83,6 +83,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTextEdit>
 #include <QFormLayout>
 #include <Qt3DRender/QMesh>
+#include <Utils/FileOperations.h>
 
 
 EmptyDomainCFD::EmptyDomainCFD(RandomVariablesContainer *theRandomVariableIW, QWidget *parent)
@@ -151,14 +152,12 @@ bool EmptyDomainCFD::initialize()
     caseDirectoryPathWidget = new QLineEdit();
     QString currentAppDir = QCoreApplication::applicationDirPath();
 
-    QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-    if (!workingDir.exists())
-        workingDir.mkpath(".");
+    QString workDirPath = SCUtils::getAppWorkDir();
+    QDir workingDir(workDirPath);
 
-    QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                 + "LocalWorkDir" + QDir::separator()
-                                                 + "EmptyDomainCFD");
-
+    QString workingDirPath = workDirPath + QDir::separator() + "LocalWorkDir"
+      + QDir::separator() + "EmptyDomainCFD";
+    
     if (!workingDir.exists(workingDirPath))
         workingDir.mkpath(workingDirPath);
 
@@ -539,21 +538,23 @@ bool EmptyDomainCFD::inputFromJSON(QJsonObject &jsonObject)
 
     if (!foamDir.exists(foamPath))
     {
-        QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-
-        QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                     + "LocalWorkDir" + QDir::separator()
-                                                     + "EmptyDomainCFD");
+      QString workDirPath = SCUtils::getAppWorkDir();
+      QDir workingDir(workDirPath);
+      
+      QString workingDirPath = workDirPath + QDir::separator() + "LocalWorkDir"
+	+ QDir::separator() + "EmptyDomainCFD";
+      
+      if (!workingDir.exists(workingDirPath))
         workingDir.mkpath(workingDirPath);
+      
+      caseDirectoryPathWidget->setText(workingDirPath);
 
-        caseDirectoryPathWidget->setText(workingDirPath);
-
-        if(!isCaseConfigured())
+      if(!isCaseConfigured())
         {
             setupCase();
         }
 
-        if (!isMeshed())
+      if (!isMeshed())
         {
             snappyHexMesh->onRunBlockMeshClicked();
         }
