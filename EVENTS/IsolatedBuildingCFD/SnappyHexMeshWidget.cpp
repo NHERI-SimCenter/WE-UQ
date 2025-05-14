@@ -642,7 +642,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");	
 	
         commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh > log.blockMesh; exit\"");
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; blockMesh > log.blockMesh; exit\"");
 
 
 	qDebug() << commands;
@@ -652,7 +652,7 @@ bool SnappyHexMeshWidget::runBlockMeshCommand()
 
     #else
 
-        commands = "source /opt/openfoam10/etc/bashrc; blockMesh > log.blockMesh";
+        commands = "source /opt/openfoam11/etc/bashrc; blockMesh > log.blockMesh";
 
     #endif
 
@@ -697,7 +697,7 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
           this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 
             commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                       +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit\"");
+                       +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; surfaceFeatures > log.surfaceFeatures; exit\"");
 
         qDebug() << commands;
 
@@ -706,7 +706,7 @@ bool SnappyHexMeshWidget::runExtractSurfaceFeaturesCommand()
 
     #else
 
-        commands  = "source /opt/openfoam10/etc/bashrc; surfaceFeatures > log.surfaceFeatures";
+        commands  = "source /opt/openfoam11/etc/bashrc; surfaceFeatures > log.surfaceFeatures";
 
     #endif
 
@@ -746,14 +746,14 @@ bool SnappyHexMeshWidget::runSnappyHexMeshCommand()
 	  this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
         commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh; exit\"");
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh; exit\"");
 
         //Actual command on the terminal
         //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh -overwrite  > log.snappyHexMesh; exit"
 
     #else
 
-        commands = "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh";
+        commands = "source /opt/openfoam11/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh";
 
     #endif
 
@@ -797,14 +797,14 @@ bool SnappyHexMeshWidget::runCheckMeshCommand()
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 	
         commands = sourceBash + " docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; checkMesh > log.checkMesh; exit\"");
+                   +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; checkMesh > log.checkMesh; exit\"");
 
         //Actual command on the terminal
         //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; checkMesh > log.checkMesh; exit"
 
     #else
 
-    commands = "source /opt/openfoam10/etc/bashrc; checkMesh > log.checkMesh";
+    commands = "source /opt/openfoam11/etc/bashrc; checkMesh > log.checkMesh";
 
 #endif
 

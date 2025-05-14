@@ -1085,6 +1085,31 @@ double IsolatedBuildingCFD::geometricScale()
     return geometry->geometricScaleWidget->text().toDouble();
 }
 
+double IsolatedBuildingCFD::meanWindSpeed()
+{
+    return windCharacteristics->referenceWindSpeed->text().toDouble();
+}
+double IsolatedBuildingCFD::velocityScale()
+{
+    return windCharacteristics->velocityScale->text().toDouble();
+}
+
+double IsolatedBuildingCFD::timeScale()
+{
+    return windCharacteristics->timeScale->text().toDouble();
+}
+
+double IsolatedBuildingCFD::referenceHeight()
+{
+    return windCharacteristics->referenceHeight->text().toDouble();
+}
+
+double IsolatedBuildingCFD::aerodynamicRoughnessLength()
+{
+    return windCharacteristics->aerodynamicRoughnessLength->text().toDouble();
+}
+
+
 double IsolatedBuildingCFD::windDirection()
 {
     return geometry->windDirectionWidget->text().toDouble();
