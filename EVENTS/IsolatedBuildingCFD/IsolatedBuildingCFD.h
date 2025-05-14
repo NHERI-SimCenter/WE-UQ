@@ -122,6 +122,11 @@ public:
     double baseLoadSamplingTime();
     double storyLoadSamplingTime();
     double pressureSamplingTime();
+    double meanWindSpeed();
+    double referenceHeight();
+    double velocityScale();
+    double timeScale();
+    double aerodynamicRoughnessLength();
 
     double windDirection();
     QString buildingShape();

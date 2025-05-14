@@ -75,6 +75,9 @@ public slots:
    void windProfileOptionChanged(const QString &arg1);
    void onImportWindProfilesClicked();
    void onShowWindProfilesClicked();
+   void onGenerateWindProfilesClicked();
+
+
 
 private:
    IsolatedBuildingCFD  *mainModel;
@@ -109,8 +112,33 @@ private:
    QList<QList<double>> windProfiles;
    QString         windProfilePath = "";
 
+
+   //Entries needed for ASCE 49-21
+   QLineEdit    *latLineEdit;
+   QLineEdit    *z0LineEdit;
+   QLineEdit    *ZgLineEdit;
+   QLineEdit    *ZsLineEdit;
+   QLineEdit    *fcLineEdit;
+   QLineEdit    *uStarLineEdit;
+   QLineEdit    *uRefLineEdit;
+   QLineEdit    *zRefLineEdit;
+   QLineEdit    *IuLineEdit;
+   QLineEdit    *LuLineEdit;
+   QLineEdit    *RuwLineEdit;
+
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
+
+   double getUStar(double z0, double uRef, double zRef);
+   double getZg(double latitude, double uStar);
+   double getZs(double latitude, double uStar);
+   double getIu(double z0, double Zg, double uStar, double uRef, double zRef);
+   double getLu(double z0, double zRef);
+   double getRuw(double Zg, double uStar, double zRef);
+   double getFc(double latitude);
+   void generateWindProfiles();
+   void plotTargetWindProfiles();
+
 };
 
 #endif // BOUNDARY_CONDITIONS_WIDGET_H

@@ -66,6 +66,10 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QTableWidget>
+#include <QFormLayout>
+#include <QDialogButtonBox>
+#include <QtMath>
+#include <QWebEngineView>
 
 BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     : SimCenterAppWidget(parent), mainModel(parent)
@@ -208,14 +212,60 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     inflowMaxFreq->setEnabled(false);
     inflowMaxFreq->setToolTip("Faximum frequency modeled in the inflow");
 
+    latLineEdit  = new QLineEdit();
+    latLineEdit ->setText("45");
+    latLineEdit ->setEnabled(true);
+    latLineEdit->setToolTip("Latitude of the site measured in degrees");
+
+
+    uStarLineEdit = new QLineEdit();
+    uStarLineEdit->setText("");
+    uStarLineEdit->setEnabled(false);
+
+    uRefLineEdit = new QLineEdit();
+    uRefLineEdit->setText("");
+    uRefLineEdit->setEnabled(false);
+
+    zRefLineEdit = new QLineEdit();
+    zRefLineEdit->setText("");
+    zRefLineEdit->setEnabled(false);
+
+    IuLineEdit = new QLineEdit();
+    IuLineEdit->setText("");
+    IuLineEdit->setEnabled(false);
+
+    LuLineEdit = new QLineEdit();
+    LuLineEdit->setText("");
+    LuLineEdit->setEnabled(false);
+
+    RuwLineEdit = new QLineEdit();
+    RuwLineEdit->setText("");
+    RuwLineEdit->setEnabled(false);
+
+    z0LineEdit = new QLineEdit();
+    z0LineEdit->setText("");
+    z0LineEdit->setEnabled(false);
+
+    ZgLineEdit = new QLineEdit();
+    ZgLineEdit->setText("");
+    ZgLineEdit->setEnabled(false);
+
+    ZsLineEdit = new QLineEdit();
+    ZsLineEdit->setText("");
+    ZsLineEdit->setEnabled(false);
+
+    fcLineEdit = new QLineEdit();
+    fcLineEdit->setText("");
+    fcLineEdit->setEnabled(false);
+
     windProfileOption = new QComboBox();
     windProfileOption->addItem("Table");
-    windProfileOption->addItem("ESDU");
+    windProfileOption->addItem("ASCE-49");
     windProfileOption->addItem("WRF Model");
-    windProfileOption->setToolTip("Specify the wind profile from tabulated data for Engineering Sciences Data Unit (ESDU)");
+    windProfileOption->setToolTip("Specify the wind profile from ASCE 49-21");
 
 
-    importWindProfiles = new QPushButton("Import Table");
+    importWindProfiles = new QPushButton("Define Wind Profiles");
     importWindProfiles->setVisible(true);
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
@@ -277,9 +327,9 @@ void BoundaryConditionsWidget::inletBCTypeChanged(const QString &arg1)
 
 void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
 {
-    if(arg1 == "ESDU")
+    if(arg1 == "ASCE-49")
     {
-        importWindProfiles->setVisible(false);
+        importWindProfiles->setVisible(true);
     }
     else if(arg1 == "Table")
     {
@@ -303,16 +353,70 @@ void BoundaryConditionsWidget::inflowTimeStepChanged(const QString &arg1)
 
 void BoundaryConditionsWidget::onImportWindProfilesClicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
 
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::AnyFile);
-
-    if (QFileInfo::exists(fileName))
+    if (windProfileOption->currentText()=="Table")
     {
-        windProfilePath = fileName;
-        readCSV(windProfilePath);
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open CSV File"), windProfilePath, tr("CSV Files (*.csv)"));
+
+        QFileDialog dialog(this);
+        dialog.setFileMode(QFileDialog::AnyFile);
+
+        if (QFileInfo::exists(fileName))
+        {
+            windProfilePath = fileName;
+            readCSV(windProfilePath);
+        }
     }
+    else if (windProfileOption->currentText()=="ASCE-49")
+    {
+
+        // Create dialog window
+        QDialog *dialog  = new QDialog(this);
+
+
+        dialog->setWindowTitle("ASCE-49 Wind Profiles");
+
+        // Group box for wind characteristics
+        QGroupBox *groupBox = new QGroupBox("Wind Characteristics in Full-Scale");
+
+        // Generate the wind profiles to files
+        generateWindProfiles();
+
+
+        QPushButton *generateProfile = new QPushButton("Generate Wind Profile");
+        QPushButton *OkButtonBox = new QPushButton("Ok");
+        QObject::connect(OkButtonBox, &QPushButton::clicked, dialog, &QDialog::accept);
+        connect(generateProfile, SIGNAL(clicked()), this, SLOT(onGenerateWindProfilesClicked()));
+
+        // Layout inside the group box
+        QFormLayout *formLayout = new QFormLayout;
+        formLayout->addRow("Latitudes [degrees]:", latLineEdit);
+        formLayout->addRow("Reference Height, Zref[m]:", zRefLineEdit);
+        formLayout->addRow("Reference Wind Speed, Uref [m/s]:", uRefLineEdit);
+        formLayout->addRow("Aerodynamic Roughness Length, z0 [m]:", z0LineEdit);
+        formLayout->addRow("Friction velocity, u* [m/s]:", uStarLineEdit);
+        formLayout->addRow("Coriolis parameter, fc [rad/s]:", fcLineEdit);
+        formLayout->addRow("ABL Gradient Height, Zg [m]:", ZgLineEdit);
+        formLayout->addRow("ASL Thickness, Zs [m]:", ZsLineEdit);
+        formLayout->addRow("Turbulence Intensity, Iu [\%]:", IuLineEdit);
+        formLayout->addRow("Integral Lenght Scale, xLu [m]:", LuLineEdit);
+        formLayout->addRow("Reynolds Shear Stresss, Ruw [m^2/s^2]:", RuwLineEdit);
+
+        groupBox->setLayout(formLayout);
+
+        // Main layout
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        mainLayout->addWidget(groupBox);
+        mainLayout->addWidget(generateProfile);
+        mainLayout->addWidget(OkButtonBox);
+        dialog->setLayout(mainLayout);
+
+        // Execute the dialog
+        dialog->exec();
+
+
+    }
+
 }
 
 bool BoundaryConditionsWidget::readCSV(QString &fileName)
@@ -451,11 +555,12 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
        inflowJson["generationMethod"] = method;
        inflowJson["inflowTimeStep"] = inflowTimeStep->text().toDouble();
        inflowJson["inflowMaxFreq"] = inflowMaxFreq->text().toDouble();
+       inflowJson["latitude"] = latLineEdit->text().toDouble();
        inflowJson["windProfileOption"] = windProfileOption->currentText();
        inflowJson["windProfilePath"] = windProfilePath;
 
        //Write the table to JSON file otherwise the wind profiles
-       //are created from ESDU during OpenFOAM case setup processes
+       //are created from ASCE-49 during OpenFOAM case setup processes
        if(windProfileOption->currentText() == "Table")
        {
             QJsonArray windProfilesJson;
@@ -502,6 +607,7 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
         QString method = inflowJson["generationMethod"].toString();
 
         windProfilePath = inflowJson["windProfilePath"].toString();
+        latLineEdit->setText(QString::number(inflowJson["latitude"].toDouble()));
 
         if(method == "DFSR")
         {
@@ -529,7 +635,7 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
         windProfileOption->setCurrentText(inflowJson["windProfileOption"].toString());
 
         //Read the table from JSON file otherwise the wind profiles
-        //are created from ESDU during OpenFOAM case setup processes
+        //are created from ASCE-49 during OpenFOAM case setup processes
         if(inflowJson["windProfileOption"] == "Table")
         {
             QJsonArray windProfilesJson = inflowJson["windProfiles"].toArray();
@@ -547,6 +653,11 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
                 windProfiles.append(row);
             }
         }
+        if(inflowJson["windProfileOption"] == "ASCE-49")
+        {
+
+        }
+
 
         boundaryCondJson["inflowProperties"] = inflowJson;
     }
@@ -555,3 +666,160 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
 
     return true;
 }
+
+void BoundaryConditionsWidget::generateWindProfiles()
+{
+    double scaleL = mainModel->geometricScale();
+    double scaleV = mainModel->velocityScale();
+    double z0 = mainModel->aerodynamicRoughnessLength();
+    double zRef = mainModel->referenceHeight()*scaleL;
+    double uRef = mainModel->meanWindSpeed()*scaleV;
+    double lat = latLineEdit->text().toDouble();
+
+    double uStar = getUStar(z0, uRef, zRef);
+    double Zg = getZg(lat, uStar);
+    double Zs = getZs(lat, uStar);
+    double fc = getFc(lat);
+    double Iu = getIu(z0, Zg, uStar, uRef, zRef);
+    double xLu = getLu(z0, zRef);
+    double Ruw = getRuw(Zg, uStar, zRef);
+
+    z0LineEdit->setText(QString::number(z0));
+    uStarLineEdit->setText(QString::number(uStar));
+    uRefLineEdit->setText(QString::number(uRef));
+    zRefLineEdit->setText(QString::number(zRef));
+    ZgLineEdit->setText(QString::number(Zg));
+    ZsLineEdit->setText(QString::number(Zs));
+    fcLineEdit->setText(QString::number(fc));
+    IuLineEdit->setText(QString::number(100*Iu));
+    LuLineEdit->setText(QString::number(xLu));
+    RuwLineEdit->setText(QString::number(Ruw));
+
+    windProfilePath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                            + QDir::separator() + "input" + QDir::separator() + "windProfiles.csv";
+
+}
+
+void BoundaryConditionsWidget::onGenerateWindProfilesClicked()
+{
+    generateWindProfiles();
+    mainModel->writeOpenFoamFiles();
+    plotTargetWindProfiles();
+}
+
+
+double BoundaryConditionsWidget::getUStar(double z0, double uRef, double zRef)
+{
+    // Calculates the friction velocity in ASL determined from C2-1 in ASCE 49-21
+    double k = 0.4;
+    return uRef * k / qLn(zRef / z0);
+}
+
+
+
+
+double BoundaryConditionsWidget::getZg(double latitude, double uStar)
+{
+    // Calculates the gradient height for the ABL, given latitude and friction velocity (ASCE 7 49-21)
+    double fc = getFc(latitude);
+    double a = 1.0/6.0;
+
+    return a * uStar / fc;
+}
+
+double BoundaryConditionsWidget::getZs(double latitude, double uStar)
+{
+    // Calculates the lower portion of the ABL, where turbulent fluxes vary within about 10% of surface values,
+    // is sometimes called the ASL with a height, given latitude and friction velocity (ASCE 49-21)
+    double fc = getFc(latitude);
+    double a = 0.02;
+
+    return a * uStar / fc;
+}
+
+double BoundaryConditionsWidget::getFc(double latitude)
+{
+    // Calculates the Coriolis parameter (fc) based on latitude.
+    // Formula taken from ASCE 49-21.
+    // fc = 2 * omega * sin(latitude)
+    // where omega is the Earth's angular velocity (7.2921e-5 rad/s).
+    //(360 degrees) takes approximately 23 hours, 56 minutes,
+    double omega = 7.2921e-5; // Angular velocity of Earth
+
+    return 2.0 * omega * qSin(qDegreesToRadians(latitude));
+}
+
+
+
+double BoundaryConditionsWidget::getIu(double z0, double Zg, double uStar, double uRef, double zRef)
+{
+    /*
+     * Computes the longitudinal turbulence intensity (Iu) at a single height z.
+     * Based on equations from C2-24 and C2-18a&b.
+     */
+
+    // Calculate mean wind speed at height z (placeholder, replace with actual formula)
+
+    double eta = 1.0 - zRef/Zg;
+
+    double bracket_term = 0.538 + 0.090 * qLn(zRef/z0);
+    double exponent_term = qPow(bracket_term, qPow(eta, 16.0));
+
+    return (2.63 * uStar * eta * exponent_term) / uRef;
+}
+
+double BoundaryConditionsWidget::getLu(double z0, double zRef)
+{
+    /*
+     * Computes the streamwise integral length scale (L_u) at a single height z.
+     * Based on Simiu and Yeo 2019, Figure 2.6.
+     */
+
+    // Compute constant C based on surface roughness z_0
+    double C = 21.04 * qPow(z0, -0.42);
+
+    // Compute exponent m as a function of z_0
+    double m = 0.0624 * qLn(z0) + 0.417;
+
+    // Compute the streamwise integral length scale L_u
+    return C * qPow(zRef, m);
+}
+
+double BoundaryConditionsWidget::getRuw(double Zg, double uStar, double zRef)
+{
+    /*
+     * Computes the Reynolds shear stress component uw at a single height z.
+     * Based on ESDU 85020.
+     */
+
+    return -qPow(uStar, 2.0) * qPow(1.0 - zRef/Zg, 2.0);
+}
+
+void BoundaryConditionsWidget::plotTargetWindProfiles()
+{
+    int dialogHeight = 875;
+    int dialogWidth = 1250;
+
+    QString plotPath = mainModel->caseDir() + QDir::separator() + "constant" + QDir::separator() + "simCenter"
+                       + QDir::separator() + "input" + QDir::separator() + "targetWindProfiles.html";
+
+    if (!QFileInfo::exists(plotPath))
+        return;
+
+    // Create dialog
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle("Target Wind Profiles");
+    dialog->resize(dialogWidth, dialogHeight);
+
+    QVBoxLayout *plotLayout = new QVBoxLayout(dialog);
+
+    QWebEngineView *plotView = new QWebEngineView(dialog);
+    plotView->page()->setBackgroundColor(Qt::transparent);
+    plotView->load(QUrl::fromLocalFile(plotPath));
+
+    plotLayout->addWidget(plotView);
+    dialog->setLayout(plotLayout);
+
+    dialog->exec();  // Makes it modal and properly manages closing
+}
+

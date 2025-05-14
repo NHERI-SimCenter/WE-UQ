@@ -637,7 +637,7 @@ bool SurroundedBuildingSnappyHexMesh::runBlockMeshCommand()
 
 #ifdef Q_OS_MACOS
     QString localFoamPath = "/home/openfoam";
-    QString dockerImage = "openfoam/openfoam10-paraview510";
+    QString dockerImage = "openfoam/openfoam11-paraview510";
 
 
     QDir homeDir(QDir::homePath());
@@ -654,7 +654,7 @@ bool SurroundedBuildingSnappyHexMesh::runBlockMeshCommand()
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 
     commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; blockMesh > log.blockMesh; exit\"");
+               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; blockMesh > log.blockMesh; exit\"");
 
 
     qDebug() << commands;
@@ -664,7 +664,7 @@ bool SurroundedBuildingSnappyHexMesh::runBlockMeshCommand()
 
 #else
 
-    commands = "source /opt/openfoam10/etc/bashrc; blockMesh > log.blockMesh";
+    commands = "source /opt/openfoam11/etc/bashrc; blockMesh > log.blockMesh";
 
 #endif
 
@@ -690,7 +690,7 @@ bool SurroundedBuildingSnappyHexMesh::runExtractSurfaceFeaturesCommand()
 
 #ifdef Q_OS_MACOS
     QString localFoamPath = "/home/openfoam";
-    QString dockerImage = "openfoam/openfoam10-paraview510";
+    QString dockerImage = "openfoam/openfoam11-paraview510";
 
     QDir homeDir(QDir::homePath());
     QString sourceBash("");
@@ -706,7 +706,7 @@ bool SurroundedBuildingSnappyHexMesh::runExtractSurfaceFeaturesCommand()
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 
     commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; surfaceFeatures; exit\"");
+               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; surfaceFeatures; exit\"");
 
     qDebug() << commands;
 
@@ -715,7 +715,7 @@ bool SurroundedBuildingSnappyHexMesh::runExtractSurfaceFeaturesCommand()
 
 #else
 
-    commands  = "source /opt/openfoam10/etc/bashrc; surfaceFeatures";
+    commands  = "source /opt/openfoam11/etc/bashrc; surfaceFeatures";
 
 #endif
 
@@ -739,7 +739,7 @@ bool SurroundedBuildingSnappyHexMesh::runSnappyHexMeshCommand()
 #ifdef Q_OS_MACOS
 
     QString localFoamPath = "/home/openfoam";
-    QString dockerImage = "openfoam/openfoam10-paraview510";
+    QString dockerImage = "openfoam/openfoam11-paraview510";
 
     QDir homeDir(QDir::homePath());
     QString sourceBash("");
@@ -757,14 +757,14 @@ bool SurroundedBuildingSnappyHexMesh::runSnappyHexMeshCommand()
 
 
     commands = sourceBash + " docker run --rm --entrypoint /bin/bash" + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh; exit\"");
+               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh; exit\"");
 
     //Actual command on the terminal
     //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh; exit"
 
 #else
 
-    commands = "source /opt/openfoam10/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh";
+    commands = "source /opt/openfoam11/etc/bashrc; snappyHexMesh -overwrite > log.snappyHexMesh";
 
 #endif
 
@@ -791,7 +791,7 @@ bool SurroundedBuildingSnappyHexMesh::runCheckMeshCommand()
 
 #ifdef Q_OS_MACOS
     QString localFoamPath = "/home/openfoam";
-    QString dockerImage = "openfoam/openfoam10-paraview510";
+    QString dockerImage = "openfoam/openfoam11-paraview510";
 
     QDir homeDir(QDir::homePath());
     QString sourceBash("");
@@ -807,14 +807,14 @@ bool SurroundedBuildingSnappyHexMesh::runCheckMeshCommand()
         this->errorMessage( "No .bash_profile, .bashrc, .zprofile or .zshrc file found. This may not find Dakota or OpenSees");
 
     commands = sourceBash + " docker run --rm --entrypoint /bin/bash " + QString(" --platform linux/amd64 -v ") + mainModel->caseDir() + QString(":")
-               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam10/etc/bashrc; checkMesh > log.checkMesh; exit\"");
+               +localFoamPath + QString(" ") + dockerImage + QString(" -c \"source /opt/openfoam11/etc/bashrc; checkMesh > log.checkMesh; exit\"");
 
     //Actual command on the terminal
     //docker run --rm --entrypoint /bin/bash --platform linux/amd64 -v $HOME/Documents/WE-UQ/LocalWorkdir/openfoam:/home/openfoam openfoam/openfoam9-paraview56 -c "source /opt/openfoam9/etc/bashrc; checkMesh > log.checkMesh; exit"
 
 #else
 
-    commands = "source /opt/openfoam10/etc/bashrc; checkMesh > log.checkMesh";
+    commands = "source /opt/openfoam11/etc/bashrc; checkMesh > log.checkMesh";
 
 #endif
 
