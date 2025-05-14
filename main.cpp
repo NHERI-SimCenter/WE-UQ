@@ -19,8 +19,8 @@
 #include <TapisV3.h>
 #include <WorkflowAppWE.h>
 #include <SimCenterPreferences.h>
-
 #include <stdlib.h>
+#include <Utils/FileOperations.h>
 
 #ifdef ENDLN
 #undef ENDLN
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("4.2.2");
+    QCoreApplication::setApplicationVersion("4.2.3");
 
     Q_INIT_RESOURCE(images1);
 
@@ -82,24 +82,15 @@ int main(int argc, char *argv[])
     // set up logging of output messages for user debugging
     //
 
-    logFilePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)
-            + QDir::separator() + QCoreApplication::applicationName();
-
-    // make sure tool dir exists in Documentss folder
-    QDir dirWork(logFilePath);
-    if (!dirWork.exists())
-        if (!dirWork.mkpath(logFilePath)) {
-            qDebug() << QString("Could not create Working Dir: ") << logFilePath;
-        }
-
-    // full path to debug.log file
+    // full path to debug.log file    
+    logFilePath = SCUtils::getAppWorkDir();
     logFilePath = logFilePath + QDir::separator() + QString("debug.log");
 
     //
     // window scaling
     //
+    
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
 
     // remove old log file
     QFile debugFile(logFilePath);

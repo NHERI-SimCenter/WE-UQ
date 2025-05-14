@@ -83,6 +83,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTextEdit>
 #include <QFormLayout>
 #include <Qt3DRender/QMesh>
+#include <Utils/FileOperations.h>
 
 
 IsolatedBuildingCFD::IsolatedBuildingCFD(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool, QWidget *parent)
@@ -148,16 +149,14 @@ bool IsolatedBuildingCFD::initialize()
     caseDirectoryPathWidget = new QLineEdit();
     QString currentAppDir = QCoreApplication::applicationDirPath();
 
-    QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-    if (!workingDir.exists())
-        workingDir.mkpath(".");
+    QString workDirPath = SCUtils::getAppWorkDir();
+    QDir workingDir(workDirPath);
 
-    QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                 + "LocalWorkDir" + QDir::separator()
-                                                 + "IsolatedBuildingCFD");
-
-//    if (!workingDir.exists(workingDirPath))
-//        workingDir.mkpath(workingDirPath);
+    QString workingDirPath = workDirPath + QDir::separator() + "LocalWorkDir"
+      + QDir::separator() + "IsolatedBuildingCFD";
+    
+    if (!workingDir.exists(workingDirPath))
+      workingDir.mkpath(workingDirPath);
 
     caseDirectoryPathWidget->setText(workingDirPath);
 
@@ -630,12 +629,14 @@ void IsolatedBuildingCFD::onBrowseCaseDirectoryButtonClicked(void)
     if (!newCaseDir.exists())
     {
 
-       QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+      QString workDirPath = SCUtils::getAppWorkDir();
+      QDir workingDir(workDirPath);
 
-       QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                    + "LocalWorkDir" + QDir::separator()
-                                                    + "IsolatedBuildingCFD");
-       workingDir.mkpath(workingDirPath);
+      QString workingDirPath = workDirPath + QDir::separator() + "LocalWorkDir"
+	+ QDir::separator() + "IsolatedBuildingCFD";
+
+      if (!workingDir.exists(workingDirPath))
+        workingDir.mkpath(workingDirPath);      
 
        caseDirectoryPathWidget->setText(workingDirPath);
 
@@ -699,21 +700,23 @@ bool IsolatedBuildingCFD::inputFromJSON(QJsonObject &jsonObject)
 
     if (!foamDir.exists(foamPath) || foamPath == "")
     {
-        QDir workingDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+      QString workDirPath = SCUtils::getAppWorkDir();
+      QDir workingDir(workDirPath);
+      
+      QString workingDirPath = workDirPath + QDir::separator() + "LocalWorkDir"
+	+ QDir::separator() + "IsolatedBuildingCFD";      
+      
+      if (!workingDir.exists(workingDirPath))
+        workingDir.mkpath(workingDirPath);
 
-        QString workingDirPath = workingDir.filePath(QCoreApplication::applicationName() + QDir::separator()
-                                                     + "LocalWorkDir" + QDir::separator()
-                                                     + "IsolatedBuildingCFD");
-//        workingDir.mkpath(workingDirPath);
+      caseDirectoryPathWidget->setText(workingDirPath);
 
-        caseDirectoryPathWidget->setText(workingDirPath);
-
-        if(!isCaseConfigured())
+      if(!isCaseConfigured())
         {
             setupCase();
         }
 
-        if (!isMeshed())
+      if (!isMeshed())
         {
             snappyHexMesh->onRunBlockMeshClicked();
         }
