@@ -76,6 +76,7 @@ public slots:
    void onImportWindProfilesClicked();
    void onShowWindProfilesClicked();
    void onGenerateWindProfilesClicked();
+   void onWRFPathButtonClicked(void);
 
 
 
@@ -125,6 +126,18 @@ private:
    QLineEdit    *IuLineEdit;
    QLineEdit    *LuLineEdit;
    QLineEdit    *RuwLineEdit;
+
+
+   //Entries needed for WRF Model
+   QLineEdit    *inputFileWRF;
+   QLineEdit    *gridResolutionWRF;
+   QLineEdit    *timeStampWRF;
+   QLineEdit    *startLatWRF;
+   QLineEdit    *startLongWRF;
+   QLineEdit    *directionWRF;
+
+
+
 
    RandomVariablesContainer *theRandomVariablesContainer;
    QStringList varNamesAndValues;
