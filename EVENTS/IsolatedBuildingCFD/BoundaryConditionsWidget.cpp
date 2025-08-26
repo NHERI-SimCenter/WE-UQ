@@ -258,10 +258,38 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
     fcLineEdit->setText("");
     fcLineEdit->setEnabled(false);
 
+
+    //===== Initialize WRF Inputs =====
+
+    inputFileWRF = new QLineEdit();
+    inputFileWRF->setText("");
+    inputFileWRF->setEnabled(true);
+
+    gridResolutionWRF = new QLineEdit();
+    gridResolutionWRF->setText("444.4");
+    gridResolutionWRF->setEnabled(true);
+
+    startLatWRF = new QLineEdit();
+    startLatWRF->setText("22.29");
+    startLatWRF->setEnabled(true);
+
+    startLongWRF = new QLineEdit();
+    startLongWRF->setText("114.1977");
+    startLongWRF->setEnabled(true);
+
+    directionWRF = new QLineEdit();
+    directionWRF->setText("1");
+    directionWRF->setEnabled(false);
+
+    timeStampWRF = new QLineEdit();
+    timeStampWRF->setText("2008-08-06_02-40-00");
+    timeStampWRF->setEnabled(true);
+    //=================================
+
     windProfileOption = new QComboBox();
     windProfileOption->addItem("Table");
     windProfileOption->addItem("ASCE-49");
-    windProfileOption->addItem("WRF Model");
+    windProfileOption->addItem("WRF-Model");
     windProfileOption->setToolTip("Specify the wind profile from ASCE 49-21");
 
 
@@ -335,9 +363,9 @@ void BoundaryConditionsWidget::windProfileOptionChanged(const QString &arg1)
     {
         importWindProfiles->setVisible(true);
     }
-    else if(arg1 == "WRF Model")
+    else if(arg1 == "WRF-Model")
     {
-        importWindProfiles->setVisible(false);
+        importWindProfiles->setVisible(true);
     }
     else
     {
@@ -413,8 +441,79 @@ void BoundaryConditionsWidget::onImportWindProfilesClicked()
 
         // Execute the dialog
         dialog->exec();
+    }
+    if (windProfileOption->currentText()=="WRF-Model")
+    {
+
+        // Create dialog window
+        QDialog *dialog  = new QDialog(this);
 
 
+        dialog->setWindowTitle("WRF-Model Wind Profiles");
+
+        // Group box for wind characteristics
+        QGroupBox *groupBoxWRF = new QGroupBox("WRF Model Input");
+        QPushButton* wrfPathButton  = new QPushButton("Browse");
+        connect(wrfPathButton, SIGNAL(clicked()), this, SLOT(onWRFPathButtonClicked()));
+
+        // Layout inside the group box
+        QGridLayout  *layoutWRF = new QGridLayout() ;
+        layoutWRF->addWidget(new QLabel("WRF Model Input Path [*.nc]:"), 0, 0);
+        layoutWRF->addWidget(inputFileWRF, 0, 1);
+        layoutWRF->addWidget(wrfPathButton, 0, 2);
+        layoutWRF->addWidget(new QLabel("WRF Model Grid Resolution [m]:"), 1, 0);
+        layoutWRF->addWidget(gridResolutionWRF, 1, 1, 1, 2);
+        layoutWRF->addWidget(new QLabel("WRF Model Timestamp:"), 2, 0);
+        layoutWRF->addWidget(timeStampWRF, 2, 1, 1, 2);
+        layoutWRF->addWidget(new QLabel("Start Latitude [degrees]:"), 3, 0);
+        layoutWRF->addWidget(startLatWRF, 3, 1, 1, 2);
+        layoutWRF->addWidget(new QLabel("Start Longitude [degrees]:"), 4, 0);
+        layoutWRF->addWidget(startLongWRF, 4, 1, 1, 2);
+        layoutWRF->addWidget(new QLabel("Boundary Direction [-]:"), 5, 0);
+        layoutWRF->addWidget(directionWRF, 5, 1, 1, 2);
+
+
+        groupBoxWRF->setLayout(layoutWRF);
+
+
+        // Group box for wind characteristics
+        QGroupBox *groupBox = new QGroupBox("Wind Characteristics in Full-Scale");
+
+        // Generate the wind profiles to files
+        generateWindProfiles();
+
+
+        QPushButton *generateProfile = new QPushButton("Generate Wind Profile");
+        QPushButton *OkButtonBox = new QPushButton("Ok");
+        QObject::connect(OkButtonBox, &QPushButton::clicked, dialog, &QDialog::accept);
+        connect(generateProfile, SIGNAL(clicked()), this, SLOT(onGenerateWindProfilesClicked()));
+
+        // Layout inside the group box
+        QFormLayout *formLayout = new QFormLayout;
+//        formLayout->addRow("Latitudes [degrees]:", latLineEdit);
+        formLayout->addRow("Reference Height, Zref[m]:", zRefLineEdit);
+        formLayout->addRow("Reference Wind Speed, Uref [m/s]:", uRefLineEdit);
+        formLayout->addRow("Aerodynamic Roughness Length, z0 [m]:", z0LineEdit);
+        formLayout->addRow("Friction velocity, u* [m/s]:", uStarLineEdit);
+        formLayout->addRow("Coriolis parameter, fc [rad/s]:", fcLineEdit);
+        formLayout->addRow("ABL Gradient Height, Zg [m]:", ZgLineEdit);
+        formLayout->addRow("ASL Thickness, Zs [m]:", ZsLineEdit);
+        formLayout->addRow("Turbulence Intensity, Iu [\%]:", IuLineEdit);
+        formLayout->addRow("Integral Lenght Scale, xLu [m]:", LuLineEdit);
+        formLayout->addRow("Reynolds Shear Stresss, Ruw [m^2/s^2]:", RuwLineEdit);
+
+        groupBox->setLayout(formLayout);
+
+        // Main layout
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        mainLayout->addWidget(groupBoxWRF);
+        mainLayout->addWidget(groupBox);
+        mainLayout->addWidget(generateProfile);
+        mainLayout->addWidget(OkButtonBox);
+        dialog->setLayout(mainLayout);
+
+        // Execute the dialog
+        dialog->exec();
     }
 
 }
@@ -580,6 +679,20 @@ bool BoundaryConditionsWidget::outputToJSON(QJsonObject &jsonObject)
             inflowJson["windProfiles"] = windProfilesJson;
        }
 
+       if(windProfileOption->currentText() == "ASCE-49")
+       {
+       }
+
+       if(windProfileOption->currentText() == "WRF-Model")
+       {
+            inflowJson["inputFileWRF"] = inputFileWRF->text();
+            inflowJson["gridResolutionWRF"] = gridResolutionWRF->text().toDouble();
+            inflowJson["startLatitudeWRF"] = startLatWRF->text().toDouble();
+            inflowJson["startLongitudeWRF"] = startLongWRF->text().toDouble();
+            inflowJson["directionWRF"] = directionWRF->text();
+            inflowJson["timeStampWRF"] = timeStampWRF->text();
+       }
+
        boundaryCondJson["inflowProperties"] = inflowJson;
     }
 
@@ -656,6 +769,16 @@ bool BoundaryConditionsWidget::inputFromJSON(QJsonObject &jsonObject)
         if(inflowJson["windProfileOption"] == "ASCE-49")
         {
 
+        }
+
+        if(inflowJson["windProfileOption"] == "WRF-Model")
+        {
+            inputFileWRF->setText(inflowJson["inputFileWRF"].toString());
+            timeStampWRF->setText(inflowJson["timeStampWRF"].toString());
+            gridResolutionWRF->setText(QString::number(inflowJson["gridResolutionWRF"].toDouble()));
+            startLatWRF->setText(QString::number(inflowJson["startLatitudeWRF"].toDouble()));
+            startLongWRF->setText(QString::number(inflowJson["startLongitudeWRF"].toDouble()));
+            directionWRF->setText(inflowJson["directionWRF"].toString());
         }
 
 
@@ -821,5 +944,20 @@ void BoundaryConditionsWidget::plotTargetWindProfiles()
     dialog->setLayout(plotLayout);
 
     dialog->exec();  // Makes it modal and properly manages closing
+}
+
+
+
+void BoundaryConditionsWidget::onWRFPathButtonClicked(void)
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open WRF File"), windProfilePath, tr("WRF Files (*.nc)"));
+
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+
+    if (QFileInfo::exists(fileName))
+    {
+       inputFileWRF->setText(fileName);
+    }
 }
 
