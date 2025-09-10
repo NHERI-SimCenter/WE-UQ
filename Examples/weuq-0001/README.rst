@@ -38,9 +38,9 @@ The structure has uncertain properties that all follow normal distribution:
 Sampling Analysis
 ^^^^^^^^^^^^^^^^^
 
-+----------------+-------------------------+
++----------------+-------------------------------------------------------------------------------------+
 | Problem files  | Link : `https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0001//` |
-+----------------+-------------------------+
++----------------+-------------------------------------------------------------------------------------+
 
 
 To perform a Sampling or Forward propagation uncertainty analysis the user would perform the following steps:
