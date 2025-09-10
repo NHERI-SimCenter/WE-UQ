@@ -39,7 +39,7 @@ Sampling Analysis
 ^^^^^^^^^^^^^^^^^
 
 +----------------+-------------------------+
-| Problem files  | :weuq-0001:`/`          |
+| Problem files  | Link : `https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0001//` |
 +----------------+-------------------------+
 
 
