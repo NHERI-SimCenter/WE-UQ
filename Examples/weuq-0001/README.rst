@@ -38,9 +38,9 @@ The structure has uncertain properties that all follow normal distribution:
 Sampling Analysis
 ^^^^^^^^^^^^^^^^^
 
-+----------------+-------------------------------------------------------------------------------------+
-| Problem files  | Link : `https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0001//` |
-+----------------+-------------------------------------------------------------------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0001 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0001//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
 
 
 To perform a Sampling or Forward propagation uncertainty analysis the user would perform the following steps:
@@ -127,9 +127,9 @@ Various views of the graphical display can be obtained by left and right-clickin
 User Defined Output
 ^^^^^^^^^^^^^^^^^^^
 
-+----------------+--------------------+
-| Problem files  | :weuq-0002:`/`     |
-+----------------+--------------------+
++----------------+---------------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0002 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0002//>`_      |
++----------------+---------------------------------------------------------------------------------------------------------------+
 
 In this section, we will demonstrate the use of the user-defined output option for the EDP panel. In the previous example, we got the standard output, which can be both a lot and also limited (in the sense you may not get the information you want). In this example we will present how to obtain results just for the roof displacement, the displacement of node **10** in both the **MDOF** and **OpenSees** model generator examples and the shear force at the base of the structure. For the OpenSees model, it is also possible to obtain the overturning moment (something not possible in the MDOF model due to the fact it is modeled using spring elements). The examples could be extended to output for example the element end rotations, plastic rotations, ...
 
@@ -173,9 +173,9 @@ The steps are the same as the previous example, with the exception of step 4 def
 Reliability Analysis
 ^^^^^^^^^^^^^^^^^^^^
 
-+----------------+-----------------------+
-| Problem files  | :weuq-0003:`/`        |
-+----------------+-----------------------+
++----------------+---------------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0003 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0003//>`_      |
++----------------+---------------------------------------------------------------------------------------------------------------+
 
 If the user is interested in the probability that certain response measures will be exceeded an alternative strategy is to perform a reliability analysis. To perform a reliability analysis the steps above would be repeated with the exception that the user would select a reliability analysis method instead of a Forward Propagation method. To obtain reliability results using the Global Reliability methods presented in Dakota choose the **Global Reliability** methods from the methods drop-down menu. In the response levels enter a value of **0.5** and **0.8**, specifying that we are interested in the value of the CDF for a displacement of the roof of 0.5in and 0.8in, i.e. what is the probability that displacement will be less than 0.8in.
 

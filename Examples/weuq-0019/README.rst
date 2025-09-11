@@ -3,9 +3,11 @@
 Computing Wind Loads on Building Components and Cladding
 ==========================================================
 
-+----------------+-------------------------+
-| Problem files  | :weuq-0019:`/`          |
-+----------------+-------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0019 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0019//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
+
+
 
 This examples demonstrated a workflow for evaluating component and cladding loads on buildings. The geometry of the building used for this study is a gable roof low rise building taken from Tokyo Polytechnic University (TPU) aerodynamic database. :numref:`fig-we19-1` shows the study building in the CFD model. The STL geometry of the building can be found :github:`here <Examples/weuq-0019/src/tpu_building_geometry.stl>` that can be imported to the workflow. Most of the input parameters used in this example are similar to the example in :numref:`weuq-0015`.  
 
