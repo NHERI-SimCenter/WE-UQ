@@ -77,12 +77,13 @@ The experimental records should first be reformatted by the user such that **win
 
    Examples of Wind Force Time Series in Fx, Fy, Tz arrays [Duarte2023]_.
 
+
 The json file used in this example is named ``Forces_ANG000_phase1.json``, and it can be found at
 `example files  <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0012//>`_ . Using this information, WE-UQ will generate the stochastic wind loads that apply to a full-scale building model with **scaling factor of 200**.
 
 
 Workflow
-^^^^^^^^^^^^
+^^^^^^^^
 
 .. note::
    This example can be directly loaded from the menu bar at the top of the screen by clicking "Examples"-"E4: Wind Tunnel-Informed Stochastic Wind Load Generation". The user may want to increase the number of samples in the UQ tab for more stable results.
