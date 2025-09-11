@@ -98,7 +98,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
 #include <Utils/FileOperations.h>
-#include <FronteraMachine.h>
+#include <Stampede3Machine.h>
 
 // static pointer for global procedure set in constructor
 static WorkflowAppWE *theApp = 0;
@@ -129,7 +129,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     theUQ_Selection = new UQ_EngineSelection(ForwardReliabilitySensitivitySurrogate);
     theResults = theUQ_Selection->getResults();
 
-    TapisMachine *theMachine = new FronteraMachine();
+    TapisMachine *theMachine = new Stampede3Machine();
     
     localApp = new LocalApplication("sWHALE.py");
     remoteApp = new RemoteApplication("sWHALE.py", theService, theMachine, nullptr);
