@@ -3,9 +3,11 @@
 Wind Tunnel-Informed Stochastic Wind Pressure Generation
 =======================================================================
 
-+----------------+----------------------------------------+
-| Problem files  | :github:`Download <Examples/weuq-0016/>` |
-+----------------+----------------------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0016 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0016//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
+
+
 
 This example estimates the probabilistic response of a building model excited by wind tunnel-informed stochastic wind **pressure time histories**. This example uses the experimental data obtained at the University of Florida (UF) NHERI Experimental Facility (EF), and applies the simulated wind loads to a 25-story rectangular-shaped building model for response simulation. This example uses the data presented in [Duarte2023]_. Note :ref:`Example 4.3 <weuq-0012>` aims to preserve the statistics of force time history (represented as a stationary Gaussian process model) while the current example preserves those of pressure time history using a stationary non-Gaussian process model.
 

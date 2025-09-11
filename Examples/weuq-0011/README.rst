@@ -3,9 +3,10 @@
 Digital Wind Tunnel I: Empty Domain Simulation 
 ===================
 
-+----------------+-------------------------+
-| Problem files  | :weuq-0011:`/`          |
-+----------------+-------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0011 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0011//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
+
 
 Digital Wind Tunnel is implemented in WE-UQ Version 2.3.0. This feature aims to provide the users with the computational tool to run CFD simulations with the user-defined atmospheric boundary layer inflow conditions and the user-defined OpenFOAM model.
 

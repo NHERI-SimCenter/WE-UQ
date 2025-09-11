@@ -3,9 +3,11 @@
 Digital Wind Tunnel II: Wind Loads on Isolated Building with Complex Geometry
 ==================================================
 
-+----------------+-------------------------+
-| Problem files  | :weuq-0014:`/`          |
-+----------------+-------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0014 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0014//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
+
+
 
 In this example, the CFD-based workflow for determining the wind-induced response of a building with arbitrary geometry is demonstrated. The shape of the study building resembles a landmark tall building i.e., Willis Tower (formerly known as Sears Tower) located in Chicago, Illinois, United States. In full-scale, the building measures 442.1 m high after some geometric simplification. :numref:`fig-we14-1` shows the STL representation of the building to be imported to the workflow. Except for the building geometry, most of the input parameters used in this example are similar to the example in :numref:`weuq-0013`.  
 

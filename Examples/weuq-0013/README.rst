@@ -3,9 +3,9 @@
 Digital Wind Tunnel II: Wind Loads on Isolated Building with Simple Geometry
 ============================================================================
 
-+----------------+-------------------------+
-| Problem files  | :weuq-0013:`/`          |
-+----------------+-------------------------+
++----------------+-----------------------------------------------------------------------------------------------------------+
+| Problem files  | `WE-UQ/Examples/weuq-0013 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//weuq-0013//>`_  |
++----------------+-----------------------------------------------------------------------------------------------------------+
 
 This example demonstrates a Computational Fluid Dynamics (CFD) based procedure for estimating the response of a building with simple box-type geometry subjected to wind loading. The example demonstrates a step-by-step process for defining the CFD model based on a target experimental setup. The target experimental model is taken from Tokyo Polytechnic University (TPU) aerodynamic database. For ease of demonstration, in this example, some simplifying assumptions are taken to model the approaching wind condition. Once the CFD simulation is completed, the recorded wind loads are applied to a 45-story building for estimating the responses. 
 
