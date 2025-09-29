@@ -3,8 +3,10 @@
 Community level wind simulation: WE-UQ coupled with BRAILS++
 ==========================================================
 
+**Tanmay Vora , Jieling Jiang, Abiy F. Melaku , Seymour Spence **
+
 +----------------+-----------------------------------------------------------------------------------------------------------+
-| Problem files  | `WE-UQ/Examples/weuq-0019 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//advancedCFD//>`_  |
+| Example files  | `WE-UQ/Examples/weuq-0019 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//advancedCFD//>`_  |
 +----------------+-----------------------------------------------------------------------------------------------------------+
 
 Introduction
