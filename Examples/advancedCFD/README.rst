@@ -3,7 +3,7 @@
 Community level wind simulation: WE-UQ coupled with BRAILS++
 ==========================================================
 
-**Tanmay Vora , Jieling Jiang, Abiy F. Melaku , Seymour Spence **
+**Tanmay Vora, Jieling Jiang, Abiy F. Melaku, Seymour Spence**
 
 +----------------+-----------------------------------------------------------------------------------------------------------+
 | Example files  | `WE-UQ/Examples/weuq-0019 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//advancedCFD//>`_  |
@@ -28,9 +28,6 @@ Generating the GeoJSON files with building footprints and their heights:
 
 Generating the GeoJSON files with building footprints and their heights
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-
 The BRAILS++ inventory contains the longitudes and latitudes of building footprints with their respective heights and outputs them as a geojson file, which can be viewed in a GIS (Geographic Information System) software such as ArcGIS or QGIS. The user needs to input the center point and the bounding radius around the community of interest as shown in :numref:`fig-advanced-cfd-2`. Then, the user must input two coordinates (minimum and maximum extents) for the bounding box that encompasses the region of interest (ROI) as shown in :numref:`fig-advanced-cfd-3`. The ROI must contain buildings within the bounding radius that are of more importance than others. The latitude and longitude of a specific point can be obtained by clicking at a location on the google maps. For the ROI, the latitude and longitude of the two points marked with red circles in :numref:`fig-advanced-cfd-3` are required as inputs. The user also has an option to choose the footprint scraper (USA, OSM, and Microsoft) to retrieve the building information. The default scraper is USA. These inputs generate two geojson files named “inventoryTotal.geojson” and “inventoryROI.geojson”. The former contains information about all buildings inside the bounding radius, and the latter contains information about buildings inside the bounding box.
 
 
