@@ -260,9 +260,9 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   EmptyDomainCFD *theEmptyDomain = new EmptyDomainCFD(theRVs);
 
 //  QString appName = "simcenter-weuq-openfoam-frontera";
-  QString appName = "simcenter-weuq-cfd-frontera";
+  QString appName = "simcenter-weuq-cfd-stampede3";
   QString appVersion = "1.0.0";
-  QString machine = "frontera";      
+  QString machine = "stampede3";
 
   QList<QString> queues; queues << "normal" << "fast";
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName,
@@ -292,9 +292,9 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //
   IsolatedBuildingCFD *theIsoBldg = new IsolatedBuildingCFD(theRVs,true);
   //  QString isoAppName = "simcenter-weuq-openfoam-frontera";
-  QString isoAppName = "simcenter-weuq-cfd-frontera";
+  QString isoAppName = "simcenter-weuq-cfd-stampede3";
   QString isoAppVersion = "1.0.0";
-  QString isoMachine = "frontera";
+  QString isoMachine = "stampede3";
   QList<QString> isoQueues;
 
   isoQueues << "normal" << "fast";
