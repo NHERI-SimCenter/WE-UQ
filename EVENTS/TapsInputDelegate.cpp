@@ -38,7 +38,13 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 #include "TapsInputDelegate.h"
 
-#include <QRegExpValidator>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  #include <QRegExpValidator>
+#else
+  #include <QRegularExpressionValidator>
+  #include <QRegularExpression>
+#endif
 
 #include <sstream>
 
@@ -50,8 +56,14 @@ TapsInputDelegate::TapsInputDelegate()
     this->setPlaceholderText("(optional) e.g., 1, 3, 5-10, 12");
 
     // Create a regExp validator to make sure only '-' & ',' & ' ' & numbers are input
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QRegExp LERegExp ("((([0-9]*)|([0-9]+-[1-9][0-9]*))[ ]*,[ ]*)*([[0-9]+-[1-9][0-9]*|[0-9]*)");
     QRegExpValidator* LEValidator = new QRegExpValidator(LERegExp);
+#else    
+    QRegularExpression LERegExp ("((([0-9]*)|([0-9]+-[1-9][0-9]*))[ ]*,[ ]*)*([[0-9]+-[1-9][0-9]*|[0-9]*)");
+    QRegularExpressionValidator *LEValidator = new QRegularExpressionValidator(LERegExp, this);
+#endif
+    
     this->setValidator(LEValidator);
 }
 

@@ -117,8 +117,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QApplication>
 
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent)
-    : SimCenterAppWidget(parent), mainModel(parent)
+: SimCenterAppWidget(parent), mainModel(parent),  bldgBlock(0), surrBlock(0)
 {
+
     initialize();
 }
 

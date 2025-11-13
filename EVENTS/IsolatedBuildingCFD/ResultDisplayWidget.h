@@ -43,7 +43,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QtCharts/QChart>
 #include <vector>
 #include <complex>
-using namespace QtCharts;
 
 class InputWidgetParameters;
 class RandomVariablesContainer;

@@ -21,6 +21,8 @@
 #include <SimCenterPreferences.h>
 #include <stdlib.h>
 #include <Utils/FileOperations.h>
+#include <Utils/SimCenterConfigFile.h>
+
 
 #ifdef ENDLN
 #undef ENDLN
@@ -74,7 +76,7 @@ int main(int argc, char *argv[])
 
     QCoreApplication::setApplicationName("WE-UQ");
     QCoreApplication::setOrganizationName("SimCenter");
-    QCoreApplication::setApplicationVersion("4.4.1");
+    QCoreApplication::setApplicationVersion("4.4.2");
 
     Q_INIT_RESOURCE(images1);
 
@@ -221,31 +223,41 @@ int main(int argc, char *argv[])
     }
 
     //Setting Google Analytics Tracking Information
+
+    QString analyticsOption = getConfigOptionString("GoogleAnalytics");
     
 #ifdef _SC_RELEASE
 
     qDebug() << "Running a Release Version of WE-UQ";
-    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
-    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
-    GoogleAnalytics::CreateSessionId();
-    GoogleAnalytics::StartSession();
 
-    // Opening a QWebEngineView and using github to get app geographic usage
-    QWebEngineView view;
-    view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
-    view.resize(1024, 750);
-    view.show();
-    view.hide();
+    if (analyticsOption != "No") {
+      
+      GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+      GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+      GoogleAnalytics::CreateSessionId();
+      GoogleAnalytics::StartSession();
+      
+      // Opening a QWebEngineView and using github to get app geographic usage
+      QWebEngineView view;
+      view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
+      view.resize(1024, 750);
+      view.show();
+      view.hide();
+      
+    } else
+      qDebug() << "Google Analytics: None";    
     
 #endif
 
 #ifdef _ANALYTICS
 
-    qDebug() << "compiled with _ANALYTICS";    
-    GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
-    GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
-    GoogleAnalytics::CreateSessionId();
-    GoogleAnalytics::StartSession();
+    if (analyticsOption != "No") {    
+      qDebug() << "compiled with _ANALYTICS";    
+      GoogleAnalytics::SetMeasurementId("G-SQHRGYDZ0H");
+      GoogleAnalytics::SetAPISecret("SCg4ry-WRee780Oen2WBUA");
+      GoogleAnalytics::CreateSessionId();
+      GoogleAnalytics::StartSession();
+    }
     
 #endif    
     
@@ -258,13 +270,15 @@ int main(int argc, char *argv[])
 
 #ifdef _GA_AFTER
 
-    qDebug() << "compiled with: _GA_AFTER";
-    // Opening a QWebEngineView and using github to get app geographic usage
-    QWebEngineView view;
-    view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
-    view.resize(1024, 750);
-    view.show();
-    view.hide();
+    if (analyticsOption != "No") {    
+      qDebug() << "compiled with: _GA_AFTER";
+      // Opening a QWebEngineView and using github to get app geographic usage
+      QWebEngineView view;
+      view.setUrl(QUrl("https://nheri-simcenter.github.io/WE-UQ/GA4.html"));
+      view.resize(1024, 750);
+      view.show();
+      view.hide();
+    }
     
 #endif
     

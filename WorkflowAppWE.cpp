@@ -196,7 +196,7 @@ WorkflowAppWE::WorkflowAppWE(RemoteService *theService, QWidget *parent)
     //
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout();
-    horizontalLayout->setMargin(0);
+    //horizontalLayout->setMargin(0);
     this->setLayout(horizontalLayout);
 
     //
@@ -1043,7 +1043,7 @@ WorkflowAppWE::createCitation(QJsonObject &citation, QString citeFile) {
     if(docC.isObject()) {
       citation = docC.object();        
     }  else {
-      qDebug() << "WorkflowdAppWE citation text is not valid JSON: \n" << cit << endl;
+      qDebug() << "WorkflowdAppWE citation text is not valid JSON: \n" << cit << "\n";
     }
   }
   
