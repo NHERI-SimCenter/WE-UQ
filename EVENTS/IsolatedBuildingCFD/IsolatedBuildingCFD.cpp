@@ -363,6 +363,8 @@ bool IsolatedBuildingCFD::initialize()
         snappyHexMesh->onRunBlockMeshClicked();
     }
 
+    visWidget = new SimCenterVTKRenderingWidget(this);
+    
     //Read all the case data from const/simCenter
     readCaseData();
 
@@ -373,7 +375,7 @@ bool IsolatedBuildingCFD::initialize()
     visWindowGroup->setLayout(visWindowLayout);
     mainWindowLayout->addWidget(visWindowGroup);
 
-    visWidget = new SimCenterVTKRenderingWidget(this);
+    // moving this line up .. as readCaseData causes theis widget to be used: visWidget = new SimCenterVTKRenderingWidget(this);
 
     visWindowLayout->addWidget(visWidget);
 

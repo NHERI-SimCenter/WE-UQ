@@ -294,7 +294,7 @@ BoundaryConditionsWidget::BoundaryConditionsWidget(IsolatedBuildingCFD *parent)
 
 
     importWindProfiles = new QPushButton("Define Wind Profiles");
-    importWindProfiles->setVisible(true);
+    //    importWindProfiles->setVisible(true);
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
 

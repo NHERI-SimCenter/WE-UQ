@@ -119,7 +119,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 SimCenterVTKRenderingWidget::SimCenterVTKRenderingWidget(IsolatedBuildingCFD *parent)
 : SimCenterAppWidget(parent), mainModel(parent),  bldgBlock(0), surrBlock(0)
 {
-
     initialize();
 }
 
@@ -519,8 +518,11 @@ void SimCenterVTKRenderingWidget::initializeVtkObjects()
 }
 
 vtkPolyData* SimCenterVTKRenderingWidget::getBldgBlock()
-{
-    return bldgBlock;
+{  
+  if (initialized != true) 
+    qDebug() << "SimCenterVTKRenderingWidget::getBldgBlock() - FALSE INIT - returning 0 pointer";
+  
+  return bldgBlock;
 }
 
 
