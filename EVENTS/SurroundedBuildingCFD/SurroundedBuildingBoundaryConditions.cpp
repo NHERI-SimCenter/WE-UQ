@@ -216,7 +216,7 @@ SurroundedBuildingBoundaryConditions::SurroundedBuildingBoundaryConditions(Surro
 
 
     importWindProfiles = new QPushButton("Import(*.csv)");
-    importWindProfiles->setVisible(true);
+    //    importWindProfiles->setVisible(true); You don't make setVisible before added to some layout & by default it is!!
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
 

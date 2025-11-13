@@ -207,7 +207,7 @@ EmptyBoundaryConditions::EmptyBoundaryConditions(EmptyDomainCFD *parent)
 
 
     importWindProfiles = new QPushButton("Import(*.csv)");
-    importWindProfiles->setVisible(true);
+    // importWindProfiles->setVisible(true); this setVisible to true not needed as vis by default, also do after added to a layout not here
 
     showWindProfiles = new QPushButton("Show Wind Profiles");
 
