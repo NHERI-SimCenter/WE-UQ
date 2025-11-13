@@ -44,6 +44,15 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <vector>
 #include <complex>
 
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+
+#else
+using namespace QtCharts;
+#endif
+
+
+
 class InputWidgetParameters;
 class RandomVariablesContainer;
 class QComboBox;
