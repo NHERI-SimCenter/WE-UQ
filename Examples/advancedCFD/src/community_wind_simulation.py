@@ -1469,6 +1469,7 @@ def main() -> None:
     # --- load, CRS -------------------------------------------------------
     gdf_roi  = gpd.read_file(roi)
     gdf_full = gpd.read_file(full)
+    
     if gdf_roi.empty: sys.exit("ROI empty.")
     lon0,lat0 = (gdf_roi.geometry.iloc[0].exterior.coords[0]
                  if isinstance(gdf_roi.geometry.iloc[0], geom.Polygon)
@@ -1514,8 +1515,9 @@ def main() -> None:
         for pg,h in zip(gdf.geometry,gdf[fld]):
             if isinstance(pg,geom.MultiPolygon): parts.extend(extrude(p,h) for p in pg.geoms)
             else: parts.append(extrude(pg,h))
-        m=trimesh.util.concatenate(parts)
-        m.remove_duplicate_faces(); m.remove_degenerate_faces(); m.fill_holes()
+
+            m=trimesh.util.concatenate(parts)
+        # m.remove_duplicate_faces(); m.remove_degenerate_faces(); m.fill_holes()
         return m
     write_stl_ascii(mesh(gdf_roi), roi_stl,  "ROI")
     write_stl_ascii(mesh(rest),    rest_stl, "Surrounding")
