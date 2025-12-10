@@ -5,14 +5,11 @@ Community level wind simulation: WE-UQ coupled with BRAILS++
 
 **Tanmay Vora, Jieling Jiang, Abiy F. Melaku, Seymour Spence**
 
-+----------------+-----------------------------------------------------------------------------------------------------------+
-| Example files  | `WE-UQ/Examples/weuq-0019 <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//advancedCFD//>`_  |
-+----------------+-----------------------------------------------------------------------------------------------------------+
-
 Introduction
-^^^^^^^^^^^^^
+^^^^^^^^^^^^
 
-This module provides a workflow to simulate wind flow inside a community. The building footprints are generated using the  inventory. To install BRAILS++, the user needs to run the command: pip install brails. Additionally, the user needs to install the geopandas, shapely, pyproj, trimesh, rtree, and mapbox-earcut python libraries using the command: ``pip install geopandas shapely pyproj trimesh rtree mapbox-earcut``. To generate the computational domain, the user needs to provide the longitude and latitude of the center point, the bounding radius, and the longitudes and latitudes of the bounding box encompassing the region of interest. The user needs to have  downloaded on their computer. The user needs to input the parameters for the CFD simulation following the workflow shown in :numref:`fig-advanced-cfd-1`, using the developed Python script for this module, then run the wind simulation in OpenFOAM, and finally view the results in Paraview.
+This example provides a workflow for simulating wind flow within a community of buildings, defined by those buildings within the region of interest. The example does not (presently) run from WE-UQ. Instead the workflow is run by the user executing a Python script that orchestrates the full pre-processing chain required for a computational fluid dynamics (CFD) simulation of urban wind flow. Specifically, the script performs the following **two** steps: **1**) Building footprints for the community of interest and its surrounding region are first generated using BRAILS++ **2**) Using user-provided inputs defining the parameters of the computational simulation, specifically the computational domain, boundary conditions, turbulence modeling, the script finishes by generating all the input files required for an OpenFOAM CFD simulation.  Once the input files have been generated, the user can run the wind simulation in OpenFOAM, and finally view the results in Paraview.
+
 
 .. _fig-advanced-cfd-1:
 
@@ -22,13 +19,38 @@ This module provides a workflow to simulate wind flow inside a community. The bu
 
    The WE-UQ and BRAILS++ integration workflow.
 
-Detailed Workflow
-^^^^^^^^^^^^^^^^^^^^
-Generating the GeoJSON files with building footprints and their heights:
+.. note::
 
-Generating the GeoJSON files with building footprints and their heights
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-The BRAILS++ inventory contains the longitudes and latitudes of building footprints with their respective heights and outputs them as a geojson file, which can be viewed in a GIS (Geographic Information System) software such as ArcGIS or QGIS. The user needs to input the center point and the bounding radius around the community of interest as shown in :numref:`fig-advanced-cfd-2`. Then, the user must input two coordinates (minimum and maximum extents) for the bounding box that encompasses the region of interest (ROI) as shown in :numref:`fig-advanced-cfd-3`. The ROI must contain buildings within the bounding radius that are of more importance than others. The latitude and longitude of a specific point can be obtained by clicking at a location on the google maps. For the ROI, the latitude and longitude of the two points marked with red circles in :numref:`fig-advanced-cfd-3` are required as inputs. The user also has an option to choose the footprint scraper (USA, OSM, and Microsoft) to retrieve the building information. The default scraper is USA. These inputs generate two geojson files named “inventoryTotal.geojson” and “inventoryROI.geojson”. The former contains information about all buildings inside the bounding radius, and the latter contains information about buildings inside the bounding box.
+   The `Python script to run is available on-line <https://github.com/NHERI-SimCenter/WE-UQ/tree/master/Examples//advancedCFD/src/community_wind_simulation.py//>`_ . To run it you need to ensure that the following python modules have been installed: brails, geopandas shapely pyproj trimesh rtree mapbox-earcut. These are installed by issuing the following terminal command:
+
+   .. code:: 
+
+        pip install brails geopandas shapely pyproj trimesh rtree mapbox-earcut
+
+   Once the script has been downloaded and the requirements installed, it is then run using the following terminal command:
+
+   .. code::
+      
+        python community_wind_simulation.py
+
+   
+Detailed Workflow
+^^^^^^^^^^^^^^^^^
+
+BRAILS++ Generating the GeoJSON files with Building Footprints and their Heights
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+BRAILS++ is used to first generate a building inventory, which consists of the longitudes, latitudes, building footprints with their respective heights for each building in an area. To generate the computational domain for the CFD simulation the user specifies two regions: 1) An outer circular region of buildings is first specified with the user providing the longitude and latitude of the center point, and the bounding radius as shown in :numref:`fig-advanced-cfd-2` 2) The region if interest, i.e. the region containing the buildings the user is intent on studying, is input by a bounding box defined by latitudes and longitudes as shown in :numref:`fig-advanced-cfd-3`. For the ROI, the latitude and longitude of the two points marked with red circles in :numref:`fig-advanced-cfd-3` are required as inputs.
+
+.. note::
+
+   1. The outer circular region is necessary to ensure the correct turbulance is generated for all those buildings in the region of interest. As such, the bounding box input by the user must be contained within the larger area.
+
+   2. The latitude and longitude of a specific point in the world can be obtained by clicking at a location on the google maps.
+
+   3. Two intermediate files, “inventoryTotal.geojson” and “inventoryROI.geojson” are output by the application. These are in geojson form and can be viewed by any GIS (Geographic Information System) software, e.g. ArcGIS, QGIS, etc.
+
+   4. The BRAILS++ footprint scrapers obtain the building footprints from web servers. A number of options are available: USA, OSM, and Microsoft.
 
 
 .. _fig-advanced-cfd-2:
@@ -48,8 +70,8 @@ The BRAILS++ inventory contains the longitudes and latitudes of building footpri
 
    Bounding box for the region of interest.
 
-Defining the computational domain and creating the mesh
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Defining the computational domain and creating the Mesh
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 The computational domain consists of 8 boundary faces: inlet, outlet, side1, side2, top, ground, ROI, and Surrounding. The inlet face is where the inflow of wind is defined. According to the COST 732 (Franke et al. 2007) recommendations, the inlet face must be at least a distance of five times the maximum height (5Hmax) of the buildings in the domain, from the outermost footprint coordinate. The orientation of the inlet face shall be perpendicular to the wind direction. The sides will be parallel to the wind direction. The COST recommendations suggest the lateral boundaries to be at least a distance of 5Hmax from the community. The outlet boundary is where the flow leaves the domain. It needs to be at least a distance of 15Hmax from the community. The top boundary of the domain must also be a distance of more than 5Hmax from the top of the building with maximum height. Since the horizontal extents of the domain are much larger than the vertical extent, the default value for the top boundary is 15Hmax from the ground. Ground, ROI, and surrounding boundary faces are wall boundaries where the flow can’t enter and represent the ground, the buildings in ROI, and the buildings surrounding the ROI, respectively. A depiction of computational domain extents is presented in :numref:`fig-advanced-cfd-4`. 
 
@@ -79,7 +101,7 @@ The boundary conditions are one of the most important parts of a CFD simulation.
 
 
 Choosing the turbulence model and setting up the simulation
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 There are three ways to model turbulence: Reynolds averaging (RANS), large eddy simulations (LES), and direct numerical simulations (DNS). For atmospheric flow, using DNS is not feasible due to the very high Reynolds number and a large variation in the length scales. Hence, the user has an option to choose between RANS and LES turbulence models. The RANS model predicts the mean flow very well, but models turbulence using a  model (Launder and Spalding 1974), whereas LES models the largest turbulent eddies in the flow and models the subgrid scale (SGS) eddies using a Smagorinsky model (Smagorinsky 1963). 
 
