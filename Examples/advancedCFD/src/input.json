@@ -1,0 +1,110 @@
+{
+    "case_folder":"LESCase_meanABL",
+    "wind_direction":225.0,
+    "number_of_processors":10,
+    "geographic_extent":{
+	"larger_region": {
+	    "lat": 34.19707659182189,
+	    "lon": -118.14252114105332,
+	    "radius": 500.0
+	},
+	"region_of_interest": {
+	    "min_lon": -118.14636206427565,
+	    "min_lat": 34.196367,
+	    "max_lon": -118.138466,
+	    "max_lat": 34.197378
+	}
+    },
+    "brails_options":{
+	"scraper":"USA",
+	"default_building_height":20.0
+    },
+    "computational_domain": {
+	"roi_surface_level":5.0,
+	"surrounding_surface_level":4.0,
+	"boundary_mesh_cell_size":5.0,
+	"kinematic_viscosity":1.5e-05,
+	"cells_between_levels":5,
+	"domain_extents": {
+	    "inlet_multiplier":7.5,
+	    "outlet_multiplier":20.0,
+	    "side_multiplier":10.0,
+	    "top_multiplier":20.0	
+	},	
+	"boundary_conditions": {
+	    "side":"slip",
+	    "ground_style":"rough",
+	    "roi_style":"rough",
+	    "surround_style":"rough",
+	    "inlet":{
+		"framework":"les",
+		"les_algorithm":"pisoFoam",
+		"inflow":"meanabl",
+		"Uref":10.0,
+		"Href":10.0,
+		"z0":0.1
+	    },
+	    "inletLT":{
+		"framework":"les",
+		"les_algorithm":"pisoFoam",
+		"inflow":"turbulent",
+		"path_TINF_file":"wind_profile.csv",
+		"Uref":10.0,
+		"Href":10.0,
+		"z0":0.1
+	    },	    
+	    "inletR":{
+		"framework":"RANS",
+		"Uref":20.0,
+		"Href":50.0,
+		"z0":1.0
+	    }	    
+	},
+	"refinement_regions":[
+	    {"name":"box1",
+	     "level":1,
+	     "x_min":0,
+	     "y_min":0,
+	     "z_min":0,
+	     "x_max":390,
+	     "y_max":345,
+	     "z_max":50
+	    },
+	    {"name":"box2",
+	     "level":2,
+	     "x_min":0,
+	     "y_min":0,
+	     "z_min":0,
+	     "x_max":300,
+	     "y_max":300,
+	     "z_max":30
+	    },
+	    {"name":"box3",
+	     "level":3,
+	     "x_min":50,
+	     "y_min":50,
+	     "z_min":0,
+	     "x_max":250,
+	     "y_max":250,
+	     "z_max":15
+	    }	    	    
+	],
+	"control_dictR": {
+	    "end_time":10000.0,
+	    "deltaT_sim":1.0,
+	    "deltaT_write":1.0
+	},
+	"control_dict": {
+	    "end_time":100.0,
+	    "initial_deltaT_sim":0.05,
+	    "max_deltaT_sim":0.01,
+	    "adjust_time":"yes",
+	    "max_courant":1.0,
+	    "deltaT_write":1.0,
+            "num_wind_profiles":0,
+            "num_section_planes":0
+	}	
+    }
+}
+	
+

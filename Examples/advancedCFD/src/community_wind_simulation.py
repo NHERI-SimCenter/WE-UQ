@@ -10,6 +10,7 @@ import shapely.affinity as affinity
 import trimesh
 import textwrap
 import re
+import json
 from brails.utils import Importer
 from pyproj import Geod
 from pyproj import CRS
@@ -1391,24 +1392,104 @@ def existing_path(msg: str) -> Path:
         print("  ↳ file not found, try again.")
 
 
+# load user inputs from a JSON file
+def load_input(json_path=None):
+    
+    inputs = {}
+
+    if json_path is None:
+        return inputs
+
+    path = Path(json_path)
+    print(f'path {path}')
+    if not path.exists():
+        raise FileNotFoundError(f"Input file not found: {path}")
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            inputs = json.load(f)
+            
+    except json.JSONDecodeError as e:
+        print(f"❌ JSON syntax error in {path}: {e} .. use a JSON validator")
+        sys.exit("Invalid JSON — stopping.")
+
+    if not isinstance(inputs, dict):
+        raise ValueError("Input JSON file must contain a JSON object!")
+
+    return inputs
+        
 # ────────────────────────── main routine ──────────────────────────
-def main() -> None:
+def main(config: Dict[str, Any]) -> None:
     # ───────────────────────── Input Region ─────────────────────────
-    print("Enter centre coordinates of the total circular region")
-    lon = ask_float("  longitude (deg)")
-    lat = ask_float("  latitude  (deg)")
-    r   = ask_float("Radius of circle (metres)", "default = 500")
 
+    if 'geographic_extent' in config:
+        geographic_extent = config['geographic_extent']
+
+        #
+        # geographic_extent supplied in input file
+        #
+        
+        try:
+            larger = geographic_extent["larger_region"]
+            lat = float(larger["lat"])
+            lon = float(larger["lon"])
+            r = float(larger["radius"])
+            region_of_interest = geographic_extent["region_of_interest"]
+            lat_min = float(region_of_interest["min_lat"])
+            lon_min = float(region_of_interest["min_lon"])
+            lat_max = float(region_of_interest["max_lat"])
+            lon_max = float(region_of_interest["max_lon"])                        
+            
+        except KeyError as e:
+            raise ValueError(f"geographic_extent missing key: {e}") from None
+        except (TypeError, ValueError):
+            raise ValueError("lat, long, radius, min_lat, min_lon, max_lat, max_lon must be numeric")
+
+    else:
+
+        #
+        # user manual entry of geometry
+        #
+        
+        print("Enter centre coordinates and radius of the larger circular region")
+        lon = ask_float("  longitude (deg)")
+        lat = ask_float("  latitude  (deg)")
+        r   = ask_float("Radius of circle (metres)", "default = 500")
+
+        print("Enter bounding-box coordinates for Region of Interest (ROI):")
+        lon_min = ask_float("  lon min: ")
+        lat_min = ask_float("  lat min: ")
+        lon_max = ask_float("  lon max: ")
+        lat_max = ask_float("  lat max: ")
+
+    # otput files containing building footprints for larger and roi
+    
     out_path = Path(r"inventoryTotal.geojson")
-    print("Enter bounding-box coordinates for Region of Interest (ROI):")
-    lon_min = ask_float("  lon min: ")
-    lat_min = ask_float("  lat min: ")
-    lon_max = ask_float("  lon max: ")
-    lat_max = ask_float("  lat max: ")
-
     out_file = Path(r"inventoryROI.geojson")
 
-    scraper_choice = ask_choice("Scraper source {USA | OSM | MS}", ["USA", "OSM", "MS"], "USA")
+    if 'brails_options' in config:
+        brails_options = config['brails_options']
+
+        #
+        # brails_options supplied in input file
+        #
+        
+        try:
+            scraper_choice = brails_options["scraper"]
+            dflt = float(brails_options["default_building_height"])
+            
+        except KeyError as e:
+            raise ValueError(f"brails_options missing key: {e}") from None
+        except (TypeError, ValueError):
+            raise ValueError("default_building_height must be a number")        
+
+    else:
+
+        # brails options from user
+        scraper_choice = ask_choice("Scraper source {USA | OSM | MS}", ["USA", "OSM", "MS"], "USA")
+        dflt = ask_float("Default height (m) in case the inventory has no heights")        
+
+    
     # number of perimeter points; 36 ≈ every 10°
     n_pts = 36
     geod = Geod(ellps="WGS84")
@@ -1434,7 +1515,6 @@ def main() -> None:
     Tfootprints.write_to_geojson(out_path)
     print(f"✓  GeoJSON written to {out_path.resolve()}")
     
-    
 
 
     # RegionBoundary requires a flat tuple with an even number of values
@@ -1453,17 +1533,27 @@ def main() -> None:
 
     full = out_path
     roi  = out_file
+    
     # ───────────────────────── Wind Direction ─────────────────────────
-    angle_deg = ask_angle()        # θ anti-clockwise from +x
+
+    if 'wind_direction' in config:
+        try:
+            angle_deg = config['wind_direction']
+        except (TypeError, ValueError):
+            raise ValueError("wind_direction must be a float")                    
+    else:
+        angle_deg = ask_angle()        # θ anti-clockwise from +x
 
     # ───────────────────────── Write blockMesh and STL files ─────────────────────────
-    side_choice = ask_side()
-    case = ask_dir("Case folder")
+    if 'case_folder' in config:
+        case = Path(config['case_folder'])
+    else:
+        case = ask_dir("Case folder")
 
     tri = case/"constant"/"triSurface"
     tri.mkdir(parents=True, exist_ok=True)
     roi_stl, rest_stl = tri/"ROI.stl", tri/"Surrounding.stl"
-    dflt = ask_float("Default height (m) in case the inventory has no heights")
+    # dflt = ask_float("Default height (m) in case the inventory has no heights")
     fld="buildingheight";
     
     # --- load, CRS -------------------------------------------------------
@@ -1493,12 +1583,32 @@ def main() -> None:
     rest    = nearest_fill(rest   ,fld,dflt)
     hmax = max(gdf_roi[fld].max(), rest[fld].max())
     print(f"Hmax = {hmax}")
-    print(f"Specify the domain extents (i.e. the distance to the boundaries from each end of the region)")
-    inmult   = ask_mult("Inlet  distance multiplier (i.e. xHmax)", 5.0)
-    outmult  = ask_mult("Outlet distance multiplier (i.e. xHmax)", 15.0)
-    sidmult    = ask_mult("Side   distance multiplier (i.e. xHmax)", 5.0)
-    topmult     = ask_mult("Top    distance multiplier (i.e. xHmax)", 15.0)
-    # --- origin shift -----------------------------------------------------
+
+
+    if 'computational_domain' in config:
+        computational_domain = config['computational_domain']
+
+        try:
+            domain_extents = computational_domain["domain_extents"]
+            inmult   = float(domain_extents["inlet_multiplier"])
+            outmult  = float(domain_extents["outlet_multiplier"])
+            sidmult  = float(domain_extents["side_multiplier"])
+            topmult  = float(domain_extents["top_multiplier"])
+            
+        except KeyError as e:
+            raise ValueError(f"computational_domain missing key: {e}") from None
+        except (TypeError, ValueError):
+            raise ValueError("multipliers in domain_extents must be floats")
+
+    else:    
+    
+        print(f"Specify the domain extents (i.e. the distance to the boundaries from each end of the region)")
+        inmult   = ask_mult("Inlet  distance multiplier (i.e. xHmax)", 5.0)
+        outmult  = ask_mult("Outlet distance multiplier (i.e. xHmax)", 15.0)
+        sidmult    = ask_mult("Side   distance multiplier (i.e. xHmax)", 5.0)
+        topmult     = ask_mult("Top    distance multiplier (i.e. xHmax)", 15.0)
+        # --- origin shift -----------------------------------------------------
+
     all_geom = pd.concat([gdf_roi,rest]).geometry
     xs = np.concatenate([np.asarray(p.exterior.xy[0] if isinstance(p,geom.Polygon)
                                     else p.convex_hull.exterior.xy[0]) for p in all_geom])
@@ -1522,7 +1632,7 @@ def main() -> None:
     write_stl_ascii(mesh(gdf_roi), roi_stl,  "ROI")
     write_stl_ascii(mesh(rest),    rest_stl, "Surrounding")
     print("✓ STL files created.")
-
+    
     # --- compute bounds ---------------------------------------------------
     verts=np.vstack([trimesh.load_mesh(str(roi_stl)).vertices,
                      trimesh.load_mesh(str(rest_stl)).vertices])
@@ -1530,38 +1640,102 @@ def main() -> None:
     xmax,ymax,_ = verts.max(axis=0)
     x0,x1,y0,y1 = make_bounds(xmin,xmax,ymin,ymax,hmax,inmult,outmult,sidmult,"W")   # inlet at west after rotation
     z0,z1 = 0.0, topmult*hmax
-    cell=ask_mult("Boundary Mesh Cell size",4.0)
+
+    if 'computational_domain' in config and 'boundary_mesh_cell_size' in config['computational_domain']:
+        try:
+            cell = config['computational_domain']['boundary_mesh_cell_size']
+        except (TypeError, ValueError):
+            raise ValueError("boundary_mesh_cell_size must be a float")
+    else:
+        cell=ask_mult("Boundary Mesh Cell size",4.0)
+        
     nx,ny,nz = (math.ceil((x1-x0)/cell),
                 math.ceil((y1-y0)/cell),
                 math.ceil((z1-z0)/cell))
 
+    # moved side_choice up here
+    if ('computational_domain' in config
+        and 'boundary_conditions' in config['computational_domain']
+        and 'side' in config['computational_domain']['boundary_conditions']
+        ):
+        side_choice = config['computational_domain']['boundary_conditions']['side']
+    else:
+        side_choice = ask_side()        
+    
     write_bmd(x0,x1,y0,y1,z0,z1,nx,ny,nz,side_choice,
               case/"system"/"blockMeshDict")
+    
     print("✓ blockMeshDict written.")
     print(f"Applied rotation −{angle_deg}° so wind aligns with +x.")
     print(f"Extents: ({x0},{y0},{z0}) to ({x1},{y1},{z1})")
     # ───────────────────────── Write snappyHexMesh ─────────────────────────
-    args = cli()
-    print("Add refinement regions")
-    # 1. interactive loop for boxes
-    boxes: List[Tuple[str, Tuple[float, float, float, float, float, float], str]] = []
-    idx = 1
-    while True:
-        res = ask_box(idx)
-        if res is None:
-            break
-        boxes.append(res)
-        idx += 1
 
-    if not boxes:
-        print("No boxes entered")
-        #sys.exit()
+    # args = cli() NOT USED!
+    
+    print("Add refinement regions")
+
+    boxes: List[Tuple[str, Tuple[float, float, float, float, float, float], str]] = []
+
+    if 'computational_domain' in config and 'refinement_regions' in config['computational_domain']:
+
+        regions = config['computational_domain']['refinement_regions']
+        
+        for region in regions:
+            try:
+                name = region["name"]
+                level = region["level"]
+                coords = (
+                    float(region["x_min"]),
+                    float(region["y_min"]),
+                    float(region["z_min"]),
+                    float(region["x_max"]),
+                    float(region["y_max"]),
+                    float(region["z_max"]),
+                )
+
+                boxes.append((name, coords, str(level)))
+        
+            except KeyError as e:
+                raise ValueError(f"Missing key {e} in refinement region: {region}") from e
+            except (TypeError, ValueError):
+                raise ValueError("coords x_min, ... z_max must be floats")
+        
+    else:
+
+        # 1. interactive loop for boxes
+        idx = 1
+        while True:
+            res = ask_box(idx)
+            if res is None:
+                break
+            boxes.append(res)
+            idx += 1
+
+        if not boxes:
+            print("No boxes entered")
 
     # 2. ask ROI / Surrounding levels
     print("\n--- Surface refinement levels ---")
-    roi_level_input = input("  ROI surface level [(auto)]: ").strip()
-    sur_level_input = input("  Surrounding surface level [(auto)]: ").strip()
-    ncellblvl = int(ask_mult("No. of cells between each level",5))
+
+    if 'computational_domain' in config and 'roi_surface_level' in config['computational_domain']:
+        roi_level_input = str(config['computational_domain']['roi_surface_level'])
+    else:
+        roi_level_input = input("  ROI surface level [(auto)]: ").strip()
+
+    if 'computational_domain' in config and 'surrounding_surface_level' in config['computational_domain']:
+        sur_level_input = str(config['computational_domain']['surrounding_surface_level'])
+    else:
+        sur_level_input = input("  Surrounding surface level [(auto)]: ").strip()
+
+    if 'computational_domain' in config and 'cells_between_levels' in config['computational_domain']:
+        try: 
+            ncellblvl = int(config['computational_domain']['cells_between_levels'])
+        except (TypeError, ValueError):
+            raise ValueError("cells_between_levels must be an int")
+    else:        
+        ncellblvl = int(ask_mult("No. of cells between each level",5))
+
+    
     # 3. determine defaults if needed
     max_box_lvl = max_numeric_level([b[2] for b in boxes])   # b[2] now works
     sur_level = sur_level_input or f"{max_box_lvl + 1}"
@@ -1600,41 +1774,107 @@ def main() -> None:
 
     # ───────────────────────── Transport Properties and Framework ─────────────────────────
 
-    nu = get_input("Kinematic viscosity", "1.5e-05")
+
+    if 'computational_domain' in config and 'cells_between_levels' in config['computational_domain']:
+        try: 
+            nu = float(config['computational_domain']['kinematic_viscosity'])
+        except (TypeError, ValueError):
+            raise ValueError("kinematic_viscosity must be a float")
+    else:            
+        nu = get_input("Kinematic viscosity", "1.5e-05")
+
     transport_properties_write = TP_transportProperty.format(
         nu=nu
     )
     ftp = Path(case/"constant"/"transportProperties")
     ftp.parent.mkdir(parents=True, exist_ok=True)
     ftp.write_text(transport_properties_write)
-    print("✓ constant/transportProperties written.")
-    while True:
-        fw = input("Framework? [RANS / LES]: ").strip().lower()
-        if fw in ("rans", "les"):
-            break
+
+
+    if 'computational_domain' in config and 'cells_between_levels' in config['computational_domain']:
+        try: 
+            nu = float(config['computational_domain']['kinematic_viscosity'])
+        except (TypeError, ValueError):
+            raise ValueError("kinematic_viscosity must be a float")
+    else:            
+        nu = get_input("Kinematic viscosity", "1.5e-05")    
+
+    side = side_choice
 
     fld2 = Path(case/"constant"/"turbulenceProperties")
+        
+    if 'computational_domain' in config and 'boundary_conditions' in config['computational_domain']:
+        boundary_conditions = config['computational_domain']['boundary_conditions']
+        try:
+            ground_style=boundary_conditions['ground_style']
+            roi_style=boundary_conditions['roi_style']
+            surround_style=boundary_conditions['surround_style']
+            
+            inlet=boundary_conditions['inlet']
+            fw=inlet['framework']
+            Uref=float(inlet['Uref'])
+            Href=float(inlet['Href'])
+            z0=float(inlet['z0'])
+            if fw == "les":
+                inflow=inlet['inflow']
+                les_algorithm=inlet['les_algorithm']
+                
+        except KeyError as e:
+            raise ValueError(f"Missing key {e} in boundary_conditions: {region}") from e
+        except (TypeError, ValueError):
+            raise ValueError("Uref, Href, z0 must be floats")            
+                
+    else:
+        print("✓ constant/transportProperties written.")
+        while True:
+            fw = input("Framework? [RANS / LES]: ").strip().lower()
+            if fw in ("rans", "les"):
+                break
+
+        if fw == "les":
+            # meanABL or turbulent inflow?
+            inflow = ask("LES inlet type {meanABL|turbulent}", "meanABL").lower()
+            while inflow not in ("meanabl", "turbulent"):
+                inflow = ask(" choose meanABL or turbulent", "meanABL").lower()
+        
+            ground_style = ask("Ground wall function {rough|smooth}", "smooth").lower()
+            while ground_style not in ("rough", "smooth"):
+                ground_style = ask(" choose rough/smooth", "smooth").lower()
+
+            roi_style = ask("ROI wall function {rough|smooth}", "smooth").lower()
+            while roi_style not in ("rough", "smooth"):
+                roi_style = ask(" choose rough/smooth", "smooth").lower()
+
+            surround_style = ask("Surrounding wall function {rough|smooth}", "smooth").lower()
+            while surround_style not in ("rough", "smooth"):
+                surround_style = ask(" choose rough/smooth", "smooth").lower()
+
+            Uref = ask("Reference wind speed Uref (m/s)", "10")
+            Href = ask("Reference height Zref (m)", "10")
+            z0   = ask("Roughness length z0 (m)", "0.1")
+
+        else:
+            
+            Uref = ask("Reference wind speed Uref (m/s)", "10")
+            Href = ask("Reference height Zref (m)", "10")
+            z0   = ask("Roughness length z0 (m)", "0.1")
+
+            side = side_choice
+
+            ground_style = ask("Ground wall function {rough|smooth}", "smooth").lower()
+            while ground_style not in ("rough", "smooth"):
+                ground_style = ask(" choose rough/smooth", "smooth").lower()
+
+            roi_style = ask("ROI wall function {rough|smooth}", "smooth").lower()
+            while roi_style not in ("rough", "smooth"):
+                roi_style = ask(" choose rough/smooth", "smooth").lower()
+
+            surround_style = ask("Surrounding wall function {rough|smooth}", "smooth").lower()
+            while surround_style not in ("rough", "smooth"):
+                surround_style = ask(" choose rough/smooth", "smooth").lower()
 
     if fw == "les":
-        # meanABL or turbulent inflow?
-        inflow = ask("LES inlet type {meanABL|turbulent}", "meanABL").lower()
-        while inflow not in ("meanabl", "turbulent"):
-            inflow = ask(" choose meanABL or turbulent", "meanABL").lower()
-
-        side = side_choice
         
-        
-        ground_style = ask("Ground wall function {rough|smooth}", "smooth").lower()
-        while ground_style not in ("rough", "smooth"):
-            ground_style = ask(" choose rough/smooth", "smooth").lower()
-
-        roi_style = ask("ROI wall function {rough|smooth}", "smooth").lower()
-        while roi_style not in ("rough", "smooth"):
-            roi_style = ask(" choose rough/smooth", "smooth").lower()
-
-        surround_style = ask("Surrounding wall function {rough|smooth}", "smooth").lower()
-        while surround_style not in ("rough", "smooth"):
-            surround_style = ask(" choose rough/smooth", "smooth").lower()
         # write turbulenceProperties
         fld2.parent.mkdir(parents=True, exist_ok=True)
         fld2.write_text(TP_LES)
@@ -1645,21 +1885,13 @@ def main() -> None:
 
         # choose U body
         if inflow == "meanabl":
-            Uref = ask("Reference wind speed Uref (m/s)", "10")
-            Href = ask("Reference height Zref (m)", "10")
-            z0   = ask("Roughness length z0 (m)", "0.1")
             Ubody = body_U_meanABL(SIDE_MAP[side], Uref, Href, z0)
         else:
-            print("Enter details for atmospheric boundary layer wall functions")
-            
-            Uref = ask("Reference wind speed Uref (m/s)", "10")
-            Href = ask("Reference height Zref (m)", "10")
-            z0   = ask("Roughness length z0 (m)", "0.1")
             Ubody = body_U_DFM(SIDE_MAP[side], Uref)
-
+            
         (fld1 / "U").write_text(Ubody)
         fld1.joinpath("nut").write_text(
-        body_nut(SIDE_MAP[side], ground_style, z0,Uref,Href, roi_style, surround_style))
+            body_nut(SIDE_MAP[side], ground_style, z0,Uref,Href, roi_style, surround_style))
         
         (fld1 / "p").write_text(
             P_BODY % (SIDE_MAP[side], SIDE_MAP[side])
@@ -1668,70 +1900,74 @@ def main() -> None:
         print(f"✓ fields written to {fld1.resolve()}")
         #return  # LES path ends here
 
-    # ───────────── RANS branch  ─────────────
     else:
-        Uref = ask("Reference wind speed Uref (m/s)", "10")
-        Href = ask("Reference height Zref (m)", "10")
-        z0   = ask("Roughness length z0 (m)", "0.1")
 
-        side = side_choice
-
-        ground_style = ask("Ground wall function {rough|smooth}", "smooth").lower()
-        while ground_style not in ("rough", "smooth"):
-            ground_style = ask(" choose rough/smooth", "smooth").lower()
-
-        roi_style = ask("ROI wall function {rough|smooth}", "smooth").lower()
-        while roi_style not in ("rough", "smooth"):
-            roi_style = ask(" choose rough/smooth", "smooth").lower()
-
-        surround_style = ask("Surrounding wall function {rough|smooth}", "smooth").lower()
-        while surround_style not in ("rough", "smooth"):
-            surround_style = ask(" choose rough/smooth", "smooth").lower()
-
-        # turbulenceProperties
+        # ───────────── RANS branch  ─────────────
         fld2.parent.mkdir(parents=True, exist_ok=True)
         fld2.write_text(TP_RANS)
         print("✓ turbulenceProperties (RANS) written.")
-
+        
         fld1 = Path(case/"0")
         fld1.mkdir(parents=True, exist_ok=True)
-
+        
         fld1.joinpath("U").write_text(
             body_U_meanABL(SIDE_MAP[side], Uref, Href, z0))
-
+        
         fld1.joinpath("k").write_text(
             body_k(SIDE_MAP[side], Uref, Href, z0))
-
+        
         fld1.joinpath("epsilon").write_text(
             body_eps(SIDE_MAP[side], Uref, Href, z0))
-
+        
         fld1.joinpath("nut").write_text(
             body_nut(SIDE_MAP[side], ground_style, z0,Uref,Href, roi_style, surround_style))
-
+        
         fld1.joinpath("p").write_text(
             P_BODY % (SIDE_MAP[side], SIDE_MAP[side])
         )
-
+        
         print(f"✓ fields written to {fld1.resolve()}")
-
+        
+        
     # ───────────────────────── Inputs for ControlDict ─────────────────────────
     
     lib_TINF = ""
     if fw == "les":
+        
         if inflow == "turbulent":
             lib_TINF = '"libturbulentInflow.so"'
-    
-        les_algorithm = get_input("LES algorithm {pisoFoam | pimpleFoam}", "pisoFoam")
-        while les_algorithm not in LES_ALGORITHM_MAP:
-            les_algorithm = get_input("  -> Please choose pisoFoam or pimpleFoam", "pisoFoam")
-        end_T = get_input("End time for the simulation",    "100.000000")
-        deltaT_sim = get_input("Initial time step of the simulation",    "0.0050")
-        adjust_time = input("Adjust time step according to maximum Courant number? [yes / no]: ").strip()
-        deltaT_write = get_input("Write interval (Run Time)",    "1") 
-        maxCo = get_input("Max Courant number allowed",    "1.00")
-        maxDeltaT = get_input("Maximum time step allowed in transient simulation",    "0.01000") 
-        n_profile = int(get_input("Number of wind profiles for recording", "0"))
-        n_plane = int(get_input("Number of section planes for recording", "0"))
+
+        if 'computational_domain' in config and 'control_dict' in config['computational_domain']:
+            control_dict = config['computational_domain']['control_dict']
+            try: 
+                end_T=float(control_dict['end_time'])
+                deltaT_sim=float(control_dict['initial_deltaT_sim'])
+                maxDeltaT = float(control_dict['max_deltaT_sim']) 
+                adjust_time=control_dict['adjust_time']
+                deltaT_write=float(control_dict['deltaT_write'])                
+                maxCo = float(control_dict['max_courant'])
+                n_profile = int(control_dict['num_wind_profiles'])
+                n_plane = int(control_dict['num_section_planes'])              
+
+            except KeyError as e:
+                raise ValueError(f"Missing key {e} in control_dict") from e
+            except (TypeError, ValueError):
+                raise ValueError("float (time quantities and courant number) or int expected")
+                              
+        else:
+            
+            les_algorithm = get_input("LES algorithm {pisoFoam | pimpleFoam}", "pisoFoam")
+            while les_algorithm not in LES_ALGORITHM_MAP:
+                les_algorithm = get_input("  -> Please choose pisoFoam or pimpleFoam", "pisoFoam")
+            end_T = get_input("End time for the simulation",    "100.000000")
+            deltaT_sim = get_input("Initial time step of the simulation",    "0.0050")
+            adjust_time = input("Adjust time step according to maximum Courant number? [yes / no]: ").strip()
+            deltaT_write = get_input("Write interval (Run Time)",    "1") 
+            maxCo = get_input("Max Courant number allowed",    "1.00")
+            maxDeltaT = get_input("Maximum time step allowed in transient simulation",    "0.01000") 
+            n_profile = int(get_input("Number of wind profiles for recording", "0"))
+            n_plane = int(get_input("Number of section planes for recording", "0"))
+        
         functions = generate_include_func(n_profile, n_plane)
 
         # write controlDict 
@@ -1758,9 +1994,26 @@ def main() -> None:
         create_plane_txt(n_plane, Path(case/"system"/"Plane"))
 
     else:
-        end_T = get_input("End time for the simulation",    "1000")
-        deltaT_sim = get_input("Time step of the simulation",    "1") 
-        deltaT_write = get_input("Write interval (Time step)",    "100")     
+
+        # Control dict if RANS
+        
+        if 'computational_domain' in config and 'control_dict' in config['computational_domain']:
+            control_dict = config['computational_domain']['control_dict']
+            try: 
+                end_T=float(control_dict['end_time'])
+                deltaT_sim=float(control_dict['deltaT_sim'])
+                deltaT_write=float(control_dict['deltaT_write'])                
+                
+            except KeyError as e:
+                raise ValueError(f"Missing key {e} in control_dict") from e
+            except (TypeError, ValueError):
+                raise ValueError("Uref, Href, z0 must be floats")                              
+        else:
+                              
+            end_T = get_input("End time for the simulation",    "1000")
+            deltaT_sim = get_input("Time step of the simulation",    "1") 
+            deltaT_write = get_input("Write interval (Time step)",    "100")
+            
         # write controlDict 
         rans_text = TP_RANSC.format(
             end_T = end_T,
@@ -1775,12 +2028,16 @@ def main() -> None:
         Path(case/"system"/"fvSchemes").write_text(TP_fvSch_RANS)
         print(f"✓ system/controlDict written to {Path(case/"system"/"controlDict").resolve()}")
 
-    while True:
-        txt = input("Number of processors (positive int) : ").strip()
-        if txt.isdigit() and int(txt) > 0:
-            nproc = int(txt)
-            break
-        print("  ↳ please enter a positive integer")
+        
+    if 'number_of_processors' in config:
+        nproc = int(config['number_of_processors'])
+    else:
+        while True:
+            txt = input("Number of processors (positive int) : ").strip()
+            if txt.isdigit() and int(txt) > 0:
+                nproc = int(txt)
+                break
+            print("  ↳ please enter a positive integer")
 
 # ------------------------------------------------------------------ template for decomposePar
     DECOMP = f"""/*--------------------------------*- C++ -*----------------------------------*\\
@@ -1822,7 +2079,15 @@ def main() -> None:
 
     if fw == "les":
         if inflow == "turbulent":
-            src = existing_path("Path to CSV file for TINF")
+
+            if 'computational_domain' in config and 'boundary_conditions' in config['computational_domain']:
+                #inlet = config['computational_domain']['inlet']
+                src = inlet['path_TINF_file']
+                    
+            else:
+                src = existing_path("Path to CSV file for TINF")
+
+            
             Path(case/"constant"/"boundaryData"/"inlet"/"points").parent.mkdir(parents=True, exist_ok=True)
             Path(case/"constant"/"boundaryData"/"inlet"/"U").parent.mkdir(parents=True, exist_ok=True)
             Path(case/"constant"/"boundaryData"/"inlet"/"R").parent.mkdir(parents=True, exist_ok=True)
@@ -1834,10 +2099,10 @@ def main() -> None:
 
     # ---- read first 17 columns -----------------------------------------
             try:
-                if src.suffix.lower() == ".csv":
-                    df = pd.read_csv(src, header=None, usecols=range(17))
-                else:
-                    sys.exit("Input must be .csv")
+                #if src.suffix.lower() == ".csv":
+                df = pd.read_csv(src, header=None, usecols=range(17))
+                #else:
+                 #   sys.exit("Input must be .csv")
             except Exception as exc:
                 sys.exit(f"Could not read {src}: {exc}")
 
@@ -1885,5 +2150,12 @@ def main() -> None:
             print(f"✓ L      → {l_out.resolve()}")
 
     Path(case/"Community.foam").touch()
+
 if __name__ == "__main__":
-    main()
+
+    json_inputfile_path = sys.argv[1] if len(sys.argv) > 1 else None
+    input_config = load_input(json_inputfile_path)
+    main(input_config)
+    
+
+    
