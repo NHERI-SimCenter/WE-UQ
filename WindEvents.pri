@@ -19,10 +19,12 @@ INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/CFDanalysis
 INCLUDEPATH += $$PWD/EVENTS/ExpertCFD/SimCenter_widgets
 INCLUDEPATH += $$PWD/EVENTS/DigitalWindTunnel
 INCLUDEPATH += $$PWD/EVENTS/IsolatedBuildingCFD
+INCLUDEPATH += $$PWD/EVENTS/AdvancedCFDWithBRAILS
 
 SOURCES += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.cpp \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.cpp \
+    $$PWD/EVENTS/AdvancedCFDWithBRAILS/AdvancedCFDWithBRAILS.cpp \    
     $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.cpp \
     $$PWD/EVENTS/IsolatedBuildingCFD/GeometricInputWidget.cpp \
@@ -101,6 +103,7 @@ SOURCES += \
 HEADERS  += \
     $$PWD/EVENTS/BasicCFD/BasicCFDv2.h \
     $$PWD/EVENTS/DigitalWindTunnel/DigitalWindTunnel.h \
+    $$PWD/EVENTS/AdvancedCFDWithBRAILS/AdvancedCFDWithBRAILS.h \        
     $$PWD/EVENTS/IsolatedBuildingCFD/IsolatedBuildingCFD.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/SimCenterVTKRenderingWidget.h \
     $$PWD/EVENTS/IsolatedBuildingCFD/GeometricInputWidget.h \

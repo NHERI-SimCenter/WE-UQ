@@ -97,6 +97,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <GoogleAnalytics.h>
 #include <EmptyDomainCFD/EmptyDomainCFD.h>
 #include <IsolatedBuildingCFD/IsolatedBuildingCFD.h>
+#include <AdvancedCFDWithBRAILS/AdvancedCFDWithBrails.h>
 #include <Utils/FileOperations.h>
 #include <Stampede3Machine.h>
 
@@ -318,6 +319,45 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
       }
   });
 
+
+  //
+  // Adding AdvancedCFDWithBRAILS
+  //
+  
+  AdvancedCFDWithBRAILS *theAdvancedCFD = new AdvancedCFDWithBRAILS(theRVs, true);
+  QString advAppName = "simcenter-weuq-advanced-cfd-brails-stampede3";
+  QString advAppVersion = "1.0.0";
+  QString advMachine = "stampede3";
+  QList<QString> advQueues;
+
+  advQueues << "normal" << "fast";
+  SC_RemoteAppTool *theAdvancedCFDTool = new SC_RemoteAppTool(advAppName,
+							      advAppVersion,
+							      advMachine,
+							      advQueues,
+							      theRemoteService,
+							      theAdvancedCFD,
+							      theToolDialog,
+							      true);
+  
+  theToolDialog->addTool(theAdvancedCFDTool, "CFD Workflow With BRAILS");
+  theIsoBldgTool->setAppNameReport("CFD With BRAILS");    
+  QAction *showAdvancedCFD = toolsMenu->addAction("&CFD Workflow With BRAILS");
+
+  connect(theAdvancedCFDTool, &SC_RemoteAppTool::runLocalPressed,
+	  theAdvancedCFD, &AdvancedCFDWithBRAILS::runLocal);
+    
+  connect(showAdvancedCFD,
+	  &QAction::triggered,
+	  this,
+	  [this, theDialog=theToolDialog, theAdvancedCFD=theAdvancedCFD] {
+	    theDialog->showTool("CFD Workflow With BRAILS");
+	    if(!theAdvancedCFD->isInitialize())
+	      {
+		theAdvancedCFD->initialize();
+	      }    
+	  });
+  
   //
   // Add Tools to menu bar
   //

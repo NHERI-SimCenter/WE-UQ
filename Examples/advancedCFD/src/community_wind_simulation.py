@@ -1815,9 +1815,9 @@ def main(config: Dict[str, Any]) -> None:
             Uref=float(inlet['Uref'])
             Href=float(inlet['Href'])
             z0=float(inlet['z0'])
-            if fw == "les":
+            if fw == "les" or fw == "LES":
+                fw = "les"
                 inflow=inlet['inflow']
-                les_algorithm=inlet['les_algorithm']
                 
         except KeyError as e:
             raise ValueError(f"Missing key {e} in boundary_conditions: {region}") from e
@@ -1944,7 +1944,8 @@ def main(config: Dict[str, Any]) -> None:
                 deltaT_sim=float(control_dict['initial_deltaT_sim'])
                 maxDeltaT = float(control_dict['max_deltaT_sim']) 
                 adjust_time=control_dict['adjust_time']
-                deltaT_write=float(control_dict['deltaT_write'])                
+                deltaT_write=float(control_dict['deltaT_write'])
+                les_algorithm=control_dict['solver']
                 maxCo = float(control_dict['max_courant'])
                 n_profile = int(control_dict['num_wind_profiles'])
                 n_plane = int(control_dict['num_section_planes'])              

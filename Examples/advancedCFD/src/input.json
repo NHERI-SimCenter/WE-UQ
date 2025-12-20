@@ -38,7 +38,6 @@
 	    "surround_style":"rough",
 	    "inlet":{
 		"framework":"les",
-		"les_algorithm":"pisoFoam",
 		"inflow":"meanabl",
 		"Uref":10.0,
 		"Href":10.0,
@@ -46,7 +45,6 @@
 	    },
 	    "inletLT":{
 		"framework":"les",
-		"les_algorithm":"pisoFoam",
 		"inflow":"turbulent",
 		"path_TINF_file":"wind_profile.csv",
 		"Uref":10.0,
@@ -99,6 +97,7 @@
 	    "initial_deltaT_sim":0.05,
 	    "max_deltaT_sim":0.01,
 	    "adjust_time":"yes",
+	    "solver":"pisoFoam",
 	    "max_courant":1.0,
 	    "deltaT_write":1.0,
             "num_wind_profiles":0,
