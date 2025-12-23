@@ -26,7 +26,7 @@ This example provides a workflow for simulating wind flow within a community of 
 
    .. code:: 
 
-        pip install brails geopandas shapely pyproj trimesh rtree mapbox-earcut
+        pip install brails argparse trimesh rtree mapbox-earcut
 
    Once the script has been downloaded and the requirements installed, it is then run using the following terminal command:
 
@@ -54,8 +54,18 @@ The input file, input.json, defines all user-specified parameters required by th
 Geographic Extent
 """""""""""""""""
 
-BRAILS++ is used in the workflow to generate a building inventory, which includes laitudes and longitudes of building footprints, and associated heights for all buildings within the study area. To define the computational domain for the CFD simulation the user specifies two regions n the **geometric_extent**: 1) An outer circular region of buildings, the **larger_region**, is specified with the user providing the longitude and latitude of the center point, and the bounding radius as shown in :numref:`fig-advanced-cfd-2` 2) The **region_of_interest (ROI)**, i.e. the region containing the buildings of primary interest, is defined by a rectangular box spcified by minimum and maximum latitudes and longitudes, as shown in :numref:`fig-advanced-cfd-3`.
+BRAILS++ is used in the workflow to generate a building inventory, which includes laitudes and longitudes of building footprints, and associated heights for all buildings within the study area. To define the computational domain for the CFD simulation the user specifies two regions n the **geometric_extent**: 1) An outer circular region of buildings, the **larger_region**, is specified with the user providing the longitude and latitude of the center point and the bounding radius, and 2) The **region_of_interest (ROI)**, i.e. the region containing the buildings of primary interest, is defined by a rectangular box spcified by minimum and maximum latitudes and longitudes, as shown in :numref:`fig-geo-cfd-2`.
 
+.. _fig-geo-cfd-2:
+
+.. figure:: figures/GeographicExtents.png
+   :align: center
+   :width: 35%
+
+    Geographic Extents - Larger Circular Region, ROI Bounding Box
+
+In the JSON input file, the **geographic_extent**, **larger_region**, and the **region_of_interest** are input as shown in code below:
+    
 .. code-block:: json
 
 	"geographic_extent":{
@@ -80,23 +90,8 @@ BRAILS++ is used in the workflow to generate a building inventory, which include
 
    3. The radius defining the outer circular region is specified in meters.
 
-   4. The application generates two intermediate output files, inventoryTotal.geojson and inventoryROI.geojson. These files are provided in GeoJSON format and can be viewed using standard Geographic Information System (GIS) software, such as ArcGIS or QGIS.
+   4. The script when it runs,  generates two intermediate output files, inventoryTotal.geojson and inventoryROI.geojson. These files are provided in GeoJSON format and can be viewed using standard Geographic Information System (GIS) software, such as ArcGIS or QGIS.
 
-.. _fig-advanced-cfd-2:
-
-.. figure:: figures/Picture2.png
-   :align: center
-   :width: 35%
-
-   Center coordinate and the bounding radius of the total region.
-
-.. _fig-advanced-cfd-3:
-
-.. figure:: figures/Picture3.png
-   :align: center
-   :width: 35%
-
-   Bounding box for the region of interest.
 
 BRAILS Specific
 """""""""""""""
@@ -325,7 +320,7 @@ For **RANS** simulations the required inputs, as shown in the code snippet below
 	    "deltaT_write":1.0
 	}
 
-..note::
+.. note::
 
    The equations are solved using the “SIMPLE” (Semi-Implicit Method for Pressure Linked Equations) algorithm. These details are outputted in the “controlDict” file saved in the case/system folder. Additional files such as “surfaceFeaturesDict”, “fvSolution”, and “fvSchemes” are also saved in the case/system folder containing details of the building features, solution algorithms to linear system of equations, the convergence criteria, and the discretization schemes for various terms. Convergence is reached when all of the residuals are under .
 
@@ -341,15 +336,17 @@ For a **LES**, there are different parameters needed, as shown in code snippett 
 	    "solver":"pisoFoam",
 	    "max_courant":1.0,
 	    "deltaT_write":1.0,
-            "num_wind_profiles":0,
-            "num_section_planes":0
-	}			
+	    "num_wind_profiles":0,
+	    "num_section_planes":0
+        }			
 
 
 For LES the user also needs to specify  solver, **solver**, with the value being either **pisoFoam** or **pimpleFoam**. “PISO” (Pressure-Implicit with Splitting of Operators) and “PIMPLE” (PISO + SIMPLE). Moreover, if the user selects “PIMPLE”, there is an option to automatically adjust the time step according to the maximum Courant number (also prescribed by the user). If the user chooses the “PISO” algorithm, the initial time step will remain constant throughout the simulation (even though there is an option to select the adjusted time step option).
 
 As opposed to RANS, in LES mode, the write interval is based on run-time and not the number of iterations. For example, if the user chooses 1 as the write interval for LES, the outputs will be saved at each second rather than each iteration. The user has the option to prescribe several profiles and planes for recording velocity or pressure, or both, at every iteration. The profile contains a line of probes (number is user-defined), with the start and end points of the line defined by the user. For the plane, the user needs to define the point in the plane and the normal vector to the plane. The point must not be on the boundary. 
- 
+
+.. code-block:: json
+
 	"control_dict": {
 	    "end_time":100.0,
 	    "initial_deltaT_sim":0.05,
