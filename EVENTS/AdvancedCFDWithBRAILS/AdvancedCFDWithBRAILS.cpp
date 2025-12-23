@@ -882,7 +882,7 @@ void AdvancedCFDWithBRAILS::runLocal() {
   //
   
   QStringList args; args << "sc_Input.json";
-  QString inputFile = workDir + QDir::separator() + "scInput.json";
+  QString inputFile = workDir + QDir::separator() + "sc_Input.json";
 
   QFile file(inputFile);
   if (!file.open(QFile::WriteOnly | QFile::Text)) {
