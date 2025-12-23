@@ -34,7 +34,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 *************************************************************************** */
 
-// Written: abiy
+// Written: fmk
 
 #include "AdvancedCFDWithBRAILS.h"
 #include <RandomVariablesContainer.h>
@@ -49,12 +49,17 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QTableWidgetItem>
 #include <QStackedWidget>
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QDir>
+#include <QFile>
 
 #include <SC_StringLineEdit.h>
 #include <SC_DoubleLineEdit.h>
 #include <SC_IntLineEdit.h>
 #include <SC_DirEdit.h>
 #include <SC_ComboBox.h>
+#include <SimCenterPreferences.h>
+#include <RunPythonInThread.h>
 
 AdvancedCFDWithBRAILS::AdvancedCFDWithBRAILS(RandomVariablesContainer *theRandomVariableIW, bool isLaunchedAsTool, QWidget *parent)
   : SimCenterAppWidget(parent), initialized(false)
@@ -843,6 +848,83 @@ bool AdvancedCFDWithBRAILS::copyFiles(QString &destDir) {
 }
 
 void AdvancedCFDWithBRAILS::runLocal() {
-  qDebug() << "AdvancedCFDWithBRAILS -- running Local";
+
+  //
+  // create a folder in LocalWorkDir "advancedCFD" if non existant
+  //   - in that folder, remove case dir if already exists
+
+  QString workDir = SimCenterPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "advancedCFD";
+  QDir workDirectory(workDir);
+  if (!workDirectory.exists()) {
+    workDirectory.mkdir(workDir);
+    if (!workDirectory.exists()) {
+      emit errorMessage(QString("AdvancedCFDWithBRAILS cannot create folder: ")+workDir);
+      return;
+    }
+  }
+  
+  QString caseDir = workDir + QDir::separator() + caseFolder->text();
+  if (caseDir == workDir) {
+    this->errorMessage("AdvancedCFDWithBRAILS caseFolder has not been set");
+    return;
+  }
+  
+  // if case dir exists, remove it    
+  QDir caseDirectory(caseDir);
+  if (caseDirectory.exists()) {
+    statusMessage("Removing existing case folder");
+    caseDirectory.removeRecursively();
+  }
+  
+  //
+  // create input file for script
+  //
+  
+  QStringList args; args << "sc_Input.json";
+  QString inputFile = workDir + QDir::separator() + "scInput.json";
+
+  QFile file(inputFile);
+  if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    //errorMessage();
+    return;
+  }
+  QJsonObject json;
+  this->outputToJSON(json);
+  
+  QJsonDocument doc(json);
+  file.write(doc.toJson());
+  file.close();
+
+
+  //
+  // run python script to generate 
+  //
+  // full path to python script
+  QString pythonScript = SimCenterPreferences::getInstance()->getAppDir() + QDir::separator()
+      + QString("applications") + QDir::separator() + QString("createEVENT") + QDir::separator()
+      + QString("advancedCFDWithBRAILS") + QDir::separator() + "community_wind_simulation.py";
+
+  // copy and needed files to workDir
+  this->copyFiles(workDir);
+
+  // run python script
+  RunPythonInThread *pythonThread = new RunPythonInThread(pythonScript, args, workDir);
+  pythonThread->runProcess();
+
+  connect(pythonThread, &RunPythonInThread::processFinished, this, [=](int exitCode) {
+    qDebug() << "AdvancedCFDWithBRAILS - processFinsihed with exit code " << exitCode;
+  });
+  
+  /*
+    QString program = SimCenterPreferences::getInstance()->getPython();
+    QStringList arguments;
+    arguments << scriptPath << inputFile;
+    QProcess *process = new QProcess(this);
+    process->start(program, arguments);
+    process->waitForFinished(-1);
+    statusMessage(process->readAllStandardOutput() + "\n" + process->readAllStandardError());
+    process->close();
+  */
 }
+
 
