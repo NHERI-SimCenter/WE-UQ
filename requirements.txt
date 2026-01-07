@@ -1,6 +1,6 @@
 numpy
 plotly
-stl
+numpy-stl
 shapely
 numpy
 plotly
@@ -18,9 +18,7 @@ scipy
 tables
 emukit
 openseespy
-femora
 brails
 trimesh
 rtree
 mapbox-earcut
-
