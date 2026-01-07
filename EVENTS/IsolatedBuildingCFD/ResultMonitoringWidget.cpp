@@ -1048,6 +1048,13 @@ void ResultMonitoringWidget::writeSamplingPoints(QList<QVector3D> points)
 QList<QVector3D> ResultMonitoringWidget::importSamplingPointsCSV()
 {
     QList<QVector3D> points;
+
+    // adding check to see if importedPointsPath has been set before attemptiong to open the file!
+    if (importedPointsPath.isEmpty()) {
+      qDebug() << "IsolatedCFD ResultsMonitoringWidget .. importedPointsPath not set";
+      return points;
+    }
+      
     QFile file(importedPointsPath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Failed to open file:" << file.errorString();
