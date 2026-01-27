@@ -47,6 +47,7 @@ class SC_DoubleLineEdit;
 class SC_StringLineEdit;
 class SC_DirEdit;
 class SC_ComboBox;
+class SC_TableSC_Widgets;
 class QTableWidget;
 
 class AdvancedCFDWithBRAILS : public SimCenterAppWidget
@@ -69,7 +70,8 @@ public:
     void clear(void);  
 
 signals:
-
+  void finished();
+			
 public slots:
    void runLocal(void);
 
@@ -93,12 +95,14 @@ private:
   SC_ComboBox *lesAlgorithm, *lesInflow;
   SC_DoubleLineEdit *Uref, *Href, *z0;  
 
+  SC_ComboBox *subModel;
   SC_DoubleLineEdit *end_timeRANS, *deltaT_simRANS, *deltaT_writeRANS;
   SC_DoubleLineEdit *end_timeLES, *initDeltaT_simLES, *deltaT_writeLES;
   SC_DoubleLineEdit *maxDeltaT_simLES, *maxCourantLES;
-  SC_IntLineEdit *numWindProfiles, *numSectionPlanes;
+  //  SC_IntLineEdit *numWindProfiles, *numSectionPlanes;
   SC_ComboBox *adjustTimeLES;
   QTableWidget *refinementTable;
+  SC_TableSC_Widgets *windProfiles, *sectionPlanes;
   
 };
 

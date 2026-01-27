@@ -58,6 +58,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SC_IntLineEdit.h>
 #include <SC_DirEdit.h>
 #include <SC_ComboBox.h>
+#include <SC_TableSC_Widgets.h>
 #include <SimCenterPreferences.h>
 #include <RunPythonInThread.h>
 
@@ -323,8 +324,6 @@ AdvancedCFDWithBRAILS::initialize()
   lesLayout->addWidget(new QLabel("Adjust Time"),4,0);
   lesLayout->addWidget(new QLabel("Max. Courant"),5,0);        
   lesLayout->addWidget(new QLabel("delta T (write)"),6,0);
-  lesLayout->addWidget(new QLabel("Num Wind Profiles"),7,0);
-  lesLayout->addWidget(new QLabel("NumSection Planes"),8,0);  
 
   end_timeLES = new SC_DoubleLineEdit("end_time",100.0);
   initDeltaT_simLES = new SC_DoubleLineEdit("initial_deltaT_sim",0.05);
@@ -335,8 +334,63 @@ AdvancedCFDWithBRAILS::initialize()
   adjustTimeLES = new SC_ComboBox("adjust_time",adjustOptions);  
   maxCourantLES = new SC_DoubleLineEdit("max_courant",1.0);
   deltaT_writeLES = new SC_DoubleLineEdit("deltaT_write",1.0);
-  numWindProfiles = new SC_IntLineEdit("num_wind_profiles",0);
-  numSectionPlanes = new SC_IntLineEdit("num_section_planes",0);
+  //numWindProfiles = new SC_IntLineEdit("num_wind_profiles",0);
+  QStringList windProfileHeadings;
+  windProfileHeadings << "Start X" << "Start Y" << "Start Z" << "End X" << "End Y" <<
+    "End Z" << "Number Points" << "Write Interval" << "Fields" << "Start Time";
+  windProfiles = new SC_TableSC_Widgets("wind_profiles", windProfileHeadings, true);
+
+  SC_TableSC_Widgets *profileCopy = windProfiles;
+  connect(windProfiles, &SC_TableSC_Widgets::addRow, this, [profileCopy](){
+
+    QList<SC_WidgetJSON *> wl; 
+    SC_DoubleLineEdit *startX = new SC_DoubleLineEdit("startX",0);        wl.append(startX);
+    SC_DoubleLineEdit *startY = new SC_DoubleLineEdit("startY",0);        wl.append(startY);
+    SC_DoubleLineEdit *startZ = new SC_DoubleLineEdit("startZ",0);        wl.append(startZ);
+    SC_DoubleLineEdit *endX = new SC_DoubleLineEdit("endX",0);            wl.append(endX);
+    SC_DoubleLineEdit *endY = new SC_DoubleLineEdit("endY",0);            wl.append(endY);
+    SC_DoubleLineEdit *endZ = new SC_DoubleLineEdit("endZ",0);            wl.append(endZ);
+    SC_IntLineEdit *numberPoints = new SC_IntLineEdit("number_points",0); wl.append(numberPoints);
+    SC_IntLineEdit *writeInterval = new SC_IntLineEdit("Write_Interval",0); wl.append(writeInterval);
+    QStringList fieldOptions; fieldOptions << "U" << "p" << "U p";
+    SC_ComboBox *fields = new SC_ComboBox("Fields",fieldOptions);	  wl.append(fields);	  
+    SC_DoubleLineEdit *startTime = new SC_DoubleLineEdit("Start_Time",0); wl.append(startTime);
+    profileCopy->addRowWidgets(wl);
+  }
+    
+    
+    );
+
+  
+  QStringList sectionPlaneHeadings;  
+  sectionPlaneHeadings << "Point X" << "Point Y" << "Point Z" << "Norm X" << "Norm Y" << "Norm Z"
+		       << "Write Interval" << "Fields" << "Start Time" << "End Time";
+  sectionPlanes = new SC_TableSC_Widgets("section_planes", sectionPlaneHeadings, true);  
+
+  SC_TableSC_Widgets *planesCopy = sectionPlanes;
+  connect(sectionPlanes, &SC_TableSC_Widgets::addRow, this, [planesCopy](){
+
+    QList<SC_WidgetJSON *> wl; 
+    SC_DoubleLineEdit *pointX = new SC_DoubleLineEdit("pointX",0);        wl.append(pointX);
+    SC_DoubleLineEdit *pointY = new SC_DoubleLineEdit("pointY",0);        wl.append(pointY);
+    SC_DoubleLineEdit *pointZ = new SC_DoubleLineEdit("pointZ",0);        wl.append(pointZ);
+    
+    SC_DoubleLineEdit *NormX = new SC_DoubleLineEdit("NormX",0);        wl.append(NormX);
+    SC_DoubleLineEdit *NormY = new SC_DoubleLineEdit("NormY",0);        wl.append(NormY);
+    SC_DoubleLineEdit *NormZ = new SC_DoubleLineEdit("NormZ",0);        wl.append(NormZ);    
+
+    SC_IntLineEdit *writeInterval = new SC_IntLineEdit("Write_Interval",0); wl.append(writeInterval);
+    QStringList fieldOptions; fieldOptions << "U" << "p" << "U p";    
+    SC_ComboBox *fields = new SC_ComboBox("Fields",fieldOptions);	  wl.append(fields);	  
+    SC_DoubleLineEdit *startTime = new SC_DoubleLineEdit("Start_Time",0); wl.append(startTime);
+    SC_DoubleLineEdit *endTime = new SC_DoubleLineEdit("End_Time",0); wl.append(endTime);    
+    planesCopy->addRowWidgets(wl);
+  }
+    
+    
+    );
+  
+  //numSectionPlanes = new SC_IntLineEdit("num_section_planes",0);
 
   lesLayout->addWidget(lesAlgorithm,0,1);      
   lesLayout->addWidget(end_timeLES,1,1);
@@ -345,14 +399,24 @@ AdvancedCFDWithBRAILS::initialize()
   lesLayout->addWidget(adjustTimeLES,4,1);
   lesLayout->addWidget(maxCourantLES,5,1);        
   lesLayout->addWidget(deltaT_writeLES,6,1);
-  lesLayout->addWidget(numWindProfiles,7,1);
-  lesLayout->addWidget(numSectionPlanes,8,1);
-  lesLayout->setRowStretch(9,1);
+
+  QWidget *controlDictWidget = new QWidget();
+  QGridLayout *dictLayout = new QGridLayout();
   
   QStackedWidget *controlDict = new QStackedWidget(this);
   controlDict->addWidget(widgetRANS);
   controlDict->addWidget(widgetLES);
 
+  QTabWidget *outputTabs = new QTabWidget();
+  outputTabs->addTab(windProfiles,"Wind Profiles");
+  outputTabs->addTab(sectionPlanes, "SectionPlanes");
+
+  dictLayout->addWidget(controlDict,0,0);
+  dictLayout->addWidget(outputTabs, 1,0);
+  dictLayout->setRowStretch(1,1);
+  controlDictWidget->setLayout(dictLayout);
+
+  
   //
   // CD - boundary conditions
   //
@@ -383,8 +447,11 @@ AdvancedCFDWithBRAILS::initialize()
   QGroupBox *inletConditions = new QGroupBox("Inlet Conditions");
   QGridLayout *inletLayout = new QGridLayout();
   inletConditions->setLayout(inletLayout);
+
+  QStringList subModelOptions; subModelOptions << "kepsilon" << "komega" << "komegas";
+  subModel = new SC_ComboBox("subModel",subModelOptions);
   
-  QStringList frameworkOptions; frameworkOptions << "RANS" << "LES";
+  QStringList frameworkOptions; frameworkOptions << "RANS" << "LES" << "URANS";
   framework = new SC_ComboBox("framework", frameworkOptions);
   
   QStringList inflowOptions; inflowOptions << "turbulent" << "meanabl";
@@ -398,41 +465,50 @@ AdvancedCFDWithBRAILS::initialize()
 
   inletLayout->addWidget(new QLabel("Framework"),0,0);
 
+  QLabel *subModelText = new QLabel("SGS Model");  
   QLabel *inflowType = new QLabel("Inflow Type");
   QLabel *pathToTinf = new QLabel("Path To TinF");
-  inletLayout->addWidget(inflowType,1,0);
-  inletLayout->addWidget(pathToTinf,2,0);
+
+  inletLayout->addWidget(subModelText,1,0);  
+  inletLayout->addWidget(inflowType,2,0);
+  inletLayout->addWidget(pathToTinf,3,0);
 			 
-  inletLayout->addWidget(new QLabel("Uref"),3,0);
-  inletLayout->addWidget(new QLabel("Href"),4,0);
-  inletLayout->addWidget(new QLabel("z0"),5,0);
+  inletLayout->addWidget(new QLabel("Uref"),4,0);
+  inletLayout->addWidget(new QLabel("Href"),5,0);
+  inletLayout->addWidget(new QLabel("z0"),6,0);
+
   inletLayout->addWidget(framework,0,1);
-  inletLayout->addWidget(lesInflow,1,1);
-  inletLayout->addWidget(tinfProfile,2,1);
-  inletLayout->addWidget(Uref,3,1);
-  inletLayout->addWidget(Href,4,1);
-  inletLayout->addWidget(z0,5,1);
-  inletLayout->setRowStretch(6,1);
+  inletLayout->addWidget(subModel,1,1);
+			 
+  inletLayout->addWidget(lesInflow,2,1);
+  inletLayout->addWidget(tinfProfile,3,1);
+  inletLayout->addWidget(Uref,4,1);
+  inletLayout->addWidget(Href,5,1);
+  inletLayout->addWidget(z0,6,1);
+  inletLayout->setRowStretch(7,1);
 
-
+  framework->setCurrentIndex(0);
+  
+  /*
   //
   // hide options if certain options selected
-  //    - use Qt lambda connects if happens while using
-
+  //    - use Qt lambda connects if happens while using    
   if (framework->currentText() == "RANS") {
     inflowType->hide();
     lesInflow->hide();
     pathToTinf->hide();
     tinfProfile->hide();
     controlDict->setCurrentIndex(0);
-  } 
+  }
+  */
 
   // pointers needed for lambda when variables defined in .h file!!
   SC_ComboBox *lesInflowCopy = lesInflow;
   QWidget *tinfProfileCopy = tinfProfile;
+  SC_ComboBox *subModelCopy = subModel;
   
   connect(lesInflow, &QComboBox::currentTextChanged,
-        this,
+	  this,
 	  [pathToTinf, tinfProfileCopy](const QString& text) {
 	    if (text == "turbulent") {
 	      pathToTinf->show();
@@ -446,14 +522,32 @@ AdvancedCFDWithBRAILS::initialize()
   
   connect(framework, &QComboBox::currentTextChanged,
         this,
-	  [inflowType, pathToTinf, lesInflowCopy, tinfProfileCopy, controlDict](const QString& text) {
+	  [inflowType, pathToTinf, lesInflowCopy, tinfProfileCopy, controlDict, subModelCopy, subModelText](const QString& text) {
+
+	    QStringList subModelsLES; subModelsLES << "smagorinsky" << "keqn" << "dynkeqn" << "wale";
+	    QStringList subModelsRANS; subModelsRANS << "kepsilon"<< "komega" << "komegasstsas";	
+
 	    if (text == "RANS") {
+	      subModelText->setText("Turbulence Model");
+	      subModelCopy->clear();
+	      foreach (const QString &theValue, subModelsRANS)
+		subModelCopy->addItem(theValue);	      
 	      pathToTinf->hide();
 	      inflowType->hide();
 	      lesInflowCopy->hide();
 	      tinfProfileCopy->hide();
 	      controlDict->setCurrentIndex(0);
 	    } else {
+	      subModelCopy->clear();			      
+	      if (text == "LES") {
+		subModelText->setText("SGS Model");		
+		foreach (const QString &theValue, subModelsLES)
+		  subModelCopy->addItem(theValue);	      		
+	      } else { // "URANS"
+		subModelText->setText("Turbulence Model");				  
+		foreach (const QString &theValue, subModelsRANS)
+		  subModelCopy->addItem(theValue);
+	      }
 	      inflowType->show();
 	      lesInflowCopy->show();
 	      controlDict->setCurrentIndex(1);	      
@@ -478,7 +572,7 @@ AdvancedCFDWithBRAILS::initialize()
   theCDTabs->addTab(extents,"Domain Extents");
   theCDTabs->addTab(refinement,"Regional Refinement");    
   theCDTabs->addTab(boundaryConditions,"Boundary Conditions");
-  theCDTabs->addTab(controlDict,"Control Dictionary");  
+  theCDTabs->addTab(controlDictWidget,"Control Dictionary");  
   theCDLayout->addWidget(theCDTabs,4,0,1,2);
 
   theComputationalDomain->setLayout(theCDLayout);    
@@ -704,8 +798,11 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
     deltaT_writeLES->inputFromJSON(controlDict);
     maxDeltaT_simLES->inputFromJSON(controlDict);
     maxCourantLES->inputFromJSON(controlDict);
-    numWindProfiles->inputFromJSON(controlDict);
-    numSectionPlanes->inputFromJSON(controlDict);
+    windProfiles->inputFromJSON(controlDict);
+    sectionPlanes->inputFromJSON(controlDict);
+    windProfiles->inputFromJSON(controlDict);
+    sectionPlanes->inputFromJSON(controlDict);    
+    
     adjustTimeLES->inputFromJSON(controlDict);
   }  
   
@@ -819,8 +916,8 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     deltaT_writeLES->outputToJSON(controlDict);
     maxDeltaT_simLES->outputToJSON(controlDict);
     maxCourantLES->outputToJSON(controlDict);
-    numWindProfiles->outputToJSON(controlDict);
-    numSectionPlanes->outputToJSON(controlDict);
+    windProfiles->outputToJSON(controlDict);
+    sectionPlanes->outputToJSON(controlDict);
     adjustTimeLES->outputToJSON(controlDict);
   }
   
@@ -914,6 +1011,7 @@ void AdvancedCFDWithBRAILS::runLocal() {
 
   connect(pythonThread, &RunPythonInThread::processFinished, this, [=](int exitCode) {
     qDebug() << "AdvancedCFDWithBRAILS - processFinsihed with exit code " << exitCode;
+    emit finished();
   });
   
   /*
