@@ -768,7 +768,9 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
   z0->inputFromJSON(inlet);
   
   // Handle LES-specific inputs
-  if (framework->currentText() == "LES") {
+  if (framework->currentText() == "LES" ||
+      framework->currentText() == "URANS") {
+    
     lesInflow->inputFromJSON(inlet);
     
     if (lesInflow->currentText() == "turbulent") {
@@ -791,21 +793,20 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
     end_timeRANS->inputFromJSON(controlDict);
     deltaT_simRANS->inputFromJSON(controlDict);
     deltaT_writeRANS->inputFromJSON(controlDict);
-  } else { // LES
+  } else { // LES or URANS
     lesAlgorithm->inputFromJSON(controlDict);    
     end_timeLES->inputFromJSON(controlDict);
     initDeltaT_simLES->inputFromJSON(controlDict);
     deltaT_writeLES->inputFromJSON(controlDict);
     maxDeltaT_simLES->inputFromJSON(controlDict);
     maxCourantLES->inputFromJSON(controlDict);
-    windProfiles->inputFromJSON(controlDict);
-    sectionPlanes->inputFromJSON(controlDict);
-    windProfiles->inputFromJSON(controlDict);
-    sectionPlanes->inputFromJSON(controlDict);    
-    
     adjustTimeLES->inputFromJSON(controlDict);
   }  
-  
+  subModel->inputFromJSON(controlDict);
+  windProfiles->inputFromJSON(controlDict);
+  sectionPlanes->inputFromJSON(controlDict);
+    
+
   return true;
 }
 
@@ -916,10 +917,11 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     deltaT_writeLES->outputToJSON(controlDict);
     maxDeltaT_simLES->outputToJSON(controlDict);
     maxCourantLES->outputToJSON(controlDict);
-    windProfiles->outputToJSON(controlDict);
-    sectionPlanes->outputToJSON(controlDict);
     adjustTimeLES->outputToJSON(controlDict);
   }
+  subModel->outputToJSON(controlDict);
+  windProfiles->outputToJSON(controlDict);
+  sectionPlanes->outputToJSON(controlDict);
   
   computationalDomain["control_dict"]=controlDict;
   jsonObject["computational_domain"]=computationalDomain;
