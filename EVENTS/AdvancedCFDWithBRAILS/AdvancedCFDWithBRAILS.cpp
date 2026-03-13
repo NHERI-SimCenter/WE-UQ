@@ -90,8 +90,7 @@ AdvancedCFDWithBRAILS::initialize()
   windDirection = new SC_DoubleLineEdit("wind_direction",225.0);
   numberOfProcessors = new SC_IntLineEdit("number_of_processors",10);
 
-  surfaceLevelLR = new SC_DoubleLineEdit("surrounding_surface_level",5.0);
-  surfaceLevelROI = new SC_DoubleLineEdit("roi_surface_level",5.0);  
+    
 
   //
   // create the GUI: 
@@ -197,16 +196,24 @@ AdvancedCFDWithBRAILS::initialize()
   QGridLayout *theCDLayout = new QGridLayout();
   
   boundaryMeshCellSize = new SC_DoubleLineEdit("boundary_mesh_cell_size", 5.0);
+  surfaceLevelLR = new SC_IntLineEdit("surrounding_surface_level", 5);
+  surfaceLevelROI = new SC_IntLineEdit("roi_surface_level", 5);
   numCellsBetweenLayers = new SC_IntLineEdit("cells_between_levels",5);
   kinematicViscosity = new SC_DoubleLineEdit("kinematic_viscosity", 1.0e-05);
   
   theCDLayout->addWidget(new QLabel("Bounday Mesh Cell Size (m)"), 0,0);
+  theCDLayout->addWidget(new QLabel("Refinement Level on ROI surface"), 1, 0);
+  theCDLayout->addWidget(new QLabel("Refinement Level on Surrounding surface"), 1, 0);
   theCDLayout->addWidget(new QLabel("Number of Cells Between Layers"), 1,0);
   theCDLayout->addWidget(new QLabel("Kinematic Viscosity"), 2,0);
+  
+  
   
   theCDLayout->addWidget(boundaryMeshCellSize,0,1);
   theCDLayout->addWidget(numCellsBetweenLayers,1,1);
   theCDLayout->addWidget(kinematicViscosity,2,1);
+  theCDLayout->addWidget(surfaceLevelROI, 0, 1);
+  theCDLayout->addWidget(surfaceLevelLR, 0, 1);
   
   //
   // CD -  extents
@@ -328,9 +335,9 @@ AdvancedCFDWithBRAILS::initialize()
   end_timeLES = new SC_DoubleLineEdit("end_time",100.0);
   initDeltaT_simLES = new SC_DoubleLineEdit("initial_deltaT_sim",0.05);
   maxDeltaT_simLES = new SC_DoubleLineEdit("max_deltaT_sim",0.01);
-  QStringList algorithmOptions; algorithmOptions << "pisoFoam" << "simpleFoam";
+  QStringList algorithmOptions; algorithmOptions << "pisoFoam" << "simpleFoam" << "pimpleFoam";
   lesAlgorithm = new SC_ComboBox("solver",algorithmOptions);
-  QStringList adjustOptions; adjustOptions << "Yes" << "No";
+  QStringList adjustOptions; adjustOptions << "yes" << "no";
   adjustTimeLES = new SC_ComboBox("adjust_time",adjustOptions);  
   maxCourantLES = new SC_DoubleLineEdit("max_courant",1.0);
   deltaT_writeLES = new SC_DoubleLineEdit("deltaT_write",1.0);
@@ -448,7 +455,7 @@ AdvancedCFDWithBRAILS::initialize()
   QGridLayout *inletLayout = new QGridLayout();
   inletConditions->setLayout(inletLayout);
 
-  QStringList subModelOptions; subModelOptions << "kepsilon" << "komega" << "komegas";
+  QStringList subModelOptions; subModelOptions << "kepsilon" << "komega" << "komegasst";
   subModel = new SC_ComboBox("subModel",subModelOptions);
   
   QStringList frameworkOptions; frameworkOptions << "RANS" << "LES" << "URANS";
@@ -525,7 +532,7 @@ AdvancedCFDWithBRAILS::initialize()
 	  [inflowType, pathToTinf, lesInflowCopy, tinfProfileCopy, controlDict, subModelCopy, subModelText](const QString& text) {
 
 	    QStringList subModelsLES; subModelsLES << "smagorinsky" << "keqn" << "dynkeqn" << "wale";
-	    QStringList subModelsRANS; subModelsRANS << "kepsilon"<< "komega" << "komegasstsas";	
+	    QStringList subModelsRANS; subModelsRANS << "kepsilon"<< "komega" << "komegasst";	
 
 	    if (text == "RANS") {
 	      subModelText->setText("Turbulence Model");
@@ -766,16 +773,25 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
   Uref->inputFromJSON(inlet);
   Href->inputFromJSON(inlet);
   z0->inputFromJSON(inlet);
+  subModel->inputFromJSON(inlet);
+  lesAlgorithm->inputFromJSON(inlet);
   
   // Handle LES-specific inputs
-  if (framework->currentText() == "LES" ||
-      framework->currentText() == "URANS") {
+  if (framework->currentText() == "LES") {
     
     lesInflow->inputFromJSON(inlet);
     
     if (lesInflow->currentText() == "turbulent") {
       tinfProfile->inputFromJSON(inlet);
     }
+  }
+  if (framework->currentText() == "URANS") {
+
+      lesInflow->inputFromJSON(inlet);
+
+      if (lesInflow->currentText() == "turbulent") {
+          tinfProfile->inputFromJSON(inlet);
+      }
   }
 
   // control dict
@@ -794,7 +810,7 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
     deltaT_simRANS->inputFromJSON(controlDict);
     deltaT_writeRANS->inputFromJSON(controlDict);
   } else { // LES or URANS
-    lesAlgorithm->inputFromJSON(controlDict);    
+       
     end_timeLES->inputFromJSON(controlDict);
     initDeltaT_simLES->inputFromJSON(controlDict);
     deltaT_writeLES->inputFromJSON(controlDict);
@@ -802,7 +818,7 @@ bool AdvancedCFDWithBRAILS::inputFromJSON(QJsonObject &jsonObject)
     maxCourantLES->inputFromJSON(controlDict);
     adjustTimeLES->inputFromJSON(controlDict);
   }  
-  subModel->inputFromJSON(controlDict);
+  
   windProfiles->inputFromJSON(controlDict);
   sectionPlanes->inputFromJSON(controlDict);
     
@@ -901,6 +917,11 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     if (lesInflow->currentText() == "turbulent")
       tinfProfile->outputToJSON(inlet);
   }
+  if (framework->currentText() == "URANS") {
+      lesInflow->outputToJSON(inlet);
+      if (lesInflow->currentText() == "turbulent")
+          tinfProfile->outputToJSON(inlet);
+  }
   boundaryConditions["inlet"]=inlet;
   computationalDomain["boundary_conditions"]=boundaryConditions;
   
@@ -909,9 +930,9 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     end_timeRANS->outputToJSON(controlDict);
     deltaT_simRANS->outputToJSON(controlDict);
     deltaT_writeRANS->outputToJSON(controlDict);
-    controlDict["solver"]="simpleFoam";
+    inlet["solver"]="simpleFoam";
   } else {
-    lesAlgorithm->outputToJSON(controlDict);
+    lesAlgorithm->outputToJSON(inlet);
     end_timeLES->outputToJSON(controlDict);
     initDeltaT_simLES->outputToJSON(controlDict);
     deltaT_writeLES->outputToJSON(controlDict);
@@ -919,7 +940,7 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     maxCourantLES->outputToJSON(controlDict);
     adjustTimeLES->outputToJSON(controlDict);
   }
-  subModel->outputToJSON(controlDict);
+  subModel->outputToJSON(inlet);
   windProfiles->outputToJSON(controlDict);
   sectionPlanes->outputToJSON(controlDict);
   
