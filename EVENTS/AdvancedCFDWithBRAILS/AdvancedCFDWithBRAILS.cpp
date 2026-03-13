@@ -56,7 +56,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <SC_StringLineEdit.h>
 #include <SC_DoubleLineEdit.h>
 #include <SC_IntLineEdit.h>
-#include <SC_DirEdit.h>
+#include <SC_FileEdit.h>
 #include <SC_ComboBox.h>
 #include <SC_TableSC_Widgets.h>
 #include <SimCenterPreferences.h>
@@ -457,7 +457,7 @@ AdvancedCFDWithBRAILS::initialize()
   QStringList inflowOptions; inflowOptions << "turbulent" << "meanabl";
   
   lesInflow = new SC_ComboBox("inflow", inflowOptions);
-  tinfProfile = new SC_DirEdit("path_to_tinf_file");
+  tinfProfile = new SC_FileEdit("path_to_tinf_file");
   
   Uref = new SC_DoubleLineEdit("Uref",10.0);
   Href = new SC_DoubleLineEdit("Href", 10);
