@@ -45,7 +45,7 @@ class RandomVariablesContainer;
 class SC_IntLineEdit;
 class SC_DoubleLineEdit;
 class SC_StringLineEdit;
-class SC_DirEdit;
+class SC_FileEdit;
 class SC_ComboBox;
 class SC_TableSC_Widgets;
 class QTableWidget;
@@ -77,7 +77,7 @@ public slots:
 
 private:
   bool initialized;
-  SC_DirEdit *tinfProfile;
+  SC_FileEdit *tinfProfile;
   SC_StringLineEdit *caseFolder;
   SC_DoubleLineEdit *windDirection;
   SC_IntLineEdit *numberOfProcessors;
@@ -87,7 +87,7 @@ private:
   SC_ComboBox *scraper;
   SC_DoubleLineEdit *defaultHeight;
   
-  SC_DoubleLineEdit *surfaceLevelLR, *surfaceLevelROI;
+  SC_IntLineEdit *surfaceLevelLR, *surfaceLevelROI;
   SC_DoubleLineEdit *boundaryMeshCellSize, *kinematicViscosity;
   SC_IntLineEdit *numCellsBetweenLayers;
   SC_DoubleLineEdit *sideExtent, *topExtent, *inletExtent, *outletExtent;
