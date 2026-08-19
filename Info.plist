@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>WE_UQ</string>
 	<key>CFBundleIconFile</key>
-	<string>NHERI-WEUQ-Icon.icns</string>
+	<string>NHERI-WEuq-Icon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>NHERI-SimCenter.WE-UQ</string>
 	<key>CFBundlePackageType</key>

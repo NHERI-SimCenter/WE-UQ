@@ -5,7 +5,6 @@ set -euo pipefail
 # Defaults: arch = ""
 
 PROJECT_NAME="WE_UQ"
-
 CONAN_PROFILE="default"
 BUILD_DIR="build"
 ARCH=""
@@ -154,8 +153,8 @@ set +x
 # in case no wipe, removing app and touchingh WorkflowApp and main
 #
 
-touch WorkflowAppPBE.cpp main.cpp
-rm -fr "${BUILD_DIR}/${PROJECT_NAME}.app"
+touch WorkflowAppWE.cpp main.cpp
+rm -fr "${BUILD_DIR}/*.app"
 
 #
 # Now build With CMake
@@ -379,7 +378,7 @@ if [ "${DMG_METHOD}" = "NEW" ]; then
             --hide-extension "${APP_NAME}" \
             --app-drop-link 450 130 \
             --codesign "$appleCredential" \
-            "PBE_Mac_Download_${ARCH}.dmg" \
+	    "WE-UQ_Mac_Download_${ARCH}.dmg" \
             "app"
 
         set +x
@@ -391,7 +390,7 @@ else
 
     (
         cd "${BUILD_DIR}"
-        hdiutil create "PBE_Mac_Download_${ARCH}.dmg" -fs HFS+ -srcfolder "./${APP_NAME}" -format UDZO -volname "${APP_NAME}"
+        hdiutil create "WE-UQ_Mac_Download_${ARCH}.dmg" -fs HFS+ -srcfolder "./${APP_NAME}" -format UDZO -volname "${APP_NAME}"
     )
 
 fi
@@ -403,7 +402,7 @@ fi
 
 msg "DMG built .. now uploading to Apple for validation"
 
-xcrun notarytool submit "${BUILD_DIR}/PBE_Mac_Download_${ARCH}.dmg" --apple-id "$appleID" --password "$appleAppPassword" --team-id "$appleCredential"
+xcrun notarytool submit "${BUILD_DIR}/WE-UQ_Mac_Download_${ARCH}.dmg" --apple-id "$appleID" --password "$appleAppPassword" --team-id "$appleCredential"
 
 msg "Manual Mode! ... "
 echo ""
@@ -413,7 +412,7 @@ echo "xcrun notarytool info ID  --apple-id $appleID --password $appleAppPassword
 echo "xcrun notarytool log ID --apple-id $appleID --password $appleAppPassword --team-id $appleCredential"
 echo ""
 echo "Finally staple the dmg"
-echo "xcrun stapler staple  ${BUILD_DIR}/PBE_Mac_Download_${ARCH}.dmg"
+echo "xcrun stapler staple  ${BUILD_DIR}/WE-UQ__MacDownload_${ARCH}.dmg"
 
 
 echo "Release Build complete!"

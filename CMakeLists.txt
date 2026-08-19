@@ -85,7 +85,7 @@ if(WIN32)
     )
     # Icon for Windows
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
-    target_sources(${PROJECT_NAME} PRIVATE icons/NHERI-WEUQ-Icon.ico)
+    target_sources(${PROJECT_NAME} PRIVATE icons/NHERI-WEuq-Icon.ico)
     
 elseif(APPLE)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _GRAPHICS_Qt3D)
@@ -93,7 +93,7 @@ elseif(APPLE)
     
     set_target_properties(${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_ICON_FILE NHERI-WEUQ-Icon.icns
+        MACOSX_BUNDLE_ICON_FILE NHERI-WEuq-Icon.icns
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
     )
     # Architecture handling (Equivalent to QMAKE_APPLE_DEVICE_ARCHITECTURES)
@@ -157,7 +157,7 @@ elseif(APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE "-framework SystemConfiguration" "-framework Security")
     
     set_target_properties(${PROJECT_NAME} PROPERTIES
-        MACOSX_BUNDLE_ICON_FILE NHERI-WEUQ-Icon.icns
+        MACOSX_BUNDLE_ICON_FILE NHERI-WEuq-Icon.icns
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist
     )
     # Architecture handling (Equivalent to QMAKE_APPLE_DEVICE_ARCHITECTURES)
