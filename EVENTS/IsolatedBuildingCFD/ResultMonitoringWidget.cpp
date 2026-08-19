@@ -70,7 +70,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include "vtkGenericOpenGLRenderWindow.h"
 #include <vtkSmartPointer.h>
 #include <vtkGlyph3DMapper.h>
-#include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkNew.h>
 #include <vtkVoxelGrid.h>

@@ -248,9 +248,9 @@ SurroundedBuildingBoundaryConditions::SurroundedBuildingBoundaryConditions(Surro
 
     this->setLayout(layout);
 
-    connect(inletBCType, SIGNAL(currentIndexChanged(QString)), this, SLOT(inletBCTypeChanged(QString)));
+    connect(inletBCType, SIGNAL(currentTextChanged(QString)), this, SLOT(inletBCTypeChanged(QString)));
     connect(inflowTimeStep, SIGNAL(textChanged(QString)), this, SLOT(inflowTimeStepChanged(QString)));
-    connect(windProfileOption, SIGNAL(currentIndexChanged(QString)), this, SLOT(windProfileOptionChanged(QString)));
+    connect(windProfileOption, SIGNAL(currentTextChanged(QString)), this, SLOT(windProfileOptionChanged(QString)));
     connect(importWindProfiles, SIGNAL(clicked()), this, SLOT(onImportWindProfilesClicked()));
     connect(showWindProfiles, SIGNAL(clicked()), this, SLOT(onShowWindProfilesClicked()));
 }

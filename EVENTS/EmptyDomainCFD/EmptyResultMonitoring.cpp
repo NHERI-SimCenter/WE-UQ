@@ -69,7 +69,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QJsonDocument>
 #include "vtkGenericOpenGLRenderWindow.h"
 #include "vtkSmartPointer.h"
-#include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>

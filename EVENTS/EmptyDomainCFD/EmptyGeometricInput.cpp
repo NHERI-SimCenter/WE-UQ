@@ -186,7 +186,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
     domainInformationGroup->setLayout(domainInformationLayout);
     coordinateSystemGroup->setLayout(coordinateSystemLayout);
 
-    connect(originOptions, SIGNAL(currentIndexChanged(QString)), this, SLOT(originChanged(QString)));
+    connect(originOptions, SIGNAL(currentTextChanged(QString)), this, SLOT(originChanged(QString)));
     connect(useCOSTDimWidget, SIGNAL(stateChanged(int)), this, SLOT(useCOSTOptionChecked(int)));
     connect(importSetupButton, SIGNAL(clicked()), this, SLOT(onImportSetupButtonClicked()));
 
