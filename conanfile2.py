@@ -1,0 +1,36 @@
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeToolchain, CMakeDeps
+from conan.tools.files import copy
+import os
+
+class WEUQ_Conan(ConanFile):
+    name = "WE_UQ"
+    license = "BSD-3-Clause"
+    author = "NHERI SimCenter"
+    url = "https://github.com/NHERI-SimCenter/WE-UQ"
+    description = "NHERI SimCenter WE-UQ Tool"
+
+    settings = "os", "compiler", "build_type", "arch"
+
+    def requirements(self):
+        self.requires("zlib/1.3.1")
+        if self.settings.os != "Linux":
+            self.requires("libcurl/8.12.1")
+            
+    def configure(self):
+        if self.settings.os == "Windows":
+            self.options["zlib"].shared = True
+
+    def generate(self):
+        # Generate toolchain + find_package config files        
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.generate()
+
+        # The following solves the "DLL not found" error during local development
+        if self.settings.os == "Windows":
+            # For CMake, the binary usually ends up in build/Release or build/Debug
+            bindir = os.path.join(self.build_folder, str(self.settings.build_type))
+            for dep in self.dependencies.values():
+                copy(self, "*.dll", dep.cpp_info.bindirs[0], bindir)
