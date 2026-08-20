@@ -51,6 +51,12 @@ class JobListNode;
 enum class RequestState;
 enum class FileSystemChange;
 
+// wingdi.h (pulled in transitively via other headers in the combined moc
+// translation unit) #defines ERROR as 0, which corrupts the enumerators below.
+#ifdef ERROR
+#undef ERROR
+#endif
+
 enum class StageState {UNREADY, UNRUN, RUNNING, FINISHED, FINISHED_PREREQ, LOADING, ERROR, DOWNLOADING, OFFLINE};
 //Stages:
 //UNRUN: Parameters changeable, RUN button active

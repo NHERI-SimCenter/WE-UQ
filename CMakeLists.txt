@@ -79,7 +79,7 @@ add_executable(${PROJECT_NAME}
 
 
 if(WIN32)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE CURL_STATICLIB USE_SIMCENTER_PYTHON)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE CURL_STATICLIB USE_SIMCENTER_PYTHON NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         Advapi32 crypt32 ws2_32 user32
     )
@@ -146,7 +146,7 @@ vtk_module_autoinit(TARGETS ${PROJECT_NAME} MODULES ${VTK_LIBRARIES})
 
 # ---- Platform-specific ----
 if(WIN32)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE CURL_STATICLIB)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE CURL_STATICLIB NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         Advapi32 crypt32 ws2_32 user32
     )
