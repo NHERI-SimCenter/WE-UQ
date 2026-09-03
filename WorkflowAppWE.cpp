@@ -71,7 +71,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <LocalApplication.h>
 #include <RemoteApplication.h>
 #include <RemoteJobManager.h>
-#include <RunWidget.h>
+#include "RunWidget.h"
 #include <InputWidgetBIM.h>
 
 #include <WindEDP_Selection.h>

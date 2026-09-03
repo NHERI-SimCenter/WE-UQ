@@ -53,9 +53,9 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QFileDialog>
 #include <QPushButton>
 #include <SectionTitle.h>
-#include <StandardWindEDP.h>
+#include "StandardWindEDP.h"
+#include "ComponentAndCladdingWindEDP.h"
 #include <UserDefinedEDP.h>
-#include <ComponentAndCladdingWindEDP.h>
 #include <WindEventSelection.h>
 #include <IsolatedBuildingCFD.h>
 #include <QMessageBox>
@@ -118,7 +118,7 @@ WindEDP_Selection::WindEDP_Selection(QWidget *parent)
     this->setLayout(layout);
     theCurrentEDP=theStandardWindEDPs;
 
-    connect(edpSelection, SIGNAL(currentIndexChanged(QString)), this,
+    connect(edpSelection, SIGNAL(currentTextChanged(QString)), this,
             SLOT(edpSelectionChanged(QString)));
 }
 

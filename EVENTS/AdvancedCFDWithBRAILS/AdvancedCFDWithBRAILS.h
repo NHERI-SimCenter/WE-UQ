@@ -87,7 +87,7 @@ private:
   SC_ComboBox *scraper;
   SC_DoubleLineEdit *defaultHeight;
   
-  SC_DoubleLineEdit *surfaceLevelLR, *surfaceLevelROI;
+  SC_IntLineEdit *surfaceLevelLR, *surfaceLevelROI;
   SC_DoubleLineEdit *boundaryMeshCellSize, *kinematicViscosity;
   SC_IntLineEdit *numCellsBetweenLayers;
   SC_DoubleLineEdit *sideExtent, *topExtent, *inletExtent, *outletExtent;

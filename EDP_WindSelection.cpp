@@ -104,7 +104,7 @@ EDP_WindSelection::EDP_WindSelection(RandomVariablesContainer *theRandomVariable
     this->setLayout(layout);
     theCurrentEDP=theStandardWindEDPs;
 
-    connect(edpSelection, SIGNAL(currentIndexChanged(QString)), this,
+    connect(edpSelection, SIGNAL(currentTextChanged(QString)), this,
             SLOT(edpSelectionChanged(QString)));
 }
 

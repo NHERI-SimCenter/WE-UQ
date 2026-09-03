@@ -39,6 +39,7 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
+#include <iostream>
 #include "IsolatedBuildingCFD.h"
 #include "ResultDisplayWidget.h"
 #include <GeneralInformationWidget.h>
@@ -77,7 +78,6 @@ UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 #include <QValueAxis>
 #include "vtkGenericOpenGLRenderWindow.h"
 #include "vtkSmartPointer.h"
-#include <vtkDataObjectToTable.h>
 #include <vtkElevationFilter.h>
 #include <vtkNew.h>
 #include <vtkPolyDataMapper.h>

@@ -202,18 +202,16 @@ AdvancedCFDWithBRAILS::initialize()
   kinematicViscosity = new SC_DoubleLineEdit("kinematic_viscosity", 1.0e-05);
   
   theCDLayout->addWidget(new QLabel("Bounday Mesh Cell Size (m)"), 0,0);
-  theCDLayout->addWidget(new QLabel("Refinement Level on ROI surface"), 1, 0);
-  theCDLayout->addWidget(new QLabel("Refinement Level on Surrounding surface"), 1, 0);
   theCDLayout->addWidget(new QLabel("Number of Cells Between Layers"), 1,0);
-  theCDLayout->addWidget(new QLabel("Kinematic Viscosity"), 2,0);
-  
-  
+  theCDLayout->addWidget(new QLabel("Kinematic Viscosity"), 2,0);  
+  theCDLayout->addWidget(new QLabel("Refinement Level on ROI surface"), 3, 0);
+  theCDLayout->addWidget(new QLabel("Refinement Level on Surrounding surface"), 4, 0);
   
   theCDLayout->addWidget(boundaryMeshCellSize,0,1);
   theCDLayout->addWidget(numCellsBetweenLayers,1,1);
   theCDLayout->addWidget(kinematicViscosity,2,1);
-  theCDLayout->addWidget(surfaceLevelROI, 0, 1);
-  theCDLayout->addWidget(surfaceLevelLR, 0, 1);
+  theCDLayout->addWidget(surfaceLevelROI, 3, 1);
+  theCDLayout->addWidget(surfaceLevelLR, 4, 1);
   
   //
   // CD -  extents
@@ -464,7 +462,10 @@ AdvancedCFDWithBRAILS::initialize()
   QStringList inflowOptions; inflowOptions << "turbulent" << "meanabl";
   
   lesInflow = new SC_ComboBox("inflow", inflowOptions);
-  tinfProfile = new SC_FileEdit("path_to_tinf_file");
+
+  QStringList fileTypes; fileTypes << "csv";
+  tinfProfile = new SC_FileEdit("path_to_tinf_file", fileTypes);
+
   
   Uref = new SC_DoubleLineEdit("Uref",10.0);
   Href = new SC_DoubleLineEdit("Href", 10);
@@ -580,7 +581,7 @@ AdvancedCFDWithBRAILS::initialize()
   theCDTabs->addTab(refinement,"Regional Refinement");    
   theCDTabs->addTab(boundaryConditions,"Boundary Conditions");
   theCDTabs->addTab(controlDictWidget,"Control Dictionary");  
-  theCDLayout->addWidget(theCDTabs,4,0,1,2);
+  theCDLayout->addWidget(theCDTabs,5,0,1,2);
 
   theComputationalDomain->setLayout(theCDLayout);    
 
@@ -922,8 +923,6 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
       if (lesInflow->currentText() == "turbulent")
           tinfProfile->outputToJSON(inlet);
   }
-  boundaryConditions["inlet"]=inlet;
-  computationalDomain["boundary_conditions"]=boundaryConditions;
   
   QJsonObject controlDict;
   if (framework->currentText() == "RANS") {
@@ -941,10 +940,15 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     adjustTimeLES->outputToJSON(controlDict);
   }
   subModel->outputToJSON(inlet);
+
+  boundaryConditions["inlet"]=inlet;
+  
   windProfiles->outputToJSON(controlDict);
   sectionPlanes->outputToJSON(controlDict);
-  
+
+  computationalDomain["boundary_conditions"]=boundaryConditions;
   computationalDomain["control_dict"]=controlDict;
+  
   jsonObject["computational_domain"]=computationalDomain;
 
   return true;
