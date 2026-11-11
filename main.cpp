@@ -4,6 +4,8 @@
 
 #include <MainWindowWorkflowApp.h>
 #include <QApplication>
+#include <QSurfaceFormat>
+#include <QVTKOpenGLNativeWidget.h>
 #include <QFile>
 #include <QThread>
 #include <QObject>
@@ -98,6 +100,11 @@ int main(int argc, char *argv[])
     QFile debugFile(logFilePath);
     if (debugFile.exists())
       debugFile.remove();
+
+    // VTK 9 + Qt: request an OpenGL 3.2+ core profile before QApplication is
+    // created; without it the default macOS context is legacy GL 2.1 and
+    // QVTKOpenGLNativeWidget crashes in vtkOpenGLState::Pop() on first paint.
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 
     QApplication mainApp(argc, argv);
 
