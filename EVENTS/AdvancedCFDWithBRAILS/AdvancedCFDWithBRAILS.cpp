@@ -979,13 +979,9 @@ void AdvancedCFDWithBRAILS::runLocal() {
   //   - in that folder, remove case dir if already exists
 
   QString workDir = SimCenterPreferences::getInstance()->getLocalWorkDir() + QDir::separator() + "advancedCFD";
-  QDir workDirectory(workDir);
-  if (!workDirectory.exists()) {
-    workDirectory.mkdir(workDir);
-    if (!workDirectory.exists()) {
-      emit errorMessage(QString("AdvancedCFDWithBRAILS cannot create folder: ")+workDir);
-      return;
-    }
+  if (!QDir().mkpath(workDir)) {  // mkpath creates LocalWorkDir too if missing
+    emit errorMessage(QString("AdvancedCFDWithBRAILS cannot create folder: ")+workDir);
+    return;
   }
   
   QString caseDir = workDir + QDir::separator() + caseFolder->text();

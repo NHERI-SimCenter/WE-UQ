@@ -263,13 +263,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
 //  QString appName = "simcenter-weuq-openfoam-frontera";
   QString appName = "simcenter-weuq-cfd-stampede3";
   QString appVersion = "1.0.0";
-  QString machine = "stampede3";
-
-  QList<QString> queues; queues << "normal" << "fast";
+  TapisMachine *theOpenSeesMachine = new Stampede3Machine();
   SC_RemoteAppTool *theEmptyDomainTool = new SC_RemoteAppTool(appName,
 							      appVersion,
-							      machine,
-							      queues,
+							      theOpenSeesMachine,
 							      theRemoteService,
 							      theEmptyDomain,
 							      theToolDialog);
@@ -282,9 +279,9 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   connect(showEmptyDomain, &QAction::triggered, this, [this, theDialog=theToolDialog, theEmp=theEmptyDomain] {
     theDialog->showTool("Empty Domain Simulation");
     if(!theEmp->isInitialize())
-    {
+      {
         theEmp->initialize();
-    }
+      }
   });
 
 
@@ -295,14 +292,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   //  QString isoAppName = "simcenter-weuq-openfoam-frontera";
   QString isoAppName = "simcenter-weuq-cfd-stampede3";
   QString isoAppVersion = "1.0.0";
-  QString isoMachine = "stampede3";
-  QList<QString> isoQueues;
-
-  isoQueues << "normal" << "fast";
+  TapisMachine *theISO_Machine = new Stampede3Machine();  
   SC_RemoteAppTool *theIsoBldgTool = new SC_RemoteAppTool(isoAppName,
                                                           isoAppVersion,
-                                                          isoMachine,
-                                                          isoQueues,
+                                                          theISO_Machine,
                                                           theRemoteService,
                                                           theIsoBldg,
                                                           theToolDialog);
@@ -327,14 +320,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   AdvancedCFDWithBRAILS *theAdvancedCFD = new AdvancedCFDWithBRAILS(theRVs, true);
   QString advAppName = "simcenter-weuq-advanced-cfd-brails-stampede3";
   QString advAppVersion = "1.0.0";
-  QString advMachine = "stampede3";
-  QList<QString> advQueues;
-
-  advQueues << "normal" << "fast";
+  TapisMachine *theADV_Machine = new Stampede3Machine();
   SC_RemoteAppTool *theAdvancedCFDTool = new SC_RemoteAppTool(advAppName,
 							      advAppVersion,
-							      advMachine,
-							      advQueues,
+							      theADV_Machine,
 							      theRemoteService,
 							      theAdvancedCFD,
 							      theToolDialog,
@@ -345,7 +334,13 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   QAction *showAdvancedCFD = toolsMenu->addAction("&CFD Workflow With BRAILS");
 
   connect(theAdvancedCFDTool, &SC_RemoteAppTool::runLocalPressed,
-	  theAdvancedCFD, &AdvancedCFDWithBRAILS::runLocal);
+	  theToolDialog, [=]() {
+            theAdvancedCFD->runLocal();
+            theToolDialog->close();
+	  });
+  
+  //  connect(theAdvancedCFDTool, &SC_RemoteAppTool::runLocalPressed,
+  //	  theAdvancedCFD, &AdvancedCFDWithBRAILS::runLocal);
     
   connect(showAdvancedCFD,
 	  &QAction::triggered,
