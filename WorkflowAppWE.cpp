@@ -336,6 +336,10 @@ WorkflowAppWE::setMainWindow(MainWindowWorkflowApp* window) {
   connect(theAdvancedCFDTool, &SC_RemoteAppTool::runLocalPressed,
 	  theToolDialog, [=]() {
             theAdvancedCFD->runLocal();
+	    QMessageBox::information(theToolDialog,
+				     "Runnning Brails",
+				     "BRAILS is running locally to create OpenFOAM case dir."
+				     );
             theToolDialog->close();
 	  });
   
