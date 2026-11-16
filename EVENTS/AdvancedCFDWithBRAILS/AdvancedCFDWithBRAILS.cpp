@@ -929,9 +929,9 @@ bool AdvancedCFDWithBRAILS::outputToJSON(QJsonObject &jsonObject)
     end_timeRANS->outputToJSON(controlDict);
     deltaT_simRANS->outputToJSON(controlDict);
     deltaT_writeRANS->outputToJSON(controlDict);
-    inlet["solver"]="simpleFoam";
+    controlDict["solver"]="simpleFoam";
   } else {
-    lesAlgorithm->outputToJSON(inlet);
+    lesAlgorithm->outputToJSON(controlDict);
     end_timeLES->outputToJSON(controlDict);
     initDeltaT_simLES->outputToJSON(controlDict);
     deltaT_writeLES->outputToJSON(controlDict);
