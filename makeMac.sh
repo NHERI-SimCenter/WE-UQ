@@ -154,7 +154,7 @@ set +x
 #
 
 touch WorkflowAppWE.cpp main.cpp
-rm -fr "${BUILD_DIR}/*.app"
+rm -fr "${BUILD_DIR}/${PROJECT_NAME}.app"
 
 #
 # Now build With CMake
@@ -201,7 +201,7 @@ macdeployqt "${APP_DIR}"
 # Copy needed files (backend, opensees,dakota)
 #
 
-msg "copying Shark, Backend, OpenSees and Dakota to bundle"
+msg "copying Backend, OpenSees and Dakota to bundle"
 
 cp -fr "$HOME/NHERI/QS3hark/resources" "${APP_DIR}/Contents/MacOS"
 
@@ -363,6 +363,7 @@ if [ "${DMG_METHOD}" = "NEW" ]; then
 
     (
         cd "${BUILD_DIR}"
+        rm -f "WE-UQ_Mac_Download_${ARCH}.dmg" rw.*."WE-UQ_Mac_Download_${ARCH}.dmg"
         mkdir app
         mv "${APP_NAME}" app
         set -x
@@ -412,7 +413,7 @@ echo "xcrun notarytool info ID  --apple-id $appleID --password $appleAppPassword
 echo "xcrun notarytool log ID --apple-id $appleID --password $appleAppPassword --team-id $appleCredential"
 echo ""
 echo "Finally staple the dmg"
-echo "xcrun stapler staple  ${BUILD_DIR}/WE-UQ__MacDownload_${ARCH}.dmg"
+echo "xcrun stapler staple  ${BUILD_DIR}/WE-UQ_Mac_Download_${ARCH}.dmg"
 
 
 echo "Release Build complete!"
